@@ -6,7 +6,7 @@ module api.content.event {
     import NodeServerChangeType = api.event.NodeServerChangeType;
     import NodeServerChangeItem = api.event.NodeServerChangeItem;
 
-    export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath>{
+    export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath> {
 
         contentId: api.content.ContentId;
 
@@ -32,7 +32,7 @@ module api.content.event {
         protected newContentPaths: ContentPath[];
 
         constructor(type: NodeServerChangeType, changeItems: ContentServerChangeItem[], newContentPaths?: ContentPath[]) {
-            super(type, changeItems ,newContentPaths);
+            super(type, changeItems, newContentPaths);
         }
 
         getChangeItems(): ContentServerChangeItem[] {
@@ -67,7 +67,7 @@ module api.content.event {
                 var newContentPaths = nodeEventJson.data.nodes.
                     filter((node) => node.newPath.indexOf("/content") === 0).
                     map((node: NodeEventNodeJson) => api.content.ContentPath.fromString(node.newPath.substr("/content".length)));
-           
+
                 return new ContentServerChange(nodeEventType, changeItems, newContentPaths);
             } else {
                 return new ContentServerChange(nodeEventType, changeItems);

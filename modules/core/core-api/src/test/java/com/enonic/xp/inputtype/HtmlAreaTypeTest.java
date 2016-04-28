@@ -32,7 +32,7 @@ public class HtmlAreaTypeTest
     public void testCreateProperty()
     {
         final InputTypeConfig config = InputTypeConfig.create().build();
-        final Value value = this.type.createValue( ValueFactory.newString( "test"), config );
+        final Value value = this.type.createValue( ValueFactory.newString( "test" ), config );
 
         assertNotNull( value );
         assertSame( ValueTypes.STRING, value.getType() );

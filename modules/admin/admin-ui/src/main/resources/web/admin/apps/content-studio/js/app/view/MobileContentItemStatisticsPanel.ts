@@ -20,9 +20,7 @@ module app.view {
         private previewPanel: ContentItemPreviewPanel;
         private detailsPanel: DetailsPanel = DetailsPanel.create().
             setUseSplitter(false).
-            setUseViewer(false).
-            setSlideFrom(app.view.detail.SLIDE_FROM.BOTTOM).
-            setIsMobile(true).
+            setUseViewer(false).setSlideFrom(app.view.detail.SLIDE_FROM.BOTTOM).setIsMobile(true).
             build();
         private detailsToggleButton: MobileDetailsPanelToggleButton;
 

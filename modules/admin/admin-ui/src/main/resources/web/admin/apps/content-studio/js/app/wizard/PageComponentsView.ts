@@ -602,8 +602,8 @@ module app.wizard {
 
         private hidePageComponentsIfInMobileView(action: api.ui.Action) {
             if (api.BrowserHelper.isMobile() && ((action.hasParentAction() && action.getParentAction().getLabel() == "Insert")
-                                   || action.getLabel() == "Inspect" || action.getLabel() == "Edit" ||
-                                   action.getLabel() == "Duplicate")) {
+                                                 || action.getLabel() == "Inspect" || action.getLabel() == "Edit" ||
+                                                 action.getLabel() == "Duplicate")) {
                 this.hide();
             }
         }

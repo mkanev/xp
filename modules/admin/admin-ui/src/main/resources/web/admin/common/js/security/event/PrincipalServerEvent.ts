@@ -8,7 +8,7 @@ module api.security.event {
             super(change);
         }
 
-        getType() : NodeServerChangeType {
+        getType(): NodeServerChangeType {
             return this.getNodeChange() ? this.getNodeChange().getChangeType() : null;
         }
 
