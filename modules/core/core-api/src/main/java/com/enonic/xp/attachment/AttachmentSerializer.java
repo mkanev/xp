@@ -19,7 +19,7 @@ public class AttachmentSerializer
             attachmentSet.addBinaryReference( ContentPropertyNames.ATTACHMENT_BINARY_REF, createAttachment.getBinaryReference() );
             attachmentSet.addString( ContentPropertyNames.ATTACHMENT_MIMETYPE, createAttachment.getMimeType() );
             attachmentSet.addLong( ContentPropertyNames.ATTACHMENT_SIZE, attachmentSize( createAttachment ) );
-            attachmentSet.addString( ContentPropertyNames.ATTACHMENT_TEXT, createAttachment.getText() );
+            attachmentSet.addString( ContentPropertyNames.ATTACHMENT_TEXT, createAttachment.getTextContent() );
         }
     }
 

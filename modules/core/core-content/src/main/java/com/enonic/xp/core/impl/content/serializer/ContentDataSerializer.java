@@ -262,6 +262,7 @@ public final class ContentDataSerializer
             attachmentSet.addBinaryReference( "binary", attachment.getBinaryReference() );
             attachmentSet.addString( "mimeType", attachment.getMimeType() );
             attachmentSet.addLong( "size", attachment.getSize() );
+            attachmentSet.addString( "text", attachment.getTextContent() );
         }
     }
 

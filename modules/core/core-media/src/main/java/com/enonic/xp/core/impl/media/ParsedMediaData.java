@@ -7,12 +7,12 @@ public class ParsedMediaData
 {
     private final Metadata metadata;
 
-    private final String content;
+    private final String textContent;
 
     private ParsedMediaData( final Builder builder )
     {
         metadata = builder.metadata;
-        content = builder.content;
+        textContent = builder.content;
     }
 
     public static Builder create()
@@ -25,9 +25,9 @@ public class ParsedMediaData
         return metadata;
     }
 
-    public String getContent()
+    public String getTextContent()
     {
-        return content;
+        return textContent;
     }
 
     public static final class Builder

@@ -75,7 +75,6 @@ public final class ImageContentProcessor
 
     private ContentService contentService;
 
-    private final MixinService mixinService;
 
     protected ContentTypeService contentTypeService;
 
@@ -391,9 +390,4 @@ public final class ImageContentProcessor
         this.contentTypeService = contentTypeService;
     }
 
-    @Reference
-    public void setMixinService( final MixinService mixinService )
-    {
-        this.mixinService = mixinService;
-    }
 }

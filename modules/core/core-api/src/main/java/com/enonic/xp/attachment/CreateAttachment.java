@@ -19,7 +19,7 @@ public class CreateAttachment
 
     private final ByteSource byteSource;
 
-    private final String text;
+    private final String textContent;
 
     private CreateAttachment( final Builder builder )
     {
@@ -27,7 +27,7 @@ public class CreateAttachment
         this.name = builder.name;
         this.label = builder.label;
         this.byteSource = builder.byteSource;
-        this.text = builder.text;
+        this.textContent = builder.text;
     }
 
     public String getName()
@@ -65,9 +65,9 @@ public class CreateAttachment
         return BinaryReference.from( name );
     }
 
-    public String getText()
+    public String getTextContent()
     {
-        return text;
+        return textContent;
     }
 
     public static Builder create()

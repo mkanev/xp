@@ -11,6 +11,7 @@ import com.enonic.xp.index.IndexValueProcessors;
 import com.enonic.xp.index.PatternIndexConfigDocument;
 
 import static com.enonic.xp.content.ContentPropertyNames.ATTACHMENT;
+import static com.enonic.xp.content.ContentPropertyNames.ATTACHMENT_TEXT_COMPONENT;
 import static com.enonic.xp.content.ContentPropertyNames.CREATED_TIME;
 import static com.enonic.xp.content.ContentPropertyNames.CREATOR;
 import static com.enonic.xp.content.ContentPropertyNames.DATA;
@@ -54,6 +55,14 @@ class ContentIndexConfigFactory
             add( ATTACHMENT, IndexConfig.MINIMAL ).
             add( PropertyPath.from( EXTRA_DATA ), IndexConfig.MINIMAL ).
             defaultConfig( IndexConfig.BY_TYPE );
+
+        configDocumentBuilder.add( ATTACHMENT_TEXT_COMPONENT, IndexConfig.create().
+            enabled( true ).
+            fulltext( true ).
+            includeInAllText( false ).
+            nGram( true ).
+            decideByType( false ).
+            build() );
 
         final IndexConfig htmlIndexConfig = IndexConfig.create().
             enabled( true ).

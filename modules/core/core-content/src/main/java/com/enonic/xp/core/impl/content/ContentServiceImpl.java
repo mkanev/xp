@@ -734,12 +734,14 @@ public class ContentServiceImpl
         this.translator = translator;
     }
 
+    @SuppressWarnings("unused")
     @Reference
     public void setIndexService( final IndexService indexService )
     {
         this.indexService = indexService;
     }
 
+    @SuppressWarnings("unused")
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     public void contentProcessors( final ContentProcessor contentProcessor )
     {

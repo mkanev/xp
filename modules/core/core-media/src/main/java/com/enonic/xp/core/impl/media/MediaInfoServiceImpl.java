@@ -40,6 +40,7 @@ public final class MediaInfoServiceImpl
         final ParsedMediaData parsedMediaData = mediaParser.parseMetadata( byteSource );
 
         addMetadata( byteSource, builder, parsedMediaData );
+        builder.setTextContent( parsedMediaData.getTextContent() );
 
         return builder.build();
     }

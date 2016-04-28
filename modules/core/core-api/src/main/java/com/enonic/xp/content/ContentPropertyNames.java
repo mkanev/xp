@@ -11,6 +11,8 @@ public class ContentPropertyNames
 
     public static final String PAGE_TEXT_COMPONENT = "page.region.component.textcomponent.text";
 
+    public static final String ATTACHMENT_TEXT_COMPONENT = "attachment.text";
+
     public static final String FORM = "form";
 
     public static final String SITE = "site";
