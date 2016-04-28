@@ -56,8 +56,10 @@ module api.liveedit.text {
             this.isInitializingEditor = false;
 
             super(builder.
-                setContextMenuActions(this.createTextContextMenuActions()).setPlaceholder(new TextPlaceholder()).setViewer(
-                new TextComponentViewer()).setComponent(this.textComponent));
+                setContextMenuActions(this.createTextContextMenuActions()).
+                setPlaceholder(new TextPlaceholder()).
+                setViewer(new TextComponentViewer()).
+                setComponent(this.textComponent));
 
             this.addClassEx('text-view');
 
@@ -307,37 +309,47 @@ module api.liveedit.text {
                 this.appendChild(this.editorContainer);
             }
 
-            var forceEditorFocus: () => void = () => {
+            new HTMLAreaBuilder().
+                setSelector('div.' + id + ' .tiny-mce-here').
+                setAssetsUri(assetsUri).
+                setInline(true).
+                onCreateDialog(event => {
+                    this.currentDialogConfig = event.getConfig();
+                }).
+                setOnFocusHandler(this.onFocusHandler.bind(this)).
+                setOnBlurHandler(this.onBlurHandler.bind(this)).
+                setOnKeydownHandler(this.onKeydownHandler.bind(this)).
+                setFixedToolbarContainer('.mce-toolbar-container').
+                setContentId(this.getContentId()).
+                createEditor().
+                then((editor: HtmlAreaEditor) => {
+                    this.htmlAreaEditor = editor;
+                    if (!!this.textComponent.getText()) {
+                        this.htmlAreaEditor.setContent(HTMLAreaHelper.prepareImgSrcsInValueForEdit(this.textComponent.getText()));
+                    } else {
+                        this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
+                        this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
+                    }
+                    if (this.focusOnInit) {
+                        if (api.BrowserHelper.isFirefox()) {
+                            setTimeout(() => {
+                                this.forceEditorFocus();
+                            }, 100);
+                        } else {
+                            this.forceEditorFocus();
+                        }
+                    }
+                    this.focusOnInit = false;
+                    this.isInitializingEditor = false;
+                    HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
+                });
+        }
+
+        private forceEditorFocus() {
+            if (!!this.htmlAreaEditor) {
                 this.htmlAreaEditor.focus();
                 wemjq(this.htmlAreaEditor.getElement()).simulate("click");
             }
-
-            new HTMLAreaBuilder().setSelector('div.' + id + ' .tiny-mce-here').setAssetsUri(assetsUri).setInline(true).onCreateDialog(
-                event => {
-                    this.currentDialogConfig = event.getConfig();
-                }).setOnFocusHandler(this.onFocusHandler.bind(this)).setOnBlurHandler(this.onBlurHandler.bind(this)).setOnKeydownHandler(
-                this.onKeydownHandler.bind(this)).setFixedToolbarContainer('.mce-toolbar-container').setContentId(
-                this.getContentId()).createEditor().then((editor: HtmlAreaEditor) => {
-                this.htmlAreaEditor = editor;
-                if (!!this.textComponent.getText()) {
-                    this.htmlAreaEditor.setContent(HTMLAreaHelper.prepareImgSrcsInValueForEdit(this.textComponent.getText()));
-                } else {
-                    this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
-                    this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
-                }
-                if (this.focusOnInit) {
-                    if (api.BrowserHelper.isFirefox()) {
-                        setTimeout(() => {
-                            forceEditorFocus();
-                        }, 100);
-                    } else {
-                        forceEditorFocus();
-                    }
-                }
-                this.focusOnInit = false;
-                this.isInitializingEditor = false;
-                HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
-            });
         }
 
         private anyEditorHasFocus(): boolean {
@@ -419,6 +431,8 @@ module api.liveedit.text {
             var actions: api.ui.Action[] = [];
             actions.push(new api.ui.Action('Edit').onExecuted(() => {
                 this.startPageTextEditMode();
+                this.focusOnInit = true;
+                this.forceEditorFocus();
             }));
             return actions;
         }
