@@ -294,6 +294,7 @@ public final class ContentDataSerializer
                 label( createAttachment.getLabel() ).
                 mimeType( createAttachment.getMimeType() ).
                 size( attachmentSize( createAttachment ) ).
+                textContent( createAttachment.getTextContent() ).
                 build();
             attachments.put( attachment.getBinaryReference(), attachment );
         }
