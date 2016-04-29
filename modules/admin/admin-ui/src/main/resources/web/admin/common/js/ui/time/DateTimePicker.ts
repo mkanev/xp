@@ -134,9 +134,7 @@ module api.ui.time {
             var popupBuilder = new DateTimePickerPopupBuilder().
                 setHours(builder.hours).
                 setMinutes(builder.minutes).
-                setCalendar(calendar).
-                setTimezone(builder.timezone).
-                setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
+                setCalendar(calendar).setTimezone(builder.timezone).setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
             this.popup = new DateTimePickerPopup(popupBuilder);
             this.popup.onShown(() => {
                 new DateTimePickerShownEvent(this).fire();

@@ -38,16 +38,40 @@
 <!-- Configuration -->
 <script type="text/javascript">
     var CONFIG = {
-        {{#config}}
-        {{key}}: '{{value}}',
-        {{/config}}
-        baseUri: '{{baseUri}}',
-        adminUrl: '{{adminUrl}}',
-        assetsUri: '{{assetsUri}}',
-        portalAssetsUrl : '{{portalAssetsUrl}}',
-        xpVersion: '{{xpVersion}}',
-        appId: '{{appId}}'
-    };
+    {
+        {#config
+        }
+    }
+    {
+        {
+            key
+        }
+    }
+    :
+    '{{value}}',
+    {
+    {/
+        config
+    }
+    }
+    baseUri: '{{baseUri}}',
+            adminUrl
+    :
+    '{{adminUrl}}',
+            assetsUri
+    :
+    '{{assetsUri}}',
+            portalAssetsUrl
+    :
+    '{{portalAssetsUrl}}',
+            xpVersion
+    :
+    '{{xpVersion}}',
+            appId
+    :
+    '{{appId}}'
+    }
+    ;
 </script>
 
 <!-- App javascript -->

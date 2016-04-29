@@ -89,9 +89,7 @@ module api.ui.time {
                     setInteractive(true).
                     build();
 
-            this.popup = new DatePickerPopupBuilder().
-                setCalendar(this.calendar).
-                build();
+            this.popup = new DatePickerPopupBuilder().setCalendar(this.calendar).build();
             this.popup.onShown(() => {
                 new DatePickerShownEvent(this).fire();
             });

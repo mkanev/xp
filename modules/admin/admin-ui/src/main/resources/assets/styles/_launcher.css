@@ -438,7 +438,7 @@
   background-color: rgba(255, 255, 255, 0.3);
 }
  .launcher-main-container.keyboard-navigation .launcher-app-container .app-row.selected .app-info .app-description {
-  color: #fff;
+   color: #fff;
 }
 .launcher-main-container:not(.keyboard-navigation) .launcher-app-container .app-row:hover {
   width: 100%;
@@ -688,4 +688,5 @@
   -webkit-transform: rotate3d(0, 0, 1, -45deg);
   transform: rotate3d(0, 0, 1, -45deg);
 }
+
 /*# sourceMappingURL=src/main/resources/assets/styles/_launcher.css.map */

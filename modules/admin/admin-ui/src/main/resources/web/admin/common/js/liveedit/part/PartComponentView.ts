@@ -30,8 +30,7 @@ module api.liveedit.part {
 
             this.resetHrefForRootLink(builder);
 
-            super(builder.
-                setViewer(new PartComponentViewer()).
+            super(builder.setViewer(new PartComponentViewer()).
                 setPlaceholder(this.partPlaceholder).
                 setInspectActionRequired(true));
 

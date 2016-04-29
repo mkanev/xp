@@ -75,15 +75,11 @@ module api.ui.time {
         constructor(builder: DateTimePickerPopupBuilder) {
             super('date-time-dialog');
 
-            this.datePickerPopup = new DatePickerPopupBuilder().
-                setCalendar(builder.getCalendar()).
-                build();
+            this.datePickerPopup = new DatePickerPopupBuilder().setCalendar(builder.getCalendar()).build();
             this.timePickerPopup = new TimePickerPopupBuilder().
                 setHours(builder.getHours()).
-                setTimezone(builder.timezone).
-                setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent).
-                setMinutes(builder.getMinutes()).
-                build();
+                setTimezone(builder.timezone).setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent).setMinutes(
+                builder.getMinutes()).build();
 
             this.appendChildren(<api.dom.Element>this.datePickerPopup, <api.dom.Element>this.timePickerPopup);
         }
