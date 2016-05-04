@@ -172,7 +172,7 @@ module api.liveedit {
                     if (this.isTextEditMode()) {
                         this.setTextEditMode(false);
                     }
-                    itemView.select(null, ItemViewContextMenuPosition.NONE, event.isNew(), true);
+                    itemView.select(null, ItemViewContextMenuPosition.NONE, event.isNew());
                 }
             };
             this.itemViewRemovedListener = (event: ItemViewRemovedEvent) => {
@@ -186,15 +186,13 @@ module api.liveedit {
                 setLiveEditModel(builder.liveEditModel).
                 setItemViewIdProducer(builder.itemViewProducer).
                 setPlaceholder(new PagePlaceholder(this)).
-                setTooltipViewer(new api.content.ContentSummaryViewer()).
+                setViewer(new api.content.ContentSummaryViewer()).
                 setType(PageItemType.get()).
                 setElement(builder.element).
                 setContextMenuActions(this.unlockedScreenActions).
                 setContextMenuTitle(new PageViewContextMenuTitle(builder.liveEditModel.getContent())));
 
             this.addClassEx('page-view');
-
-            this.setTooltipObject(builder.liveEditModel.getContent());
 
             this.parseItemViews();
 
@@ -233,7 +231,7 @@ module api.liveedit {
         }
 
         private isPageScrolled() {
-            return this.getEl().getParent().getScrollTop() > 0;
+            return this.getEl().getScrollTop() > 0 || this.getEl().getParent().getScrollTop() > 0;
         }
 
         private toggleStickyToolbar() {
@@ -257,14 +255,12 @@ module api.liveedit {
             return this.hasClass("has-toolbar-container");
         }
 
-        private setIgnorePropertyChanges(value: boolean) {
-            this.ignorePropertyChanges = value;
+        getEditorToolbarHeight(): number {
+            return !!this.editorToolbar ? this.editorToolbar.getEl().getHeightWithMargin() : 0;
         }
 
-        showTooltip() {
-            if (!this.isTextEditMode() && !this.isLocked()) {
-                super.showTooltip();
-            }
+        private setIgnorePropertyChanges(value: boolean) {
+            this.ignorePropertyChanges = value;
         }
 
         highlight() {
@@ -317,8 +313,8 @@ module api.liveedit {
             });
         }
 
-        select(clickPosition?: Position, menuPosition?: ItemViewContextMenuPosition) {
-            super.select(clickPosition, menuPosition);
+        select(clickPosition?: Position, menuPosition?: ItemViewContextMenuPosition, isNew: boolean = false, rightClicked: boolean = false) {
+            super.select(clickPosition, menuPosition, false, rightClicked);
 
             new PageSelectedEvent(this).fire();
         }

@@ -32,13 +32,13 @@ module api.liveedit.text {
 
         private focusOnInit: boolean;
 
-        private editorContainer:api.dom.DivEl;
+        private editorContainer: api.dom.DivEl;
 
         public static debug = false;
 
         private static DEFAULT_TEXT: string = "";
 
-        private static EDITOR_FOCUSED_CLASS:string = "editor-focused";
+        private static EDITOR_FOCUSED_CLASS: string = "editor-focused";
 
         // special handling for click to allow dblclick event without triggering 2 clicks before it
         public static DBL_CLICK_TIMEOUT = 250;
@@ -58,7 +58,8 @@ module api.liveedit.text {
             super(builder.
                 setContextMenuActions(this.createTextContextMenuActions()).
                 setPlaceholder(new TextPlaceholder()).
-                setTooltipViewer(new TextComponentViewer()));
+                setViewer(new TextComponentViewer()).
+                setComponent(this.textComponent));
 
             this.addClassEx('text-view');
 
@@ -67,6 +68,9 @@ module api.liveedit.text {
             this.rootElement.getHTMLElement().onpaste = this.handlePasteEvent.bind(this);
 
             this.onAdded(() => { // is triggered on item insert or move
+                if (api.BrowserHelper.isFirefox() && !!tinymce.activeEditor) {
+                    tinymce.activeEditor.fire('blur');
+                }
                 this.focusOnInit = true;
                 this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);
                 if (!this.htmlAreaEditor && !this.isInitializingEditor) {
@@ -83,7 +87,7 @@ module api.liveedit.text {
             });
 
             var handleDialogCreated = (event) => {
-                if(this.currentDialogConfig == event.getConfig()) {
+                if (this.currentDialogConfig == event.getConfig()) {
                     this.modalDialog = event.getModalDialog();
                 }
             };
@@ -104,7 +108,7 @@ module api.liveedit.text {
             this.htmlAreaEditor = null;
         }
 
-        private getContentId():api.content.ContentId {
+        private getContentId(): api.content.ContentId {
             return this.liveEditModel.getContent().getContentId();
         }
 
@@ -116,18 +120,6 @@ module api.liveedit.text {
         private handlePasteEvent(event) {
             if (this.isAllTextSelected()) {
                 this.rootElement.getHTMLElement().innerHTML = "";
-            }
-        }
-
-        showTooltip() {
-            if (!this.isEditMode()) {
-                super.showTooltip();
-            }
-        }
-
-        hideTooltip(hideParentTooltip: boolean = true) {
-            if (!this.isEditMode()) {
-                super.hideTooltip(hideParentTooltip);
             }
         }
 
@@ -150,7 +142,7 @@ module api.liveedit.text {
                 if (child.getEl().getTagName().toUpperCase() == 'SECTION') {
                     this.rootElement = child;
                     // convert image urls in text component for web
-                    child.setHtml(child.getHtml(), false);
+                    child.setHtml(HTMLAreaHelper.prepareImgSrcsInValueForEdit(child.getHtml()), false);
                     break;
                 }
             }
@@ -174,6 +166,7 @@ module api.liveedit.text {
             this.startPageTextEditMode();
             if (!!this.htmlAreaEditor) {
                 this.htmlAreaEditor.focus();
+                this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);
             }
             api.liveedit.Highlighter.get().hide();
         }
@@ -251,20 +244,24 @@ module api.liveedit.text {
                     this.processEditorValue();
                 }
                 this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
+                if (api.BrowserHelper.isFirefox()) {
+                    var activeEditor = tinymce.activeEditor;
+                    if (!!activeEditor) {
+                        activeEditor.fire('blur');
+                    }
+                }
             }
 
             this.toggleClass('edit-mode', flag);
             this.setDraggable(!flag);
 
             if (flag) {
-                this.hideTooltip();
-
                 if (!this.htmlAreaEditor && !this.isInitializingEditor) {
                     this.initEditor();
                 }
 
                 if (this.textComponent.isEmpty()) {
-                    if (!!this.htmlAreaEditor ) {
+                    if (!!this.htmlAreaEditor) {
                         this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
                     }
                     this.rootElement.setHtml(TextComponentView.DEFAULT_TEXT, false);
@@ -280,7 +277,6 @@ module api.liveedit.text {
         private onBlurHandler(e) {
             this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
 
-
             setTimeout(() => {
                 if (!this.anyEditorHasFocus()) {
                     this.closePageTextEditMode();
@@ -289,7 +285,13 @@ module api.liveedit.text {
         }
 
         private onKeydownHandler(e) {
-            if (e.keyCode == 27) { // esc
+            var saveShortcut = (e.keyCode == 83 && (e.ctrlKey || e.metaKey));
+
+            if (saveShortcut) { //Cmd-S
+                this.processEditorValue();
+            }
+
+            if (e.keyCode == 27 || saveShortcut) { // esc or Cmd-S
                 this.closePageTextEditMode();
                 this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
             }
@@ -323,19 +325,31 @@ module api.liveedit.text {
                 then((editor: HtmlAreaEditor) => {
                     this.htmlAreaEditor = editor;
                     if (!!this.textComponent.getText()) {
-                        this.htmlAreaEditor.setContent(this.textComponent.getText());
+                        this.htmlAreaEditor.setContent(HTMLAreaHelper.prepareImgSrcsInValueForEdit(this.textComponent.getText()));
                     } else {
                         this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
                         this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
                     }
                     if (this.focusOnInit) {
-                        this.htmlAreaEditor.focus();
-                        wemjq(this.htmlAreaEditor.getElement()).simulate("click");
+                        if (api.BrowserHelper.isFirefox()) {
+                            setTimeout(() => {
+                                this.forceEditorFocus();
+                            }, 100);
+                        } else {
+                            this.forceEditorFocus();
+                        }
                     }
                     this.focusOnInit = false;
                     this.isInitializingEditor = false;
                     HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
                 });
+        }
+
+        private forceEditorFocus() {
+            if (!!this.htmlAreaEditor) {
+                this.htmlAreaEditor.focus();
+                wemjq(this.htmlAreaEditor.getElement()).simulate("click");
+            }
         }
 
         private anyEditorHasFocus(): boolean {
@@ -351,18 +365,19 @@ module api.liveedit.text {
         }
 
         private processEditorValue() {
-            if(!this.htmlAreaEditor)
+            if (!this.htmlAreaEditor) {
                 return;
+            }
 
             if (this.isEditorEmpty()) {
                 this.textComponent.setText(TextComponentView.DEFAULT_TEXT);
                 // copy editor content over to the root html element
                 this.rootElement.getHTMLElement().innerHTML = TextComponentView.DEFAULT_TEXT;
             } else {
-                var editorContent = this.htmlAreaEditor.getContent();
-                this.textComponent.setText(editorContent);
                 // copy editor raw content (without any processing!) over to the root html element
-                this.rootElement.getHTMLElement().innerHTML = this.htmlAreaEditor.getContent({format : 'raw'});
+                this.rootElement.getHTMLElement().innerHTML = this.htmlAreaEditor.getContent({format: 'raw'});
+                // but save processed text to the component
+                this.textComponent.setText(HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.htmlAreaEditor));
             }
         }
 
@@ -416,6 +431,8 @@ module api.liveedit.text {
             var actions: api.ui.Action[] = [];
             actions.push(new api.ui.Action('Edit').onExecuted(() => {
                 this.startPageTextEditMode();
+                this.focusOnInit = true;
+                this.forceEditorFocus();
             }));
             return actions;
         }

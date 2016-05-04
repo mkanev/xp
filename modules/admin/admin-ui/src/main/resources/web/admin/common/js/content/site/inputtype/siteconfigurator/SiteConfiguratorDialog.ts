@@ -20,7 +20,16 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.getEl().addClass("site-configurator-dialog");
             this.appendChildToContentPanel(formView);
-            this.handleSelectorsDropdowns(formView);
+
+            formView.onLayoutFinished(() => {
+                this.handleSelectorsDropdowns(formView);
+                this.handleDialogClose(formView);
+
+                this.addClass("animated");
+                this.centerMyself();
+                wemjq(this.getHTMLElement()).find('input[type=text],textarea,select').first().focus();
+                this.updateTabbable();
+            });
 
             this.addOkButton(okCallback);
             this.getCancelAction().onExecuted(() => cancelCallback());
@@ -56,22 +65,47 @@ module api.content.site.inputtype.siteconfigurator {
         private handleSelectorsDropdowns(formView: FormView) {
             var comboboxArray = [];
             formView.getChildren().forEach((element: api.dom.Element) => {
-                if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
-                    var inputView: InputView = <InputView> element;
-                    if (this.isContentOrImageSelector(inputView)) {
-                        var combobox = this.getComboboxFromSelectorInputView(inputView);
-                        if (!!combobox) {
-                            comboboxArray.push(combobox);
-                        }
-                        this.subscribeCombobox(combobox);
-                    }
-                }
+                this.findItemViewsAndSubscribe(element, comboboxArray);
             });
             this.getContentPanel().onScroll((event) => {
                 comboboxArray.forEach((comboBox: ComboBox<any>) => {
                     comboBox.hideDropdown();
                 });
             });
+        }
+
+        private handleDialogClose(formView: FormView) {
+            let imageSelector;
+            formView.getChildren().forEach((element: api.dom.Element) => {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
+                    imageSelector = (<InputView> element).getInputTypeView().getElement();
+                    if (api.ObjectHelper.iFrameSafeInstanceOf(imageSelector, ImageSelector)) {
+                        (<ImageSelector> imageSelector).onEditContentRequest(this.close.bind(this));
+                    }
+                }
+            });
+        }
+
+        private findItemViewsAndSubscribe(element: api.dom.Element, comboboxArray: ComboBox<any>[]) {
+            if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
+                this.checkItemViewAndSubscribe(<InputView> element, comboboxArray);
+            } else if (api.ObjectHelper.iFrameSafeInstanceOf(element, api.form.FieldSetView)) {
+                var fieldSetView: api.form.FieldSetView = <api.form.FieldSetView> element;
+                fieldSetView.getFormItemViews().forEach((formItemView: api.form.FormItemView) => {
+                    this.findItemViewsAndSubscribe(formItemView, comboboxArray);
+                });
+            }
+        }
+
+        private checkItemViewAndSubscribe(itemView: api.form.FormItemView, comboboxArray: ComboBox<any>[]) {
+            var inputView: InputView = <InputView> itemView;
+            if (this.isContentOrImageOrComboSelectorInput(inputView)) {
+                var combobox = this.getComboboxFromSelectorInputView(inputView);
+                if (!!combobox) {
+                    comboboxArray.push(combobox);
+                }
+                this.subscribeCombobox(combobox);
+            }
         }
 
         private subscribeCombobox(comboBox: ComboBox<any>) {
@@ -97,26 +131,25 @@ module api.content.site.inputtype.siteconfigurator {
                 inputTypeView = inputView.getInputTypeView();
             if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ContentSelector)) {
                 contentComboBox = (<ContentSelector> inputTypeView).getContentComboBox();
-            } else {
+            } else if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ImageSelector)) {
                 contentComboBox = (<ImageSelector> inputTypeView).getContentComboBox();
+            } else {
+                return (<api.form.inputtype.combobox.ComboBox> inputTypeView).getComboBox();
             }
             return !!contentComboBox ? contentComboBox.getComboBox() : null;
         }
 
-        private isContentOrImageSelector(inputView: InputView): boolean {
+        private isContentOrImageOrComboSelectorInput(inputView: InputView): boolean {
             return !!inputView &&
                    (api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ContentSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ImageSelector));
+                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ImageSelector) ||
+                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), api.form.inputtype.combobox.ComboBox));
         }
+
 
         show() {
             api.dom.Body.get().appendChild(this);
             super.show();
-            setTimeout(() => {
-                this.addClass("animated");
-                this.centerMyself();
-                wemjq(this.getHTMLElement()).find('input[type=text],textarea,select').first().focus();
-            }, 100);
         }
 
         close() {

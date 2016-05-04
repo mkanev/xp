@@ -13,8 +13,6 @@ module api.ui.time {
         // use local timezone if timezone value is not initialized
         useLocalTimezoneIfNotPresent: boolean = false;
 
-        closeOnOutsideClick: boolean = true;
-
         setHours(value: number): TimePickerPopupBuilder {
             this.hours = value;
             return this;
@@ -49,15 +47,6 @@ module api.ui.time {
 
         isUseLocalTimezoneIfNotPresent(): boolean {
             return this.useLocalTimezoneIfNotPresent;
-        }
-
-        setCloseOnOutsideClick(value: boolean): TimePickerPopupBuilder {
-            this.closeOnOutsideClick = value;
-            return this;
-        }
-
-        isCloseOnOutsideClick(): boolean {
-            return this.closeOnOutsideClick;
         }
 
         build(): TimePickerPopup {
@@ -159,8 +148,8 @@ module api.ui.time {
             this.prevMinute.appendChild(new api.dom.SpanEl());
             minuteContainer.appendChild(this.prevMinute);
 
-            this.selectedHour = builder.getHours() || null;
-            this.selectedMinute = builder.getMinutes() || null;
+            this.selectedHour = this.isHoursValid(builder.getHours()) ? builder.getHours() : null;
+            this.selectedMinute = this.isMinutesValid(builder.getMinutes()) ? builder.getMinutes() : null;
 
             this.useLocalTimezoneIfNotPresent = builder.useLocalTimezoneIfNotPresent;
             this.timezone = builder.timezone;
@@ -181,11 +170,6 @@ module api.ui.time {
 
             this.hour.setHtml(this.padNumber(this.selectedHour || 0, 2));
             this.minute.setHtml(this.padNumber(this.selectedMinute || 0, 2));
-
-            if (builder.isCloseOnOutsideClick()) {
-                api.dom.Body.get().onClicked((e: MouseEvent) => this.outsideClickListener(e));
-            }
-
         }
 
         getSelectedTime(): {hour: number; minute: number} {
@@ -260,12 +244,6 @@ module api.ui.time {
             this.timeChangedListeners.forEach((listener) => {
                 listener(hours, minutes);
             });
-        }
-
-        private outsideClickListener(e: MouseEvent) {
-            if (!this.getEl().contains(<HTMLElement> e.target)) {
-                this.hide();
-            }
         }
 
         setSelectedTime(hours: number, minutes: number, silent?: boolean) {

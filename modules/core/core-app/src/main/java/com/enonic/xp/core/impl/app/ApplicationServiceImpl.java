@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
 
-import com.enonic.xp.ApplicationInstallException;
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationInvalidator;
 import com.enonic.xp.app.ApplicationKey;
@@ -473,7 +472,7 @@ public final class ApplicationServiceImpl
         }
         catch ( BundleException e )
         {
-            e.printStackTrace();
+            LOG.warn( "Failed to uninstall bundle", e );
         }
     }
 

@@ -3,6 +3,7 @@ package com.enonic.xp.inputtype;
 import org.junit.Test;
 
 import com.enonic.xp.data.Value;
+import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.data.ValueTypes;
 
 import static org.junit.Assert.*;
@@ -34,20 +35,22 @@ public class TextLineTypeTest
     public void testCreateProperty()
     {
         final InputTypeConfig config = InputTypeConfig.create().build();
-        final Value value = this.type.createValue( "test", config );
-
+        final Value value = this.type.createValue( ValueFactory.newString( "test" ), config );
         assertNotNull( value );
         assertSame( ValueTypes.STRING, value.getType() );
+
+        final Value value2 = this.type.createValue( "test", config );
+        assertNotNull( value2 );
+        assertSame( ValueTypes.STRING, value2.getType() );
     }
 
     @Test
     public void testCreateDefaultValue()
     {
-        final InputTypeDefault config =
-            InputTypeDefault.create().
-                property( InputTypeProperty.create( "default", "testString" ).
-                    build() ).
-                build();
+        final InputTypeDefault config = InputTypeDefault.create().
+            property( InputTypeProperty.create( "default", "testString" ).
+                build() ).
+            build();
 
         final Value value = this.type.createDefaultValue( config );
 

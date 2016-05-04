@@ -23,9 +23,9 @@ final class CheckBoxType
     }
 
     @Override
-    public Value createValue( final String value, final InputTypeConfig config )
+    public Value createValue( final Value value, final InputTypeConfig config )
     {
-        return ValueFactory.newBoolean( ValueTypes.BOOLEAN.convert( value ) );
+        return ValueFactory.newBoolean( value.asBoolean() );
     }
 
     @Override
@@ -34,8 +34,7 @@ final class CheckBoxType
         final String defaultValue = defaultConfig.getRootValue();
         if ( StringUtils.isNotEmpty( defaultValue ) )
         {
-            return VALID_VALUE.equals( defaultValue ) ? ValueFactory.newBoolean(true) :
-                super.createDefaultValue( defaultConfig );
+            return VALID_VALUE.equals( defaultValue ) ? ValueFactory.newBoolean( true ) : super.createDefaultValue( defaultConfig );
         }
         return super.createDefaultValue( defaultConfig );
     }

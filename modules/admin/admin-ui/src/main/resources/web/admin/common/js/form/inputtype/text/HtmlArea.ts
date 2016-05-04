@@ -16,6 +16,7 @@ module api.form.inputtype.text {
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
     import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
+    import ElementHelper = api.dom.ElementHelper;
 
     export class HtmlArea extends support.BaseInputTypeNotManagingAdd<string> {
 
@@ -92,17 +93,26 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
 
                 this.notifyFocused(e);
+
+                api.util.AppHelper.dispatchCustomEvent("focusin", this);
+                new api.ui.selector.SelectorOnBlurEvent(this).fire();
             };
 
             var onNodeChangeHandler = (e) => {
                 this.notifyValueChanged(id, textAreaWrapper);
             };
 
-            var onBlurHandler = (e) => {
-                this.setStaticInputHeight();
-                textAreaWrapper.removeClass(focusedEditorCls);
+            var isMouseOverRemoveOccurenceButton = false;
 
+            var onBlurHandler = (e) => {
+                //checking if remove occurence button clicked or not
+                if (!isMouseOverRemoveOccurenceButton) {
+                    this.setStaticInputHeight();
+                    textAreaWrapper.removeClass(focusedEditorCls);
+                }
                 this.notifyBlurred(e);
+
+                api.util.AppHelper.dispatchCustomEvent("focusout", this);
             };
 
             var onKeydownHandler = (e) => {
@@ -147,10 +157,22 @@ module api.form.inputtype.text {
                         this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper);
                     }
                     this.removeTooltipFromEditorArea(textAreaWrapper);
+
+                var removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
+                    ".remove-button")[0];
+                removeButtonEL.addEventListener("mouseover", () => {
+                    isMouseOverRemoveOccurenceButton = true;
+                });
+                removeButtonEL.addEventListener("mouseleave", () => {
+                    isMouseOverRemoveOccurenceButton = false;
+                });
+
                     HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
                     this.onShown((event) => {
                         // invoke auto resize on shown in case contents have been updated while inactive
-                        editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
+                        if (!!editor['contentAreaContainer'] || !!editor['bodyElement']) {
+                            editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
+                        }
                     });
                 });
         }
@@ -174,7 +196,6 @@ module api.form.inputtype.text {
             });
 
             api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
-                this.updateEditorToolbarWidth();
                 this.updateEditorToolbarPos(inputOccurence);
             });
 
@@ -184,28 +205,21 @@ module api.form.inputtype.text {
 
             this.onOccurrenceRendered(() => {
                 this.resetInputHeight();
-                this.updateEditorToolbarWidth();
             });
 
             this.onOccurrenceRemoved(() => {
                 this.resetInputHeight();
-                this.updateEditorToolbarWidth();
             });
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element) {
             if (!this.editorTopEdgeIsVisible(inputOccurence) && this.editorLowerEdgeIsVisible(inputOccurence)) {
                 inputOccurence.addClass("sticky-toolbar");
-                this.updateEditorToolbarWidth();
                 this.updateEditorToolbarPos(inputOccurence);
             }
             else {
                 inputOccurence.removeClass("sticky-toolbar")
             }
-        }
-
-        private updateEditorToolbarWidth() {
-            wemjq(this.getHTMLElement()).find(".mce-toolbar-grp").width(wemjq(this.getHTMLElement()).find(".mce-edit-area").innerWidth());
         }
 
         private updateEditorToolbarPos(inputOccurence: Element) {

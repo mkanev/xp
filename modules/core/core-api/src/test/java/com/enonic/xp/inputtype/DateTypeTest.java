@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import com.enonic.xp.data.Value;
+import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.data.ValueTypes;
 
 import static org.junit.Assert.*;
@@ -34,7 +35,7 @@ public class DateTypeTest
     public void testCreateProperty()
     {
         final InputTypeConfig config = newEmptyConfig();
-        final Value value = this.type.createValue( "2015-01-02", config );
+        final Value value = this.type.createValue( ValueFactory.newString( "2015-01-02" ), config );
 
         assertNotNull( value );
         assertSame( ValueTypes.LOCAL_DATE, value.getType() );

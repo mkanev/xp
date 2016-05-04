@@ -1,5 +1,12 @@
 package com.enonic.xp.core.impl.security;
 
+import java.io.File;
+import java.util.concurrent.Callable;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.event.EventPublisher;
@@ -12,6 +19,7 @@ import com.enonic.xp.repo.impl.elasticsearch.ElasticsearchIndexServiceInternal;
 import com.enonic.xp.repo.impl.elasticsearch.search.ElasticsearchSearchDao;
 import com.enonic.xp.repo.impl.elasticsearch.storage.ElasticsearchStorageDao;
 import com.enonic.xp.repo.impl.index.IndexServiceImpl;
+import com.enonic.xp.repo.impl.node.MemoryBlobStore;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDaoImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
@@ -20,17 +28,43 @@ import com.enonic.xp.repo.impl.storage.IndexedDataServiceImpl;
 import com.enonic.xp.repo.impl.storage.StorageServiceImpl;
 import com.enonic.xp.repo.impl.version.VersionServiceImpl;
 import com.enonic.xp.repository.Repository;
-import com.enonic.xp.security.*;
-import com.enonic.xp.security.acl.*;
-import com.enonic.xp.security.auth.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
+import com.enonic.xp.security.CreateGroupParams;
+import com.enonic.xp.security.CreateRoleParams;
+import com.enonic.xp.security.CreateUserParams;
+import com.enonic.xp.security.CreateUserStoreParams;
+import com.enonic.xp.security.Group;
+import com.enonic.xp.security.PrincipalKey;
+import com.enonic.xp.security.PrincipalKeys;
+import com.enonic.xp.security.PrincipalQuery;
+import com.enonic.xp.security.PrincipalQueryResult;
+import com.enonic.xp.security.PrincipalRelationship;
+import com.enonic.xp.security.PrincipalRelationships;
+import com.enonic.xp.security.Role;
+import com.enonic.xp.security.RoleKeys;
+import com.enonic.xp.security.SecurityConstants;
+import com.enonic.xp.security.UpdateGroupParams;
+import com.enonic.xp.security.UpdateRoleParams;
+import com.enonic.xp.security.UpdateUserParams;
+import com.enonic.xp.security.UpdateUserStoreParams;
+import com.enonic.xp.security.User;
+import com.enonic.xp.security.UserStore;
+import com.enonic.xp.security.UserStoreKey;
+import com.enonic.xp.security.acl.AccessControlEntry;
+import com.enonic.xp.security.acl.AccessControlList;
+import com.enonic.xp.security.acl.Permission;
+import com.enonic.xp.security.acl.UserStoreAccessControlEntry;
+import com.enonic.xp.security.acl.UserStoreAccessControlList;
+import com.enonic.xp.security.auth.AuthenticationException;
+import com.enonic.xp.security.auth.AuthenticationInfo;
+import com.enonic.xp.security.auth.AuthenticationToken;
+import com.enonic.xp.security.auth.EmailPasswordAuthToken;
+import com.enonic.xp.security.auth.UsernamePasswordAuthToken;
+import com.enonic.xp.security.auth.VerifiedEmailAuthToken;
+import com.enonic.xp.security.auth.VerifiedUsernameAuthToken;
 
-import java.io.File;
-import java.util.concurrent.Callable;
-
-import static com.enonic.xp.security.acl.UserStoreAccess.*;
+import static com.enonic.xp.security.acl.UserStoreAccess.ADMINISTRATOR;
+import static com.enonic.xp.security.acl.UserStoreAccess.CREATE_USERS;
+import static com.enonic.xp.security.acl.UserStoreAccess.WRITE_USERS;
 import static org.junit.Assert.*;
 
 public class SecurityServiceImplTest
@@ -53,6 +87,8 @@ public class SecurityServiceImplTest
     {
         super.setUp();
 
+        final MemoryBlobStore blobStore = new MemoryBlobStore();
+
         final RepoConfiguration repoConfig = Mockito.mock( RepoConfiguration.class );
         Mockito.when( repoConfig.getBlobStoreDir() ).thenReturn( new File( this.xpHome.getRoot(), "repo/blob" ) );
 
@@ -68,7 +104,7 @@ public class SecurityServiceImplTest
 
         final NodeVersionDaoImpl nodeDao = new NodeVersionDaoImpl();
         nodeDao.setConfiguration( repoConfig );
-        nodeDao.initialize();
+        nodeDao.setBlobStore( blobStore );
 
         this.indexServiceInternal = new ElasticsearchIndexServiceInternal();
         this.indexServiceInternal.setClient( client );
@@ -95,6 +131,8 @@ public class SecurityServiceImplTest
         this.nodeService.setSearchService( searchService );
         this.nodeService.setStorageService( storageService );
         this.nodeService.setConfiguration( repoConfig );
+
+        this.nodeService.setBlobStore( blobStore );
         this.nodeService.initialize();
 
         this.eventPublisher = Mockito.mock( EventPublisher.class );
@@ -233,7 +271,7 @@ public class SecurityServiceImplTest
             final CreateGroupParams createGroup = CreateGroupParams.create().
                 groupKey( groupKey1 ).
                 displayName( "Group A" ).
-                description("Group A Description").
+                description( "Group A Description" ).
                 build();
 
             final PrincipalKey groupKey2 = PrincipalKey.ofGroup( SYSTEM, "group-b" );
@@ -298,7 +336,7 @@ public class SecurityServiceImplTest
             final CreateRoleParams createRole = CreateRoleParams.create().
                 roleKey( roleKey1 ).
                 displayName( "Role A" ).
-                description("Group A Description").
+                description( "Group A Description" ).
                 build();
 
             final PrincipalKey roleKey2 = PrincipalKey.ofRole( "role-b" );

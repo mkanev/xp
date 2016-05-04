@@ -1,13 +1,26 @@
-module app.installation {
+import "../../api.ts";
+import {ApplicationTreeGrid} from "../browse/ApplicationTreeGrid";
 
-    export class InstallAppPromptEvent extends api.event.Event {
+import  Application = api.application.Application;
 
-        static on(handler: (event: InstallAppPromptEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
-        }
+export class InstallAppPromptEvent extends api.event.Event {
 
-        static un(handler?: (event: InstallAppPromptEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
-        }
+    private installedApplications: Application[];
+
+    constructor(installedApplications: Application[]) {
+        super();
+        this.installedApplications = installedApplications;
+    }
+
+    getInstalledApplications(): Application[] {
+        return this.installedApplications;
+    }
+
+    static on(handler: (event: InstallAppPromptEvent) => void) {
+        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+    }
+
+    static un(handler?: (event: InstallAppPromptEvent) => void) {
+        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
     }
 }

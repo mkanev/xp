@@ -180,7 +180,7 @@ module api.app.wizard {
                     this.giveInitialFocus();
                 }
 
-                if (this.lastFocusedElement) {
+                if (!!this.lastFocusedElement) {
                     this.lastFocusedElement.focus();
                 }
             });
@@ -236,6 +236,8 @@ module api.app.wizard {
             this.stepNavigator.unNavigationItemActivated(this.toggleMinimizeListener);
             this.formPanel.toggleClass("minimized");
 
+            new MinimizeWizardPanelEvent().fire();
+
             if (this.minimized) {
                 this.stepNavigator.setScrollEnabled(false);
 
@@ -273,6 +275,10 @@ module api.app.wizard {
                     this.lastFocusedElement = <HTMLElement>el.target;
                 })
             })
+        }
+
+        resetLastFocusedElement() {
+            this.lastFocusedElement = null;
         }
 
         getTabId(): api.app.bar.AppBarTabId {
