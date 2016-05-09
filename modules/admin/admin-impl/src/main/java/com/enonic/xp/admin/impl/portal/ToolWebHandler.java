@@ -20,7 +20,9 @@ import com.enonic.xp.web.handler.WebResponse;
 public final class ToolWebHandler
     extends BaseWebHandler
 {
-    private final static String ADMIN_TOOL_PREFIX = "/test/admin/tool/"; //TODO rewrite
+    final static String ADMIN_TOOL_START = "/admin/tool";
+
+    final static String ADMIN_TOOL_PREFIX = ADMIN_TOOL_START + "/";
 
     private final static Pattern PATTERN = Pattern.compile( "([^/]+)/([^/]+)" );
 
@@ -30,17 +32,23 @@ public final class ToolWebHandler
 
     private ControllerScriptFactory controllerScriptFactory;
 
+    public ToolWebHandler()
+    {
+        super( 50 );
+    }
+
     @Override
     protected boolean canHandle( final WebRequest webRequest )
     {
-        return webRequest.getPath().startsWith( ADMIN_TOOL_PREFIX );
+        return webRequest.getPath().startsWith( ADMIN_TOOL_START );
     }
 
     @Override
     protected WebResponse doHandle( final WebRequest webRequest, final WebResponse webResponse, final WebHandlerChain webHandlerChain )
     {
+        final String path = webRequest.getPath();
 
-        final String subPath = webRequest.getPath().substring( ADMIN_TOOL_PREFIX.length() );
+        final String subPath = path.length() > ADMIN_TOOL_PREFIX.length() ? path.substring( ADMIN_TOOL_PREFIX.length() ) : "";
         final Matcher matcher = PATTERN.matcher( subPath );
 
         final DescriptorKey descriptorKey;

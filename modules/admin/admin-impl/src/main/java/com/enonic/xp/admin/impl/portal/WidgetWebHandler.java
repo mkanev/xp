@@ -19,11 +19,16 @@ import com.enonic.xp.web.handler.WebResponse;
 public final class WidgetWebHandler
     extends BaseWebHandler
 {
-    private final static String ADMIN_WIDGET_PREFIX = "/test/admin/widget/"; //TODO rewrite
+    final static String ADMIN_WIDGET_PREFIX = "/admin/widget/";
 
     private final static Pattern PATTERN = Pattern.compile( "([^/]+)/([^/]+)" );
 
     private ControllerScriptFactory controllerScriptFactory;
+
+    public WidgetWebHandler()
+    {
+        super( 50 );
+    }
 
     @Override
     protected boolean canHandle( final WebRequest webRequest )
