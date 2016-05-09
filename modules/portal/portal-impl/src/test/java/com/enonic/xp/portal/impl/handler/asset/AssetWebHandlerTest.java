@@ -9,29 +9,30 @@ import org.mockito.invocation.InvocationOnMock;
 import com.google.common.collect.Maps;
 import com.google.common.net.MediaType;
 
-import com.enonic.xp.portal.PortalException;
-import com.enonic.xp.portal.PortalResponse;
+import com.enonic.xp.portal.PortalWebRequest;
 import com.enonic.xp.portal.RenderMode;
-import com.enonic.xp.portal.handler.BaseHandlerTest;
+import com.enonic.xp.portal.handler.BaseWebHandlerTest;
 import com.enonic.xp.resource.Resource;
 import com.enonic.xp.resource.ResourceKey;
 import com.enonic.xp.resource.ResourceService;
 import com.enonic.xp.web.HttpMethod;
 import com.enonic.xp.web.HttpStatus;
+import com.enonic.xp.web.handler.WebException;
+import com.enonic.xp.web.handler.WebResponse;
 
 import static org.junit.Assert.*;
 
-public class AssetHandlerTest
-    extends BaseHandlerTest
+public class AssetWebHandlerTest
+    extends BaseWebHandlerTest
 {
-    private AssetHandler handler;
+    private AssetWebHandler handler;
 
     private Map<Object, Resource> resources;
 
     private Resource nullResource;
 
     @Override
-    protected void configure()
+    protected void configure( final PortalWebRequest.Builder requestBuilder )
         throws Exception
     {
         this.resources = Maps.newHashMap();
@@ -39,14 +40,14 @@ public class AssetHandlerTest
         final ResourceService resourceService = Mockito.mock( ResourceService.class );
         Mockito.when( resourceService.getResource( Mockito.any() ) ).then( this::getResource );
 
-        this.handler = new AssetHandler();
+        this.handler = new AssetWebHandler();
         this.handler.setResourceService( resourceService );
 
         this.nullResource = Mockito.mock( Resource.class );
         Mockito.when( this.nullResource.exists() ).thenReturn( false );
 
-        this.request.setMethod( HttpMethod.GET );
-        this.request.setEndpointPath( "/_/asset/demo/css/main.css" );
+        requestBuilder.method( HttpMethod.GET );
+        requestBuilder.endpointPath( "/_/asset/demo/css/main.css" );
     }
 
     private Resource addResource( final String key )
@@ -77,16 +78,16 @@ public class AssetHandlerTest
     @Test
     public void testMatch()
     {
-        this.request.setEndpointPath( null );
+        setEndpointPath( null );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/other/a/b" );
+        setEndpointPath( "/_/other/a/b" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/asset/a/b" );
+        setEndpointPath( "/asset/a/b" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/asset/a/b" );
+        setEndpointPath( "/_/asset/a/b" );
         assertEquals( true, this.handler.canHandle( this.request ) );
     }
 
@@ -104,9 +105,9 @@ public class AssetHandlerTest
     public void testOptions()
         throws Exception
     {
-        this.request.setMethod( HttpMethod.OPTIONS );
+        setMethod( HttpMethod.OPTIONS );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( "GET,HEAD,OPTIONS", res.getHeaders().get( "Allow" ) );
@@ -118,7 +119,7 @@ public class AssetHandlerTest
     {
         final Resource resource = addResource( "demo:/site/assets/css/main.css" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.CSS_UTF_8.withoutParameters(), res.getContentType() );
@@ -132,7 +133,7 @@ public class AssetHandlerTest
         addResource( "demo:/site/assets/css/main.css" );
         final Resource resource = addResource( "demo:/assets/css/main.css" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.CSS_UTF_8.withoutParameters(), res.getContentType() );
@@ -145,10 +146,10 @@ public class AssetHandlerTest
     {
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Resource [demo:/assets/css/main.css] not found", e.getMessage() );
@@ -159,14 +160,14 @@ public class AssetHandlerTest
     public void testNotValidUrlPattern()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/asset/" );
+        setEndpointPath( "/_/asset/" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Not a valid asset url pattern", e.getMessage() );
@@ -178,9 +179,9 @@ public class AssetHandlerTest
         throws Exception
     {
         addResource( "demo:/site/assets/css/main.css" );
-        this.request.setEndpointPath( "/_/asset/demo:123/css/main.css" );
+        setEndpointPath( "/_/asset/demo:123/css/main.css" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( "public, no-transform, max-age=31536000", res.getHeaders().get( "Cache-Control" ) );
@@ -191,10 +192,9 @@ public class AssetHandlerTest
         throws Exception
     {
         addResource( "demo:/site/assets/css/main.css" );
+        setMode( RenderMode.EDIT );
 
-        this.request.setMode( RenderMode.EDIT );
-
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertNull( res.getHeaders().get( "Cache-Control" ) );

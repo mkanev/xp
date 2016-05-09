@@ -2,27 +2,28 @@ package com.enonic.xp.portal.impl.handler.error;
 
 import org.junit.Test;
 
-import com.enonic.xp.portal.PortalException;
-import com.enonic.xp.portal.PortalResponse;
-import com.enonic.xp.portal.handler.BaseHandlerTest;
+import com.enonic.xp.portal.PortalWebRequest;
+import com.enonic.xp.portal.handler.BaseWebHandlerTest;
 import com.enonic.xp.web.HttpMethod;
 import com.enonic.xp.web.HttpStatus;
+import com.enonic.xp.web.handler.WebException;
+import com.enonic.xp.web.handler.WebResponse;
 
 import static org.junit.Assert.*;
 
-public class ErrorHandlerTest
-    extends BaseHandlerTest
+public class ErrorWebHandlerTest
+    extends BaseWebHandlerTest
 {
-    private ErrorHandler handler;
+    private ErrorWebHandler handler;
 
     @Override
-    protected void configure()
+    protected void configure( final PortalWebRequest.Builder requestBuilder )
         throws Exception
     {
-        this.handler = new ErrorHandler();
+        this.handler = new ErrorWebHandler();
 
-        this.request.setMethod( HttpMethod.GET );
-        this.request.setEndpointPath( "/_/asset/error/401" );
+        requestBuilder.method( HttpMethod.GET );
+        requestBuilder.endpointPath( "/_/error/401" );
     }
 
     @Test
@@ -34,16 +35,16 @@ public class ErrorHandlerTest
     @Test
     public void testMatch()
     {
-        this.request.setEndpointPath( null );
+        setEndpointPath( null );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/other/a/b" );
+        setEndpointPath( "/_/other/a/b" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/error/404" );
+        setEndpointPath( "/error/404" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/error/404" );
+        setEndpointPath( "/_/error/404" );
         assertEquals( true, this.handler.canHandle( this.request ) );
     }
 
@@ -51,9 +52,9 @@ public class ErrorHandlerTest
     public void testOptions()
         throws Exception
     {
-        this.request.setMethod( HttpMethod.OPTIONS );
+        setMethod( HttpMethod.OPTIONS );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( "GET,POST,HEAD,OPTIONS,PUT,DELETE,TRACE", res.getHeaders().get( "Allow" ) );
@@ -63,14 +64,14 @@ public class ErrorHandlerTest
     public void testNoCode()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/error/other" );
+        setEndpointPath( "/_/error/other" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( HttpStatus.NOT_FOUND.getReasonPhrase(), e.getMessage() );
@@ -81,14 +82,14 @@ public class ErrorHandlerTest
     public void testNoMessage()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/error/401" );
+        setEndpointPath( "/_/error/401" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.UNAUTHORIZED, e.getStatus() );
             assertEquals( HttpStatus.UNAUTHORIZED.getReasonPhrase(), e.getMessage() );
@@ -99,15 +100,15 @@ public class ErrorHandlerTest
     public void testWithMessage()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/error/401" );
+        setEndpointPath( "/_/error/401" );
         this.request.getParams().put( "message", "Some error message" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.UNAUTHORIZED, e.getStatus() );
             assertEquals( "Some error message", e.getMessage() );

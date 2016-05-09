@@ -20,21 +20,22 @@ import com.enonic.xp.image.ImageService;
 import com.enonic.xp.image.ReadImageParams;
 import com.enonic.xp.media.ImageOrientation;
 import com.enonic.xp.media.MediaInfoService;
-import com.enonic.xp.portal.PortalException;
-import com.enonic.xp.portal.PortalResponse;
-import com.enonic.xp.portal.handler.BaseHandlerTest;
+import com.enonic.xp.portal.PortalWebRequest;
+import com.enonic.xp.portal.handler.BaseWebHandlerTest;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.util.BinaryReference;
 import com.enonic.xp.web.HttpMethod;
 import com.enonic.xp.web.HttpStatus;
+import com.enonic.xp.web.handler.WebException;
+import com.enonic.xp.web.handler.WebResponse;
 
 import static org.junit.Assert.*;
 
-public class ImageHandlerTest
-    extends BaseHandlerTest
+public class ImageWebHandlerTest
+    extends BaseWebHandlerTest
 {
-    private ImageHandler handler;
+    private ImageWebHandler handler;
 
     private ContentService contentService;
 
@@ -43,21 +44,21 @@ public class ImageHandlerTest
     private MediaInfoService mediaInfoService;
 
     @Override
-    protected void configure()
+    protected void configure( final PortalWebRequest.Builder requestBuilder )
         throws Exception
     {
         this.contentService = Mockito.mock( ContentService.class );
         this.imageService = Mockito.mock( ImageService.class );
         this.mediaInfoService = Mockito.mock( MediaInfoService.class );
 
-        this.handler = new ImageHandler();
+        this.handler = new ImageWebHandler();
         this.handler.setContentService( this.contentService );
         this.handler.setImageService( this.imageService );
         this.handler.setMediaInfoService( this.mediaInfoService );
 
-        this.request.setMethod( HttpMethod.GET );
-        this.request.setContentPath( ContentPath.from( "/path/to/content" ) );
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        requestBuilder.method( HttpMethod.GET );
+        requestBuilder.contentPath( ContentPath.from( "/path/to/content" ) );
+        requestBuilder.endpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
     }
 
     private void setupContent()
@@ -111,16 +112,16 @@ public class ImageHandlerTest
     @Test
     public void testMatch()
     {
-        this.request.setEndpointPath( null );
+        setEndpointPath( null );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/other/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/other/123456/scale-100-100/image-name.jpg" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/image/123456/scale-100-100/image-name.jpg" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
         assertEquals( true, this.handler.canHandle( this.request ) );
     }
 
@@ -138,9 +139,9 @@ public class ImageHandlerTest
     public void testOptions()
         throws Exception
     {
-        this.request.setMethod( HttpMethod.OPTIONS );
+        setMethod( HttpMethod.OPTIONS );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( "GET,HEAD,OPTIONS", res.getHeaders().get( "Allow" ) );
@@ -150,14 +151,14 @@ public class ImageHandlerTest
     public void testNotValidUrlPattern()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/image/" );
+        setEndpointPath( "/_/image/" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Not a valid image url pattern", e.getMessage() );
@@ -170,9 +171,9 @@ public class ImageHandlerTest
     {
         setupContent();
 
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.PNG, res.getContentType() );
@@ -185,12 +186,12 @@ public class ImageHandlerTest
     {
         setupContent();
 
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
         this.request.getParams().put( "filter", "sepia()" );
         this.request.getParams().put( "quality", "75" );
         this.request.getParams().put( "background", "0x0" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.PNG, res.getContentType() );
@@ -201,14 +202,14 @@ public class ImageHandlerTest
     public void testImageNotFound()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Content with id [123456] not found", e.getMessage() );
@@ -223,12 +224,12 @@ public class ImageHandlerTest
         Mockito.when( this.mediaInfoService.getImageOrientation( Mockito.any( ByteSource.class ) ) ).thenReturn(
             ImageOrientation.LeftBottom );
 
-        this.request.setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
+        setEndpointPath( "/_/image/123456/scale-100-100/image-name.jpg" );
         this.request.getParams().put( "filter", "sepia()" );
         this.request.getParams().put( "quality", "75" );
         this.request.getParams().put( "background", "0x0" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.PNG, res.getContentType() );

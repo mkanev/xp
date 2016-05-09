@@ -15,37 +15,38 @@ import com.enonic.xp.content.ContentPath;
 import com.enonic.xp.content.ContentService;
 import com.enonic.xp.content.Media;
 import com.enonic.xp.data.PropertyTree;
-import com.enonic.xp.portal.PortalException;
-import com.enonic.xp.portal.PortalResponse;
-import com.enonic.xp.portal.handler.BaseHandlerTest;
+import com.enonic.xp.portal.PortalWebRequest;
+import com.enonic.xp.portal.handler.BaseWebHandlerTest;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.util.BinaryReference;
 import com.enonic.xp.web.HttpMethod;
 import com.enonic.xp.web.HttpStatus;
+import com.enonic.xp.web.handler.WebException;
+import com.enonic.xp.web.handler.WebResponse;
 
 import static org.junit.Assert.*;
 
-public class AttachmentHandlerTest
-    extends BaseHandlerTest
+public class AttachmentWebHandlerTest
+    extends BaseWebHandlerTest
 {
-    private AttachmentHandler handler;
+    private AttachmentWebHandler handler;
 
     private ContentService contentService;
 
     private ByteSource mediaBytes;
 
     @Override
-    protected void configure()
+    protected void configure( final PortalWebRequest.Builder requestBuilder )
         throws Exception
     {
         this.contentService = Mockito.mock( ContentService.class );
-        this.handler = new AttachmentHandler();
+        this.handler = new AttachmentWebHandler();
         this.handler.setContentService( this.contentService );
 
-        this.request.setMethod( HttpMethod.GET );
-        this.request.setContentPath( ContentPath.from( "/path/to/content" ) );
-        this.request.setEndpointPath( "/_/attachment/inline/123456/logo.png" );
+        requestBuilder.method( HttpMethod.GET );
+        requestBuilder.contentPath( ContentPath.from( "/path/to/content" ) );
+        requestBuilder.endpointPath( "/_/attachment/inline/123456/logo.png" );
 
         setupMedia();
     }
@@ -97,16 +98,16 @@ public class AttachmentHandlerTest
     @Test
     public void testMatch()
     {
-        this.request.setEndpointPath( null );
+        setEndpointPath( null );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/other/inline/a/b" );
+        setEndpointPath( "/_/other/inline/a/b" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/attachment/inline/a/b" );
+        setEndpointPath( "/attachment/inline/a/b" );
         assertEquals( false, this.handler.canHandle( this.request ) );
 
-        this.request.setEndpointPath( "/_/attachment/inline/a/b" );
+        setEndpointPath( "/_/attachment/inline/a/b" );
         assertEquals( true, this.handler.canHandle( this.request ) );
     }
 
@@ -124,9 +125,9 @@ public class AttachmentHandlerTest
     public void testOptions()
         throws Exception
     {
-        this.request.setMethod( HttpMethod.OPTIONS );
+        setMethod( HttpMethod.OPTIONS );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( "GET,HEAD,OPTIONS", res.getHeaders().get( "Allow" ) );
@@ -136,14 +137,14 @@ public class AttachmentHandlerTest
     public void testNotValidUrlPattern()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/attachment/" );
+        setEndpointPath( "/_/attachment/" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Not a valid attachment url pattern", e.getMessage() );
@@ -154,9 +155,9 @@ public class AttachmentHandlerTest
     public void testInline()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/attachment/inline/123456/logo.png" );
+        setEndpointPath( "/_/attachment/inline/123456/logo.png" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.PNG.withoutParameters(), res.getContentType() );
@@ -168,9 +169,9 @@ public class AttachmentHandlerTest
     public void testDownload()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/attachment/download/123456/logo.png" );
+        setEndpointPath( "/_/attachment/download/123456/logo.png" );
 
-        final PortalResponse res = this.handler.handle( this.request );
+        final WebResponse res = this.handler.handle( this.request, this.response, null );
         assertNotNull( res );
         assertEquals( HttpStatus.OK, res.getStatus() );
         assertEquals( MediaType.PNG, res.getContentType() );
@@ -182,14 +183,14 @@ public class AttachmentHandlerTest
     public void testIdNotFound()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/attachment/download/1/logo.png" );
+        setEndpointPath( "/_/attachment/download/1/logo.png" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Content with id [1] not found", e.getMessage() );
@@ -200,14 +201,14 @@ public class AttachmentHandlerTest
     public void testNameNotFound()
         throws Exception
     {
-        this.request.setEndpointPath( "/_/attachment/download/123456/other.png" );
+        setEndpointPath( "/_/attachment/download/123456/other.png" );
 
         try
         {
-            this.handler.handle( this.request );
+            this.handler.handle( this.request, this.response, null );
             fail( "Should throw exception" );
         }
-        catch ( final PortalException e )
+        catch ( final WebException e )
         {
             assertEquals( HttpStatus.NOT_FOUND, e.getStatus() );
             assertEquals( "Attachment [other.png] not found for [/path/to/content]", e.getMessage() );
