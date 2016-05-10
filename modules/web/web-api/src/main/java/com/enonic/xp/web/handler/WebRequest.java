@@ -19,6 +19,8 @@ public interface WebRequest
 
     String getHost();
 
+    String getRemoteAddress();
+
     int getPort();
 
     String getPath();

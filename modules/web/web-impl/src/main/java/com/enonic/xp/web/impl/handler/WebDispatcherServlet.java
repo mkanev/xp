@@ -75,6 +75,7 @@ public class WebDispatcherServlet
 
         final String scheme = ServletRequestUrlHelper.getScheme( servletRequest );
         final String host = ServletRequestUrlHelper.getHost( servletRequest );
+        final String remoteAddress = ServletRequestUrlHelper.getRemoteAddress( servletRequest );
         final int port = ServletRequestUrlHelper.getPort( servletRequest );
         final String path = ServletRequestUrlHelper.getPath( servletRequest );
         final String url = ServletRequestUrlHelper.getFullUrl( servletRequest );
@@ -90,6 +91,7 @@ public class WebDispatcherServlet
             method( httpMethod ).
             scheme( scheme ).
             host( host ).
+            remoteAddress( remoteAddress ).
             port( port ).
             path( path ).
             params( params ).

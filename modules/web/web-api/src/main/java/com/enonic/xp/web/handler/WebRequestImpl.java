@@ -25,6 +25,8 @@ public class WebRequestImpl
 
     private final String host;
 
+    private final String remoteAddress;
+
     private final int port;
 
     private final String path;
@@ -52,6 +54,7 @@ public class WebRequestImpl
         method = builder.method;
         scheme = builder.scheme;
         host = builder.host;
+        remoteAddress = builder.remoteAddress;
         port = builder.port;
         path = builder.path;
         params = builder.params;
@@ -91,6 +94,12 @@ public class WebRequestImpl
     public String getHost()
     {
         return host;
+    }
+
+    @Override
+    public String getRemoteAddress()
+    {
+        return remoteAddress;
     }
 
     @Override
@@ -191,6 +200,8 @@ public class WebRequestImpl
 
         private String host;
 
+        private String remoteAddress;
+
         private int port;
 
         private String path;
@@ -222,6 +233,7 @@ public class WebRequestImpl
             method = webRequest.getMethod();
             scheme = webRequest.getScheme();
             host = webRequest.getHost();
+            remoteAddress = webRequest.getRemoteAddress();
             port = webRequest.getPort();
             path = webRequest.getPath();
             params = webRequest.getParams();
@@ -250,6 +262,12 @@ public class WebRequestImpl
         public BuilderType host( final String host )
         {
             this.host = host;
+            return (BuilderType) this;
+        }
+
+        public BuilderType remoteAddress( final String remoteAddress )
+        {
+            this.remoteAddress = remoteAddress;
             return (BuilderType) this;
         }
 
