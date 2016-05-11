@@ -47,8 +47,8 @@ final class AssetHandlerWorker
     {
         final Resource resource = resolveResource();
 
-        webResponse.setStatus( HttpStatus.OK );
-        webResponse.setBody( resource );
+        this.webResponse.setStatus( HttpStatus.OK );
+        this.webResponse.setBody( resource );
 
         final String type = MediaTypes.instance().fromFile( resource.getKey().getName() ).toString();
         this.webResponse.setContentType( MediaType.parse( type ) );
@@ -56,10 +56,10 @@ final class AssetHandlerWorker
         if ( cacheable )
         {
             final String cacheControlValue = "public, no-transform, max-age=31536000";
-            webResponse.setHeader( HttpHeaders.CACHE_CONTROL, cacheControlValue );
+            this.webResponse.setHeader( HttpHeaders.CACHE_CONTROL, cacheControlValue );
         }
 
-        return webResponse;
+        return this.webResponse;
     }
 
     private Resource resolveResource()

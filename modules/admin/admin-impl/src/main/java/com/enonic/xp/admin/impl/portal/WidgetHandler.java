@@ -43,7 +43,7 @@ public final class WidgetHandler
         final Matcher matcher = PATTERN.matcher( subPath );
         if ( !matcher.find() )
         {
-            throw notFound( "Not a valid service url pattern" );
+            throw notFound( "Not a valid widget url pattern" );
         }
 
         final ApplicationKey appKey = ApplicationKey.from( matcher.group( 1 ) );
