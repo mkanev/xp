@@ -37,14 +37,4 @@ public interface WebResponse
     void setWebSocketConfig( final WebSocketConfig webSocketConfig );
 
     void setBody( final Object body );
-
-//    boolean isPostProcess();
-
-//    ImmutableList<String> getContributions( final HtmlTag tag );
-//
-//    boolean hasContributions();
-
-//    String getAsString();
-
-//    boolean applyFilters();
 }

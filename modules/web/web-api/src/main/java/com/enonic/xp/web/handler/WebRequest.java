@@ -50,29 +50,4 @@ public interface WebRequest
     Object getAttribute( String name );
 
     void setAttribute( String name, Object o );
-
-//    String getBaseUri();
-
-//    Branch getBranch();
-
-//    RenderMode getMode();
-
-//    String rewriteUri( final String uri );
-
-//    Site getSite();
-
-//    Content getContent();
-
-//    PageTemplate getPageTemplate();
-
-//    Component getComponent();
-
-//    ApplicationKey getApplicationKey()
-
-//    PageDescriptor getPageDescriptor()
-
-//    ContentPath getContentPath()
-
-//    ControllerScript getControllerScript()
-
 }
