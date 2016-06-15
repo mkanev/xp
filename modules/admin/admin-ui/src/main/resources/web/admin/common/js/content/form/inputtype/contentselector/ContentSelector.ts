@@ -47,7 +47,11 @@ module api.content.form.inputtype.contentselector {
 
                 var selectedContentIdsMap: {} = {};
                 this.contentComboBox.getSelectedOptionView().getSelectedOptions().forEach(
-                    (selectedOption: any) => selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = "");
+                    (selectedOption: any) => {
+                        if (!!selectedOption.getOption().displayValue && !!selectedOption.getOption().displayValue.getContentId()) {
+                            selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = ""
+                        }
+                    });
 
                 event.getDeletedItems().
                     filter(deletedItem => !deletedItem.isPending() &&
@@ -118,6 +122,7 @@ module api.content.form.inputtype.contentselector {
                 .setLoader(contentSelectorLoader)
                 .setValue(value)
                 .setPostLoad(contentSelectorLoader.postLoad.bind(contentSelectorLoader))
+                .setDisplayMissingSelectedOptions(true)
                 .build();
 
             return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).

@@ -43,7 +43,8 @@ module api.ui.selector.combobox {
                 minWidth: builder.minWidth,
                 value: builder.value,
                 noOptionsText: builder.noOptionsText,
-                maxHeight: builder.maxHeight
+                maxHeight: builder.maxHeight,
+                displayMissingSelectedOptions: builder.displayMissingSelectedOptions
             };
 
             this.loader = builder.loader;
@@ -456,6 +457,8 @@ module api.ui.selector.combobox {
 
         noOptionsText: string;
 
+        displayMissingSelectedOptions: boolean;
+
         setComboBoxName(comboBoxName: string): RichComboBoxBuilder<T> {
             this.comboBoxName = comboBoxName;
             return this;
@@ -521,6 +524,10 @@ module api.ui.selector.combobox {
             return this;
         }
 
+        setDisplayMissingSelectedOptions(value: boolean): RichComboBoxBuilder<T> {
+            this.displayMissingSelectedOptions = value;
+            return this;
+        }
 
         build(): RichComboBox<T> {
             return new RichComboBox(this);

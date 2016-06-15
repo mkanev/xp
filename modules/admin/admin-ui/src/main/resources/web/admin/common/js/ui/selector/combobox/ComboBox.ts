@@ -35,6 +35,8 @@ module api.ui.selector.combobox {
 
         noOptionsText?: string;
 
+        displayMissingSelectedOptions?: boolean
+
     }
 
     export class ComboBox<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
@@ -73,6 +75,8 @@ module api.ui.selector.combobox {
 
         private noOptionsText: string;
 
+        private displayMissingSelectedOptions: boolean = false;
+
         public static debug: boolean = false;
 
         /**
@@ -100,6 +104,10 @@ module api.ui.selector.combobox {
 
             if (config.minWidth) {
                 this.minWidth = config.minWidth;
+            }
+
+            if (config.displayMissingSelectedOptions) {
+                this.displayMissingSelectedOptions = config.displayMissingSelectedOptions;
             }
 
             this.noOptionsText = config.noOptionsText;
@@ -266,6 +274,9 @@ module api.ui.selector.combobox {
             this.splitValues(value).forEach((val) => {
                 var option = this.getOptionByValue(val);
                 if (option != null) {
+                    this.selectOption(option, true);
+                } else if (this.displayMissingSelectedOptions) {
+                    var option = (<BaseSelectedOptionsView<OPTION_DISPLAY_VALUE>> this.selectedOptionsView).makeEmptyOption(val);
                     this.selectOption(option, true);
                 }
             });
@@ -487,7 +498,7 @@ module api.ui.selector.combobox {
         }
 
         private setupListeners() {
-            
+
             api.util.AppHelper.focusInOut(this, () => {
                 this.hideDropdown();
                 this.active = false;

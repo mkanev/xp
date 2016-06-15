@@ -10,7 +10,12 @@ module api.content.form.inputtype.image {
 
         private content: ContentSummary;
 
-        constructor() {
+        private missingContent: boolean;
+
+        constructor(isMissingContent?: boolean) {
+            if (isMissingContent !== null) {
+                this.missingContent = isMissingContent;
+            }
         }
 
         static fromUploadItem(item: UploadItem<ContentSummary>): ImageSelectorDisplayValue {
@@ -19,6 +24,10 @@ module api.content.form.inputtype.image {
 
         static fromContentSummary(content: ContentSummary) {
             return new ImageSelectorDisplayValue().setContentSummary(content);
+        }
+
+        isMissingContent(): boolean {
+            return this.missingContent;
         }
 
         setUploadItem(item: UploadItem<ContentSummary>): ImageSelectorDisplayValue {
