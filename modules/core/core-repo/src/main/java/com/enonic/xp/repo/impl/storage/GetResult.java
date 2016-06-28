@@ -8,10 +8,13 @@ public class GetResult
 
     private final ReturnValues returnValues;
 
-    private GetResult( Builder builder )
+    private final long version;
+
+    private GetResult( final Builder builder )
     {
         id = builder.id;
         returnValues = builder.returnValues;
+        version = builder.version;
     }
 
     public ReturnValues getReturnValues()
@@ -24,6 +27,11 @@ public class GetResult
         return id;
     }
 
+    public long getVersion()
+    {
+        return version;
+    }
+
     public static Builder create()
     {
         return new Builder();
@@ -33,6 +41,7 @@ public class GetResult
     {
         this.id = null;
         this.returnValues = null;
+        this.version = 0;
     }
 
     public static GetResult empty()
@@ -51,6 +60,10 @@ public class GetResult
 
         private ReturnValues returnValues;
 
+        private String source;
+
+        private long version;
+
         private Builder()
         {
         }
@@ -61,7 +74,19 @@ public class GetResult
             return this;
         }
 
-        public Builder resultFieldValues( final ReturnValues returnValues )
+        public Builder source( final String val )
+        {
+            source = val;
+            return this;
+        }
+
+        public Builder version( final long val )
+        {
+            version = val;
+            return this;
+        }
+
+        public Builder returnValues( final ReturnValues returnValues )
         {
             this.returnValues = returnValues;
             return this;

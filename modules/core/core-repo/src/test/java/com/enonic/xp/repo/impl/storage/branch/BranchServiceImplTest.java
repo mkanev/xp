@@ -83,7 +83,7 @@ public class BranchServiceImplTest
         Mockito.when( this.storageDao.getById( Mockito.isA( GetByIdRequest.class ) ) ).
             thenReturn( GetResult.create().
                 id( "123_myBranch" ).
-                resultFieldValues( ReturnValues.create().
+                returnValues( ReturnValues.create().
                     add( BranchIndexPath.PATH.getPath(), "/fisk" ).
                     add( BranchIndexPath.STATE.getPath(), "default" ).
                     add( BranchIndexPath.VERSION_ID.getPath(), "nodeVersionId" ).

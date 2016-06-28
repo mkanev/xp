@@ -30,7 +30,8 @@ public class GetResultFactory
 
         return GetResult.create().
             id( getResponse.getId() ).
-            resultFieldValues( builder.build() ).
+            returnValues( builder.build() ).
+            version( getResponse.getVersion() ).
             build();
     }
 

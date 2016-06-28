@@ -311,7 +311,8 @@ public class BranchServiceImpl
     {
         return GetResult.create().
             id( searchHit.getId() ).
-            resultFieldValues( searchHit.getReturnValues() ).
+            version( searchHit.getVersion() ).
+            returnValues( searchHit.getReturnValues() ).
             build();
     }
 

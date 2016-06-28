@@ -12,11 +12,14 @@ public class SearchHit
 
     private final ReturnValues returnValues;
 
+    private final long version;
+
     private SearchHit( final Builder builder )
     {
-        this.score = builder.score;
-        this.id = builder.id;
-        this.returnValues = builder.returnValues;
+        score = builder.score;
+        id = builder.id;
+        returnValues = builder.returnValues;
+        version = builder.version;
     }
 
     public static Builder create()
@@ -32,6 +35,11 @@ public class SearchHit
     public String getId()
     {
         return id;
+    }
+
+    public long getVersion()
+    {
+        return version;
     }
 
     public ReturnValue getField( final String fieldName )
@@ -99,6 +107,12 @@ public class SearchHit
 
         private ReturnValues returnValues;
 
+        private long version;
+
+        private Builder()
+        {
+        }
+
         public Builder score( final float score )
         {
             this.score = score;
@@ -114,6 +128,12 @@ public class SearchHit
         public Builder returnValues( final ReturnValues returnValues )
         {
             this.returnValues = returnValues;
+            return this;
+        }
+
+        public Builder version( final long val )
+        {
+            version = val;
             return this;
         }
 
