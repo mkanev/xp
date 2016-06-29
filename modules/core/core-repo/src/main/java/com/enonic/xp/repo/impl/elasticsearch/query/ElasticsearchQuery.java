@@ -45,6 +45,8 @@ public class ElasticsearchQuery
 
     private final SearchOptimizer searchOptimizer;
 
+    private final boolean includeSource;
+
     private ElasticsearchQuery( final Builder builder )
     {
         this.query = builder.queryBuilder;
@@ -59,6 +61,7 @@ public class ElasticsearchQuery
         this.returnFields = builder.returnFields;
         this.searchMode = builder.searchMode;
         this.searchOptimizer = builder.searchOptimizer;
+        this.includeSource = builder.includeSource;
     }
 
     public static Builder create()
@@ -126,6 +129,11 @@ public class ElasticsearchQuery
         return searchOptimizer;
     }
 
+    public boolean isIncludeSource()
+    {
+        return includeSource;
+    }
+
     @Override
     public String toString()
     {
@@ -180,6 +188,8 @@ public class ElasticsearchQuery
         private SearchMode searchMode = SearchMode.SEARCH;
 
         private SearchOptimizer searchOptimizer = SearchOptimizer.DEFAULT;
+
+        private boolean includeSource = false;
 
         public Builder query( final QueryBuilder queryBuilder )
         {
@@ -256,6 +266,12 @@ public class ElasticsearchQuery
         public Builder searchOptimizer( final SearchOptimizer searchOptimizer )
         {
             this.searchOptimizer = searchOptimizer;
+            return this;
+        }
+
+        public Builder includeSource( final boolean includeSource )
+        {
+            this.includeSource = includeSource;
             return this;
         }
 

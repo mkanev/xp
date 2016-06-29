@@ -45,7 +45,8 @@ public class NodeQueryTranslator
             filter( filterBuilderFactory.create( query.getPostFilters() ) ).
             setReturnFields( request.getReturnFields() ).
             from( query.getFrom() ).
-            size( query.getSize() );
+            size( query.getSize() ).
+            includeSource( request.isIncludeSource() );
 
         return esQuery.build();
     }

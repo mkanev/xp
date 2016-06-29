@@ -15,12 +15,15 @@ public class SearchRequest
 
     private final PrincipalKeys acl;
 
-    private SearchRequest( Builder builder )
+    private final boolean includeSource;
+
+    private SearchRequest( final Builder builder )
     {
-        this.settings = builder.settings;
-        this.query = builder.query;
-        this.returnFields = builder.returnFields;
-        this.acl = builder.acl;
+        settings = builder.settings;
+        query = builder.query;
+        returnFields = builder.returnFields;
+        acl = builder.acl;
+        includeSource = builder.includeSource;
     }
 
     public static Builder create()
@@ -43,6 +46,11 @@ public class SearchRequest
         return query;
     }
 
+    public boolean isIncludeSource()
+    {
+        return includeSource;
+    }
+
     public ReturnFields getReturnFields()
     {
         return returnFields;
@@ -57,6 +65,8 @@ public class SearchRequest
         private ReturnFields returnFields;
 
         private PrincipalKeys acl;
+
+        private boolean includeSource = false;
 
         private Builder()
         {
@@ -83,6 +93,12 @@ public class SearchRequest
         public Builder acl( final PrincipalKeys acl )
         {
             this.acl = acl;
+            return this;
+        }
+
+        public Builder includeSource( final boolean val )
+        {
+            includeSource = val;
             return this;
         }
 

@@ -1,5 +1,7 @@
 package com.enonic.xp.repo.impl.search.result;
 
+import java.util.Map;
+
 import com.enonic.xp.repo.impl.ReturnValue;
 import com.enonic.xp.repo.impl.ReturnValues;
 import com.enonic.xp.repo.impl.index.IndexFieldNameNormalizer;
@@ -14,12 +16,15 @@ public class SearchHit
 
     private final long version;
 
+    private final Map<String, Object> source;
+
     private SearchHit( final Builder builder )
     {
         score = builder.score;
         id = builder.id;
         returnValues = builder.returnValues;
         version = builder.version;
+        source = builder.source;
     }
 
     public static Builder create()
@@ -40,6 +45,11 @@ public class SearchHit
     public long getVersion()
     {
         return version;
+    }
+
+    public Map<String, Object> getSource()
+    {
+        return source;
     }
 
     public ReturnValue getField( final String fieldName )
@@ -109,6 +119,8 @@ public class SearchHit
 
         private long version;
 
+        private Map<String, Object> source;
+
         private Builder()
         {
         }
@@ -134,6 +146,12 @@ public class SearchHit
         public Builder version( final long val )
         {
             version = val;
+            return this;
+        }
+
+        public Builder source( final Map<String, Object> val )
+        {
+            source = val;
             return this;
         }
 

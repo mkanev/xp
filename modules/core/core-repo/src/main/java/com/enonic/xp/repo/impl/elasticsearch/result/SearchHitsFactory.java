@@ -17,6 +17,7 @@ public class SearchHitsFactory
                 score( hit.score() ).
                 version( hit.getVersion() ).
                 returnValues( ReturnValuesFactory.create( hit ) ).
+                source( hit.getSource() ).
                 build();
 
             builder.add( resultEntry );

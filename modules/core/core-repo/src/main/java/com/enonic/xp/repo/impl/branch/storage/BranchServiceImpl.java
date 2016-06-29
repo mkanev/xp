@@ -313,6 +313,7 @@ public class BranchServiceImpl
             id( searchHit.getId() ).
             version( searchHit.getVersion() ).
             returnValues( searchHit.getReturnValues() ).
+            source( searchHit.getSource() ).
             build();
     }
 

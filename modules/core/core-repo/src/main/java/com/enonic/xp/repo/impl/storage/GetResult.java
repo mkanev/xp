@@ -1,5 +1,9 @@
 package com.enonic.xp.repo.impl.storage;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import com.enonic.xp.repo.impl.ReturnValues;
 
 public class GetResult
@@ -10,11 +14,14 @@ public class GetResult
 
     private final long version;
 
+    private final Map<String, Object> source;
+
     private GetResult( final Builder builder )
     {
         id = builder.id;
         returnValues = builder.returnValues;
         version = builder.version;
+        source = builder.source;
     }
 
     public ReturnValues getReturnValues()
@@ -32,6 +39,11 @@ public class GetResult
         return version;
     }
 
+    public Map<String, Object> getSource()
+    {
+        return source;
+    }
+
     public static Builder create()
     {
         return new Builder();
@@ -42,6 +54,7 @@ public class GetResult
         this.id = null;
         this.returnValues = null;
         this.version = 0;
+        this.source = Maps.newHashMap();
     }
 
     public static GetResult empty()
@@ -60,9 +73,9 @@ public class GetResult
 
         private ReturnValues returnValues;
 
-        private String source;
-
         private long version;
+
+        private Map<String, Object> source;
 
         private Builder()
         {
@@ -74,15 +87,15 @@ public class GetResult
             return this;
         }
 
-        public Builder source( final String val )
-        {
-            source = val;
-            return this;
-        }
-
         public Builder version( final long val )
         {
             version = val;
+            return this;
+        }
+
+        public Builder source( final Map<String, Object> val )
+        {
+            source = val;
             return this;
         }
 

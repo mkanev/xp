@@ -86,7 +86,8 @@ public abstract class AbstractExecutor
             setPostFilter( query.getFilter() ).
             setFrom( query.getFrom() ).
             setSize( query.getBatchSize() ).
-            addFields( query.getReturnFields().getReturnFieldNames() );
+            addFields( query.getReturnFields().getReturnFieldNames() ).
+            setFetchSource( query.isIncludeSource() );
 
         query.getSortBuilders().forEach( searchRequestBuilder::addSort );
 
