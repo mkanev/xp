@@ -40,6 +40,7 @@ import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDaoImpl;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
+import com.enonic.xp.repo.impl.repository.RepositoryServiceImpl;
 import com.enonic.xp.repo.impl.search.SearchServiceImpl;
 import com.enonic.xp.repo.impl.storage.IndexDataServiceImpl;
 import com.enonic.xp.repo.impl.storage.StorageServiceImpl;
@@ -107,6 +108,8 @@ public abstract class AbstractNodeTest
 
     protected SearchDaoImpl searchDao;
 
+    protected RepositoryServiceImpl repositoryService;
+
     protected IndexDataServiceImpl indexedDataService;
 
     @Before
@@ -167,6 +170,9 @@ public abstract class AbstractNodeTest
         this.snapshotService.setClient( this.client );
         this.snapshotService.setConfiguration( repoConfig );
 
+        repositoryService = new RepositoryServiceImpl();
+        repositoryService.setIndexServiceInternal( this.indexServiceInternal );
+
         createRepository( TEST_REPO );
         createRepository( SystemConstants.SYSTEM_REPO );
         waitForClusterHealth();
@@ -179,7 +185,7 @@ public abstract class AbstractNodeTest
         nodeService.setSnapshotService( this.snapshotService );
         nodeService.setStorageService( this.storageService );
 
-        RepositoryInitializer repositoryInitializer = new RepositoryInitializer( indexServiceInternal );
+        RepositoryInitializer repositoryInitializer = new RepositoryInitializer( indexServiceInternal, repositoryService );
         repositoryInitializer.initializeRepositories( repository.getId() );
 
         refresh();

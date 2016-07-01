@@ -59,6 +59,7 @@ import com.enonic.xp.repo.impl.node.MemoryBlobStore;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDaoImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
+import com.enonic.xp.repo.impl.repository.RepositoryServiceImpl;
 import com.enonic.xp.repo.impl.search.SearchServiceImpl;
 import com.enonic.xp.repo.impl.storage.IndexDataServiceImpl;
 import com.enonic.xp.repo.impl.storage.StorageServiceImpl;
@@ -138,6 +139,8 @@ public class AbstractContentServiceTest
 
     private SearchDaoImpl searchDao;
 
+    private RepositoryServiceImpl repositoryService;
+
     @Before
     public void setUp()
         throws Exception
@@ -187,6 +190,9 @@ public class AbstractContentServiceTest
         this.searchService = new SearchServiceImpl();
         this.searchService.setSearchDao( this.searchDao );
 
+        this.repositoryService = new RepositoryServiceImpl();
+        this.repositoryService.setIndexServiceInternal( this.indexService );
+
         this.nodeService = new NodeServiceImpl();
         this.nodeService.setIndexServiceInternal( indexService );
         this.nodeService.setStorageService( storageService );
@@ -194,6 +200,7 @@ public class AbstractContentServiceTest
         this.nodeService.setEventPublisher( eventPublisher );
         this.nodeService.setConfiguration( repoConfig );
         this.nodeService.setBlobStore( blobStore );
+        this.nodeService.setRepositoryService( repositoryService );
         this.nodeService.initialize();
 
         this.mixinService = Mockito.mock( MixinService.class );
@@ -251,7 +258,7 @@ public class AbstractContentServiceTest
         nodeService.setSearchService( searchService );
         nodeService.setStorageService( storageService );
 
-        RepositoryInitializer repositoryInitializer = new RepositoryInitializer( indexService );
+        RepositoryInitializer repositoryInitializer = new RepositoryInitializer( this.indexService, this.repositoryService );
         repositoryInitializer.initializeRepositories( repository.getId() );
 
         refresh();
@@ -329,7 +336,7 @@ public class AbstractContentServiceTest
         PropertyTree data = new PropertyTree();
         data.addString( "textLine", "textLine" );
         data.addDouble( "double", 1.4d );
-        data.addLong( "long", 2l );
+        data.addLong( "long", 2L );
         data.addString( "color", "FFFFFF" );
         data.addString( "comboBox", "value2" );
         data.addBoolean( "checkbox", false );

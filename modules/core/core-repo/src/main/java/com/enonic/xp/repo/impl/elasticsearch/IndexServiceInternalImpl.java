@@ -34,8 +34,9 @@ import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.repo.impl.index.IndexException;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
-import com.enonic.xp.repo.impl.index.IndexSettings;
+import com.enonic.xp.repo.impl.index.OldIndexSettings;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
+import com.enonic.xp.repository.IndexSettings;
 import com.enonic.xp.repository.RepositoryId;
 
 
@@ -119,7 +120,7 @@ public class IndexServiceInternalImpl
     }
 
     @Override
-    public void createIndex( final String indexName, final IndexSettings settings )
+    public void createIndex( final String indexName, final OldIndexSettings settings )
     {
         LOG.info( "creating index {}", indexName );
 
@@ -142,7 +143,30 @@ public class IndexServiceInternalImpl
     }
 
     @Override
-    public void updateIndex( final String indexName, final IndexSettings settings )
+    public void createIndex( final String indexName, final IndexSettings settings )
+    {
+        LOG.info( "creating index {}", indexName );
+
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
+        createIndexRequest.settings( settings.getAsString() );
+
+        try
+        {
+            final CreateIndexResponse createIndexResponse = client.admin().
+                indices().
+                create( createIndexRequest ).
+                actionGet( CREATE_INDEX_TIMEOUT );
+
+            LOG.info( "Index {} created with status {}", indexName, createIndexResponse.isAcknowledged() );
+        }
+        catch ( ElasticsearchException e )
+        {
+            throw new IndexException( "Failed to create index: " + indexName, e );
+        }
+    }
+
+    @Override
+    public void updateIndex( final String indexName, final OldIndexSettings settings )
     {
         LOG.info( "updating index {}", indexName );
 

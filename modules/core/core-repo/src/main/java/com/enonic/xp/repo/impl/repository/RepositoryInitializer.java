@@ -3,12 +3,18 @@ package com.enonic.xp.repo.impl.repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.enonic.xp.data.PropertySet;
+import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.repo.impl.elasticsearch.ClusterHealthStatus;
 import com.enonic.xp.repo.impl.elasticsearch.ClusterStatusCode;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
-import com.enonic.xp.repo.impl.index.IndexSettings;
+import com.enonic.xp.repo.impl.index.OldIndexSettings;
+import com.enonic.xp.repository.IndexSettingsFactory;
+import com.enonic.xp.repository.IndicesSettings;
 import com.enonic.xp.repository.RepositoryId;
+import com.enonic.xp.repository.RepositoryService;
+import com.enonic.xp.repository.RepositorySettings;
 
 public final class RepositoryInitializer
 {
@@ -18,9 +24,12 @@ public final class RepositoryInitializer
 
     private final IndexServiceInternal indexServiceInternal;
 
-    public RepositoryInitializer( final IndexServiceInternal indexServiceInternal )
+    private final RepositoryService repositoryService;
+
+    public RepositoryInitializer( final IndexServiceInternal indexServiceInternal, final RepositoryService repoService )
     {
         this.indexServiceInternal = indexServiceInternal;
+        this.repositoryService = repoService;
     }
 
     public void initializeRepositories( final RepositoryId... repositoryIds )
@@ -44,6 +53,24 @@ public final class RepositoryInitializer
             }
         }
 
+        //test();
+    }
+
+    public void test()
+    {
+        final PropertyTree settings = new PropertyTree();
+        final PropertySet index = settings.addSet( "index" );
+        index.setLong( "number_of_shards", 4L );
+        index.setLong( "number_of_replicas", 4L );
+
+        final RepositorySettings repoSettings = RepositorySettings.create().
+            name( "myrep-" + System.currentTimeMillis() ).
+            indiciesSettings( IndicesSettings.create().
+                add( IndexType.VERSION, IndexSettingsFactory.from( "{}" ) ).
+                build() ).
+            build();
+
+        repositoryService.create( repoSettings );
     }
 
     private boolean checkClusterHealth()
@@ -110,18 +137,18 @@ public final class RepositoryInitializer
     {
         LOG.info( "Create search-index for repositoryId {}", repositoryId );
         final String searchIndexName = getSearchIndexName( repositoryId );
-        final IndexSettings searchIndexSettings = RepositorySearchIndexSettingsProvider.getSettings( repositoryId );
-        LOG.debug( "Applying search-index settings for repo {}: {}", repositoryId, searchIndexSettings.getSettingsAsString() );
-        indexServiceInternal.createIndex( searchIndexName, searchIndexSettings );
+        final OldIndexSettings searchOldIndexSettings = RepositorySearchIndexSettingsProvider.getSettings( repositoryId );
+        LOG.debug( "Applying search-index settings for repo {}: {}", repositoryId, searchOldIndexSettings.getSettingsAsString() );
+        indexServiceInternal.createIndex( searchIndexName, searchOldIndexSettings );
     }
 
     private void createStorageIndex( final RepositoryId repositoryId )
     {
         LOG.info( "Create storage-index for repositoryId {}", repositoryId );
         final String storageIndexName = getStoreIndexName( repositoryId );
-        final IndexSettings storageIndexSettings = RepositoryStorageSettingsProvider.getSettings( repositoryId );
-        LOG.debug( "Applying storage-index settings for repo {}: {}", repositoryId, storageIndexSettings.getSettingsAsString() );
-        indexServiceInternal.createIndex( storageIndexName, storageIndexSettings );
+        final OldIndexSettings storageOldIndexSettings = RepositoryStorageSettingsProvider.getSettings( repositoryId );
+        LOG.debug( "Applying storage-index settings for repo {}: {}", repositoryId, storageOldIndexSettings.getSettingsAsString() );
+        indexServiceInternal.createIndex( storageIndexName, storageOldIndexSettings );
     }
 
     private boolean isInitialized( final RepositoryId repositoryId )
@@ -141,4 +168,5 @@ public final class RepositoryInitializer
     {
         return IndexNameResolver.resolveSearchIndexName( repositoryId );
     }
+
 }

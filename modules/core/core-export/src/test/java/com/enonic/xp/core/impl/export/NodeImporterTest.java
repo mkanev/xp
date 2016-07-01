@@ -364,7 +364,7 @@ public class NodeImporterTest
         assertNotNull( attachedBinary.getBlobKey() );
     }
 
-    @org.junit.Ignore
+
     @Test
     public void import_special_characters()
         throws Exception

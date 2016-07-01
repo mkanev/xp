@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import com.enonic.xp.util.JsonMergeHelper;
+
 import static org.junit.Assert.*;
 
 public class JsonMergeHelperTest

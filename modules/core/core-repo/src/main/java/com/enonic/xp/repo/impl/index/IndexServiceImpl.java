@@ -138,34 +138,34 @@ public class IndexServiceImpl
         final UpdateIndexSettingsResult.Builder result = UpdateIndexSettingsResult.create();
 
         final String indexName = params.getIndexName();
-        final IndexSettings indexSettings = IndexSettings.from( params.getSettings() );
+        final OldIndexSettings oldIndexSettings = OldIndexSettings.from( params.getSettings() );
 
         if ( indexName != null )
         {
-            updateIndexSettings( indexName, indexSettings, result );
+            updateIndexSettings( indexName, oldIndexSettings, result );
         }
         else
         {
-            updateIndexSettings( ContentConstants.CONTENT_REPO.getId(), indexSettings, result );
-            updateIndexSettings( SystemConstants.SYSTEM_REPO.getId(), indexSettings, result );
+            updateIndexSettings( ContentConstants.CONTENT_REPO.getId(), oldIndexSettings, result );
+            updateIndexSettings( SystemConstants.SYSTEM_REPO.getId(), oldIndexSettings, result );
         }
 
         return result.build();
     }
 
-    private void updateIndexSettings( final RepositoryId repositoryId, final IndexSettings indexSettings,
+    private void updateIndexSettings( final RepositoryId repositoryId, final OldIndexSettings oldIndexSettings,
                                       final UpdateIndexSettingsResult.Builder result )
     {
         final String searchIndexName = IndexNameResolver.resolveSearchIndexName( repositoryId );
         final String storageIndexName = IndexNameResolver.resolveStorageIndexName( repositoryId );
-        updateIndexSettings( searchIndexName, indexSettings, result );
-        updateIndexSettings( storageIndexName, indexSettings, result );
+        updateIndexSettings( searchIndexName, oldIndexSettings, result );
+        updateIndexSettings( storageIndexName, oldIndexSettings, result );
     }
 
-    private void updateIndexSettings( final String indexName, final IndexSettings indexSettings,
+    private void updateIndexSettings( final String indexName, final OldIndexSettings oldIndexSettings,
                                       final UpdateIndexSettingsResult.Builder result )
     {
-        indexServiceInternal.updateIndex( indexName, indexSettings );
+        indexServiceInternal.updateIndex( indexName, oldIndexSettings );
         result.addUpdatedIndex( indexName );
     }
 
@@ -189,9 +189,9 @@ public class IndexServiceImpl
         indexServiceInternal.deleteIndices( searchIndexName );
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
 
-        final IndexSettings searchIndexSettings = RepositorySearchIndexSettingsProvider.getSettings( repositoryId );
+        final OldIndexSettings searchOldIndexSettings = RepositorySearchIndexSettingsProvider.getSettings( repositoryId );
 
-        indexServiceInternal.createIndex( searchIndexName, searchIndexSettings );
+        indexServiceInternal.createIndex( searchIndexName, searchOldIndexSettings );
 
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
 

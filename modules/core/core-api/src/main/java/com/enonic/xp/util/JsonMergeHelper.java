@@ -1,4 +1,4 @@
-package com.enonic.xp.repo.impl.repository;
+package com.enonic.xp.util;
 
 import java.util.Iterator;
 
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonMergeHelper
 {
-    static JsonNode merge( JsonNode mainNode, JsonNode updateNode )
+    public static JsonNode merge( JsonNode mainNode, JsonNode updateNode )
     {
         Iterator<String> fieldNames = updateNode.fieldNames();
         while ( fieldNames.hasNext() )

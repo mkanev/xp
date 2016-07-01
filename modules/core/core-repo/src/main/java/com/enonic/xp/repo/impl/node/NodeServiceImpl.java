@@ -64,6 +64,7 @@ import com.enonic.xp.repo.impl.NodeEvents;
 import com.enonic.xp.repo.impl.config.RepoConfiguration;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
+import com.enonic.xp.repo.impl.repository.RepositoryServiceImpl;
 import com.enonic.xp.repo.impl.search.SearchService;
 import com.enonic.xp.repo.impl.snapshot.SnapshotService;
 import com.enonic.xp.repo.impl.storage.StorageService;
@@ -88,10 +89,12 @@ public class NodeServiceImpl
 
     private BlobStore blobStore;
 
+    private RepositoryServiceImpl repositoryService;
+
     @Activate
     public void initialize()
     {
-        final RepositoryInitializer repoInitializer = new RepositoryInitializer( this.indexServiceInternal );
+        final RepositoryInitializer repoInitializer = new RepositoryInitializer( this.indexServiceInternal, this.repositoryService );
         repoInitializer.initializeRepositories( ContentConstants.CONTENT_REPO.getId(), SystemConstants.SYSTEM_REPO.getId() );
     }
 
@@ -727,5 +730,11 @@ public class NodeServiceImpl
     public void setBlobStore( final BlobStore blobStore )
     {
         this.blobStore = blobStore;
+    }
+
+    @Reference
+    public void setRepositoryService( final RepositoryServiceImpl repositoryService )
+    {
+        this.repositoryService = repositoryService;
     }
 }
