@@ -13,6 +13,7 @@ import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.index.IndexConfig;
 import com.enonic.xp.index.IndexConfigDocument;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeIndexPath;
 import com.enonic.xp.repo.impl.elasticsearch.document.IndexDocument;
@@ -61,7 +62,7 @@ public class NodeStoreDocumentFactory
 
         final IndexDocument.Builder builder = IndexDocument.create().
             id( this.node.id().toString() ).
-            indexName( IndexNameResolver.resolveSearchIndexName( this.repositoryId ) ).
+            indexName( IndexNameResolver.resolveIndexName( this.repositoryId, IndexType.SEARCH ) ).
             indexTypeName( this.branch.getName() ).
             analyzer( indexConfigDocument.getAnalyzer() ).
             indexItems( createIndexItems() ).

@@ -6,9 +6,11 @@ import com.google.common.collect.Lists;
 
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.RefreshMode;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
+import com.enonic.xp.repository.RepositoryId;
 
 public class RefreshCommand
 {
@@ -28,18 +30,22 @@ public class RefreshCommand
 
         final List<String> indices = Lists.newArrayList();
 
+        final RepositoryId repositoryId = context.getRepositoryId();
+
         if ( refreshMode.equals( RefreshMode.ALL ) )
         {
-            indices.add( IndexNameResolver.resolveSearchIndexName( context.getRepositoryId() ) );
-            indices.add( IndexNameResolver.resolveStorageIndexName( context.getRepositoryId() ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.BRANCH ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.VERSION ) );
         }
         else if ( refreshMode.equals( RefreshMode.SEARCH ) )
         {
-            indices.add( IndexNameResolver.resolveSearchIndexName( context.getRepositoryId() ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ) );
         }
         else
         {
-            indices.add( IndexNameResolver.resolveStorageIndexName( context.getRepositoryId() ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.BRANCH ) );
+            indices.add( IndexNameResolver.resolveIndexName( repositoryId, IndexType.VERSION ) );
         }
 
         this.indexServiceInternal.refresh( indices.toArray( new String[indices.size()] ) );

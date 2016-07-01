@@ -10,7 +10,6 @@ import com.enonic.xp.repo.impl.storage.StaticStorageType;
 import com.enonic.xp.repo.impl.storage.StorageData;
 import com.enonic.xp.repo.impl.storage.StoreRequest;
 import com.enonic.xp.repo.impl.storage.StoreStorageName;
-import com.enonic.xp.repo.impl.version.NodeVersionDocumentId;
 
 class BranchStorageRequestFactory
 {
@@ -38,9 +37,9 @@ class BranchStorageRequestFactory
                 storageType( StaticStorageType.BRANCH ).
                 build() ).
             data( data ).
-            parent( new NodeVersionDocumentId( nodeId, nodeBranchEntry.getVersionId() ).toString() ).
-            routing( nodeId.toString() ).
-            build();
+            //  parent( new NodeVersionDocumentId( nodeId, nodeBranchEntry.getVersionId() ).toString() ).
+            //  routing( nodeId.toString() ).
+                build();
     }
 
 

@@ -9,11 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import com.enonic.xp.util.JsonMergeHelper;
+import com.enonic.xp.util.JsonHelper;
 
 import static org.junit.Assert.*;
 
-public class JsonMergeHelperTest
+public class JsonHelperTest
 {
     private ObjectMapper mapper;
 
@@ -32,7 +32,7 @@ public class JsonMergeHelperTest
         final JsonNode defaultSettings = mapper.readTree( this.getClass().getResourceAsStream( "default.json" ) );
         final JsonNode overrideSettings = mapper.readTree( this.getClass().getResourceAsStream( "override.json" ) );
 
-        final JsonNode merge = JsonMergeHelper.merge( defaultSettings, overrideSettings );
+        final JsonNode merge = JsonHelper.merge( defaultSettings, overrideSettings );
 
         assertJson( merge );
     }

@@ -7,6 +7,7 @@ import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.index.PurgeIndexParams;
 import com.enonic.xp.index.ReindexParams;
 import com.enonic.xp.index.ReindexResult;
@@ -300,7 +301,7 @@ public class IndexServiceImplTest
     {
 
         final UpdateIndexSettingsResult result = this.indexService.updateIndexSettings( UpdateIndexSettingsParams.create().
-            indexName( IndexNameResolver.resolveStorageIndexName( TEST_REPO.getId() ) ).
+            indexName( IndexNameResolver.resolveIndexName( TEST_REPO.getId(), IndexType.BRANCH ) ).
             settings( "{\"index\": {\"number_of_replicas\": 2}}" ).
             build() );
 

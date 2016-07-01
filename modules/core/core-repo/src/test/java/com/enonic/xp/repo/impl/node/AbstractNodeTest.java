@@ -303,22 +303,24 @@ public abstract class AbstractNodeTest
 
     protected void printContentRepoIndex()
     {
-        printAllIndexContent( IndexNameResolver.resolveSearchIndexName( TEST_REPO.getId() ), WS_DEFAULT.getName() );
+        printAllIndexContent( IndexNameResolver.resolveIndexName( TEST_REPO.getId(), IndexType.SEARCH ), WS_DEFAULT.getName() );
     }
 
     protected void printContentRepoIndex( final RepositoryId repositoryId, final Branch branch )
     {
-        printAllIndexContent( IndexNameResolver.resolveSearchIndexName( repositoryId ), branch.getName() );
+        printAllIndexContent( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ), branch.getName() );
     }
 
     protected void printBranchIndex()
     {
-        printAllIndexContent( IndexNameResolver.resolveStorageIndexName( CTX_DEFAULT.getRepositoryId() ), IndexType.BRANCH.getName() );
+        printAllIndexContent( IndexNameResolver.resolveIndexName( CTX_DEFAULT.getRepositoryId(), IndexType.BRANCH ),
+                              IndexType.BRANCH.getName() );
     }
 
     protected void printVersionIndex()
     {
-        printAllIndexContent( IndexNameResolver.resolveStorageIndexName( CTX_DEFAULT.getRepositoryId() ), IndexType.VERSION.getName() );
+        printAllIndexContent( IndexNameResolver.resolveIndexName( CTX_DEFAULT.getRepositoryId(), IndexType.VERSION ),
+                              IndexType.VERSION.getName() );
     }
 
     protected PushNodesResult pushNodes( final Branch target, final NodeId... nodeIds )

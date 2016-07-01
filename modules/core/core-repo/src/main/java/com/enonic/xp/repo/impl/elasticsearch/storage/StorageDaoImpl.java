@@ -21,6 +21,7 @@ import org.elasticsearch.index.query.TermsFilterBuilder;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeIndexPath;
 import com.enonic.xp.repo.impl.ReturnFields;
 import com.enonic.xp.repo.impl.StorageSettings;
@@ -207,7 +208,7 @@ public class StorageDaoImpl
 
         CopyExecutor.create( this.client ).
             query( esQuery ).
-            targetIndex( IndexNameResolver.resolveSearchIndexName( request.getTargetRepo() ) ).
+            targetIndex( IndexNameResolver.resolveIndexName( request.getTargetRepo(), IndexType.SEARCH ) ).
             targetType( SearchStorageType.from( request.getTargetBranch() ).getName() ).
             build().
             execute();

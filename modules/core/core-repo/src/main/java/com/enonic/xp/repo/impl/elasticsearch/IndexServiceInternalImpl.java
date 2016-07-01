@@ -95,7 +95,7 @@ public class IndexServiceInternalImpl
     public void copy( final NodeId nodeId, final RepositoryId repositoryId, final Branch source, final Branch target )
     {
         final GetRequest request = new GetRequestBuilder( this.client ).setId( nodeId.toString() ).
-            setIndex( IndexNameResolver.resolveSearchIndexName( repositoryId ) ).
+            setIndex( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ) ).
             setType( source.getName() ).
             request();
 
@@ -110,7 +110,7 @@ public class IndexServiceInternalImpl
 
         final IndexRequest req = Requests.indexRequest().
             id( nodeId.toString() ).
-            index( IndexNameResolver.resolveSearchIndexName( repositoryId ) ).
+            index( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ) ).
             type( target.getName() ).
             source( sourceValues ).
             refresh( false ); //TODO Temporary fix. Should be corrected by XP-1986

@@ -156,10 +156,9 @@ public class IndexServiceImpl
     private void updateIndexSettings( final RepositoryId repositoryId, final OldIndexSettings oldIndexSettings,
                                       final UpdateIndexSettingsResult.Builder result )
     {
-        final String searchIndexName = IndexNameResolver.resolveSearchIndexName( repositoryId );
-        final String storageIndexName = IndexNameResolver.resolveStorageIndexName( repositoryId );
-        updateIndexSettings( searchIndexName, oldIndexSettings, result );
-        updateIndexSettings( storageIndexName, oldIndexSettings, result );
+        updateIndexSettings( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ), oldIndexSettings, result );
+        updateIndexSettings( IndexNameResolver.resolveIndexName( repositoryId, IndexType.BRANCH ), oldIndexSettings, result );
+        updateIndexSettings( IndexNameResolver.resolveIndexName( repositoryId, IndexType.VERSION ), oldIndexSettings, result );
     }
 
     private void updateIndexSettings( final String indexName, final OldIndexSettings oldIndexSettings,
@@ -184,7 +183,7 @@ public class IndexServiceImpl
 
     private void doInitializeSearchIndex( final RepositoryId repositoryId )
     {
-        final String searchIndexName = IndexNameResolver.resolveSearchIndexName( repositoryId );
+        final String searchIndexName = IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH );
 
         indexServiceInternal.deleteIndices( searchIndexName );
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import com.enonic.xp.repo.impl.index.OldIndexSettings;
 import com.enonic.xp.repository.RepositoryId;
-import com.enonic.xp.util.JsonMergeHelper;
+import com.enonic.xp.util.JsonHelper;
 
 public class RepositorySearchIndexSettingsProvider
     extends AbstractRepositorySettingsProvider
@@ -21,7 +21,7 @@ public class RepositorySearchIndexSettingsProvider
 
         final JsonNode specificSettings = doGet( repositoryId, resolveFileName( repositoryId ) );
 
-        return OldIndexSettings.from( JsonMergeHelper.merge( defaultSettings, specificSettings ) );
+        return OldIndexSettings.from( JsonHelper.merge( defaultSettings, specificSettings ) );
     }
 
     private static String resolveFileName( final RepositoryId repositoryId )

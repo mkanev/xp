@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.junit.Test;
 
 import com.enonic.xp.index.IndexConfig;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
@@ -133,7 +134,7 @@ public class NodeIndexDocumentFactoryTest
         final IndexDocument indexDocument = getIndexDocumentOfType( indexDocuments, "test" );
 
         assertEquals( myAnalyzerName, indexDocument.getAnalyzer() );
-        assertEquals( IndexNameResolver.resolveSearchIndexName( TEST_REPOSITORY.getId() ), indexDocument.getIndexName() );
+        assertEquals( IndexNameResolver.resolveIndexName( TEST_REPOSITORY.getId(), IndexType.SEARCH ), indexDocument.getIndexName() );
         assertEquals( "test", indexDocument.getIndexTypeName() );
     }
 
@@ -148,8 +149,6 @@ public class NodeIndexDocumentFactoryTest
         }
         return null;
     }
-
-
 
 
 }

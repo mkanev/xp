@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 import com.enonic.xp.content.ContentConstants;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.DeleteSnapshotsResult;
 import com.enonic.xp.node.RestoreParams;
@@ -230,11 +231,12 @@ public class SnapshotServiceImpl
 
         for ( RepositoryId currentRepositoryId : repositoryIds )
         {
-            indices.add( IndexNameResolver.resolveStorageIndexName( currentRepositoryId ) );
+            indices.add( IndexNameResolver.resolveIndexName( currentRepositoryId, IndexType.VERSION ) );
+            indices.add( IndexNameResolver.resolveIndexName( currentRepositoryId, IndexType.BRANCH ) );
 
             if ( includeIndexedData )
             {
-                indices.add( IndexNameResolver.resolveSearchIndexName( currentRepositoryId ) );
+                indices.add( IndexNameResolver.resolveIndexName( currentRepositoryId, IndexType.SEARCH ) );
             }
         }
 

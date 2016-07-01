@@ -28,6 +28,8 @@ public class RepositoryServiceImpl
     {
         createIndices( repositorySettings );
 
+        applyMapping( repositorySettings );
+
         // Check if repo exists
         // createIndexes
         // Apply mappings
@@ -41,6 +43,17 @@ public class RepositoryServiceImpl
         createIndex( repositorySettings, IndexType.VERSION );
         createIndex( repositorySettings, IndexType.BRANCH );
     }
+
+    private void applyMappings( final RepositorySettings repositorySettings )
+    {
+
+    }
+
+    private void applyMapping( final RepositorySettings repositorySettings, final IndexType indexType )
+    {
+
+    }
+
 
     private void createIndex( final RepositorySettings repositorySettings, final IndexType indexType )
     {
