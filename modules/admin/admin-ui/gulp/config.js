@@ -56,13 +56,16 @@ var CONFIG = {
         },
         resources: {
             entries: [
-                // Example structure
-                // Will include `material-design-lite/material.min.js` and others
-                // {
-                //     dir: 'material-design-lite/',
-                //     name: 'material',
-                //     ext: ['.min.js', '.min.js.map', '.min.css', '.min.css.map']
-                // }
+                {
+                    dir: 'material-design-lite/',
+                    name: 'material',
+                    ext: ['.min.js', '.min.js.map', '.min.css', '.min.css.map']
+                },
+                {
+                    dir: 'dialog-polyfill/',
+                    name: 'dialog-polyfill',
+                    ext: ['.js', '.css']
+                }
             ],
             dest: 'common/lib/'
         }

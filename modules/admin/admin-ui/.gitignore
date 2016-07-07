@@ -5,3 +5,8 @@ _home.*
 _launcher.*
 html-editor.css
 *.map
+
+# resources #
+
+material-design-lite/
+dialog-polyfill/
