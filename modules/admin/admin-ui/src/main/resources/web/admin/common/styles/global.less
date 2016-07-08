@@ -25,3 +25,15 @@ a {
 input, textarea, select {
   border-radius: 0;
 }
+
+// <dialog> polyfill fixes
+dialog {
+  z-index: @z-index-dialog + 2 !important;
+  & + .backdrop {
+    z-index: @z-index-dialog + 1 !important;
+  }
+}
+
+._dialog_overlay {
+  z-index: @z-index-dialog !important;
+}
