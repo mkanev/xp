@@ -1,8 +1,9 @@
 module api.material.dom {
 
+    import Element = api.dom.Element;
     import NewElementBuilder = api.dom.NewElementBuilder;
 
-    export class DialogEl extends api.dom.Element {
+    export class DialogEl extends Element {
         constructor(className?: string) {
             super(new NewElementBuilder().setTagName("dialog").setClassName(className));
             const dialog = this.getHTMLElement();

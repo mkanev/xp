@@ -12,6 +12,7 @@
 ///<reference path='lib/noconflict.d.ts' />
 ///<reference path='lib/tinymce.d.ts' />
 ///<reference path='lib/dialog-polyfill.d.ts' />
+///<reference path='lib/material-design-lite.d.ts' />
 
 ///<reference path='util/_module.ts' />
 
@@ -64,6 +65,8 @@
 
 ///<reference path='material/_module.ts' />
 ///<reference path='material/dom/_module.ts' />
+///<reference path='material/ui/_module.ts' />
+///<reference path='material/ui/dialog/_module.ts' />
 ///<reference path='ui/_module.ts' />
 ///<reference path='ui/menu/_module.ts' />
 ///<reference path='ui/button/_module.ts' />
