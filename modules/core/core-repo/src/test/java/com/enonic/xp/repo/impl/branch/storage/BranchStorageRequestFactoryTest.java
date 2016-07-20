@@ -32,7 +32,5 @@ public class BranchStorageRequestFactoryTest
             build() );
 
         assertEquals( storeRequest.getId(), "nodeId_myBranch" );
-        assertEquals( storeRequest.getParent(), "nodeId_nodeVersionId" );
-        assertEquals( storeRequest.getRouting(), "nodeId" );
     }
 }

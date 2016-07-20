@@ -7,11 +7,11 @@ import com.google.common.collect.Maps;
 
 import com.enonic.xp.index.IndexType;
 
-public class IndicesSettings
+public class IndexesSettings
 {
     private final Map<IndexType, IndexSettings> settings;
 
-    private IndicesSettings( final Builder builder )
+    private IndexesSettings( final Builder builder )
     {
         this.settings = builder.settings;
     }
@@ -40,9 +40,9 @@ public class IndicesSettings
             return this;
         }
 
-        public IndicesSettings build()
+        public IndexesSettings build()
         {
-            return new IndicesSettings( this );
+            return new IndexesSettings( this );
         }
     }
 }

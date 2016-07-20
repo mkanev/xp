@@ -4,17 +4,25 @@ public class RepositorySettings
 {
     private final String name;
 
-    private final IndicesSettings indicesSettings;
+    private final IndexesSettings indexesSettings;
+
+    private final IndexesMapping indexesMapping;
 
     private RepositorySettings( final Builder builder )
     {
         name = builder.name;
-        indicesSettings = builder.indicesSettings;
+        indexesSettings = builder.indexesSettings;
+        indexesMapping = builder.indexesMapping;
     }
 
-    public IndicesSettings getIndicesSettings()
+    public IndexesSettings getIndexesSettings()
     {
-        return this.indicesSettings;
+        return this.indexesSettings;
+    }
+
+    public IndexesMapping getIndexesMapping()
+    {
+        return indexesMapping;
     }
 
     public String getName()
@@ -32,7 +40,9 @@ public class RepositorySettings
     {
         private String name;
 
-        private IndicesSettings indicesSettings;
+        private IndexesSettings indexesSettings;
+
+        private IndexesMapping indexesMapping;
 
         private Builder()
         {
@@ -44,9 +54,15 @@ public class RepositorySettings
             return this;
         }
 
-        public Builder indiciesSettings( final IndicesSettings indicesSettings )
+        public Builder indexesSettings( final IndexesSettings indexesSettings )
         {
-            this.indicesSettings = indicesSettings;
+            this.indexesSettings = indexesSettings;
+            return this;
+        }
+
+        public Builder indexesMapping( final IndexesMapping indexesMapping )
+        {
+            this.indexesMapping = indexesMapping;
             return this;
         }
 

@@ -15,7 +15,8 @@ import com.enonic.xp.repo.impl.index.IndexException;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.index.OldIndexSettings;
 import com.enonic.xp.repository.IndexSettings;
-import com.enonic.xp.repository.IndicesSettings;
+import com.enonic.xp.repository.IndexesMapping;
+import com.enonic.xp.repository.IndexesSettings;
 import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.repository.RepositoryService;
 import com.enonic.xp.repository.RepositorySettings;
@@ -43,6 +44,9 @@ public final class RepositoryInitializer
 
     public void initializeRepositories( final RepositoryId... repositoryIds )
     {
+        final IndexSettingsResourceProvider settingsProvider = new IndexSettingsResourceProvider();
+        final IndexMappingResourceProvider mappingProvider = new IndexMappingResourceProvider();
+
         if ( !checkClusterHealth() )
         {
             throw new RepositoryException( "Unable to initialize repositories" );
@@ -56,10 +60,15 @@ public final class RepositoryInitializer
             {
                 final RepositorySettings repoSettings = RepositorySettings.create().
                     name( repositoryId.toString() ).
-                    indiciesSettings( IndicesSettings.create().
-                        add( IndexType.VERSION, getSettingsFromFile( repositoryId, IndexType.VERSION ) ).
-                        add( IndexType.SEARCH, getSettingsFromFile( repositoryId, IndexType.SEARCH ) ).
-                        add( IndexType.BRANCH, getSettingsFromFile( repositoryId, IndexType.BRANCH ) ).
+                    indexesSettings( IndexesSettings.create().
+                        add( IndexType.VERSION, settingsProvider.get( repositoryId, IndexType.VERSION ) ).
+                        add( IndexType.SEARCH, settingsProvider.get( repositoryId, IndexType.SEARCH ) ).
+                        add( IndexType.BRANCH, settingsProvider.get( repositoryId, IndexType.BRANCH ) ).
+                        build() ).
+                    indexesMapping( IndexesMapping.create().
+                        add( IndexType.VERSION, mappingProvider.get( repositoryId, IndexType.VERSION ) ).
+                        add( IndexType.SEARCH, mappingProvider.get( repositoryId, IndexType.SEARCH ) ).
+                        add( IndexType.BRANCH, mappingProvider.get( repositoryId, IndexType.BRANCH ) ).
                         build() ).
                     build();
 
@@ -164,8 +173,7 @@ public final class RepositoryInitializer
         indexServiceInternal.createIndex( storageIndexName, storageOldIndexSettings );
     }
 
-
-    private IndexSettings getSettingsFromFile( final RepositoryId repositoryId, final IndexType indexType )
+    private IndexSettings getIndexSettingsFromResource( final RepositoryId repositoryId, final IndexType indexType )
     {
         String fileName = INDEX_SETTINGS_FILES_DIR + repositoryId.toString() + "-" + indexType.getName();
 

@@ -37,9 +37,7 @@ class BranchStorageRequestFactory
                 storageType( StaticStorageType.BRANCH ).
                 build() ).
             data( data ).
-            //  parent( new NodeVersionDocumentId( nodeId, nodeBranchEntry.getVersionId() ).toString() ).
-            //  routing( nodeId.toString() ).
-                build();
+            build();
     }
 
 

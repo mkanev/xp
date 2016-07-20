@@ -15,4 +15,11 @@ public class IndexMapping
     {
         return mapping;
     }
+
+    public String getAsString()
+    {
+        return this.mapping.toString();
+    }
 }
+
+
