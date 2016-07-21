@@ -66,6 +66,10 @@ public class CreateNodeCommandTest
     public void timestamp_set()
         throws Exception
     {
+        printVersionIndex();
+        printBranchIndex();
+        printContentRepoIndex();
+
         final Node node = createNode( CreateNodeParams.create().
             name( "myNode" ).
             parent( NodePath.ROOT ).

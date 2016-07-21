@@ -14,6 +14,7 @@ import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsReques
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -36,7 +37,7 @@ import com.enonic.xp.repo.impl.index.IndexException;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.index.OldIndexSettings;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
-import com.enonic.xp.repository.IndexSettings;
+import com.enonic.xp.repository.IndexResource;
 import com.enonic.xp.repository.RepositoryId;
 
 
@@ -120,30 +121,7 @@ public class IndexServiceInternalImpl
     }
 
     @Override
-    public void createIndex( final String indexName, final OldIndexSettings settings )
-    {
-        LOG.info( "creating index {}", indexName );
-
-        CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
-        createIndexRequest.settings( settings.getSettingsAsString() );
-
-        try
-        {
-            final CreateIndexResponse createIndexResponse = client.admin().
-                indices().
-                create( createIndexRequest ).
-                actionGet( CREATE_INDEX_TIMEOUT );
-
-            LOG.info( "Index {} created with status {}", indexName, createIndexResponse.isAcknowledged() );
-        }
-        catch ( ElasticsearchException e )
-        {
-            throw new IndexException( "Failed to create index: " + indexName, e );
-        }
-    }
-
-    @Override
-    public void createIndex( final String indexName, final IndexSettings settings )
+    public void createIndex( final String indexName, final IndexResource settings )
     {
         LOG.info( "creating index {}", indexName );
 
@@ -157,7 +135,8 @@ public class IndexServiceInternalImpl
                 create( createIndexRequest ).
                 actionGet( CREATE_INDEX_TIMEOUT );
 
-            LOG.info( "Index {} created with status {}", indexName, createIndexResponse.isAcknowledged() );
+            LOG.info( "Index {} created with status {}, settings {}", indexName, createIndexResponse.isAcknowledged(),
+                      settings.getAsString() );
         }
         catch ( ElasticsearchException e )
         {
@@ -189,17 +168,17 @@ public class IndexServiceInternalImpl
     }
 
     @Override
-    public void applyMapping( final String indexName, final IndexType indexType, final String mapping )
+    public void applyMapping( final String indexName, final IndexType indexType, final IndexResource mapping )
     {
         LOG.info( "Apply mapping for index {}", indexName );
 
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).
             type( indexType.equals( IndexType.SEARCH ) ? ES_DEFAULT_INDEX_TYPE_NAME : indexType.getName() ).
-            source( mapping );
+            source( mapping.getAsString() );
 
         try
         {
-            this.client.admin().
+            final PutMappingResponse response = this.client.admin().
                 indices().
                 putMapping( mappingRequest ).
                 actionGet( APPLY_MAPPING_TIMEOUT );
@@ -211,6 +190,7 @@ public class IndexServiceInternalImpl
             throw new IndexException( "Failed to apply mapping to index: " + indexName, e );
         }
     }
+
 
     @Override
     public void deleteIndices( String... indexNames )

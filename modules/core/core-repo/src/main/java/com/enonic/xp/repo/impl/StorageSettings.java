@@ -1,15 +1,25 @@
 package com.enonic.xp.repo.impl;
 
+import com.google.common.base.Preconditions;
+
+import com.enonic.xp.branch.Branch;
+import com.enonic.xp.index.IndexType;
+import com.enonic.xp.repo.impl.repository.IndexNameResolver;
+import com.enonic.xp.repository.RepositoryId;
+
 public class StorageSettings
 {
-    private final StorageName storageName;
+    private final IndexType indexType;
 
-    private final StorageType storageType;
+    private final RepositoryId repositoryId;
+
+    private final Branch branch;
 
     private StorageSettings( final Builder builder )
     {
-        this.storageName = builder.storageName;
-        this.storageType = builder.storageType;
+        indexType = builder.indexType;
+        repositoryId = builder.repositoryId;
+        branch = builder.branch;
     }
 
     public static Builder create()
@@ -17,50 +27,62 @@ public class StorageSettings
         return new Builder();
     }
 
-    public StorageName getStorageName()
+    public String getIndexName()
     {
-        return storageName;
+        return IndexNameResolver.resolveIndexName( this.repositoryId, this.indexType );
     }
 
-    public StorageType getStorageType()
+    public String getIndexType()
     {
-        return storageType;
+        if ( indexType.equals( IndexType.VERSION ) )
+        {
+            return "master";
+        }
+
+        return branch.toString();
     }
 
     public static final class Builder
     {
-        private StorageName storageName;
+        private IndexType indexType;
 
-        private StorageType storageType;
+        private RepositoryId repositoryId;
+
+        private Branch branch;
 
         private Builder()
         {
         }
 
-        public Builder storageName( StorageName storageName )
+        public Builder indexType( final IndexType val )
         {
-            this.storageName = storageName;
+            indexType = val;
             return this;
         }
 
-        public Builder storageType( StorageType storageType )
+        public Builder repositoryId( final RepositoryId val )
         {
-            this.storageType = storageType;
+            repositoryId = val;
             return this;
+        }
+
+        public Builder branch( final Branch val )
+        {
+            branch = val;
+            return this;
+        }
+
+        private void validate()
+        {
+            Preconditions.checkNotNull( indexType, "indexType must be set" );
+            Preconditions.checkNotNull( repositoryId, "repositoryId must be set" );
+            Preconditions.checkNotNull( branch, "branch must be set" );
         }
 
         public StorageSettings build()
         {
+            this.validate();
             return new StorageSettings( this );
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return "StorageSettings{" +
-            "storageName=" + storageName +
-            ", storageType=" + storageType +
-            '}';
     }
 }

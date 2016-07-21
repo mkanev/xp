@@ -13,16 +13,27 @@ public class IndexNameResolver
 
     private final static String DIVIDER = "-";
 
+
+    public static String resolveIndexName( final String repositoryId, final IndexType indexType )
+    {
+        return doResolveIndexName( RepositoryId.from( repositoryId ), indexType );
+    }
+
     public static String resolveIndexName( final RepositoryId repositoryId, final IndexType indexType )
+    {
+        return doResolveIndexName( repositoryId, indexType );
+    }
+
+    private static String doResolveIndexName( final RepositoryId repositoryId, final IndexType indexType )
     {
         switch ( indexType )
         {
             case SEARCH:
-                return SEARCH_INDEX_PREFIX + DIVIDER + repositoryId.toString();
+                return repositoryId.toString() + DIVIDER + SEARCH_INDEX_PREFIX;
             case BRANCH:
-                return BRANCH_INDEX_PREFIX + DIVIDER + repositoryId.toString();
+                return repositoryId.toString() + DIVIDER + BRANCH_INDEX_PREFIX;
             case VERSION:
-                return VERSION_INDEX_PREFIX + DIVIDER + repositoryId.toString();
+                return repositoryId.toString() + DIVIDER + VERSION_INDEX_PREFIX;
             default:
                 throw new IllegalArgumentException( "Cannot resolve name for index-type [" + indexType + "]" );
         }

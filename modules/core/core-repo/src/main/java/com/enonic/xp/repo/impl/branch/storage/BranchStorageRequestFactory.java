@@ -2,14 +2,13 @@ package com.enonic.xp.repo.impl.branch.storage;
 
 import java.time.Instant;
 
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeBranchEntry;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.StorageSettings;
-import com.enonic.xp.repo.impl.storage.StaticStorageType;
 import com.enonic.xp.repo.impl.storage.StorageData;
 import com.enonic.xp.repo.impl.storage.StoreRequest;
-import com.enonic.xp.repo.impl.storage.StoreStorageName;
 
 class BranchStorageRequestFactory
 {
@@ -33,8 +32,9 @@ class BranchStorageRequestFactory
             nodePath( nodeBranchEntry.getNodePath() ).
             forceRefresh( false ).
             settings( StorageSettings.create().
-                storageName( StoreStorageName.from( context.getRepositoryId() ) ).
-                storageType( StaticStorageType.BRANCH ).
+                indexType( IndexType.BRANCH ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranch() ).
                 build() ).
             data( data ).
             build();

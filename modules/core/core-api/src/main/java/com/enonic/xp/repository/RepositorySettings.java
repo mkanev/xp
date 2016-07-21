@@ -2,32 +2,14 @@ package com.enonic.xp.repository;
 
 public class RepositorySettings
 {
-    private final String name;
+    private final RepositoryId repositoryId;
 
-    private final IndexesSettings indexesSettings;
-
-    private final IndexesMapping indexesMapping;
+    private final IndexConfigs indexConfigs;
 
     private RepositorySettings( final Builder builder )
     {
-        name = builder.name;
-        indexesSettings = builder.indexesSettings;
-        indexesMapping = builder.indexesMapping;
-    }
-
-    public IndexesSettings getIndexesSettings()
-    {
-        return this.indexesSettings;
-    }
-
-    public IndexesMapping getIndexesMapping()
-    {
-        return indexesMapping;
-    }
-
-    public String getName()
-    {
-        return name;
+        repositoryId = builder.repositoryId;
+        indexConfigs = builder.indexConfigs;
     }
 
     public static Builder create()
@@ -35,34 +17,35 @@ public class RepositorySettings
         return new Builder();
     }
 
+    public RepositoryId getRepositoryId()
+    {
+        return repositoryId;
+    }
+
+    public IndexConfigs getIndexConfigs()
+    {
+        return indexConfigs;
+    }
 
     public static final class Builder
     {
-        private String name;
+        private RepositoryId repositoryId;
 
-        private IndexesSettings indexesSettings;
-
-        private IndexesMapping indexesMapping;
+        private IndexConfigs indexConfigs;
 
         private Builder()
         {
         }
 
-        public Builder name( final String val )
+        public Builder repositoryId( final RepositoryId val )
         {
-            name = val;
+            repositoryId = val;
             return this;
         }
 
-        public Builder indexesSettings( final IndexesSettings indexesSettings )
+        public Builder indexConfigs( final IndexConfigs val )
         {
-            this.indexesSettings = indexesSettings;
-            return this;
-        }
-
-        public Builder indexesMapping( final IndexesMapping indexesMapping )
-        {
-            this.indexesMapping = indexesMapping;
+            indexConfigs = val;
             return this;
         }
 

@@ -1,11 +1,13 @@
 package com.enonic.xp.repo.impl.repository;
 
 import com.enonic.xp.index.IndexType;
-import com.enonic.xp.repository.IndexMapping;
+import com.enonic.xp.repository.IndexResource;
 import com.enonic.xp.repository.RepositoryId;
 
-public interface IndexMappingProvider
+public class IndexMappingProvider
 {
-    IndexMapping get( final RepositoryId repositoryId, final IndexType indexType );
-
+    public static IndexResource get( final RepositoryId repositoryId, final IndexType indexType, final IndexResourceProvider provider )
+    {
+        return provider.get( repositoryId, indexType, IndexResourceType.MAPPING );
+    }
 }

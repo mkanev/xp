@@ -33,9 +33,10 @@ import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResult;
 import com.enonic.xp.repo.impl.branch.storage.BranchIndexPath;
 import com.enonic.xp.repo.impl.branch.storage.NodeFactory;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDao;
+import com.enonic.xp.repo.impl.repository.IndexMappingProvider;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
-import com.enonic.xp.repo.impl.repository.RepositoryIndexMappingProvider;
-import com.enonic.xp.repo.impl.repository.RepositorySearchIndexSettingsProvider;
+import com.enonic.xp.repo.impl.repository.IndexResourceClasspathProvider;
+import com.enonic.xp.repo.impl.repository.IndexSettingsProvider;
 import com.enonic.xp.repo.impl.search.SearchService;
 import com.enonic.xp.repo.impl.storage.IndexDataService;
 import com.enonic.xp.repository.RepositoryId;
@@ -45,9 +46,13 @@ import com.enonic.xp.security.SystemConstants;
 public class IndexServiceImpl
     implements IndexService
 {
+    private final static String INDEX_RESOURCE_BASE_FOLDER = "/com/enonic/xp/repo/impl/repository/index";
+
     private final static String CLUSTER_HEALTH_TIMEOUT_VALUE = "10s";
 
     private final static int BATCH_SIZE = 10_000;
+
+    private final static Logger LOG = LoggerFactory.getLogger( IndexServiceImpl.class );
 
     private IndexServiceInternal indexServiceInternal;
 
@@ -56,8 +61,6 @@ public class IndexServiceImpl
     private SearchService searchService;
 
     private NodeVersionDao nodeVersionDao;
-
-    private final static Logger LOG = LoggerFactory.getLogger( IndexServiceImpl.class );
 
     @Override
     public ReindexResult reindex( final ReindexParams params )
@@ -171,7 +174,6 @@ public class IndexServiceImpl
     @Override
     public boolean isMaster()
     {
-
         return indexServiceInternal.isMaster();
     }
 
@@ -183,19 +185,19 @@ public class IndexServiceImpl
 
     private void doInitializeSearchIndex( final RepositoryId repositoryId )
     {
+        final IndexResourceClasspathProvider provider = new IndexResourceClasspathProvider( INDEX_RESOURCE_BASE_FOLDER );
+
         final String searchIndexName = IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH );
 
         indexServiceInternal.deleteIndices( searchIndexName );
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
 
-        final OldIndexSettings searchOldIndexSettings = RepositorySearchIndexSettingsProvider.getSettings( repositoryId );
-
-        indexServiceInternal.createIndex( searchIndexName, searchOldIndexSettings );
+        indexServiceInternal.createIndex( searchIndexName, IndexSettingsProvider.get( repositoryId, IndexType.SEARCH, provider ) );
 
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
 
         indexServiceInternal.applyMapping( searchIndexName, IndexType.SEARCH,
-                                           RepositoryIndexMappingProvider.getSearchMappings( repositoryId ) );
+                                           IndexMappingProvider.get( repositoryId, IndexType.SEARCH, provider ) );
 
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
     }

@@ -62,8 +62,8 @@ public class NodeVersionQueryTranslator
         final StorageSettings settings = searchRequest.getSettings();
 
         final ElasticsearchQuery.Builder queryBuilder = ElasticsearchQuery.create().
-            index( settings.getStorageName().getName() ).
-            indexType( settings.getStorageType().getName() ).
+            index( settings.getIndexName() ).
+            indexType( settings.getIndexName() ).
             query( queryWithFilters ).
             setAggregations( aggregationsBuilder.create( query.getAggregationQueries() ) ).
             sortBuilders( sortBuilder.create( query.getOrderBys() ) ).

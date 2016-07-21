@@ -6,6 +6,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.enonic.xp.branch.Branch;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeIds;
@@ -15,8 +16,6 @@ import com.enonic.xp.repo.impl.ReturnValues;
 import com.enonic.xp.repo.impl.StorageSettings;
 import com.enonic.xp.repo.impl.elasticsearch.NodeStoreDocumentFactory;
 import com.enonic.xp.repo.impl.elasticsearch.document.IndexDocument;
-import com.enonic.xp.repo.impl.search.SearchStorageName;
-import com.enonic.xp.repo.impl.search.SearchStorageType;
 import com.enonic.xp.repository.RepositoryId;
 
 @Component
@@ -37,8 +36,10 @@ public class IndexDataServiceImpl
     {
         return GetByIdRequest.create().
             storageSettings( StorageSettings.create().
-                storageType( SearchStorageType.from( context.getBranch() ) ).
-                storageName( SearchStorageName.from( context.getRepositoryId() ) ).
+                branch( context.getBranch() ).
+                indexType( IndexType.SEARCH ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranch() ).
                 build() ).
             returnFields( returnFields ).
             id( nodeId.toString() ).
@@ -77,8 +78,9 @@ public class IndexDataServiceImpl
     {
         this.storageDao.delete( DeleteRequest.create().
             settings( StorageSettings.create().
-                storageType( SearchStorageType.from( context.getBranch() ) ).
-                storageName( SearchStorageName.from( context.getRepositoryId() ) ).
+                indexType( IndexType.BRANCH ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranch() ).
                 build() ).
             id( nodeId.toString() ).
             build() );
@@ -90,8 +92,9 @@ public class IndexDataServiceImpl
     {
         this.storageDao.delete( DeleteRequests.create().
             settings( StorageSettings.create().
-                storageType( SearchStorageType.from( context.getBranch() ) ).
-                storageName( SearchStorageName.from( context.getRepositoryId() ) ).
+                indexType( IndexType.BRANCH ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranch() ).
                 build() ).
             ids( nodeIds.getAsStrings() ).
             build() );
@@ -116,8 +119,9 @@ public class IndexDataServiceImpl
     {
         this.storageDao.copy( CopyRequest.create().
             storageSettings( StorageSettings.create().
-                storageName( SearchStorageName.from( context.getRepositoryId() ) ).
-                storageType( SearchStorageType.from( context.getBranch() ) ).
+                indexType( IndexType.BRANCH ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranch() ).
                 build() ).
             nodeIds( nodeIds ).
             targetBranch( targetBranch ).

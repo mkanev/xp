@@ -3,13 +3,12 @@ package com.enonic.xp.repo.impl.elasticsearch.query.translator;
 import org.junit.Test;
 
 import com.enonic.xp.branch.Branch;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeQuery;
 import com.enonic.xp.query.parser.QueryParser;
 import com.enonic.xp.repo.impl.StorageSettings;
 import com.enonic.xp.repo.impl.elasticsearch.query.ElasticsearchQuery;
 import com.enonic.xp.repo.impl.search.SearchRequest;
-import com.enonic.xp.repo.impl.search.SearchStorageName;
-import com.enonic.xp.repo.impl.search.SearchStorageType;
 import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.security.PrincipalKeys;
 
@@ -27,12 +26,13 @@ public class NodeQueryTranslatorTest
                 build() ).
             acl( PrincipalKeys.empty() ).
             settings( StorageSettings.create().
-                storageName( SearchStorageName.from( RepositoryId.from( "myRepo" ) ) ).
-                storageType( SearchStorageType.from( Branch.from( "myBranch" ) ) ).
+                indexType( IndexType.SEARCH ).
+                repositoryId( RepositoryId.from( "myRepo" ) ).
+                branch( Branch.from( "myBranch" ) ).
                 build() ).
             build() );
 
-        assertEquals( "search-myRepo", esQuery.getIndexName() );
+        assertEquals( "myRepo-search", esQuery.getIndexName() );
         assertEquals( "myBranch", esQuery.getIndexType() );
         assertNotNull( esQuery.getQuery() );
         assertNull( esQuery.getFilter() );

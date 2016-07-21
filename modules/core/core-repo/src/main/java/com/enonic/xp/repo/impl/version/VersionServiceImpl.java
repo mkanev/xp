@@ -3,16 +3,15 @@ package com.enonic.xp.repo.impl.version;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeVersionMetadata;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.ReturnFields;
 import com.enonic.xp.repo.impl.StorageSettings;
 import com.enonic.xp.repo.impl.storage.GetByIdRequest;
 import com.enonic.xp.repo.impl.storage.GetResult;
-import com.enonic.xp.repo.impl.storage.StaticStorageType;
 import com.enonic.xp.repo.impl.storage.StorageDao;
 import com.enonic.xp.repo.impl.storage.StoreRequest;
-import com.enonic.xp.repo.impl.storage.StoreStorageName;
 import com.enonic.xp.repo.impl.version.storage.VersionStorageDocFactory;
 
 @Component
@@ -27,7 +26,8 @@ public class VersionServiceImpl
     @Override
     public void store( final NodeVersionMetadata nodeVersionMetadata, final InternalContext context )
     {
-        final StoreRequest storeRequest = VersionStorageDocFactory.create( nodeVersionMetadata, context.getRepositoryId() );
+        final StoreRequest storeRequest =
+            VersionStorageDocFactory.create( nodeVersionMetadata, context.getRepositoryId(), context.getBranch() );
 
         this.storageDao.store( storeRequest );
     }
@@ -55,8 +55,9 @@ public class VersionServiceImpl
     private StorageSettings createStorageSettings( final InternalContext context )
     {
         return StorageSettings.create().
-            storageName( StoreStorageName.from( context.getRepositoryId() ) ).
-            storageType( StaticStorageType.VERSION ).
+            indexType( IndexType.VERSION ).
+            repositoryId( context.getRepositoryId() ).
+            branch( context.getBranch() ).
             build();
     }
 

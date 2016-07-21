@@ -55,8 +55,8 @@ public class StorageDaoImpl
         final StorageSettings settings = request.getSettings();
 
         final IndexRequest indexRequest = Requests.indexRequest().
-            index( settings.getStorageName().getName() ).
-            type( settings.getStorageType().getName() ).
+            index( settings.getIndexName() ).
+            type( settings.getIndexType() ).
             source( XContentBuilderFactory.create( request ) ).
             id( request.getId() ).
             refresh( request.isForceRefresh() );
@@ -90,8 +90,8 @@ public class StorageDaoImpl
 
         final DeleteRequestBuilder builder = new DeleteRequestBuilder( this.client ).
             setId( id ).
-            setIndex( settings.getStorageName().getName() ).
-            setType( settings.getStorageType().getName() ).
+            setIndex( settings.getIndexName() ).
+            setType( settings.getIndexType() ).
             setRefresh( request.isForceRefresh() );
 
         final DeleteResponse deleteResponse = this.client.delete( builder.request() ).
@@ -111,8 +111,8 @@ public class StorageDaoImpl
         {
             bulkRequest.add( new DeleteRequestBuilder( this.client ).
                 setId( nodeId ).
-                setIndex( settings.getStorageName().getName() ).
-                setType( settings.getStorageType().getName() ) );
+                setIndex( settings.getIndexName() ).
+                setType( settings.getIndexType() ) );
         }
 
         final BulkResponse response = bulkRequest.execute().actionGet();
@@ -132,8 +132,8 @@ public class StorageDaoImpl
     public GetResult getById( final GetByIdRequest request )
     {
         final StorageSettings storageSettings = request.getStorageSettings();
-        final GetRequest getRequest = new GetRequest( storageSettings.getStorageName().getName() ).
-            type( storageSettings.getStorageType().getName() ).
+        final GetRequest getRequest = new GetRequest( storageSettings.getIndexName() ).
+            type( storageSettings.getIndexType() ).
             preference( request.getSearchPreference().getName() ).
             id( request.getId() );
 
@@ -168,8 +168,7 @@ public class StorageDaoImpl
             final StorageSettings storageSettings = request.getStorageSettings();
 
             final MultiGetRequest.Item item =
-                new MultiGetRequest.Item( storageSettings.getStorageName().getName(), storageSettings.getStorageType().getName(),
-                                          request.getId() );
+                new MultiGetRequest.Item( storageSettings.getIndexName(), storageSettings.getIndexType(), request.getId() );
 
             if ( request.getReturnFields().isNotEmpty() )
             {
@@ -198,8 +197,8 @@ public class StorageDaoImpl
 
         final ElasticsearchQuery esQuery = ElasticsearchQuery.create().
             query( QueryBuilders.filteredQuery( query, idFilter ) ).
-            index( request.getStorageSettings().getStorageName().getName() ).
-            indexType( request.getStorageSettings().getStorageType().getName() ).
+            index( request.getStorageSettings().getIndexName() ).
+            indexType( request.getStorageSettings().getIndexType() ).
             size( request.getNodeIds().getSize() ).
             batchSize( 10_000 ).
             from( 0 ).

@@ -10,6 +10,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.google.common.collect.Sets;
 
 import com.enonic.xp.data.ValueFactory;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeBranchEntries;
 import com.enonic.xp.node.NodeBranchEntry;
 import com.enonic.xp.node.NodeId;
@@ -34,10 +35,8 @@ import com.enonic.xp.repo.impl.search.result.SearchResult;
 import com.enonic.xp.repo.impl.storage.DeleteRequests;
 import com.enonic.xp.repo.impl.storage.GetByIdRequest;
 import com.enonic.xp.repo.impl.storage.GetResult;
-import com.enonic.xp.repo.impl.storage.StaticStorageType;
 import com.enonic.xp.repo.impl.storage.StorageDao;
 import com.enonic.xp.repo.impl.storage.StoreRequest;
-import com.enonic.xp.repo.impl.storage.StoreStorageName;
 
 @Component
 public class BranchServiceImpl
@@ -330,8 +329,9 @@ public class BranchServiceImpl
     private StorageSettings createStorageSettings( final InternalContext context )
     {
         return StorageSettings.create().
-            storageName( StoreStorageName.from( context.getRepositoryId() ) ).
-            storageType( StaticStorageType.BRANCH ).
+            indexType( IndexType.BRANCH ).
+            repositoryId( context.getRepositoryId() ).
+            branch( context.getBranch() ).
             build();
     }
 

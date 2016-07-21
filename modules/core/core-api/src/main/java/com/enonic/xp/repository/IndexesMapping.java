@@ -8,7 +8,7 @@ import com.enonic.xp.index.IndexType;
 
 public class IndexesMapping
 {
-    private final Map<IndexType, IndexMapping> mappings;
+    private final Map<IndexType, IndexResource> mappings;
 
     private IndexesMapping( final Builder builder )
     {
@@ -20,20 +20,20 @@ public class IndexesMapping
         return new Builder();
     }
 
-    public IndexMapping getMapping( final IndexType indexType )
+    public IndexResource getMapping( final IndexType indexType )
     {
         return mappings.get( indexType );
     }
 
     public static final class Builder
     {
-        private final Map<IndexType, IndexMapping> mappings = Maps.newHashMap();
+        private final Map<IndexType, IndexResource> mappings = Maps.newHashMap();
 
         private Builder()
         {
         }
 
-        public Builder add( final IndexType type, final IndexMapping mapping )
+        public Builder add( final IndexType type, final IndexResource mapping )
         {
             this.mappings.put( type, mapping );
             return this;
