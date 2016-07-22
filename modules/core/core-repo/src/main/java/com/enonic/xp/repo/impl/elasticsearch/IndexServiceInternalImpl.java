@@ -33,6 +33,7 @@ import com.google.common.base.Stopwatch;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeId;
+import com.enonic.xp.repo.impl.index.ApplyMappingRequest;
 import com.enonic.xp.repo.impl.index.IndexException;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.index.OldIndexSettings;
@@ -168,13 +169,14 @@ public class IndexServiceInternalImpl
     }
 
     @Override
-    public void applyMapping( final String indexName, final IndexType indexType, final IndexResource mapping )
+    public void applyMapping( final ApplyMappingRequest request )
     {
+        final String indexName = request.getIndexName();
         LOG.info( "Apply mapping for index {}", indexName );
 
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).
-            type( indexType.equals( IndexType.SEARCH ) ? ES_DEFAULT_INDEX_TYPE_NAME : indexType.getName() ).
-            source( mapping.getAsString() );
+            type( request.getIndexType().isDynamicTypes() ? ES_DEFAULT_INDEX_TYPE_NAME : request.getIndexType().getName() ).
+            source( request.getMapping().getAsString() );
 
         try
         {

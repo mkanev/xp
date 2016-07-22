@@ -25,7 +25,6 @@ public final class RepositoryInitializer
 
     private final RepositoryService repositoryService;
 
-
     public RepositoryInitializer( final IndexServiceInternal indexServiceInternal, final RepositoryService repoService )
     {
         this.indexServiceInternal = indexServiceInternal;

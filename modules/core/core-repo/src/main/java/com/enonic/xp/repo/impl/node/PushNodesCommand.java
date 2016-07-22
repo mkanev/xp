@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
 
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.CompareStatus;
@@ -80,10 +79,8 @@ public class PushNodesCommand
 
         final PushNodesResult.Builder builder = PushNodesResult.create();
 
-        final Stopwatch sortTimer = Stopwatch.createStarted();
         final ArrayList<NodeBranchEntry> list = new ArrayList<>( nodeBranchEntries.getSet() );
         Collections.sort( list, ( e1, e2 ) -> e1.getNodePath().compareTo( e2.getNodePath() ) );
-        System.out.println( "Ordering collection of NodeBranchEntries: " + sortTimer.stop() );
 
         for ( final NodeBranchEntry branchEntry : list )
         {
@@ -120,7 +117,6 @@ public class PushNodesCommand
                 nodeVersionId( nodeBranchEntry.getVersionId() ).
                 build() );
 
-            //doPushNode( context, nodeBranchEntry, nodeBranchEntry.getVersionId() );
             builder.addSuccess( nodeBranchEntry );
 
             if ( comparison.getCompareStatus() == CompareStatus.MOVED )
@@ -129,9 +125,7 @@ public class PushNodesCommand
             }
         }
 
-        final Stopwatch timer = Stopwatch.createStarted();
         this.storageService.publish( publishBuilder.build(), InternalContext.from( context ) );
-        System.out.println( "publish-time: " + timer.stop() );
 
         return builder;
     }

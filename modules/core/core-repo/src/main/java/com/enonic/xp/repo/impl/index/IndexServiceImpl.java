@@ -196,8 +196,11 @@ public class IndexServiceImpl
 
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
 
-        indexServiceInternal.applyMapping( searchIndexName, IndexType.SEARCH,
-                                           IndexMappingProvider.get( repositoryId, IndexType.SEARCH, provider ) );
+        indexServiceInternal.applyMapping( ApplyMappingRequest.create().
+            indexName( searchIndexName ).
+            mapping( IndexMappingProvider.get( repositoryId, IndexType.SEARCH, provider ) ).
+            indexType( IndexType.SEARCH ).
+            build() );
 
         indexServiceInternal.getClusterHealth( CLUSTER_HEALTH_TIMEOUT_VALUE );
     }

@@ -63,7 +63,7 @@ public class NodeVersionQueryTranslator
 
         final ElasticsearchQuery.Builder queryBuilder = ElasticsearchQuery.create().
             index( settings.getIndexName() ).
-            indexType( settings.getIndexName() ).
+            indexType( settings.getIndexType() ).
             query( queryWithFilters ).
             setAggregations( aggregationsBuilder.create( query.getAggregationQueries() ) ).
             sortBuilders( sortBuilder.create( query.getOrderBys() ) ).

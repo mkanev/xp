@@ -12,7 +12,7 @@ class BranchDeleteRequestFactory
     {
         return DeleteRequest.create().
             forceRefresh( true ).
-            id( new BranchDocumentId( nodeId, context.getBranch() ).toString() ).
+            id( nodeId.toString() ).
             settings( StorageSettings.create().
                 repositoryId( context.getRepositoryId() ).
                 indexType( IndexType.BRANCH ).

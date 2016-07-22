@@ -8,6 +8,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
+import org.osgi.service.component.runtime.dto.UnsatisfiedReferenceDTO;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -78,6 +79,11 @@ public final class OsgiComponentReporter
         json.put( "id", instance.id );
         json.put( "state", toStateString( instance.state ) );
 
+        if ( instance.state == ComponentConfigurationDTO.UNSATISFIED_REFERENCE )
+        {
+            addUnsatisfiedReferences( instance, json );
+        }
+
         final Object pid = instance.properties.get( Constants.SERVICE_PID );
         if ( pid != null )
         {
@@ -85,6 +91,16 @@ public final class OsgiComponentReporter
         }
 
         return json;
+    }
+
+    private void addUnsatisfiedReferences( final ComponentConfigurationDTO instance, final ObjectNode json )
+    {
+        final ArrayNode unsatisfied = json.putArray( "unsatisfied" );
+
+        for ( final UnsatisfiedReferenceDTO reference : instance.unsatisfiedReferences )
+        {
+            unsatisfied.add( reference.name );
+        }
     }
 
     protected String toStateString( final int state )

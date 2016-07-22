@@ -1,5 +1,5 @@
 {
-  "branch": {
+  "_default_": {
     "_all": {
       "enabled": false
     },
@@ -8,9 +8,6 @@
     },
     "date_detection": false,
     "numeric_detection": false,
-    "_parent": {
-      "type": "version"
-    },
     "properties": {
       "versionid": {
         "type": "string",

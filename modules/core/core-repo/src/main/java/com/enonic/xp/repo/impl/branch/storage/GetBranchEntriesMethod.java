@@ -21,8 +21,6 @@ class GetBranchEntriesMethod
 {
     private final InternalContext context;
 
-    private final PathCache pathCache;
-
     private final ReturnFields returnFields;
 
     private final StorageDao storageDao;
@@ -30,7 +28,6 @@ class GetBranchEntriesMethod
     private GetBranchEntriesMethod( final Builder builder )
     {
         context = builder.context;
-        pathCache = builder.pathCache;
         returnFields = builder.returnFields;
         storageDao = builder.storageDao;
     }
@@ -48,7 +45,7 @@ class GetBranchEntriesMethod
         for ( final NodeId nodeId : nodeIds )
         {
             getByIdsRequest.add( GetByIdRequest.create().
-                id( new BranchDocumentId( nodeId, context.getBranch() ).toString() ).
+                id( nodeId.toString() ).
                 storageSettings( StorageSettings.create().
                     indexType( IndexType.BRANCH ).
                     repositoryId( context.getRepositoryId() ).
@@ -75,8 +72,6 @@ class GetBranchEntriesMethod
     {
         private InternalContext context;
 
-        private PathCache pathCache;
-
         private ReturnFields returnFields;
 
         private StorageDao storageDao;
@@ -88,12 +83,6 @@ class GetBranchEntriesMethod
         public Builder context( final InternalContext val )
         {
             context = val;
-            return this;
-        }
-
-        public Builder pathCache( final PathCache val )
-        {
-            pathCache = val;
             return this;
         }
 

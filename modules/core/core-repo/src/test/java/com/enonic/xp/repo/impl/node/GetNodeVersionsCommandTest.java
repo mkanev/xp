@@ -39,6 +39,8 @@ public class GetNodeVersionsCommandTest
             parent( NodePath.ROOT ).
             build() );
 
+        printVersionIndex();
+
         final NodeVersionQueryResult result = GetNodeVersionsCommand.create().
             from( 0 ).
             size( 100 ).

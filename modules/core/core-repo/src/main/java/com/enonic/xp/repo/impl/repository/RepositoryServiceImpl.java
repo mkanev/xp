@@ -4,6 +4,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.enonic.xp.index.IndexType;
+import com.enonic.xp.repo.impl.index.ApplyMappingRequest;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repository.IndexConfig;
 import com.enonic.xp.repository.IndexConfigs;
@@ -12,7 +13,7 @@ import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.repository.RepositoryService;
 import com.enonic.xp.repository.RepositorySettings;
 
-@Component
+@Component(immediate = true)
 public class RepositoryServiceImpl
     implements RepositoryService
 {
@@ -48,7 +49,11 @@ public class RepositoryServiceImpl
 
     private void applyMapping( final RepositoryId repositoryId, final IndexType indexType, final IndexConfig indexConfig )
     {
-        this.indexServiceInternal.applyMapping( resolveIndexName( repositoryId, indexType ), indexType, indexConfig.getMapping() );
+        this.indexServiceInternal.applyMapping( ApplyMappingRequest.create().
+            indexName( resolveIndexName( repositoryId, indexType ) ).
+            indexType( indexType ).
+            mapping( indexConfig.getMapping() ).
+            build() );
     }
 
     private void doCreateIndex( final RepositoryId repositoryId, final IndexType indexType, final IndexConfig indexConfig )

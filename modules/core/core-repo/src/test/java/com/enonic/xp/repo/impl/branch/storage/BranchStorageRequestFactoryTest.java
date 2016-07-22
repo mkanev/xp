@@ -31,6 +31,6 @@ public class BranchStorageRequestFactoryTest
             repositoryId( RepositoryId.from( "myRepoId" ) ).
             build() );
 
-        assertEquals( storeRequest.getId(), "nodeId_myBranch" );
+        assertEquals( storeRequest.getId(), "nodeId" );
     }
 }

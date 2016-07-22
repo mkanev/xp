@@ -48,7 +48,7 @@ import com.enonic.xp.repo.impl.snapshot.SnapshotService;
 import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.security.SystemConstants;
 
-@Component
+@Component(immediate = true)
 public class SnapshotServiceImpl
     implements SnapshotService
 {

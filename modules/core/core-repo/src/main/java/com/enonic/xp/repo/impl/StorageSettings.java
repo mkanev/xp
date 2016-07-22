@@ -36,7 +36,7 @@ public class StorageSettings
     {
         if ( indexType.equals( IndexType.VERSION ) )
         {
-            return "master";
+            return indexType.getName();
         }
 
         return branch.toString();

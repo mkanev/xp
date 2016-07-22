@@ -1,9 +1,7 @@
 package com.enonic.xp.repo.impl.branch.storage;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.elasticsearch.common.Strings;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -65,7 +63,7 @@ public class BranchServiceImpl
         final StoreRequest storeRequest = BranchStorageRequestFactory.create( nodeBranchEntry, context );
         final String id = this.storageDao.store( storeRequest );
 
-        doCache( context, nodeBranchEntry.getNodePath(), BranchDocumentId.from( id ) );
+        doCache( context, nodeBranchEntry.getNodePath(), NodeId.from( id ) );
 
         return id;
     }
@@ -104,9 +102,7 @@ public class BranchServiceImpl
 
         storageDao.delete( DeleteRequests.create().
             forceRefresh( false ).
-            ids( nodeIds.stream().
-                map( nodeId -> new BranchDocumentId( nodeId, context.getBranch() ).toString() ).
-                collect( Collectors.toSet() ) ).
+            ids( nodeIds.getAsStrings() ).
             settings( createStorageSettings( context ) ).
             build() );
     }
@@ -127,9 +123,7 @@ public class BranchServiceImpl
             return null;
         }
 
-        final NodeBranchEntry nodeBranchEntry = NodeBranchVersionFactory.create( getResult.getReturnValues() );
-
-        return nodeBranchEntry;
+        return NodeBranchVersionFactory.create( getResult.getReturnValues() );
     }
 
     @Override
@@ -187,11 +181,10 @@ public class BranchServiceImpl
 
     private NodeBranchEntry doGetByPathNew( final NodePath nodePath, final InternalContext context )
     {
-        final String id = this.pathCache.get( new BranchPath( context.getBranch(), nodePath ) );
+        final NodeId nodeId = this.pathCache.get( new BranchPath( context.getBranch(), nodePath ) );
 
-        if ( id != null )
+        if ( nodeId != null )
         {
-            final NodeId nodeId = createNodeId( id );
             return doGetById( nodeId, context );
         }
 
@@ -227,18 +220,6 @@ public class BranchServiceImpl
         return null;
     }
 
-    private NodeId createNodeId( final String id )
-    {
-        final int branchSeparator = id.lastIndexOf( "_" );
-
-        if ( branchSeparator < 0 )
-        {
-            throw new StorageException( "Invalid BranchNodeId: " + id );
-        }
-
-        return NodeId.from( Strings.substring( id, 0, branchSeparator ) );
-    }
-
     private void doCacheResult( final InternalContext context, final GetResult getResult )
     {
         final NodeBranchEntry nodeBranchEntry = NodeBranchVersionFactory.create( getResult.getReturnValues() );
@@ -248,12 +229,7 @@ public class BranchServiceImpl
 
     private void doCache( final InternalContext context, final NodePath nodePath, final NodeId nodeId )
     {
-        doCache( context, nodePath, new BranchDocumentId( nodeId, context.getBranch() ) );
-    }
-
-    private void doCache( final InternalContext context, final NodePath nodePath, final BranchDocumentId branchDocumentId )
-    {
-        pathCache.cache( new BranchPath( context.getBranch(), nodePath ), branchDocumentId );
+        pathCache.cache( new BranchPath( context.getBranch(), nodePath ), nodeId );
     }
 
     private NodeBranchEntries getKeepOrder( final NodeIds nodeIds, final InternalContext context )
@@ -262,7 +238,6 @@ public class BranchServiceImpl
 
         final GetBranchEntriesMethod getBranchEntriesMethod = GetBranchEntriesMethod.create().
             context( context ).
-            pathCache( this.pathCache ).
             returnFields( BRANCH_RETURN_FIELDS ).
             storageDao( this.storageDao ).
             build();
@@ -319,7 +294,7 @@ public class BranchServiceImpl
     private GetByIdRequest createGetByIdRequest( final NodeId nodeId, final InternalContext context )
     {
         return GetByIdRequest.create().
-            id( new BranchDocumentId( nodeId, context.getBranch() ).toString() ).
+            id( nodeId.toString() ).
             storageSettings( createStorageSettings( context ) ).
             returnFields( BRANCH_RETURN_FIELDS ).
             routing( nodeId.toString() ).
