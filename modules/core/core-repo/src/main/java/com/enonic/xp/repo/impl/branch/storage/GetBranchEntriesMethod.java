@@ -9,7 +9,6 @@ import com.enonic.xp.node.NodeId;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.ReturnFields;
 import com.enonic.xp.repo.impl.StorageSettings;
-import com.enonic.xp.repo.impl.cache.PathCache;
 import com.enonic.xp.repo.impl.storage.GetByIdRequest;
 import com.enonic.xp.repo.impl.storage.GetByIdsRequest;
 import com.enonic.xp.repo.impl.storage.GetResult;
@@ -49,7 +48,7 @@ class GetBranchEntriesMethod
                 storageSettings( StorageSettings.create().
                     indexType( IndexType.BRANCH ).
                     repositoryId( context.getRepositoryId() ).
-                    branch( context.getBranch() ).
+                    branch( context.getBranchId() ).
                     build() ).
                 returnFields( returnFields ).
                 routing( nodeId.toString() ).

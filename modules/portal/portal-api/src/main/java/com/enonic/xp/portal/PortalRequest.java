@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import com.enonic.xp.app.ApplicationKey;
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.content.ContentPath;
@@ -27,7 +27,7 @@ import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
 @Beta
 public final class PortalRequest
 {
-    private final static Branch DEFAULT_BRANCH = ContentConstants.BRANCH_DRAFT;
+    private final static BranchId DEFAULT_BRANCH_ID = ContentConstants.BRANCH_ID_DRAFT;
 
     private HttpMethod method;
 
@@ -51,7 +51,7 @@ public final class PortalRequest
 
     private RenderMode mode;
 
-    private Branch branch;
+    private BranchId branchId;
 
     private ContentPath contentPath;
 
@@ -90,7 +90,7 @@ public final class PortalRequest
         this.baseUri = "";
         this.contentPath = ContentPath.from( "/" );
         this.mode = RenderMode.LIVE;
-        this.branch = DEFAULT_BRANCH;
+        this.branchId = DEFAULT_BRANCH_ID;
         this.params = HashMultimap.create();
         this.headers = Maps.newHashMap();
         this.cookies = Maps.newHashMap();
@@ -102,9 +102,9 @@ public final class PortalRequest
         return this.method;
     }
 
-    public Branch getBranch()
+    public BranchId getBranchId()
     {
-        return branch;
+        return branchId;
     }
 
     public Multimap<String, String> getParams()
@@ -187,9 +187,9 @@ public final class PortalRequest
         this.mode = mode;
     }
 
-    public void setBranch( final Branch branch )
+    public void setBranchId( final BranchId branchId )
     {
-        this.branch = branch;
+        this.branchId = branchId;
     }
 
     public Map<String, String> getHeaders()

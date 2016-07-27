@@ -9,7 +9,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.google.common.io.ByteSource;
 
 import com.enonic.xp.blob.BlobStore;
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.event.EventPublisher;
@@ -106,7 +106,7 @@ public class NodeServiceImpl
         if ( node == null )
         {
             throw new NodeNotFoundException(
-                "Node with id " + id + " not found in branch " + ContextAccessor.current().getBranch().getName() );
+                "Node with id " + id + " not found in branch " + ContextAccessor.current().getBranch().getValue() );
         }
 
         return node;
@@ -310,7 +310,7 @@ public class NodeServiceImpl
     }
 
     @Override
-    public PushNodesResult push( final NodeIds ids, final Branch target )
+    public PushNodesResult push( final NodeIds ids, final BranchId target )
     {
         final PushNodesResult pushNodesResult = PushNodesCommand.create().
             indexServiceInternal( this.indexServiceInternal ).
@@ -382,7 +382,7 @@ public class NodeServiceImpl
 
 
     @Override
-    public NodeComparison compare( final NodeId nodeId, final Branch target )
+    public NodeComparison compare( final NodeId nodeId, final BranchId target )
     {
         return CompareNodeCommand.create().
             nodeId( nodeId ).
@@ -393,7 +393,7 @@ public class NodeServiceImpl
     }
 
     @Override
-    public NodeComparisons compare( final NodeIds nodeIds, final Branch target )
+    public NodeComparisons compare( final NodeIds nodeIds, final BranchId target )
     {
         return CompareNodesCommand.create().
             nodeIds( nodeIds ).
@@ -420,7 +420,7 @@ public class NodeServiceImpl
     {
         return GetActiveNodeVersionsCommand.create().
             nodeId( params.getNodeId() ).
-            branches( params.getBranches() ).
+            branches( params.getBranchIds() ).
             indexServiceInternal( this.indexServiceInternal ).
             storageService( this.storageService ).
             searchService( this.searchService ).
@@ -452,7 +452,7 @@ public class NodeServiceImpl
     public ResolveSyncWorkResult resolveSyncWork( final SyncWorkResolverParams params )
     {
         return ResolveSyncWorkCommand.create().
-            target( params.getBranch() ).
+            target( params.getBranchId() ).
             nodeId( params.getNodeId() ).
             excludedNodeIds( params.getExcludedNodeIds() ).
             includeChildren( params.isIncludeChildren() ).

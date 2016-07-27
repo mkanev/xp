@@ -6,7 +6,7 @@ import java.util.Locale;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentId;
 import com.enonic.xp.content.ContentIds;
@@ -38,7 +38,7 @@ public class PublishContentHandlerTest
 
         ContentIds ids = ContentIds.from( PUB_ID_1, FAIL_ID );
         PushContentParams pushParams =
-            PushContentParams.create().contentIds( ids ).target( Branch.from( "master" ) ).includeChildren( true ).includeDependencies(
+            PushContentParams.create().contentIds( ids ).target( BranchId.from( "master" ) ).includeChildren( true ).includeDependencies(
                 false ).build();
         Mockito.when( this.contentService.push( pushParams ) ).thenReturn( exampleResult() );
 
@@ -49,7 +49,7 @@ public class PublishContentHandlerTest
     public void publishById()
     {
         ContentIds ids = ContentIds.from( PUB_ID_2, DEL_ID, FAIL_ID );
-        PushContentParams pushParams = PushContentParams.create().contentIds( ids ).target( Branch.from( "draft" ) ).build();
+        PushContentParams pushParams = PushContentParams.create().contentIds( ids ).target( BranchId.from( "draft" ) ).build();
         Mockito.when( this.contentService.push( pushParams ) ).thenReturn( exampleResult() );
 
         runFunction( "/site/test/PublishContentHandlerTest.js", "publishById" );
@@ -65,7 +65,7 @@ public class PublishContentHandlerTest
         Mockito.when( this.contentService.getByPath( ContentPath.from( "/yourfolder/yourcontent" ) ) ).thenReturn( yourContent );
 
         ContentIds ids = ContentIds.from( PUB_ID_2, PUB_ID_3 );
-        PushContentParams pushParams = PushContentParams.create().contentIds( ids ).target( Branch.from( "master" ) ).build();
+        PushContentParams pushParams = PushContentParams.create().contentIds( ids ).target( BranchId.from( "master" ) ).build();
         Mockito.when( this.contentService.push( pushParams ) ).thenReturn( exampleResult() );
 
         runFunction( "/site/test/PublishContentHandlerTest.js", "publishByPath" );
@@ -79,7 +79,7 @@ public class PublishContentHandlerTest
         PushContentsResult exampleResult = PushContentsResult.create().setPushed( published.getIds() ).build();
         ContentIds ids = ContentIds.from( PUB_ID_3 );
         PushContentParams pushParams =
-            PushContentParams.create().contentIds( ids ).target( Branch.from( "master" ) ).includeChildren( false ).includeDependencies(
+            PushContentParams.create().contentIds( ids ).target( BranchId.from( "master" ) ).includeChildren( false ).includeDependencies(
                 false ).build();
         Mockito.when( this.contentService.push( pushParams ) ).thenReturn( exampleResult );
 

@@ -16,8 +16,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import com.enonic.xp.admin.impl.rest.resource.ResourceConstants;
-import com.enonic.xp.branch.Branch;
-import com.enonic.xp.branch.Branches;
+import com.enonic.xp.branch.BranchId;
+import com.enonic.xp.branch.BranchIds;
 import com.enonic.xp.index.IndexService;
 import com.enonic.xp.index.ReindexParams;
 import com.enonic.xp.index.ReindexResult;
@@ -42,7 +42,7 @@ public final class IndexResource
     public ReindexResultJson reindex( final ReindexRequestJson request )
     {
         final ReindexResult result = this.indexService.reindex( ReindexParams.create().
-            setBranches( parseBranches( request.branches ) ).
+            setBranchIds( parseBranches( request.branches ) ).
             initialize( request.initialize ).
             repositoryId( parseRepositoryId( request.repository ) ).
             build() );
@@ -70,11 +70,11 @@ public final class IndexResource
         this.indexService = indexService;
     }
 
-    private static Branches parseBranches( final String branches )
+    private static BranchIds parseBranches( final String branches )
     {
         final Iterable<String> split = Splitter.on( "," ).split( branches );
-        final Iterable<Branch> parsed = Lists.newArrayList( split ).stream().map( Branch::from ).collect( Collectors.toList() );
-        return Branches.from( parsed );
+        final Iterable<BranchId> parsed = Lists.newArrayList( split ).stream().map( BranchId::from ).collect( Collectors.toList() );
+        return BranchIds.from( parsed );
     }
 
     private static RepositoryId parseRepositoryId( final String repository )

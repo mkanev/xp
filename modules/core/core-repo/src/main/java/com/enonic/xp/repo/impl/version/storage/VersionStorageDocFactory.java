@@ -2,7 +2,7 @@ package com.enonic.xp.repo.impl.version.storage;
 
 import java.time.Instant;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeVersionMetadata;
 import com.enonic.xp.repo.impl.StorageSettings;
@@ -14,7 +14,7 @@ import com.enonic.xp.repository.RepositoryId;
 
 public class VersionStorageDocFactory
 {
-    public static StoreRequest create( final NodeVersionMetadata nodeVersion, final RepositoryId repositoryId, final Branch branch )
+    public static StoreRequest create( final NodeVersionMetadata nodeVersion, final RepositoryId repositoryId, final BranchId branchId )
     {
         final StorageData data = StorageData.create().
             add( VersionIndexPath.VERSION_ID.getPath(), nodeVersion.getNodeVersionId().toString() ).
@@ -30,7 +30,7 @@ public class VersionStorageDocFactory
             settings( StorageSettings.create().
                 indexType( IndexType.VERSION ).
                 repositoryId( repositoryId ).
-                branch( branch ).
+                branch( branchId ).
                 build() ).
             data( data ).
             routing( nodeVersion.getNodeId().toString() ).

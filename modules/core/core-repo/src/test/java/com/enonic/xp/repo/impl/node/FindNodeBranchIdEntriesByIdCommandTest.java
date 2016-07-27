@@ -19,7 +19,7 @@ import com.enonic.xp.query.expr.OrderExpressions;
 
 import static org.junit.Assert.*;
 
-public class FindNodeBranchEntriesByIdCommandTest
+public class FindNodeBranchIdEntriesByIdCommandTest
     extends AbstractNodeTest
 {
 

@@ -906,7 +906,7 @@ public class SecurityServiceImplTest
         return ContextBuilder.create().
             authInfo( authInfo ).
             repositoryId( SecurityConstants.SECURITY_REPO.getId() ).
-            branch( SecurityConstants.BRANCH_SECURITY ).
+            branch( SecurityConstants.BRANCH_ID_SECURITY ).
             build();
     }
 

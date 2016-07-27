@@ -27,7 +27,7 @@ public class VersionServiceImpl
     public void store( final NodeVersionMetadata nodeVersionMetadata, final InternalContext context )
     {
         final StoreRequest storeRequest =
-            VersionStorageDocFactory.create( nodeVersionMetadata, context.getRepositoryId(), context.getBranch() );
+            VersionStorageDocFactory.create( nodeVersionMetadata, context.getRepositoryId(), context.getBranchId() );
 
         this.storageDao.store( storeRequest );
     }
@@ -57,7 +57,7 @@ public class VersionServiceImpl
         return StorageSettings.create().
             indexType( IndexType.VERSION ).
             repositoryId( context.getRepositoryId() ).
-            branch( context.getBranch() ).
+            branch( context.getBranchId() ).
             build();
     }
 

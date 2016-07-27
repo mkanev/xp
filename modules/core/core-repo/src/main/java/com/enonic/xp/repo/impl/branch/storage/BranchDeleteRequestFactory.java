@@ -16,7 +16,7 @@ class BranchDeleteRequestFactory
             settings( StorageSettings.create().
                 repositoryId( context.getRepositoryId() ).
                 indexType( IndexType.BRANCH ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             build();
     }

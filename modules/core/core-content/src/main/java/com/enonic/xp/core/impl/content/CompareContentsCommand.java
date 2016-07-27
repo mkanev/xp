@@ -1,6 +1,6 @@
 package com.enonic.xp.core.impl.content;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.CompareContentResults;
 import com.enonic.xp.content.ContentIds;
 import com.enonic.xp.node.NodeComparisons;
@@ -11,7 +11,7 @@ public class CompareContentsCommand
 {
     private final ContentIds contentIds;
 
-    private final Branch target;
+    private final BranchId target;
 
     private final NodeService nodeService;
 
@@ -39,7 +39,7 @@ public class CompareContentsCommand
     {
         private ContentIds contentIds;
 
-        private Branch target;
+        private BranchId target;
 
         private NodeService nodeService;
 
@@ -53,7 +53,7 @@ public class CompareContentsCommand
             return this;
         }
 
-        public Builder target( Branch target )
+        public Builder target( BranchId target )
         {
             this.target = target;
             return this;

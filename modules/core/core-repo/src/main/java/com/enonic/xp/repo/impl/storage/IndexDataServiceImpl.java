@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
@@ -36,10 +36,10 @@ public class IndexDataServiceImpl
     {
         return GetByIdRequest.create().
             storageSettings( StorageSettings.create().
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 indexType( IndexType.SEARCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             returnFields( returnFields ).
             id( nodeId.toString() ).
@@ -80,7 +80,7 @@ public class IndexDataServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.BRANCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             id( nodeId.toString() ).
             build() );
@@ -94,7 +94,7 @@ public class IndexDataServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.BRANCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             ids( nodeIds.getAsStrings() ).
             build() );
@@ -105,7 +105,7 @@ public class IndexDataServiceImpl
     {
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
-            branch( context.getBranch() ).
+            branch( context.getBranchId() ).
             repositoryId( context.getRepositoryId() ).
             build().
             create();
@@ -115,16 +115,16 @@ public class IndexDataServiceImpl
 
 
     @Override
-    public void push( final NodeIds nodeIds, final Branch targetBranch, final RepositoryId targetRepo, final InternalContext context )
+    public void push( final NodeIds nodeIds, final BranchId targetBranchId, final RepositoryId targetRepo, final InternalContext context )
     {
         this.storageDao.copy( CopyRequest.create().
             storageSettings( StorageSettings.create().
                 indexType( IndexType.BRANCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             nodeIds( nodeIds ).
-            targetBranch( targetBranch ).
+            targetBranch( targetBranchId ).
             targetRepo( targetRepo ).
             build() );
     }

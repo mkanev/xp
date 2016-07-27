@@ -8,7 +8,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
@@ -69,7 +69,7 @@ public class IndexServiceImpl
 
         final long start = System.currentTimeMillis();
         builder.startTime( Instant.ofEpochMilli( start ) );
-        builder.branches( params.getBranches() );
+        builder.branches( params.getBranchIds() );
         builder.repositoryId( params.getRepositoryId() );
 
         if ( params.isInitialize() )
@@ -77,15 +77,15 @@ public class IndexServiceImpl
             doInitializeSearchIndex( params.getRepositoryId() );
         }
 
-        for ( final Branch branch : params.getBranches() )
+        for ( final BranchId branchId : params.getBranchIds() )
         {
             final CompareExpr compareExpr =
                 CompareExpr.create( FieldExpr.from( BranchIndexPath.BRANCH_NAME.getPath() ), CompareExpr.Operator.EQ,
-                                    ValueExpr.string( branch.getName() ) );
+                                    ValueExpr.string( branchId.getValue() ) );
 
             final Context reindexContext = ContextBuilder.from( ContextAccessor.current() ).
                 repositoryId( params.getRepositoryId() ).
-                branch( branch ).
+                branch( branchId ).
                 build();
 
             final NodeBranchQueryResult results = this.searchService.query( NodeBranchQuery.create().
@@ -98,7 +98,7 @@ public class IndexServiceImpl
             final long total = results.getSize();
             final long logStep = total < 10 ? 1 : total < 100 ? 10 : total < 1000 ? 100 : 1000;
 
-            LOG.info( "Starting reindexing '" + branch + "' branch in '" + params.getRepositoryId() + "' repository: " + total +
+            LOG.info( "Starting reindexing '" + branchId + "' branch in '" + params.getRepositoryId() + "' repository: " + total +
                           " items to process" );
 
             for ( final NodeBranchEntry nodeBranchEntry : results )
@@ -106,7 +106,7 @@ public class IndexServiceImpl
                 if ( nodeIndex % logStep == 0 )
                 {
                     LOG.info(
-                        "Reindexing '" + branch + "' in '" + params.getRepositoryId() + "'" + ": processed " + nodeIndex + " of " + total +
+                        "Reindexing '" + branchId + "' in '" + params.getRepositoryId() + "'" + ": processed " + nodeIndex + " of " + total +
                             "..." );
                 }
 
@@ -116,7 +116,7 @@ public class IndexServiceImpl
 
                 this.indexDataService.store( node, InternalContext.create( ContextAccessor.current() ).
                     repositoryId( params.getRepositoryId() ).
-                    branch( branch ).
+                    branch( branchId ).
                     build() );
 
                 builder.add( node.id() );
@@ -124,7 +124,7 @@ public class IndexServiceImpl
                 nodeIndex++;
             }
 
-            LOG.info( "Finished reindexing '" + branch + "' branch in '" + params.getRepositoryId() + "' repository: " + total +
+            LOG.info( "Finished reindexing '" + branchId + "' branch in '" + params.getRepositoryId() + "' repository: " + total +
                           " items reindexed" );
         }
 

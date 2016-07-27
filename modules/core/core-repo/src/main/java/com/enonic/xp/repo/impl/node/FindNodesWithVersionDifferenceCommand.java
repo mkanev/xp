@@ -1,6 +1,6 @@
 package com.enonic.xp.repo.impl.node;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.node.NodeBranchEntries;
 import com.enonic.xp.node.NodeBranchEntry;
@@ -22,9 +22,9 @@ public class FindNodesWithVersionDifferenceCommand
 
     private final NodePath nodePath;
 
-    private final Branch source;
+    private final BranchId source;
 
-    private final Branch target;
+    private final BranchId target;
 
     private final OrderExpr orderExpr;
 
@@ -104,9 +104,9 @@ public class FindNodesWithVersionDifferenceCommand
 
         private NodePath nodePath;
 
-        private Branch source;
+        private BranchId source;
 
-        private Branch target;
+        private BranchId target;
 
         private OrderExpr orderExpr;
 
@@ -150,13 +150,13 @@ public class FindNodesWithVersionDifferenceCommand
             return this;
         }
 
-        public Builder source( final Branch val )
+        public Builder source( final BranchId val )
         {
             source = val;
             return this;
         }
 
-        public Builder target( final Branch val )
+        public Builder target( final BranchId val )
         {
             target = val;
             return this;

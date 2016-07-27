@@ -1,12 +1,16 @@
 package com.enonic.xp.repo.impl.branch.storage;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.collect.Sets;
 
+import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
+import com.enonic.xp.branch.Branches;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeBranchEntries;
@@ -170,18 +174,18 @@ public class BranchServiceImpl
     @Override
     public void evictPath( final NodePath nodePath, final InternalContext context )
     {
-        pathCache.evict( new BranchPath( context.getBranch(), nodePath ) );
+        pathCache.evict( new BranchPath( context.getBranchId(), nodePath ) );
     }
 
     private BranchPath createPath( final NodePath nodePath, final InternalContext context )
     {
-        return new BranchPath( context.getBranch(), nodePath );
+        return new BranchPath( context.getBranchId(), nodePath );
     }
 
 
     private NodeBranchEntry doGetByPathNew( final NodePath nodePath, final InternalContext context )
     {
-        final NodeId nodeId = this.pathCache.get( new BranchPath( context.getBranch(), nodePath ) );
+        final NodeId nodeId = this.pathCache.get( new BranchPath( context.getBranchId(), nodePath ) );
 
         if ( nodeId != null )
         {
@@ -194,7 +198,7 @@ public class BranchServiceImpl
                 addValue( ValueFactory.newString( nodePath.toString() ) ).build() ).
             addQueryFilter( ValueFilter.create().
                 fieldName( BranchIndexPath.BRANCH_NAME.getPath() ).
-                addValue( ValueFactory.newString( context.getBranch().getName() ) ).
+                addValue( ValueFactory.newString( context.getBranchId().getValue() ) ).
                 build() ).
             size( 1 ).
             build();
@@ -229,7 +233,7 @@ public class BranchServiceImpl
 
     private void doCache( final InternalContext context, final NodePath nodePath, final NodeId nodeId )
     {
-        pathCache.cache( new BranchPath( context.getBranch(), nodePath ), nodeId );
+        pathCache.cache( new BranchPath( context.getBranchId(), nodePath ), nodeId );
     }
 
     private NodeBranchEntries getKeepOrder( final NodeIds nodeIds, final InternalContext context )
@@ -264,7 +268,7 @@ public class BranchServiceImpl
             query( NodeBranchQuery.create().
                 addQueryFilter( ValueFilter.create().
                     fieldName( BranchIndexPath.BRANCH_NAME.getPath() ).
-                    addValue( ValueFactory.newString( context.getBranch().getName() ) ).
+                    addValue( ValueFactory.newString( context.getBranchId().getValue() ) ).
                     build() ).
                 addQueryFilter( ValueFilter.create().
                     fieldName( BranchIndexPath.NODE_ID.getPath() ).
@@ -306,7 +310,7 @@ public class BranchServiceImpl
         return StorageSettings.create().
             indexType( IndexType.BRANCH ).
             repositoryId( context.getRepositoryId() ).
-            branch( context.getBranch() ).
+            branch( context.getBranchId() ).
             build();
     }
 

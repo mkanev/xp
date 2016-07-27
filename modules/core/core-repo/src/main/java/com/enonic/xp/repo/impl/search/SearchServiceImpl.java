@@ -55,7 +55,7 @@ public class SearchServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.SEARCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             acl( context.getPrincipalsKeys() ).
             query( query ).
@@ -74,7 +74,7 @@ public class SearchServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.BRANCH ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             returnFields( BRANCH_RETURN_FIELDS ).
             acl( context.getPrincipalsKeys() ).
@@ -98,7 +98,7 @@ public class SearchServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.VERSION ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             returnFields( VERSION_RETURN_FIELDS ).
             acl( context.getPrincipalsKeys() ).
@@ -122,7 +122,7 @@ public class SearchServiceImpl
             settings( StorageSettings.create().
                 indexType( IndexType.VERSION ).
                 repositoryId( context.getRepositoryId() ).
-                branch( context.getBranch() ).
+                branch( context.getBranchId() ).
                 build() ).
             returnFields( VERSION_RETURN_FIELDS ).
             acl( context.getPrincipalsKeys() ).

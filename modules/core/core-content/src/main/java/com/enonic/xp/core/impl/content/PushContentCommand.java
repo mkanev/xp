@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.CompareContentResult;
 import com.enonic.xp.content.CompareContentResults;
 import com.enonic.xp.content.CompareStatus;
@@ -32,7 +32,7 @@ public class PushContentCommand
 
     private final ContentIds excludedContentIds;
 
-    private final Branch target;
+    private final BranchId target;
 
     private final boolean resolveSyncWork;
 
@@ -189,7 +189,7 @@ public class PushContentCommand
 
         private ContentIds excludedContentIds;
 
-        private Branch target;
+        private BranchId target;
 
         private boolean includeDependencies = true;
 
@@ -207,7 +207,7 @@ public class PushContentCommand
             return this;
         }
 
-        public Builder target( final Branch target )
+        public Builder target( final BranchId target )
         {
             this.target = target;
             return this;

@@ -14,7 +14,7 @@ import com.enonic.xp.node.NodePath;
 import com.enonic.xp.repo.impl.elasticsearch.document.IndexDocument;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 
-import static com.enonic.xp.repo.impl.TestContext.TEST_BRANCH;
+import static com.enonic.xp.repo.impl.TestContext.TEST_BRANCH_ID;
 import static com.enonic.xp.repo.impl.TestContext.TEST_REPOSITORY;
 import static org.junit.Assert.*;
 
@@ -32,7 +32,7 @@ public class NodeIndexDocumentFactoryTest
         {
             NodeStoreDocumentFactory.createBuilder().
                 node( node ).
-                branch( TEST_BRANCH ).
+                branch( TEST_BRANCH_ID ).
                 repositoryId( TEST_REPOSITORY.getId() ).
                 build().
                 create();
@@ -55,7 +55,7 @@ public class NodeIndexDocumentFactoryTest
 
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
-            branch( TEST_BRANCH ).
+            branch( TEST_BRANCH_ID ).
             repositoryId( TEST_REPOSITORY.getId() ).
             build().
             create();
@@ -73,7 +73,7 @@ public class NodeIndexDocumentFactoryTest
 
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
-            branch( TEST_BRANCH ).
+            branch( TEST_BRANCH_ID ).
             repositoryId( TEST_REPOSITORY.getId() ).
             build().
             create();
@@ -98,7 +98,7 @@ public class NodeIndexDocumentFactoryTest
 
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
-            branch( TEST_BRANCH ).
+            branch( TEST_BRANCH_ID ).
             repositoryId( TEST_REPOSITORY.getId() ).
             build().
             create();
@@ -126,7 +126,7 @@ public class NodeIndexDocumentFactoryTest
 
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
-            branch( TEST_BRANCH ).
+            branch( TEST_BRANCH_ID ).
             repositoryId( TEST_REPOSITORY.getId() ).
             build().
             create();

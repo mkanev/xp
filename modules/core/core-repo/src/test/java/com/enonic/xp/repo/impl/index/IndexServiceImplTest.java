@@ -191,7 +191,7 @@ public class IndexServiceImplTest
 
         final Context cmsRepoContext = ContextBuilder.from( ContextAccessor.current() ).
             repositoryId( ContentConstants.CONTENT_REPO.getId() ).
-            branch( ContentConstants.BRANCH_DRAFT ).
+            branch( ContentConstants.BRANCH_ID_DRAFT ).
             build();
 
         cmsRepoContext.callWith( this::createDefaultRootNode );
@@ -233,7 +233,7 @@ public class IndexServiceImplTest
 
         final Context systemRepoContext = ContextBuilder.from( ContextAccessor.current() ).
             repositoryId( SystemConstants.SYSTEM_REPO.getId() ).
-            branch( SystemConstants.BRANCH_SYSTEM ).
+            branch( SystemConstants.BRANCH_ID_SYSTEM ).
             build();
 
         systemRepoContext.callWith( this::createDefaultRootNode );

@@ -79,7 +79,7 @@ public class PortalServletTest
             build();
 
         this.handler.verifier = req -> {
-            assertEquals( "master", req.getBranch().toString() );
+            assertEquals( "master", req.getBranchId().toString() );
             assertEquals( RenderMode.LIVE, req.getMode() );
             assertEquals( this.server.getPort(), req.getPort() );
             assertEquals( "localhost", req.getHost() );

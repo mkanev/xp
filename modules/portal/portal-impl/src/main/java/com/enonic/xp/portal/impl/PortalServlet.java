@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.content.ContentPath;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.portal.PortalAttributes;
@@ -90,13 +90,13 @@ public final class PortalServlet
     {
         try
         {
-            if ( req.getBranch() == null )
+            if ( req.getBranchId() == null )
             {
                 throw PortalException.notFound( "Branch needs to be specified" );
             }
 
             final PortalHandler handler = this.registry.find( req );
-            ContextAccessor.current().getLocalScope().setAttribute( req.getBranch() );
+            ContextAccessor.current().getLocalScope().setAttribute( req.getBranchId() );
 
             final WebSocketEndpoint endpoint = handler.newWebSocketEndpoint( req, config );
             context.apply( endpoint );
@@ -116,7 +116,7 @@ public final class PortalServlet
         setRenderMode( req, result );
 
         final String rawPath = decodeUrl( req.getRequestURI() );
-        result.setBranch( findBranch( rawPath ) );
+        result.setBranchId( findBranch( rawPath ) );
         result.setEndpointPath( findEndpointPath( rawPath ) );
         result.setContentPath( findContentPath( rawPath ) );
         result.setRawRequest( req );
@@ -195,14 +195,14 @@ public final class PortalServlet
     {
         try
         {
-            if ( req.getBranch() == null )
+            if ( req.getBranchId() == null )
             {
                 throw PortalException.notFound( "Branch needs to be specified" );
             }
 
             final PortalHandler handler = this.registry.find( req );
 
-            ContextAccessor.current().getLocalScope().setAttribute( req.getBranch() );
+            ContextAccessor.current().getLocalScope().setAttribute( req.getBranchId() );
             return filterResponse( handler.handle( req ) );
         }
         catch ( final Exception e )
@@ -235,11 +235,11 @@ public final class PortalServlet
         this.registry.remove( handler );
     }
 
-    private static Branch findBranch( final String path )
+    private static BranchId findBranch( final String path )
     {
         final int index = path.indexOf( '/', PATH_PREFIX.length() );
         final String result = path.substring( PATH_PREFIX.length(), index > 0 ? index : path.length() );
-        return Strings.isNullOrEmpty( result ) ? null : Branch.from( result );
+        return Strings.isNullOrEmpty( result ) ? null : BranchId.from( result );
     }
 
     private static ContentPath findContentPath( final String path )

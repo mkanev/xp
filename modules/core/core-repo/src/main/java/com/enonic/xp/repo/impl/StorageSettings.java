@@ -2,7 +2,7 @@ package com.enonic.xp.repo.impl;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repository.RepositoryId;
@@ -13,13 +13,13 @@ public class StorageSettings
 
     private final RepositoryId repositoryId;
 
-    private final Branch branch;
+    private final BranchId branchId;
 
     private StorageSettings( final Builder builder )
     {
         indexType = builder.indexType;
         repositoryId = builder.repositoryId;
-        branch = builder.branch;
+        branchId = builder.branchId;
     }
 
     public static Builder create()
@@ -39,7 +39,7 @@ public class StorageSettings
             return indexType.getName();
         }
 
-        return branch.toString();
+        return branchId.toString();
     }
 
     public static final class Builder
@@ -48,7 +48,7 @@ public class StorageSettings
 
         private RepositoryId repositoryId;
 
-        private Branch branch;
+        private BranchId branchId;
 
         private Builder()
         {
@@ -66,9 +66,9 @@ public class StorageSettings
             return this;
         }
 
-        public Builder branch( final Branch val )
+        public Builder branch( final BranchId val )
         {
-            branch = val;
+            branchId = val;
             return this;
         }
 
@@ -76,7 +76,7 @@ public class StorageSettings
         {
             Preconditions.checkNotNull( indexType, "indexType must be set" );
             Preconditions.checkNotNull( repositoryId, "repositoryId must be set" );
-            Preconditions.checkNotNull( branch, "branch must be set" );
+            Preconditions.checkNotNull( branchId, "branch must be set" );
         }
 
         public StorageSettings build()

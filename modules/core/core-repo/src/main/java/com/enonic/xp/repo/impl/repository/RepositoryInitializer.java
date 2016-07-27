@@ -3,6 +3,9 @@ package com.enonic.xp.repo.impl.repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.enonic.xp.branch.Branch;
+import com.enonic.xp.branch.Branches;
+import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.repo.impl.elasticsearch.ClusterHealthStatus;
 import com.enonic.xp.repo.impl.elasticsearch.ClusterStatusCode;
@@ -70,6 +73,18 @@ public final class RepositoryInitializer
             {
                 waitForInitialized( repositoryId );
             }
+
+            Branches.getInstance().add( Branch.create().
+                branchId( ContentConstants.BRANCH_ID_DRAFT ).
+                isMaster( false ).
+                master( ContentConstants.BRANCH_ID_MASTER ).
+                build() );
+
+            Branches.getInstance().add( Branch.create().
+                branchId( ContentConstants.BRANCH_ID_MASTER ).
+                isMaster( true ).
+                master( null ).
+                build() );
         }
     }
 

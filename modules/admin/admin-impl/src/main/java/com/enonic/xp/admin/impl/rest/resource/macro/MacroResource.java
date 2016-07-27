@@ -171,7 +171,7 @@ public final class MacroResource
         portalRequest.setMethod( HttpMethod.GET );
         portalRequest.setBaseUri( "/portal" );
         portalRequest.setMode( RenderMode.EDIT );
-        portalRequest.setBranch( ContentConstants.BRANCH_DRAFT );
+        portalRequest.setBranchId( ContentConstants.BRANCH_ID_DRAFT );
         portalRequest.setScheme( ServletRequestUrlHelper.getScheme( req ) );
         portalRequest.setHost( ServletRequestUrlHelper.getHost( req ) );
         portalRequest.setPort( ServletRequestUrlHelper.getPort( req ) );

@@ -1,31 +1,43 @@
 package com.enonic.xp.branch;
 
-import com.google.common.annotations.Beta;
-import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 
-import com.enonic.xp.support.AbstractImmutableEntitySet;
+import com.google.common.collect.Maps;
 
-@Beta
-public final class Branches
-    extends AbstractImmutableEntitySet<Branch>
+/**
+ * Temporary holder for branches for testing-purposes
+ */
+public class Branches
 {
-    private Branches( final ImmutableSet<Branch> set )
+    public static Branches instance = null;
+
+    private final Map<BranchId, Branch> branches;
+
+    private Branches()
     {
-        super( set );
+        this.branches = Maps.newHashMap();
     }
 
-    public static Branches from( final Branch... branches )
+    public BranchId add( final Branch branch )
     {
-        return new Branches( ImmutableSet.copyOf( branches ) );
+        this.branches.put( branch.getBranchId(), branch );
+        return branch.getBranchId();
     }
 
-    public static Branches from( final Iterable<Branch> branches )
+    public Branch get( final BranchId branchId )
     {
-        return new Branches( ImmutableSet.copyOf( branches ) );
+        return this.branches.get( branchId );
     }
 
-    public static Branches empty()
+    public static Branches getInstance()
     {
-        return new Branches( ImmutableSet.of() );
+        if ( instance == null )
+        {
+            instance = new Branches();
+        }
+
+        return instance;
     }
+
+
 }
