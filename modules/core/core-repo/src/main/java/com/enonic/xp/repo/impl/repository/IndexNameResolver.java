@@ -11,6 +11,8 @@ public class IndexNameResolver
 
     private final static String BRANCH_INDEX_PREFIX = "branch";
 
+    private final static String CHANGELOG_INDEX_PREFIX = "changelog";
+
     private final static String DIVIDER = "-";
 
 
@@ -34,6 +36,8 @@ public class IndexNameResolver
                 return repositoryId.toString() + DIVIDER + BRANCH_INDEX_PREFIX;
             case VERSION:
                 return repositoryId.toString() + DIVIDER + VERSION_INDEX_PREFIX;
+            case CHANGELOG:
+                return repositoryId.toString() + DIVIDER + CHANGELOG_INDEX_PREFIX;
             default:
                 throw new IllegalArgumentException( "Cannot resolve name for index-type [" + indexType + "]" );
         }

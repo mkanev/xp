@@ -34,7 +34,7 @@ public class StorageSettings
 
     public String getIndexType()
     {
-        if ( indexType.equals( IndexType.VERSION ) )
+        if ( !indexType.isDynamicTypes() )
         {
             return indexType.getName();
         }

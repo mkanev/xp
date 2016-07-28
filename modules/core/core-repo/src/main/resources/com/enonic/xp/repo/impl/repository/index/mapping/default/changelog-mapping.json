@@ -1,0 +1,22 @@
+{
+  "_default_": {
+    "_all": {
+      "enabled": false
+    },
+    "_source": {
+      "enabled": true
+    },
+    "date_detection": false,
+    "numeric_detection": false,
+    "properties": {
+      "path": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
+      "nodeid": {
+        "type": "string",
+        "index": "not_analyzed"
+      }
+    }
+  }
+}

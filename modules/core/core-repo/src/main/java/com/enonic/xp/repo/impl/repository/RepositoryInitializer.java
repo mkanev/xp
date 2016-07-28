@@ -64,6 +64,10 @@ public final class RepositoryInitializer
                             indexMapping( IndexMappingProvider.get( repositoryId, IndexType.VERSION, indexResourceProvider ) ).
                             indexSettings( IndexSettingsProvider.get( repositoryId, IndexType.VERSION, indexResourceProvider ) ).
                             build() ).
+                        add( IndexType.CHANGELOG, IndexConfig.create().
+                            indexMapping( IndexMappingProvider.get( repositoryId, IndexType.CHANGELOG, indexResourceProvider ) ).
+                            indexSettings( IndexSettingsProvider.get( repositoryId, IndexType.CHANGELOG, indexResourceProvider ) ).
+                            build() ).
                         build() ).
                     build();
 
