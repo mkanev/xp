@@ -33,7 +33,6 @@ public class VersionStorageDocFactory
                 branch( branchId ).
                 build() ).
             data( data ).
-            routing( nodeVersion.getNodeId().toString() ).
             build();
     }
 

@@ -1,16 +1,12 @@
 package com.enonic.xp.repo.impl.branch.storage;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.xp.branch.Branch;
-import com.enonic.xp.branch.BranchId;
-import com.enonic.xp.branch.Branches;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.NodeBranchEntries;
@@ -30,6 +26,7 @@ import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResultFactory;
 import com.enonic.xp.repo.impl.cache.BranchPath;
 import com.enonic.xp.repo.impl.cache.PathCache;
 import com.enonic.xp.repo.impl.cache.PathCacheImpl;
+import com.enonic.xp.repo.impl.changelog.ChangelogService;
 import com.enonic.xp.repo.impl.search.SearchDao;
 import com.enonic.xp.repo.impl.search.SearchRequest;
 import com.enonic.xp.repo.impl.search.result.SearchHit;
@@ -56,6 +53,8 @@ public class BranchServiceImpl
 
     private SearchDao searchDao;
 
+    private ChangelogService changelogService;
+
     @Override
     public String store( final NodeBranchEntry nodeBranchEntry, final InternalContext context )
     {
@@ -66,8 +65,9 @@ public class BranchServiceImpl
     {
         final StoreRequest storeRequest = BranchStorageRequestFactory.create( nodeBranchEntry, context );
         final String id = this.storageDao.store( storeRequest );
-
         doCache( context, nodeBranchEntry.getNodePath(), NodeId.from( id ) );
+
+        changelogService.store( nodeBranchEntry.getNodeId(), nodeBranchEntry.getNodePath(), context );
 
         return id;
     }
@@ -301,7 +301,6 @@ public class BranchServiceImpl
             id( nodeId.toString() ).
             storageSettings( createStorageSettings( context ) ).
             returnFields( BRANCH_RETURN_FIELDS ).
-            routing( nodeId.toString() ).
             build();
     }
 
@@ -324,6 +323,12 @@ public class BranchServiceImpl
     public void setSearchDao( final SearchDao searchDao )
     {
         this.searchDao = searchDao;
+    }
+
+    @Reference
+    public void setChangelogService( final ChangelogService changelogService )
+    {
+        this.changelogService = changelogService;
     }
 }
 

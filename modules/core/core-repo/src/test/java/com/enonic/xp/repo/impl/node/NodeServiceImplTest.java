@@ -109,8 +109,6 @@ public class NodeServiceImplTest
                 build() ) ).
             build() );
 
-        printContentRepoIndex();
-
         final Context context = ContextBuilder.create().
             authInfo( AuthenticationInfo.create().
                 user( user ).

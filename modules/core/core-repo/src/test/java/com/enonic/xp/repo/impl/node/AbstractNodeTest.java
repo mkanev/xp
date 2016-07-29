@@ -14,7 +14,6 @@ import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.data.PropertyTree;
-import com.enonic.xp.index.IndexType;
 import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.CreateRootNodeParams;
@@ -31,6 +30,7 @@ import com.enonic.xp.node.PushNodesResult;
 import com.enonic.xp.node.UpdateNodeParams;
 import com.enonic.xp.query.parser.QueryParser;
 import com.enonic.xp.repo.impl.branch.storage.BranchServiceImpl;
+import com.enonic.xp.repo.impl.changelog.ChangelogServiceImpl;
 import com.enonic.xp.repo.impl.config.RepoConfiguration;
 import com.enonic.xp.repo.impl.elasticsearch.AbstractElasticsearchIntegrationTest;
 import com.enonic.xp.repo.impl.elasticsearch.IndexServiceInternalImpl;
@@ -38,7 +38,6 @@ import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.snapshot.SnapshotServiceImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDaoImpl;
-import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
 import com.enonic.xp.repo.impl.repository.RepositoryServiceImpl;
 import com.enonic.xp.repo.impl.search.SearchServiceImpl;
@@ -46,7 +45,6 @@ import com.enonic.xp.repo.impl.storage.IndexDataServiceImpl;
 import com.enonic.xp.repo.impl.storage.StorageServiceImpl;
 import com.enonic.xp.repo.impl.version.VersionServiceImpl;
 import com.enonic.xp.repository.Repository;
-import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SystemConstants;
@@ -138,9 +136,13 @@ public abstract class AbstractNodeTest
 
         // Branch and version-services
 
+        final ChangelogServiceImpl changelogService = new ChangelogServiceImpl();
+        changelogService.setStorageDao( storageDao );
+
         this.branchService = new BranchServiceImpl();
         this.branchService.setStorageDao( storageDao );
         this.branchService.setSearchDao( this.searchDao );
+        this.branchService.setChangelogService( changelogService );
 
         this.versionService = new VersionServiceImpl();
         this.versionService.setStorageDao( storageDao );
@@ -299,28 +301,6 @@ public abstract class AbstractNodeTest
             searchService( this.searchService ).
             build().
             execute();
-    }
-
-    protected void printContentRepoIndex()
-    {
-        printAllIndexContent( IndexNameResolver.resolveIndexName( TEST_REPO.getId(), IndexType.SEARCH ), WS_DEFAULT.getValue() );
-    }
-
-    protected void printContentRepoIndex( final RepositoryId repositoryId, final BranchId branchId )
-    {
-        printAllIndexContent( IndexNameResolver.resolveIndexName( repositoryId, IndexType.SEARCH ), branchId.getValue() );
-    }
-
-    protected void printBranchIndex()
-    {
-        printAllIndexContent( IndexNameResolver.resolveIndexName( CTX_DEFAULT.getRepositoryId(), IndexType.BRANCH ),
-                              ContextAccessor.current().getBranch().getValue() );
-    }
-
-    protected void printVersionIndex()
-    {
-        printAllIndexContent( IndexNameResolver.resolveIndexName( CTX_DEFAULT.getRepositoryId(), IndexType.VERSION ),
-                              IndexType.VERSION.getName() );
     }
 
     protected PushNodesResult pushNodes( final BranchId target, final NodeId... nodeIds )

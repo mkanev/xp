@@ -51,7 +51,6 @@ class GetBranchEntriesMethod
                     branch( context.getBranchId() ).
                     build() ).
                 returnFields( returnFields ).
-                routing( nodeId.toString() ).
                 build() );
         }
 

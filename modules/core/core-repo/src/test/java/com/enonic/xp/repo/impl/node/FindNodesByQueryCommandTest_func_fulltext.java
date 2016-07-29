@@ -81,8 +81,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
 
         refresh();
 
-        printContentRepoIndex();
-
         final NodeQuery query = NodeQuery.create().
             query( QueryExpr.from( new DynamicConstraintExpr(
                 FunctionExpr.from( "fulltext", ValueExpr.string( NodeIndexPath.ALL_TEXT.getPath() ), ValueExpr.string( "æ" ),
@@ -126,8 +124,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
             build() );
 
         refresh();
-
-        printContentRepoIndex();
 
         final NodeQuery query = NodeQuery.create().
             query( QueryExpr.from( new DynamicConstraintExpr(

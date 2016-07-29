@@ -8,6 +8,7 @@ import com.google.common.io.ByteSource;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.index.ChildOrder;
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.FindNodesByQueryResult;
@@ -66,10 +67,6 @@ public class CreateNodeCommandTest
     public void timestamp_set()
         throws Exception
     {
-        printVersionIndex();
-        printBranchIndex();
-        printContentRepoIndex();
-
         final Node node = createNode( CreateNodeParams.create().
             name( "myNode" ).
             parent( NodePath.ROOT ).
@@ -80,6 +77,10 @@ public class CreateNodeCommandTest
         final Node storedNode = getNodeById( node.id() );
 
         assertNotNull( storedNode.getTimestamp() );
+
+        refresh();
+
+        printIndex( TEST_REPO.getId(), IndexType.CHANGELOG );
     }
 
     @Test

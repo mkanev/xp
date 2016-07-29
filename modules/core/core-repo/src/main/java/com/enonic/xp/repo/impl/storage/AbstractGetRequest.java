@@ -12,8 +12,6 @@ public abstract class AbstractGetRequest
 
     private final ReturnFields returnFields;
 
-    private final String routing;
-
     private final int timeout;
 
     AbstractGetRequest( final Builder builder )
@@ -21,7 +19,6 @@ public abstract class AbstractGetRequest
         this.searchPreference = builder.searchPreference;
         this.storageSettings = builder.storageSettings;
         this.returnFields = builder.returnFields;
-        this.routing = builder.routing;
         this.timeout = builder.timeout;
     }
 
@@ -40,11 +37,6 @@ public abstract class AbstractGetRequest
         return returnFields;
     }
 
-    public String getRouting()
-    {
-        return routing;
-    }
-
     public String getTimeout()
     {
         return timeout + "s";
@@ -57,8 +49,6 @@ public abstract class AbstractGetRequest
         private StorageSettings storageSettings;
 
         private ReturnFields returnFields;
-
-        private String routing;
 
         private int timeout = 5;
 
@@ -81,13 +71,6 @@ public abstract class AbstractGetRequest
         public B storageSettings( StorageSettings storageSettings )
         {
             this.storageSettings = storageSettings;
-            return (B) this;
-        }
-
-        @SuppressWarnings("unchecked")
-        public B routing( String routing )
-        {
-            this.routing = routing;
             return (B) this;
         }
     }

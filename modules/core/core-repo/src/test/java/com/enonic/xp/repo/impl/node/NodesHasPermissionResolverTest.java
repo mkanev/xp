@@ -46,8 +46,6 @@ public class NodesHasPermissionResolverTest
 
         refresh();
 
-        printContentRepoIndex();
-
         assertTrue( hasPermission( NodeIds.from( node.id() ), Permission.READ ) );
         assertTrue( hasPermission( NodeIds.from( node.id() ), Permission.CREATE ) );
         assertFalse( hasPermission( NodeIds.from( node.id() ), Permission.DELETE ) );
@@ -82,8 +80,6 @@ public class NodesHasPermissionResolverTest
             build() );
 
         refresh();
-
-        printContentRepoIndex();
 
         assertTrue( hasPermission( NodeIds.from( node1.id(), node2.id() ), Permission.READ ) );
         assertTrue( hasPermission( NodeIds.from( node1.id(), node2.id() ), Permission.CREATE ) );

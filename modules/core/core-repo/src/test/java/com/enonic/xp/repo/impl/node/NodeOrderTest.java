@@ -86,8 +86,6 @@ public class NodeOrderTest
                                    FieldOrderExpr.create( IndexPath.from( "_score" ), OrderExpr.Direction.DESC ) ) ).
             build();
 
-        printContentRepoIndex();
-
         final NodeQueryResult nodeQueryResult = searchService.query( fulltextQuery, InternalContext.from( ContextAccessor.current() ) );
 
         assertEquals( 4, nodeQueryResult.getHits() );

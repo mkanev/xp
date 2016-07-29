@@ -12,7 +12,9 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.enonic.xp.index.IndexType;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
+import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repository.Repository;
 import com.enonic.xp.repository.RepositoryId;
 
@@ -56,8 +58,10 @@ public abstract class AbstractElasticsearchIntegrationTest
     }
 
 
-    protected void printAllIndexContent( final String indexName, final String indexType )
+    protected void printIndex( final RepositoryId repoId, final IndexType indexType )
     {
+        final String indexName = IndexNameResolver.resolveIndexName( repoId, indexType );
+
         String termQuery = "{\n" +
             "  \"query\": { \"match_all\": {} }\n" +
             "}";
@@ -65,7 +69,7 @@ public abstract class AbstractElasticsearchIntegrationTest
         SearchRequestBuilder searchRequest = new SearchRequestBuilder( this.client ).
             setSize( 100 ).
             setIndices( indexName ).
-            setTypes( indexType ).
+            setTypes( indexType.getName() ).
             setSource( termQuery ).
             addFields( "_source", "_parent" );
 

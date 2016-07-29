@@ -61,16 +61,6 @@ public class StorageDaoImpl
             id( request.getId() ).
             refresh( request.isForceRefresh() );
 
-        if ( request.getRouting() != null )
-        {
-            indexRequest.routing( request.getRouting() );
-        }
-
-        if ( request.getParent() != null )
-        {
-            indexRequest.parent( request.getParent() );
-        }
-
         return doStore( indexRequest, request.getTimeout() );
     }
 
@@ -142,11 +132,6 @@ public class StorageDaoImpl
             getRequest.fields( request.getReturnFields().getReturnFieldNames() );
         }
 
-        if ( request.getRouting() != null )
-        {
-            getRequest.routing( request.getRouting() );
-        }
-
         final GetResponse getResponse = client.get( getRequest ).
             actionGet( request.getTimeout() );
 
@@ -173,11 +158,6 @@ public class StorageDaoImpl
             if ( request.getReturnFields().isNotEmpty() )
             {
                 item.fields( request.getReturnFields().getReturnFieldNames() );
-            }
-
-            if ( request.getRouting() != null )
-            {
-                item.routing( request.getRouting() );
             }
 
             multiGetRequestBuilder.add( item );

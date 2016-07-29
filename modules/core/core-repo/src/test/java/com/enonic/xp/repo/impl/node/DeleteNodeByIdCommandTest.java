@@ -37,11 +37,7 @@ public class DeleteNodeByIdCommandTest
 
         refresh();
 
-        printContentRepoIndex();
-
         doDeleteNode( createdNode.id() );
-
-        printContentRepoIndex();
 
         assertNull( getNodeById( createdNode.id() ) );
     }

@@ -150,8 +150,6 @@ public class FindNodesByQueryCommandTest_compare
             parent( node1.path() ).
             build() );
 
-        printContentRepoIndex();
-
         final FindNodesByQueryResult result = doQuery( "myCategory LIKE '*' AND NOT myCategory = 'article'" );
         assertEquals( 1, result.getHits() );
     }

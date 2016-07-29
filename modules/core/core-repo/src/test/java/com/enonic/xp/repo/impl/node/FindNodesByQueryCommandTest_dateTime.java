@@ -78,8 +78,6 @@ public class FindNodesByQueryCommandTest_dateTime
         createNodeWithLocalDateTime( LocalDateTime.parse( "2015-01-26T10:00:00" ), "node1", NodePath.ROOT );
         createNodeWithLocalDateTime( LocalDateTime.parse( "2015-01-27T10:00:00" ), "node2", NodePath.ROOT );
 
-        printContentRepoIndex();
-
         queryAndAssert( "myLocalDateTime = '2015-01-26T10:00:00'", 1 );
         queryAndAssert( "myLocalDateTime = localDateTime('2015-01-26T10:00')", 1 );
         queryAndAssert( "myLocalDateTime > '2015-01-26T10:00:00'", 1 );
@@ -95,8 +93,6 @@ public class FindNodesByQueryCommandTest_dateTime
         createNodeWithLocalTime( LocalTime.of( 11, 36, 30 ), "node4", NodePath.ROOT );
         createNodeWithLocalTime( LocalTime.of( 12, 36, 30 ), "node5", NodePath.ROOT );
         createNodeWithLocalTime( LocalTime.of( 13, 36, 30 ), "node6", NodePath.ROOT );
-
-        printContentRepoIndex();
 
         queryAndAssert( "myLocalTime > time('9:00')", 6 );
         queryAndAssert( "myLocalTime = '09:36'", 2 );

@@ -55,8 +55,6 @@ public class FindNodesByQueryCommandTest_arrays
                 build() ).
             build() );
 
-        printContentRepoIndex();
-
         compareQueryAndAssert( "cars.car.brand", "skoda", node1.id() );
         compareQueryAndAssert( "cars.car.brand", "volvo", node1.id() );
         compareQueryAndAssert( "cars.car.color", "red", node1.id() );

@@ -31,8 +31,6 @@ public class FindeNodesByQueryCommandTest_like
     {
         setupData();
 
-        printContentRepoIndex();
-
         queryAndExpect( "_parentPath=\"/content/superhero/posts\" AND data.tags LIKE \"tag\"", 1 );
         queryAndExpect( "_parentPath=\"/content/superhero/posts\" AND data.tags LIKE \"sample\"", 1 );
     }
