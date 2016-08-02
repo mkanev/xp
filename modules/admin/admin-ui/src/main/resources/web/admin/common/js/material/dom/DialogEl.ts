@@ -24,6 +24,10 @@ module api.material.dom {
             return this.getHTMLElement()["close"]();
         }
 
+        open() {
+            return this.showModal();
+        }
+
         close() {
             return this.hide();
         }

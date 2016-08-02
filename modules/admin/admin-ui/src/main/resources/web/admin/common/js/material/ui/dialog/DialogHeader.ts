@@ -1,6 +1,5 @@
 module api.material.ui.dialog {
 
-    import DivEl = api.dom.DivEl;
     import SpanEl = api.dom.SpanEl;
     import HeaderEl = api.material.dom.HeaderEl;
 
