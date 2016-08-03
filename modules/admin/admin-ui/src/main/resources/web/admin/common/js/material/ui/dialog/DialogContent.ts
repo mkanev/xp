@@ -14,5 +14,21 @@ module api.material.ui.dialog {
 
         initialize(config: DialogContentConfig) {
         }
+
+        isDataLoaded(): boolean {
+            return true;
+        }
+
+        doRender(): wemQ.Promise<boolean> {
+            return super.doRender().then((rendered) => {
+                if (this.isDataLoaded()) {
+                    return this.doRenderOnDataLoaded(rendered);
+                }
+            });
+        }
+
+        doRenderOnDataLoaded(rendered: boolean): wemQ.Promise<boolean> {
+            return wemQ(true);
+        }
     }
 }

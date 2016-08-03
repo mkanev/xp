@@ -4,7 +4,7 @@ module api.material.ui.dialog {
     import HeaderEl = api.material.dom.HeaderEl;
 
     export interface DialogHeaderConfig {
-        title: string;
+        title?: string;
     }
 
     export class DialogHeader extends HeaderEl {
@@ -24,6 +24,24 @@ module api.material.ui.dialog {
 
         setTitle(title: string) {
             this.title.setHtml(title);
+        }
+
+        isDataLoaded(): boolean {
+            return true;
+        }
+
+        doRender(): wemQ.Promise<boolean> {
+            return super.doRender().then((rendered) => {
+                if (this.isDataLoaded()) {
+                    return this.doRenderOnDataLoaded(rendered);
+                }
+            });
+        }
+
+        doRenderOnDataLoaded(rendered: boolean): wemQ.Promise<boolean> {
+            this.appendChild(this.title);
+
+            return wemQ(true);
         }
     }
 }

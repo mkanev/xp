@@ -63,10 +63,6 @@
 
 ///<reference path='ui/responsive/_module.ts' />
 
-///<reference path='material/_module.ts' />
-///<reference path='material/dom/_module.ts' />
-///<reference path='material/ui/_module.ts' />
-///<reference path='material/ui/dialog/_module.ts' />
 ///<reference path='ui/_module.ts' />
 ///<reference path='ui/menu/_module.ts' />
 ///<reference path='ui/button/_module.ts' />
@@ -95,6 +91,12 @@
 ///<reference path='ui/security/auth/_module.ts' />
 
 ///<reference path='ui/locale/_module.ts' />
+
+///<reference path='material/_module.ts' />
+///<reference path='material/dom/_module.ts' />
+///<reference path='material/ui/_module.ts' />
+///<reference path='material/ui/button/_module.ts' />
+///<reference path='material/ui/dialog/_module.ts' />
 
 ///<reference path='form/_module-doc.ts' />
 ///<reference path='form/json/_module.ts' />

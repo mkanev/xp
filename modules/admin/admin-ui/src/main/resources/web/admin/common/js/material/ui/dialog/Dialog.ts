@@ -20,6 +20,12 @@ module api.material.ui.dialog {
         }
 
         initialize(config: DialogConfig) {
+            if (config.actions) {
+                config.actions.dialog = this;
+            } else {
+                config.actions = {dialog: this};
+            }
+
             this.initHeader(config.title);
             this.initContent(config.content);
             this.initActions(config.actions);
@@ -47,6 +53,12 @@ module api.material.ui.dialog {
                 if (this.isDataLoaded()) {
                     return this.doRenderOnDataLoaded(rendered);
                 }
+                return wemQ(true);
+            }).then((rendered: boolean) => {
+                console.log('give focus');
+                this.actions.giveFocus();
+
+                return wemQ(true);
             });
 
         }
