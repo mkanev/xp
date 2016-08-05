@@ -12,6 +12,7 @@ import {PublishContentAction} from "./PublishContentAction";
 import {PublishTreeContentAction} from "./PublishTreeContentAction";
 import {UnpublishContentAction} from "./UnpublishContentAction";
 import {ContentBrowseItem} from "../ContentBrowseItem";
+import {NewContentDialog} from "../../material/create/NewContentDialog";
 
 import Action = api.ui.Action;
 import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
@@ -63,6 +64,21 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
             this.DUPLICATE_CONTENT, this.MOVE_CONTENT,
             this.SORT_CONTENT, this.PREVIEW_CONTENT
         );
+
+        const action = new Action('MD Dialog');
+        let dialog;
+        action.onExecuted(() => {
+            if (!dialog) {
+                // dialog = new api.material.ui.dialog.Dialog(<api.material.ui.dialog.DialogConfig>{title:{title: 'My Dialog'}});
+                dialog = new NewContentDialog(<api.material.ui.dialog.DialogConfig>{title: {title: 'My Dialog'}});
+                // api.dom.Body.get().appendChild(dialog);
+                document.body.appendChild(dialog.getHTMLElement());
+                dialog.open();
+            } else {
+                dialog.open();
+            }
+        });
+        this.actions.push(action);
 
         let previewHandler = (<PreviewContentAction>this.PREVIEW_CONTENT).getPreviewHandler();
 

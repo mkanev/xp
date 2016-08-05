@@ -64,16 +64,19 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         this.mostPopularContentTypes.hide();
 
         var contentTypesListDiv = new api.dom.DivEl("content-types-content");
-        contentTypesListDiv.appendChildren(<api.dom.Element>this.mostPopularContentTypes,
-            <api.dom.Element>this.allContentTypes);
+        contentTypesListDiv.appendChild(this.allContentTypes);
 
         section.appendChildren(<api.dom.Element>this.fileInput, <api.dom.Element>contentTypesListDiv);
 
         const wrapper = new api.dom.DivEl("material-new-content-dialog__wrapper mdl-grid");
-        section.addClass("mdl-cell mdl-cell--8-col");
-        this.recentContentTypes.addClass("mdl-cell mdl-cell--4-col");
+        section.addClass("mdl-cell mdl-cell--6-col");
+
+        const quickAccess = new api.dom.DivEl("mdl-cell mdl-cell--6-col");
+        quickAccess.appendChild(this.mostPopularContentTypes);
+        quickAccess.appendChild(this.recentContentTypes);
+        
         wrapper.appendChild(section);
-        wrapper.appendChild(this.recentContentTypes);
+        wrapper.appendChild(quickAccess);
         wrapper.appendChild(this.dropzoneContainer);
         wrapper.appendChild(this.loadMask);
 
