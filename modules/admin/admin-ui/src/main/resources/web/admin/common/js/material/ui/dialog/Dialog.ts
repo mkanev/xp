@@ -26,6 +26,11 @@ module api.material.ui.dialog {
                 config.actions = {dialog: this};
             }
 
+            if (!config.content) {
+                config.content = <DialogContentConfig>{};
+            }
+            config.content.getChildren = this.getContentElements.bind(this);
+
             this.initHeader(config.title);
             this.initContent(config.content);
             this.initActions(config.actions);
@@ -40,8 +45,16 @@ module api.material.ui.dialog {
             this.content = new DialogContent(config);
         }
 
+        getContentElements(): api.dom.Element[] {
+            return [];
+        }
+
         private initActions(config: DialogActionsConfig): void {
             this.actions = new DialogActions(config)
+        }
+
+        updateHeader(config: DialogHeaderConfig) {
+            this.header.update(config);
         }
 
         isDataLoaded(): boolean {
@@ -55,7 +68,6 @@ module api.material.ui.dialog {
                 }
                 return wemQ(true);
             }).then((rendered: boolean) => {
-                console.log('give focus');
                 this.actions.giveFocus();
 
                 return wemQ(true);

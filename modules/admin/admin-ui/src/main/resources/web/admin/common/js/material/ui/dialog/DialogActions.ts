@@ -11,7 +11,7 @@ module api.material.ui.dialog {
 
     export class DialogActions extends FooterEl {
 
-        private actions: Action[] = [];
+        private config: DialogActionsConfig;
         private buttons: FlatButton[] = [];
 
         constructor(config: DialogActionsConfig) {
@@ -20,7 +20,8 @@ module api.material.ui.dialog {
         }
 
         initialize(config: DialogActionsConfig) {
-            this.actions = config.actions || this.getDefaultActions(config);
+            this.config = config;
+            this.config.actions = config.actions || this.getDefaultActions(config);
             this.buttons = [];
         }
 
@@ -52,7 +53,7 @@ module api.material.ui.dialog {
         }
 
         doRenderOnDataLoaded(rendered: boolean): wemQ.Promise<boolean> {
-            this.actions.forEach((action) => {
+            this.config.actions.forEach((action) => {
                 const button = new FlatButton(action);
                 this.buttons.push(button)
                 this.appendChild(button);

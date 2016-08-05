@@ -5,11 +5,14 @@ module api.material.ui.dialog {
 
     export interface DialogHeaderConfig {
         title?: string;
+        subtitle?: string;
     }
 
     export class DialogHeader extends HeaderEl {
 
+        private config: DialogHeaderConfig;
         private title: SpanEl;
+        private subtitle: SpanEl;
 
         constructor(config: DialogHeaderConfig) {
             super("dialog__header mdl-dialog__title");
@@ -17,13 +20,27 @@ module api.material.ui.dialog {
         }
 
         initialize(config: DialogHeaderConfig) {
+            this.config = config;
             this.title = new SpanEl("dialog__title");
-            this.setTitle(config.title);
-            this.appendChild(this.title);
+            this.subtitle = new SpanEl("dialog__subtitle");
+            this.update(config);
+        }
+
+        update(config: DialogHeaderConfig) {
+            if (config.title != null) {
+                this.setTitle(config.title);
+            }
+            if (config.subtitle != null) {
+                this.setSubtitle(config.subtitle);
+            }
         }
 
         setTitle(title: string) {
             this.title.setHtml(title);
+        }
+
+        setSubtitle(subtitle: string) {
+            this.subtitle.setHtml(subtitle);
         }
 
         isDataLoaded(): boolean {
@@ -40,6 +57,7 @@ module api.material.ui.dialog {
 
         doRenderOnDataLoaded(rendered: boolean): wemQ.Promise<boolean> {
             this.appendChild(this.title);
+            this.appendChild(this.subtitle);
 
             return wemQ(true);
         }

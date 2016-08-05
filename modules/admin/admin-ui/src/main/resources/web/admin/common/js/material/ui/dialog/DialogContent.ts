@@ -3,9 +3,12 @@ module api.material.ui.dialog {
     import DivEl = api.dom.DivEl;
 
     export interface DialogContentConfig {
+        getChildren: () => api.dom.Element[]
     }
 
     export class DialogContent extends DivEl {
+
+        private config: DialogContentConfig;
 
         constructor(config: DialogContentConfig) {
             super("dialog__content mdl-dialog__content");
@@ -13,6 +16,7 @@ module api.material.ui.dialog {
         }
 
         initialize(config: DialogContentConfig) {
+            this.config = config;
         }
 
         isDataLoaded(): boolean {
@@ -28,6 +32,9 @@ module api.material.ui.dialog {
         }
 
         doRenderOnDataLoaded(rendered: boolean): wemQ.Promise<boolean> {
+            this.config.getChildren().forEach((child) => {
+                this.appendChild(child);
+            });
             return wemQ(true);
         }
     }
