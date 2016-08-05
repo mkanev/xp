@@ -68,10 +68,57 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
 
         section.appendChildren(<api.dom.Element>this.fileInput, <api.dom.Element>contentTypesListDiv);
 
-        const wrapper = new api.dom.DivEl("material-new-content-dialog__wrapper mdl-grid");
-        section.addClass("mdl-cell mdl-cell--6-col");
+        // Add MDL handlers
+        this.fileInput.getHTMLElement().className =
+            "material-new-content-dialog__file-input mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+        this.fileInput.getTextInput().addClass("mdl-textfield__input");
+        const forEl = this.fileInput.getTextInput().getId();
+        this.fileInput.insertChild(
+            api.dom.Element.fromString('<label class="mdl-textfield__label" for="' + forEl + '">Search for content types...</label>'), 1);
+        this.fileInput.getTextInput().setPlaceholder("");
 
-        const quickAccess = new api.dom.DivEl("mdl-cell mdl-cell--6-col");
+        const uploadButton = this.fileInput.getUploader().getUploadButton();
+        uploadButton.getHTMLElement().className =
+            "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent material-new-content-dialog__uploader"
+    );
+
+    uploadButton
+.
+    setHtml(
+
+    "Upload"
+);
+    componentHandler
+.
+    upgradeElement(uploadButton
+
+.
+    getHTMLElement()
+
+);
+
+    componentHandler
+.
+    upgradeElement(
+
+    this
+.
+    fileInput
+.
+    getHTMLElement()
+
+);
+
+        const wrapper = new api.dom.DivEl("material-new-content-dialog__wrapper mdl-grid");
+    section
+.
+    addClass(
+
+    "material-new-content-dialog__types mdl-cell mdl-cell--6-col"
+);
+
+    const
+    quickAccess = new api.dom.DivEl("material-new-content-dialog__quick-access mdl-cell mdl-cell--6-col");
         quickAccess.appendChild(this.mostPopularContentTypes);
         quickAccess.appendChild(this.recentContentTypes);
         
@@ -114,12 +161,6 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         this.fileInput.onUploadStarted(this.closeAndFireEventFromMediaUpload.bind(this));
 
         this.fileInput.onInput((event: Event) => {
-            if (api.util.StringHelper.isEmpty(this.fileInput.getValue())) {
-                this.mostPopularContentTypes.showIfNotEmpty();
-            } else {
-                this.mostPopularContentTypes.hide();
-            }
-
             this.allContentTypes.filter(this.fileInput.getValue());
         });
 
@@ -164,6 +205,21 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         new NewContentEvent(event.getItem().getContentType(), this.parentContent).fire();
     }
 
+setParentContent(parent
+:
+api.content.Content
+)
+{
+    this.parentContent = parent;
+    this.allContentTypes.setParentContent(parent);
+
+    var params: {[key: string]: any} = {
+        parent: parent ? parent.getPath().toString() : api.content.ContentPath.ROOT.toString()
+    };
+
+    this.fileInput.setUploaderParams(params)
+}
+
     open() {
         super.open();
         var keyBindings = [
@@ -181,7 +237,6 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         this.updateDialogTitlePath();
 
         this.fileInput.disable();
-        //this.uploader.setEnabled(false);
         this.resetFileInputWithUploader();
 
         // CMS-3711: reload content types each time when dialog is show.
@@ -193,7 +248,6 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         this.updateDialogTitlePath();
 
         this.fileInput.disable();
-        //this.uploader.setEnabled(false);
         this.resetFileInputWithUploader();
 
         super.show();
@@ -222,6 +276,9 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         }).finally(() => {
             this.fileInput.enable();
             this.fileInput.giveFocus();
+            this.fileInput.removeClass("has-placeholder");
+            this.fileInput.removeClass("is-disabled");
+            this.fileInput.removeClass("is-upgraded");
             this.toggleUploadersEnabled();
             this.loadMask.hide();
             this.mostPopularContentTypes.showIfNotEmpty();

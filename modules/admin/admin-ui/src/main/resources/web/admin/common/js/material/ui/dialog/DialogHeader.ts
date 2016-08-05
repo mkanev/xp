@@ -1,6 +1,7 @@
 module api.material.ui.dialog {
 
     import SpanEl = api.dom.SpanEl;
+    import PEl = api.dom.PEl;
     import HeaderEl = api.material.dom.HeaderEl;
 
     export interface DialogHeaderConfig {
@@ -12,7 +13,7 @@ module api.material.ui.dialog {
 
         private config: DialogHeaderConfig;
         private title: SpanEl;
-        private subtitle: SpanEl;
+        private subtitle: PEl;
 
         constructor(config: DialogHeaderConfig) {
             super("dialog__header mdl-dialog__title");
@@ -22,7 +23,7 @@ module api.material.ui.dialog {
         initialize(config: DialogHeaderConfig) {
             this.config = config;
             this.title = new SpanEl("dialog__title");
-            this.subtitle = new SpanEl("dialog__subtitle");
+            this.subtitle = new PEl("dialog__subtitle");
             this.update(config);
         }
 
@@ -33,6 +34,7 @@ module api.material.ui.dialog {
             if (config.subtitle != null) {
                 this.setSubtitle(config.subtitle);
             }
+            this.subtitle.toggleClass("dialog__subtitle--empty", !config.subtitle);
         }
 
         setTitle(title: string) {

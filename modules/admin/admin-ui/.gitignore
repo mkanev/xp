@@ -8,5 +8,6 @@ html-editor.css
 
 # resources #
 
-material-design-lite/
+#material-design-lite/
+material.min.*
 dialog-polyfill/

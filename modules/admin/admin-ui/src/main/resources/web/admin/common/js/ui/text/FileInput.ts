@@ -55,6 +55,10 @@ module api.ui.text {
             return this;
         }
 
+        getTextInput(): InputEl {
+            return this.textInput;
+        }
+
         getPlaceholder(): string {
             return this.textInput.getPlaceholder();
         }

@@ -7,7 +7,7 @@ import {ContentUnpublishPromptEvent} from "./app/browse/ContentUnpublishPromptEv
 import {ContentDeleteDialog} from "./app/remove/ContentDeleteDialog";
 import {ContentPublishDialog} from "./app/publish/ContentPublishDialog";
 import {ContentUnpublishDialog} from "./app/publish/ContentUnpublishDialog";
-import {NewContentDialog} from "./app/create/NewContentDialog";
+import {NewContentDialog} from "./app/material/create/NewContentDialog";
 import {ShowNewContentDialogEvent} from "./app/browse/ShowNewContentDialogEvent";
 import {SortContentDialog} from "./app/browse/SortContentDialog";
 import {MoveContentDialog} from "./app/browse/MoveContentDialog";
