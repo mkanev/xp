@@ -79,53 +79,28 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
 
         const uploadButton = this.fileInput.getUploader().getUploadButton();
         uploadButton.getHTMLElement().className =
-            "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent material-new-content-dialog__uploader"
-    );
+            "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent material-new-content-dialog__uploader";
 
-    uploadButton
-.
-    setHtml(
+        uploadButton.setHtml("Upload");
+        componentHandler.upgradeElement(uploadButton.getHTMLElement());
 
-    "Upload"
-);
-    componentHandler
-.
-    upgradeElement(uploadButton
-
-.
-    getHTMLElement()
-
-);
-
-    componentHandler
-.
-    upgradeElement(
-
-    this
-.
-    fileInput
-.
-    getHTMLElement()
-
-);
+        componentHandler.upgradeElement(this.fileInput.getHTMLElement());
 
         const wrapper = new api.dom.DivEl("material-new-content-dialog__wrapper mdl-grid");
-    section
-.
-    addClass(
+        section.addClass("material-new-content-dialog__types mdl-cell mdl-cell--6-col");
 
-    "material-new-content-dialog__types mdl-cell mdl-cell--6-col"
-);
-
-    const
-    quickAccess = new api.dom.DivEl("material-new-content-dialog__quick-access mdl-cell mdl-cell--6-col");
+        const quickAccess = new api.dom.DivEl("material-new-content-dialog__quick-access mdl-cell mdl-cell--6-col");
         quickAccess.appendChild(this.mostPopularContentTypes);
         quickAccess.appendChild(this.recentContentTypes);
-        
+
+        const dropNote = new api.dom.PEl("material-new-content-dialog__drop-note");
+        dropNote.setHtml("Drop some files here to upload.")
+
         wrapper.appendChild(section);
         wrapper.appendChild(quickAccess);
         wrapper.appendChild(this.dropzoneContainer);
         wrapper.appendChild(this.loadMask);
+        wrapper.appendChild(dropNote);
 
         return [wrapper];
     }
@@ -135,9 +110,9 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         this.mostPopularContentTypes = new MostPopularItemsBlock();
         this.recentContentTypes = new RecentItemsBlock();
 
-        this.allContentTypes.addClass("mdl-shadow--4dp");
-        this.mostPopularContentTypes.getItemsList().addClass("mdl-shadow--4dp");
-        this.recentContentTypes.getItemsList().addClass("mdl-shadow--4dp");
+        this.allContentTypes.addClass("mdl-shadow--3dp");
+        this.mostPopularContentTypes.getItemsList().addClass("mdl-shadow--3dp");
+        this.recentContentTypes.getItemsList().addClass("mdl-shadow--3dp");
 
         this.allContentTypes.onSelected(this.closeAndFireEventFromContentType.bind(this));
         this.mostPopularContentTypes.getItemsList().onSelected(this.closeAndFireEventFromContentType.bind(this));
@@ -205,20 +180,16 @@ export class NewContentDialog extends api.material.ui.dialog.Dialog {
         new NewContentEvent(event.getItem().getContentType(), this.parentContent).fire();
     }
 
-setParentContent(parent
-:
-api.content.Content
-)
-{
-    this.parentContent = parent;
-    this.allContentTypes.setParentContent(parent);
+    setParentContent(parent: api.content.Content) {
+        this.parentContent = parent;
+        this.allContentTypes.setParentContent(parent);
 
-    var params: {[key: string]: any} = {
-        parent: parent ? parent.getPath().toString() : api.content.ContentPath.ROOT.toString()
-    };
+        var params: {[key: string]: any} = {
+            parent: parent ? parent.getPath().toString() : api.content.ContentPath.ROOT.toString()
+        };
 
-    this.fileInput.setUploaderParams(params)
-}
+        this.fileInput.setUploaderParams(params)
+    }
 
     open() {
         super.open();
