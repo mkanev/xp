@@ -27,13 +27,13 @@ module api.ui.panel {
         }
 
         doRender(): Q.Promise<boolean> {
-            return super.doRender().then((rendered) => {
+            return super.doRender().then((rendered: boolean) => {
                 if (this.doOffset) {
                     this.calculateOffset();
                 }
 
                 return rendered;
-            })
+            });
         }
 
         protected calculateOffset() {

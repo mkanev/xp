@@ -25,15 +25,15 @@ module api.ui {
         /*
          Need a sync method (instead of async doRender) to use in grid formatters which use viewer.toString()
          */
-        protected doLayout(object: OBJECT) {
+        protected doLayout(object: OBJECT): void {
 
         }
 
-        setObject(object: OBJECT) {
+        setObject(object: OBJECT): void {
             this.object = object;
 
             if(this.isRendered()) {
-                return this.doLayout(object);
+                this.doLayout(object);
             }
         }
 

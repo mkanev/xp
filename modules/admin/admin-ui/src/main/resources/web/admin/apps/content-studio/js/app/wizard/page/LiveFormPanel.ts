@@ -12,7 +12,7 @@ import {FragmentInspectionPanel} from "./contextwindow/inspect/region/FragmentIn
 import {PartInspectionPanel} from "./contextwindow/inspect/region/PartInspectionPanel";
 import {PageInspectionPanel} from "./contextwindow/inspect/page/PageInspectionPanel";
 import {InspectionsPanel, InspectionsPanelConfig} from "./contextwindow/inspect/InspectionsPanel";
-import {InsertablesPanel} from "./contextwindow/insert/InsertablesPanel";
+import {InsertablesPanel, ComponentTypesPanelConfig} from "./contextwindow/insert/InsertablesPanel";
 import {ContextWindowController} from "./contextwindow/ContextWindowController";
 import {ContextWindow, ContextWindowConfig} from "./contextwindow/ContextWindow";
 import {ShowContentFormEvent} from "../ShowContentFormEvent";
@@ -150,9 +150,9 @@ export class LiveFormPanel extends api.ui.panel.Panel {
 
         this.inspectionsPanel = this.createInspectionsPanel(model);
 
-        this.insertablesPanel = new InsertablesPanel({
+        this.insertablesPanel = new InsertablesPanel(<ComponentTypesPanelConfig>{
             liveEditPage: proxy,
-            content: this.content
+            contentWizardPanel: this.contentWizardPanel
         });
 
         return new ContextWindow(<ContextWindowConfig>{
@@ -180,13 +180,14 @@ export class LiveFormPanel extends api.ui.panel.Panel {
             }
         });
 
-        this.contentInspectionPanel = new ContentInspectionPanel(this.content);
+        this.contentInspectionPanel = new ContentInspectionPanel();
+        this.contentInspectionPanel.setContent(this.content);
 
-        this.pageInspectionPanel = new PageInspectionPanel(model);
-        this.partInspectionPanel = new PartInspectionPanel(model);
-        this.layoutInspectionPanel = new LayoutInspectionPanel(model);
-        this.imageInspectionPanel = new ImageInspectionPanel(model);
-        this.fragmentInspectionPanel = new FragmentInspectionPanel(model);
+        this.pageInspectionPanel = new PageInspectionPanel();
+        this.partInspectionPanel = new PartInspectionPanel();
+        this.layoutInspectionPanel = new LayoutInspectionPanel();
+        this.imageInspectionPanel = new ImageInspectionPanel();
+        this.fragmentInspectionPanel = new FragmentInspectionPanel();
 
         this.textInspectionPanel = new TextInspectionPanel();
         this.regionInspectionPanel = new RegionInspectionPanel();
@@ -205,7 +206,7 @@ export class LiveFormPanel extends api.ui.panel.Panel {
     }
 
     doRender(): Q.Promise<boolean> {
-        return super.doRender().then((rendered) => {
+        return super.doRender().then((rendered: boolean) => {
 
             api.dom.WindowDOM.get().onBeforeUnload((event) => {
                 console.log("onbeforeunload " + this.liveEditModel.getContent().getDisplayName());
@@ -231,7 +232,7 @@ export class LiveFormPanel extends api.ui.panel.Panel {
             this.liveEditListen();
 
             // delay rendered event until live edit page is fully loaded
-            var liveEditDeferred = wemQ.defer();
+            var liveEditDeferred = wemQ.defer<boolean>();
 
             this.liveEditPageProxy.onLiveEditPageViewReady((event: LiveEditPageViewReadyEvent) => {
                 liveEditDeferred.resolve(rendered);
@@ -308,29 +309,25 @@ export class LiveFormPanel extends api.ui.panel.Panel {
                             if (partComponent.hasDescriptor()) {
                                 this.saveAndReloadOnlyComponent(componentView);
                             }
-                        }
-                        else if (api.ObjectHelper.iFrameSafeInstanceOf(componentView, LayoutComponentView)) {
+                        } else if (api.ObjectHelper.iFrameSafeInstanceOf(componentView, LayoutComponentView)) {
                             var layoutView = <LayoutComponentView>componentView;
                             var layoutComponent: LayoutComponent = layoutView.getComponent();
                             if (layoutComponent.hasDescriptor()) {
                                 this.saveAndReloadOnlyComponent(componentView);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         console.debug("ComponentView by path not found: " + event.getPath().toString());
                     }
                 }
-            }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponent(), ImageComponent)) {
+            } else if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponent(), ImageComponent)) {
                 if (event.getPropertyName() == ImageComponent.PROPERTY_IMAGE && !event.getComponent().isEmpty()) {
                     var componentView = this.pageView.getComponentViewByPath(event.getPath());
                     if (componentView) {
                         this.saveAndReloadOnlyComponent(componentView);
                     }
                 }
-            }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponent(), FragmentComponent)) {
+            } else if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponent(), FragmentComponent)) {
                 if (event.getPropertyName() == FragmentComponent.PROPERTY_FRAGMENT && !event.getComponent().isEmpty()) {
                     var componentView = this.pageView.getComponentViewByPath(event.getPath());
                     if (componentView) {
