@@ -11,7 +11,8 @@ module.exports = function (tasks) {
     });
 
     // output
-    var output = {filename: "." + path.join('/', CONFIG.root.dest, '/apps/[name]/js/_all.js')};
+    var template = CONFIG.tasks.js.webpack.dest;
+    var output = {filename: "." + path.join('/', CONFIG.root.dest, template)};
 
     return {
         entry: entry,
