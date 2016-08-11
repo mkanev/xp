@@ -4,6 +4,7 @@
 
 var CONFIG = require("../config");
 var gulp = require("gulp");
+var gulpSequence = require("gulp-sequence");
 var del = require("del");
 var path = require("path");
 var replace = require('gulp-replace');
@@ -55,3 +56,5 @@ gulp.task('migrate:2', function (cb) {
         }))
         .pipe(gulp.dest(basePath));
 });
+
+gulp.task('migrate', gulpSequence('migrate:1', 'migrate:2'));
