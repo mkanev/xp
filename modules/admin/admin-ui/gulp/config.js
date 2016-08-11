@@ -37,13 +37,14 @@ var CONFIG = {
             files: {
                 // still processed with gulp
                 common: {src: '/common/js/_module.ts', dest: '/common/js/_all.js'},
-                live: {src: '/live-edit/js/_module.ts', dest: '/live-edit/js/_all.js'},
+                // live: {src: '/live-edit/js/_module.ts', dest: '/live-edit/js/_all.js'},
                 // webpack
                 home: {src: '/js/home/main.js', name: 'home', assets: true},
                 launcher: {src: '/js/launcher/main.js', name: 'launcher', assets: true},
                 applications: {src: '/apps/applications/js/main.ts', name: 'applications'},
                 content: {src: '/apps/content-studio/js/main.ts', name: 'content-studio'},
-                user: {src: '/apps/user-manager/js/main.ts', name: 'user-manager'}
+                user: {src: '/apps/user-manager/js/main.ts', name: 'user-manager'},
+                live: {src: '/live-edit/js/main.ts', name: '../live-edit'}
             },
             ts: {
                 target: 'ES5',

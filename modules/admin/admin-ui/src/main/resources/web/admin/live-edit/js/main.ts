@@ -1,3 +1,6 @@
+import "./api.ts";
+import {LiveEditPage} from "./LiveEditPage";
+
 declare var CONFIG;
 declare var wemjq: JQueryStatic;
 
@@ -6,7 +9,7 @@ declare var wemjq: JQueryStatic;
  */
 api.StyleHelper.setCurrentPrefix(api.StyleHelper.PAGE_EDITOR_PREFIX);
 
-var liveEditPage: LiveEdit.LiveEditPage;
+var liveEditPage: LiveEditPage;
 
 wemjq(document).ready(() => {
 
@@ -15,7 +18,7 @@ wemjq(document).ready(() => {
         return;
     }
 
-    liveEditPage = new LiveEdit.LiveEditPage();
+    //liveEditPage = new LiveEditPage();
 
     // Notify parent frame if any modifier except shift is pressed
     // For the parent shortcuts to work if the inner iframe has focus
