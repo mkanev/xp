@@ -83,7 +83,7 @@ gulp.task('ts', gulpSequence(Object.keys(tsTasks).map(tsResolver)));
 var webpackTasks = filterTasks(subtasks, function (task) {
     return !!task.name;
 });
-console.log(webpackTasks);
+
 gulp.task('webpack', function (cb) {
     webpack(webpackConfig(webpackTasks), function (err, stats) {
         logger.logWebpack(err, stats);
