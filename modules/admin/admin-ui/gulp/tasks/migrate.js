@@ -88,15 +88,20 @@ function findModule(content) {
 // Step 3
 // remove module declaration and add api.ts imports
 gulp.task('migrate:3', function (cb) {
+    // var tsPaths = resolvePath('/common/js/ObjectHelper.ts'); // test
     var tsPaths = resolvePath('/common/js/**/*.ts');
     var basePath = resolvePath('/common/js/');
 
     var bracketPattern = /}[\s*\n]*$/g;
     var modulePattern = /module\s+[A-Za-z\.]*\s+\{\s*\n*/g;
+    var importPattern = /(import\s+\w+\s*=\s*[\w\.]+;\s*\n*)/g;
 
     return gulp.src(tsPaths, {base: basePath})
+    // Remove module definition and TS style imports.
         .pipe(replace(modulePattern, ''))
         .pipe(replace(bracketPattern, ''))
+        .pipe(replace(importPattern, ''))
+        //
         .pipe(insert.transform(function (contents, file) {
             var relativePath = path.relative(path.dirname(file.path), basePath);
             relativePath = relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
