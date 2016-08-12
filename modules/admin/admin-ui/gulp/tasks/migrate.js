@@ -46,7 +46,7 @@ gulp.task('migrate:2', function (cb) {
             if (module) {
                 var exports = findExports(contents);
                 exports.forEach(function (value) {
-                    pathsMap.push({
+                    pathsList.push({
                         name: value,
                         module: module,
                         full: module + '.' + value,
@@ -58,9 +58,10 @@ gulp.task('migrate:2', function (cb) {
         }));
 });
 
-const pathsMap = [
+const pathsList = [
     // name: Name
-    // module: api.dom.Name
+    // module: api.dom
+    // full: api.dom.Name
     // path: d:/../js/dom/Name.ts
 ];
 
@@ -87,28 +88,56 @@ function findModule(content) {
 
 // Step 3
 // remove module declaration and add api.ts imports
-gulp.task('migrate:3', function (cb) {
-    // var tsPaths = resolvePath('/common/js/ObjectHelper.ts'); // test
-    var tsPaths = resolvePath('/common/js/**/*.ts');
+gulp.task('migrate:3', ['migrate:2'], function (cb) {
+    var tsPaths = resolvePath('/common/js/ObjectHelper.ts'); // test
+    // var tsPaths = resolvePath('/common/js/**/*.ts');
     var basePath = resolvePath('/common/js/');
 
     var bracketPattern = /}[\s*\n]*$/g;
     var modulePattern = /module\s+[A-Za-z\.]*\s+\{\s*\n*/g;
     var importPattern = /(import\s+\w+\s*=\s*[\w\.]+;\s*\n*)/g;
+    var moduleNamePattern = /d/;
+
+    var files = new Map();
 
     return gulp.src(tsPaths, {base: basePath})
-    // Remove module definition and TS style imports.
-        .pipe(replace(modulePattern, ''))
-        .pipe(replace(bracketPattern, ''))
-        .pipe(replace(importPattern, ''))
-        //
+    // Find all imports
         .pipe(insert.transform(function (contents, file) {
-            var relativePath = path.relative(path.dirname(file.path), basePath);
-            relativePath = relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
-            var importApi = 'import "' + relativePath + '/api.ts";\n\n';
-            return importApi + contents;
-        }))
-        .pipe(gulp.dest(basePath));
+            var data = {imports: []};
+            files.set(file.path, data);
+
+            var module = findModule(contents)[0];
+            var relativeFiles = findRelativeExports(pathsList, module);
+            relativeFiles.forEach(function (value) {
+                var hasModule = contents.search(new RegExp(value.name + '\\W+')) >= 0;
+                var isSameFile = value.path === file.path;
+                if (hasModule && !isSameFile) {
+                    data.imports.push(value);
+                }
+            });
+
+            // find api.q.w.ClassName imports and replace them
+
+            return contents;
+        }));
+    // // Remove module definition and TS style imports.
+    // .pipe(replace(modulePattern, ''))
+    // .pipe(replace(bracketPattern, ''))
+    // .pipe(replace(importPattern, ''))
+    // //
+    // .pipe(insert.transform(function (contents, file) {
+    //     var relativePath = path.relative(path.dirname(file.path), basePath);
+    //     relativePath = relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
+    //     var importApi = 'import "' + relativePath + '/api.ts";\n\n';
+    //     return importApi + contents;
+    // }))
+    // .pipe(gulp.dest(basePath));
 });
 
-gulp.task('migrate', gulpSequence('migrate:1', 'migrate:2', 'migrate:3'));
+function findRelativeExports(paths, moduleName) {
+    return paths.filter(function (value) {
+        return value.module === moduleName;
+    });
+}
+
+gulp.task('migrate', gulpSequence('migrate:1', 'migrate:3'));
