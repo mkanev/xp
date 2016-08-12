@@ -5,10 +5,10 @@
 var CONFIG = require("../config");
 var gulp = require("gulp");
 var gulpSequence = require("gulp-sequence");
+var insert = require("gulp-insert");
+var replace = require('gulp-replace');
 var del = require("del");
 var path = require("path");
-var replace = require('gulp-replace');
-var insert = require("gulp-insert");
 var logger = require("../util/compileLogger");
 
 function resolvePath(filePath) {
@@ -35,11 +35,60 @@ gulp.task('migrate:1', function (cb) {
 });
 
 // Step 2
-// remove module declaration
+// Create a map for each export
 gulp.task('migrate:2', function (cb) {
     var tsPaths = resolvePath('/common/js/**/*.ts');
-    // var tsPaths = resolvePath('/common/js/ui/button/Button.ts');
-    // var tsPaths = resolvePath('/common/js/Class.ts');
+    var basePath = resolvePath('/common/js/');
+
+    return gulp.src(tsPaths, {base: basePath})
+        .pipe(insert.transform(function (contents, file) {
+            var module = findModule(contents)[0];
+            if (module) {
+                var exports = findExports(contents);
+                exports.forEach(function (value) {
+                    pathsMap.push({
+                        name: value,
+                        module: module,
+                        full: module + '.' + value,
+                        path: file.path
+                    });
+                });
+            }
+            return contents;
+        }));
+});
+
+const pathsMap = [
+    // name: Name
+    // module: api.dom.Name
+    // path: d:/../js/dom/Name.ts
+];
+
+function findAll(regex, content) {
+    var match;
+    var result = [];
+
+    while ((match = regex.exec(content)) !== null) {
+        result.push(match[1]);
+    }
+
+    return result;
+}
+
+function findExports(content) {
+    var exportPattern = /(?:[\s\n]*export\s+(?:class|interface)\s+)([A-Z]{1}\w+)/g;
+    return findAll(exportPattern, content);
+}
+
+function findModule(content) {
+    var modulePattern = /(?:module\s+)([A-Za-z\.]+)(?:\s+\{\s*\n*)/g;
+    return findAll(modulePattern, content);
+}
+
+// Step 3
+// remove module declaration and add api.ts imports
+gulp.task('migrate:3', function (cb) {
+    var tsPaths = resolvePath('/common/js/**/*.ts');
     var basePath = resolvePath('/common/js/');
 
     var bracketPattern = /}[\s*\n]*$/g;
@@ -57,4 +106,4 @@ gulp.task('migrate:2', function (cb) {
         .pipe(gulp.dest(basePath));
 });
 
-gulp.task('migrate', gulpSequence('migrate:1', 'migrate:2'));
+gulp.task('migrate', gulpSequence('migrate:1', 'migrate:2', 'migrate:3'));
