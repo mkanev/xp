@@ -33,7 +33,7 @@ function findAll(regex, content) {
 }
 
 function findExports(content) {
-    var exportDefinition = /(?:[\s\n]*export\s+(?:class|interface)\s+)([A-Z]{1}\w+)/g;
+    var exportDefinition = /(?:[\s\n]*export\s+(?:class|interface|enum)\s+)([A-Z]{1}\w+)/g;
     return findAll(exportDefinition, content);
 }
 
