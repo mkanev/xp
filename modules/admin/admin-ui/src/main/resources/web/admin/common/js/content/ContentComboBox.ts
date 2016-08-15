@@ -4,6 +4,7 @@ module api.content {
     import Option = api.ui.selector.Option;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
+    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
 
     export class ContentComboBox extends RichComboBox<ContentSummary> {
 
@@ -11,15 +12,12 @@ module api.content {
 
             var loader = builder.loader ? builder.loader : new ContentSummaryLoader();
 
-            var richComboBoxBuilder = new RichComboBoxBuilder<ContentSummary>().
-                setComboBoxName(builder.name ? builder.name : 'contentSelector').
-                setLoader(loader).
-                setSelectedOptionsView(new ContentSelectedOptionsView()).
-                setMaximumOccurrences(builder.maximumOccurrences).
-                setOptionDisplayValueViewer(new api.content.ContentSummaryViewer()).
-                setDelayedInputValueChangedHandling(750).
-                setValue(builder.value).
-                setMinWidth(builder.minWidth);
+            var richComboBoxBuilder = new RichComboBoxBuilder<ContentSummary>().setComboBoxName(
+                builder.name ? builder.name : 'contentSelector').setLoader(loader).setSelectedOptionsView(
+                new ContentSelectedOptionsView()).setMaximumOccurrences(builder.maximumOccurrences).setOptionDisplayValueViewer(
+                new api.content.ContentSummaryViewer()).setDelayedInputValueChangedHandling(750).setValue(
+                builder.value).setDisplayMissingSelectedOptions(builder.displayMissingSelectedOptions).setRemoveMissingSelectedOptions(
+                builder.removeMissingSelectedOptions).setMinWidth(builder.minWidth);
 
             super(richComboBoxBuilder);
 
@@ -63,13 +61,42 @@ module api.content {
     export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentSummary> {
 
         createSelectedOption(option: api.ui.selector.Option<ContentSummary>): SelectedOption<ContentSummary> {
-            var optionView = new ContentSelectedOptionView(option);
+            var optionView = !!option.displayValue ? new ContentSelectedOptionView(option) : new MissingContentSelectedOptionView(option);
             return new SelectedOption<ContentSummary>(optionView, this.count());
         }
     }
 
-    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentSummary> {
+    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentSummary> {
 
+        private id: string;
+
+        constructor(option: api.ui.selector.Option<ContentSummary>) {
+            this.id = option.value;
+            super(option);
+        }
+
+        doRender(): wemQ.Promise<boolean> {
+
+            var removeButtonEl = new api.dom.AEl("remove"),
+                message = new api.dom.H6El("missing-content");
+
+            message.setHtml("No access to content with id=" + this.id);
+
+            removeButtonEl.onClicked((event: Event) => {
+                this.notifyRemoveClicked();
+
+                event.stopPropagation();
+                event.preventDefault();
+                return false;
+            });
+
+            this.appendChildren<api.dom.Element>(removeButtonEl, message);
+
+            return wemQ(true);
+        }
+    }
+
+    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentSummary> {
 
         constructor(option: api.ui.selector.Option<ContentSummary>) {
             super(option);
@@ -117,6 +144,10 @@ module api.content {
 
         postLoad: () => void;
 
+        displayMissingSelectedOptions: boolean;
+
+        removeMissingSelectedOptions: boolean;
+
         setName(value: string): ContentComboBoxBuilder {
             this.name = value;
             return this;
@@ -139,6 +170,16 @@ module api.content {
 
         setValue(value: string): ContentComboBoxBuilder {
             this.value = value;
+            return this;
+        }
+
+        setDisplayMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+            this.displayMissingSelectedOptions = value;
+            return this;
+        }
+
+        setRemoveMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+            this.removeMissingSelectedOptions = value;
             return this;
         }
 

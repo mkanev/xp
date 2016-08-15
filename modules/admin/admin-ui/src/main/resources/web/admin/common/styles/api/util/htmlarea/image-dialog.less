@@ -55,6 +55,17 @@
     }
   }
 
+  .form-view {
+    .input-view {
+      .@{_COMMON_PREFIX}combobox, .content-combo-box {
+        .options-container {
+          position: absolute !important;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
+
   .toolbar {
     &.image-toolbar {
       position: relative;
@@ -175,20 +186,6 @@
   max-width: 640px;
   max-height: 100%;
 
-  .image-selector {
-    .input-wrapper {
-
-      .image-uploader-el {
-        max-width: 37px;
-        position: static;
-
-        .dropzone-container {
-          position: static;
-        }
-      }
-    }
-  }
-
   .scroll-up-div, .scroll-down-div {
     position: absolute;
     height: 50px;
@@ -222,6 +219,13 @@
 
     .preview-panel-scrollbar-wrapper {
       overflow: hidden;
+    }
+  }
+
+  > .dropzone-container {
+    .dialog-dropzone-container(120px);
+    .dropzone {
+      font-size: 18px;
     }
   }
 }

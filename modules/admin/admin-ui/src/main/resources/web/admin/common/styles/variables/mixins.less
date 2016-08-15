@@ -286,6 +286,14 @@
   }
 }
 
+.focusable() {
+  &:focus:not(:disabled) {
+    box-sizing: border-box;
+    box-shadow: 0 0 5px @admin-input-blue;
+    border: 1px solid @admin-input-blue;
+  }
+}
+
 // Reset all possible attributes user might have added to a page element
 // Use for all styles present on live edit page in order to reset user styles
 // http://stackoverflow.com/a/15903168
@@ -537,11 +545,12 @@
 
     h2, h5 {
       text-align: center;
+      position: relative;
     }
 
     .prev, .next {
+      position: absolute;
       cursor: pointer;
-      padding: 0 5px;
       color: @admin-button-blue2;
       vertical-align: middle;
       text-decoration: none;
@@ -551,12 +560,31 @@
       .icon-arrow-left();
     }
 
+    .year-container {
+      .prev {
+        top: 5px;
+        left: 15px;
+      }
+      .next {
+        top: 5px;
+        right: 15px;
+      }
+    }
+
     .next {
       .icon-arrow-right4();
     }
 
     .month-container {
-      margin-bottom: 10px;
+      margin: 5px 0 10px 0;
+      .prev {
+        top: 2px;
+        left: 24px;
+      }
+      .next {
+        top: 2px;
+        right: 24px;
+      }
     }
     .calendar {
       text-align: center;
@@ -704,4 +732,21 @@
     font-size: 14px;
     line-height: 16px;
   }
+}
+
+.close-mixin() {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  font-size: 12px;
+  display: block;
+  text-decoration: none;
+}
+
+.flat-mixin(@bgColor: @admin-white) {
+  .border-radius(0);
+  background-image: none;
+  box-shadow: none;
+  background-color: @bgColor;
 }

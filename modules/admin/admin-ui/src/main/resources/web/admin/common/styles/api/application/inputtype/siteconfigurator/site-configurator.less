@@ -38,6 +38,8 @@
       }
 
       .header {
+        display: flex;
+        align-items: center;
         position: relative;
         line-height: 48px;
         overflow: hidden;
@@ -47,17 +49,11 @@
         .names-and-icon-view {
           float: left;
           cursor: move;
+          flex: 0 1 100%;
 
           .names-view {
             > * {
               cursor: move;
-            }
-            h6 {
-              height: auto;
-              font-size: 22px;
-              line-height: 30px;
-
-              .ellipsis();
             }
           }
         }
@@ -68,15 +64,13 @@
         }
 
         .edit-button {
-          float: right;
-          margin: 17px 20px 0px 20px;
+          margin: 0 20px;
           font-size: 13px;
           .icon-pencil2();
         }
 
         .remove-button {
-          float: right;
-          line-height: 48px;
+          margin: 0px 6px;
         }
 
       }
@@ -90,10 +84,6 @@
 }
 
 .site-configurator-dialog {
-
-  + .@{_COMMON_PREFIX}modal-dialog {
-    border: 1px solid;
-  }
 
   &.animated {
     .transition(margin-top 0.2s);
@@ -142,4 +132,26 @@
       position: fixed !important;
     }
   }
+
+  &.masked {
+
+    border: 1px solid;
+
+    .image-selector .image-uploader-el .dropzone-container .dropzone {
+      background-color: #808080;
+      border: 1px solid #676767;
+    }
+
+    &:after {
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: black;
+      opacity: 0.5;
+      content: "";
+      position: absolute;
+    }
+  }
+
 }

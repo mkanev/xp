@@ -22,6 +22,8 @@ module api.util.htmlarea.editor {
         private convertUrls: boolean = false;
         private hasActiveDialog: boolean = false;
 
+        private tools: string = "styleselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | charmap anchor image macro link unlink | table | pastetext";
+
         setAssetsUri(assetsUri: string): HTMLAreaBuilder {
             this.assetsUri = assetsUri;
             return this;
@@ -105,9 +107,42 @@ module api.util.htmlarea.editor {
             return this;
         }
 
+        private excludeTools(tools: any[]) {
+            var strTools = this.tools;
+            tools.forEach((toolStr: any) => {
+                toolStr.value.split(" ").forEach((tool: string) => {
+                    if (tool == "*") {
+                        strTools = "";
+                    }
+                    else {
+                        strTools = strTools.replace(tool, "");
+                    }
+                });
+            });
+            this.tools = strTools;
+        }
+
+        private includeTools(tools: any[]) {
+            this.tools += " ";
+            tools.forEach((tool: any) => {
+                this.tools += tool.value + " ";
+            });
+        }
+
+        setTools(tools: any): HTMLAreaBuilder {
+            if (tools["exclude"] && tools["exclude"] instanceof Array) {
+                this.excludeTools(tools["exclude"]);
+            }
+            if (tools["include"] && tools["include"] instanceof Array) {
+                this.includeTools(tools["include"]);
+            }
+
+            return this;
+        }
+
         private checkRequiredFieldsAreSet() {
             if (!this.assetsUri || !this.selector || !this.content) {
-                throw new Error("some reruired field(s) is(are) missing for tinymce editor");
+                throw new Error("some required fields are missing for tinymce editor");
             }
         }
 
@@ -127,7 +162,7 @@ module api.util.htmlarea.editor {
                 convert_urls: this.convertUrls,
 
                 toolbar: [
-                    "styleselect | cut copy pastetext | bullist numlist outdent indent | charmap anchor image macro link unlink | table | code"
+                    this.tools
                 ],
 
                 formats: {
@@ -164,10 +199,10 @@ module api.util.htmlarea.editor {
                     ]
                 },
                 menubar: false,
-                statusbar: false,
+                statusbar: true,
                 paste_as_text: true,
                 browser_spellcheck: true,
-                plugins: ['autoresize', 'table', 'paste', 'charmap', 'code'],
+                plugins: ['autoresize', 'table', 'fullscreen', 'charmap', 'code', 'paste'],
                 external_plugins: {
                     "link": this.assetsUri + "/common/js/util/htmlarea/plugins/link.js",
                     "anchor": this.assetsUri + "/common/js/util/htmlarea/plugins/anchor.js",
@@ -208,8 +243,11 @@ module api.util.htmlarea.editor {
                         }
                     });
                     editor.on('keydown', (e) => {
-
-                        if (e.keyCode == 46 || e.keyCode == 8) { // DELETE
+                        if (e.keyCode == 9) { // tab pressed
+                            editor.execCommand(e.shiftKey ? 'Outdent' : 'Indent');
+                            e.preventDefault();
+                        }
+                        else if (e.keyCode == 46 || e.keyCode == 8) { // DELETE
                             var selectedNode = editor.selection.getRng().startContainer;
                             if (/^(FIGURE)$/.test(selectedNode.nodeName)) {
                                 var previousEl = selectedNode.previousSibling;
@@ -254,7 +292,9 @@ module api.util.htmlarea.editor {
 
         private notifyLinkDialog(config) {
             let event = CreateHtmlAreaDialogEvent.create().
-                setConfig(config).setType(api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).setContent(this.content).
+                setConfig(config).
+                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).
+                setContent(this.content).
                 build();
             this.publishCreateDialogEvent(event);
         }
@@ -279,6 +319,9 @@ module api.util.htmlarea.editor {
                 setConfig(config).
                 setType(api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).setContentPath(this.contentPath).setApplicationKeys(
                 this.applicationKeys).
+                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).
+                setContent(this.content).
+                setApplicationKeys(this.applicationKeys).
                 build();
             this.publishCreateDialogEvent(event);
         }

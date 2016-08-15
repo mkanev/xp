@@ -3,7 +3,6 @@ module api.ui.text {
     import InputEl = api.dom.InputEl;
 
     import Content = api.content.Content;
-    import MediaUploaderEl = api.content.MediaUploaderEl;
 
     import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
     import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
@@ -14,20 +13,19 @@ module api.ui.text {
     export class FileInput extends api.dom.CompositeFormInputEl {
 
         private textInput: InputEl;
-        private mediaUploaderEl: MediaUploaderEl;
+        private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
 
         constructor(className?: string, originalValue?: string) {
             this.textInput = new InputEl("text");
 
-            this.mediaUploaderEl = new api.content.MediaUploaderEl({
-                operation: api.content.MediaUploaderElOperation.create,
+            this.mediaUploaderEl = new api.ui.uploader.MediaUploaderEl({
+                operation: api.ui.uploader.MediaUploaderElOperation.create,
                 name: 'file-input-uploader',
-                allowDrop: false,
+                allowDrop: true,
                 showResult: false,
-                showReset: false,
                 showCancel: false,
                 allowMultiSelection: true,
-                deferred: true,  // wait till it's shown
+                deferred: false,  // wait till it's shown
                 value: originalValue
             });
 
@@ -71,7 +69,19 @@ module api.ui.text {
             return this;
         }
 
-        getUploader(): MediaUploaderEl {
+        enable() {
+            this.textInput.getEl().setDisabled(false);
+            this.mediaUploaderEl.getDropzone().getEl().removeAttribute("disabled");
+            this.mediaUploaderEl.getEl().removeAttribute("disabled");
+        }
+
+        disable() {
+            this.textInput.getEl().setDisabled(true);
+            this.mediaUploaderEl.getDropzone().getEl().setAttribute("disabled", "true");
+            this.mediaUploaderEl.getEl().setAttribute("disabled", "true");
+        }
+
+        getUploader(): api.ui.uploader.MediaUploaderEl {
             return this.mediaUploaderEl;
         }
 

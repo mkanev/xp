@@ -8,6 +8,9 @@ module api.content.form.inputtype.contentselector {
     import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
     import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
     import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+    import SelectedOption = api.ui.selector.combobox.SelectedOption;
 
     export class ContentSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.content.ContentId> {
 
@@ -47,23 +50,28 @@ module api.content.form.inputtype.contentselector {
 
                 var selectedContentIdsMap: {} = {};
                 this.contentComboBox.getSelectedOptionView().getSelectedOptions().forEach(
-                    (selectedOption: any) => selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = "");
+                    (selectedOption: any) => {
+                        if (!!selectedOption.getOption().displayValue && !!selectedOption.getOption().displayValue.getContentId()) {
+                            selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = ""
+                        }
+                    });
 
-                event.getDeletedItems().filter(deletedItem => !deletedItem.isPending() &&
-                                                              selectedContentIdsMap.hasOwnProperty(
-                                                                  deletedItem.getContentId().toString())).forEach((deletedItem) => {
-                    var option = this.contentComboBox.getSelectedOptionView().getById(deletedItem.getContentId().toString());
-                    if (option != null) {
-                        this.contentComboBox.getSelectedOptionView().removeOption(option.getOption(), false);
-                    }
-                });
-            }
+                event.getDeletedItems().
+                    filter(deletedItem => !deletedItem.isPending() &&
+                                          selectedContentIdsMap.hasOwnProperty(deletedItem.getContentId().toString())).
+                    forEach((deletedItem) => {
+                        var option = this.contentComboBox.getSelectedOptionView().getById(deletedItem.getContentId().toString());
+                        if (option != null) {
+                            this.contentComboBox.getSelectedOptionView().removeOption(option.getOption(), false);
+                        }
+                    });
+            };
 
             ContentDeletedEvent.on(this.contentDeletedListener);
 
             this.onRemoved((event) => {
                 ContentDeletedEvent.un(this.contentDeletedListener);
-            })
+            });
         }
 
         private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
@@ -116,27 +124,36 @@ module api.content.form.inputtype.contentselector {
                 .setLoader(contentSelectorLoader)
                 .setValue(value)
                 .setPostLoad(contentSelectorLoader.postLoad.bind(contentSelectorLoader))
+                .setRemoveMissingSelectedOptions(true)
                 .build();
 
-            return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).
-                sendAndParse().
-                then((relationshipType: api.schema.relationshiptype.RelationshipType) => {
+            this.contentComboBox.getComboBox().onContentMissing((ids: string[]) => {
+                ids.forEach(id => this.removePropertyWithId(id));
+                this.validate(false);
+            });
+
+            return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse().then(
+                (relationshipType: api.schema.relationshiptype.RelationshipType) => {
 
                     this.contentComboBox.setInputIconUrl(relationshipType.getIconUrl());
 
                     this.appendChild(this.contentComboBox);
 
-                    return this.doLoadContent(propertyArray).
-                        then((contents: api.content.ContentSummary[]) => {
+                    return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
 
                             //TODO: original value doesn't work because of additional request, so have to select manually
                             contents.forEach((content: api.content.ContentSummary) => {
                                 this.contentComboBox.select(content);
                             });
 
-                            this.contentComboBox.onOptionSelected((selectedOption: api.ui.selector.combobox.SelectedOption<api.content.ContentSummary>) => {
+                        this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentSummary>) => {
+                            this.updateSelectedOptionIsEditable(selectedOption);
+                        });
 
-                                var reference = api.util.Reference.from(selectedOption.getOption().displayValue.getContentId());
+                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+                            this.fireFocusSwitchEvent(event);
+
+                            var reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
 
                                 var value = new Value(reference, ValueTypes.REFERENCE);
                                 if (this.contentComboBox.countSelected() == 1) { // overwrite initial value
@@ -146,25 +163,37 @@ module api.content.form.inputtype.contentselector {
                                     this.getPropertyArray().add(value);
                                 }
 
+                            this.updateSelectedOptionIsEditable(event.getSelectedOption());
                                 this.refreshSortable();
                                 this.updateSelectedOptionStyle();
                                 this.validate(false);
                             });
 
-                            this.contentComboBox.onOptionDeselected((removed: api.ui.selector.combobox.SelectedOption<api.content.ContentSummary>) => {
+                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
 
-                                this.getPropertyArray().remove(removed.getIndex());
-                                this.updateSelectedOptionStyle();
-                                this.validate(false);
+                            this.getPropertyArray().remove(event.getSelectedOption().getIndex());
+                            this.updateSelectedOptionStyle();
+                            this.validate(false);
                             });
 
                             this.setupSortable();
 
                             this.setLayoutInProgress(false);
-                        });
+                    });
                 });
         }
 
+        private removePropertyWithId(id: string) {
+            var length = this.getPropertyArray().getSize();
+            for (let i = 0; i < length; i++) {
+                if (this.getPropertyArray().get(i).getValue().getString() == id) {
+                    this.getPropertyArray().remove(i);
+                    api.notify.NotifyManager.get().showWarning("Failed to load content item with id " + id +
+                                                               ". The reference will be removed upon save.");
+                    break;
+                }
+            }
+        }
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
@@ -186,7 +215,7 @@ module api.content.form.inputtype.contentselector {
                     }
                 }
             });
-            return new api.content.GetContentSummaryByIds(contentIds).sendAndParse().
+            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse().
                 then((result: api.content.ContentSummary[]) => {
                     return result;
                 });
@@ -232,6 +261,12 @@ module api.content.form.inputtype.contentselector {
             else {
                 this.addClass("single-occurrence").removeClass("multiple-occurrence");
             }
+        }
+
+        private updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentSummary>) {
+            let selectedContentId = selectedOption.getOption().displayValue.getContentId();
+            let refersToItself = selectedContentId.toString() === this.config.content.getId();
+            selectedOption.getOptionView().toggleClass("non-editable", refersToItself);
         }
 
         private refreshSortable() {

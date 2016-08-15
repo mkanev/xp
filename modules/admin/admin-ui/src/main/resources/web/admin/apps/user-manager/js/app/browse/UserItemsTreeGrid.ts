@@ -1,4 +1,10 @@
 import "../../api.ts";
+import {UserTreeGridItem, UserTreeGridItemType, UserTreeGridItemBuilder} from "./UserTreeGridItem";
+import {UserTreeGridActions} from "./UserTreeGridActions";
+import {UserTreeGridItemViewer} from "./UserTreeGridItemViewer";
+import {EditPrincipalEvent} from "./EditPrincipalEvent";
+import {PrincipalBrowseResetEvent} from "./filter/PrincipalBrowseResetEvent";
+import {PrincipalBrowseSearchEvent} from "./filter/PrincipalBrowseSearchEvent";
 
 import GridColumn = api.ui.grid.GridColumn;
 import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
@@ -16,12 +22,6 @@ import Principal = api.security.Principal;
 import UserStore = api.security.UserStore;
 import PrincipalType = api.security.PrincipalType;
 import UserStoreKey = api.security.UserStoreKey;
-import {UserTreeGridItem, UserTreeGridItemType, UserTreeGridItemBuilder} from "./UserTreeGridItem";
-import {UserTreeGridActions} from "./UserTreeGridActions";
-import {UserTreeGridItemViewer} from "./UserTreeGridItemViewer";
-import {EditPrincipalEvent} from "./EditPrincipalEvent";
-import {PrincipalBrowseResetEvent} from "./filter/PrincipalBrowseResetEvent";
-import {PrincipalBrowseSearchEvent} from "./filter/PrincipalBrowseSearchEvent";
 
 export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
@@ -89,6 +89,10 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
         return true;
     }
 
+    isEmptyNode(node: TreeNode<UserTreeGridItem>): boolean {
+        return !node.getDataId() || node.getDataId() == "";
+    }
+
     private nameFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<UserTreeGridItem>) {
         var viewer = <UserTreeGridItemViewer>node.getViewer("displayName");
         if (!viewer) {
@@ -148,13 +152,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
             var userTreeGridItem = new UserTreeGridItemBuilder().setUserStore(userStore).setType(UserTreeGridItemType.USER_STORE).build();
 
-            // Remove roles from the end to add them lately
-            var children = this.getRoot().getDefaultRoot().getChildren(),
-                roles = children.pop();
-
-            this.appendNode(userTreeGridItem, true, false);
-
-            children.push(roles);
+            this.appendNode(userTreeGridItem, true, false, this.getRoot().isFiltered() ? this.getRoot().getDefaultRoot() : null);
 
             if (!this.getRoot().isFiltered()) {
                 this.initData(this.getRoot().getDefaultRoot().treeToList());
@@ -199,6 +197,8 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
     fetchChildren(parentNode?: TreeNode<UserTreeGridItem>): wemQ.Promise<UserTreeGridItem[]> {
         var gridItems: UserTreeGridItem[] = [];
 
+        parentNode = parentNode || this.getRoot().getCurrentRoot();
+
         var deferred = wemQ.defer<UserTreeGridItem[]>();
         var level = parentNode ? parentNode.calcLevel() : 0;
 
@@ -228,14 +228,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
         } else if (parentNode.getData().getType() === UserTreeGridItemType.ROLES) {
             // fetch roles, if parent node 'Roles' was selected
-            new FindPrincipalsRequest().setAllowedTypes([PrincipalType.ROLE]).sendAndParse().then((principals: Principal[]) => {
-                principals.forEach((principal: Principal) => {
-                    gridItems.push(new UserTreeGridItemBuilder().setPrincipal(principal).setType(UserTreeGridItemType.PRINCIPAL).build());
-                });
-                deferred.resolve(gridItems);
-            }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
-            }).done();
+            return this.loadChildren(parentNode, [PrincipalType.ROLE]);
 
         } else if (level === 1) {
             // add parent folders 'Users' and 'Groups' to the selected UserStore
@@ -244,24 +237,56 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
         } else if (level === 2) {
             // fetch principals from the user store, if parent node 'Groups' or 'Users' was selected
-            var userStoreNode: UserTreeGridItem = parentNode.getParent().getData();
-            var userStoreKey: UserStoreKey = userStoreNode.getUserStore().getKey();
-
             var folder: UserTreeGridItem = <UserTreeGridItem>parentNode.getData();
             var principalType = this.getPrincipalTypeForFolderItem(folder.getType());
 
-            new FindPrincipalsRequest().setUserStoreKey(userStoreKey).setAllowedTypes([principalType]).sendAndParse().then(
-                (principals: Principal[]) => {
-                    principals.forEach((principal: Principal) => {
-                        gridItems.push(
-                            new UserTreeGridItemBuilder().setPrincipal(principal).setType(UserTreeGridItemType.PRINCIPAL).build());
-                    });
-                    deferred.resolve(gridItems);
-                }).catch((reason: any) => {
+            return this.loadChildren(parentNode, [principalType]);
+        }
+        return deferred.promise;
+    }
+
+    private loadChildren(parentNode, allowedTypes): wemQ.Promise<UserTreeGridItem[]> {
+
+        var deferred = wemQ.defer<UserTreeGridItem[]>();
+
+        var from = parentNode.getChildren().length;
+        if (from > 0 && !parentNode.getChildren()[from - 1].getData().getDataId()) {
+            parentNode.getChildren().pop();
+            from--;
+        }
+
+        var gridItems: UserTreeGridItem[] = parentNode.getChildren().map((el) => {
+            return el.getData();
+        }).slice(0, from);
+
+        // fetch principals from the user store, if parent node 'Groups' or 'Users' was selected
+        if(parentNode.getData().getType() != UserTreeGridItemType.ROLES) {
+            var userStoreNode: UserTreeGridItem = parentNode.getParent().getData();
+            var userStoreKey: UserStoreKey = userStoreNode.getUserStore().getKey();
+        }
+
+        new FindPrincipalsRequest().setUserStoreKey(userStoreKey).
+            setAllowedTypes(allowedTypes).
+            setFrom(from).
+            setSize(10).
+            sendAndParse().then(
+            (result) => {
+                let principals = result.getPrincipals();
+
+                principals.forEach((principal: Principal) => {
+                    gridItems.push(
+                        new UserTreeGridItemBuilder().setPrincipal(principal).setType(UserTreeGridItemType.PRINCIPAL).build());
+                });
+
+                if (from + principals.length < result.getTotalSize()) {
+                    gridItems.push(UserTreeGridItem.create().build());
+                }
+
+                deferred.resolve(gridItems);
+            }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();
 
-        }
         return deferred.promise;
     }
 

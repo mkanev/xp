@@ -25,6 +25,10 @@ module api.ui.grid {
 
         private loadMask: api.ui.mask.LoadMask;
 
+        private debounceSelectionChange: boolean;
+
+        public static debug: boolean = false;
+
         constructor(dataView: DataView<T>, columns: GridColumn<T>[], options?: GridOptions<T>) {
             super("grid");
 
@@ -106,12 +110,12 @@ module api.ui.grid {
 
             dataView.onRowCountChanged((eventData: Slick.EventData, args) => {
                 this.updateRowCount();
-                this.render();
+                this.renderGrid();
             });
 
             dataView.onRowsChanged((eventData: Slick.EventData, args) => {
                 this.invalidateRows(args.rows);
-                this.render();
+                this.renderGrid();
             });
         }
 
@@ -163,12 +167,20 @@ module api.ui.grid {
             this.slickGrid.unregisterPlugin(plugin);
         }
 
-        render() {
-            this.slickGrid.render();
-            super.render();
+        doRender() {
+            if (Grid.debug) {
+                console.debug("Grid.doRender");
+            }
+            return super.doRender().then((rendered) => {
+                this.renderGrid();
+                return rendered;
+            });
         }
 
         renderGrid() {
+            if (Grid.debug) {
+                console.debug("Grid.renderGrid");
+            }
             this.slickGrid.render();
         }
 
@@ -223,29 +235,30 @@ module api.ui.grid {
             return rowItems;
         }
 
-        setSelectedRows(rows: number[]) {
+        setSelectedRows(rows: number[], debounce?: boolean) {
+            this.debounceSelectionChange = debounce;
             this.slickGrid.setSelectedRows(rows);
         }
 
-        selectRow(row: number): number {
+        selectRow(row: number, debounce?: boolean): number {
             // Prevent unnecessary render on the same row
             var rows = this.getSelectedRows();
             if (rows.length > 1 || (rows.length < 2 && rows.indexOf(row) < 0)) {
-                this.slickGrid.setSelectedRows([row]);
+                this.setSelectedRows([row], debounce);
                 return row;
             }
             return -1;
         }
 
-        addSelectedRow(row: number) {
+        addSelectedRow(row: number, debounce?: boolean) {
             var rows = this.getSelectedRows();
             if (rows.indexOf(row) < 0) {
                 rows.push(row);
-                this.setSelectedRows(rows);
+                this.setSelectedRows(rows, debounce);
             }
         }
 
-        addSelectedRows(rowsToAdd: number[]) {
+        addSelectedRows(rowsToAdd: number[], debounce?: boolean) {
             var rows = this.getSelectedRows();
             rowsToAdd.forEach((row) => {
                 if (rows.indexOf(row) < 0) {
@@ -253,20 +266,22 @@ module api.ui.grid {
                 }
             });
 
-            this.setSelectedRows(rows);
+            this.setSelectedRows(rows, debounce);
         }
 
-        toggleRow(row: number): number {
+        toggleRow(row: number, debounce?: boolean): number {
             // Prevent unnecessary render on the same row
             var rows = this.getSelectedRows(),
                 index = rows.indexOf(row);
             if (index < 0) {
                 rows.push(row);
-                rows.sort((a, b) => { return a - b; });
+                rows.sort((a, b) => {
+                    return a - b;
+                });
             } else {
                 rows.splice(index, 1);
             }
-            this.slickGrid.setSelectedRows(rows);
+            this.setSelectedRows(rows, debounce);
 
             return index;
         }
@@ -278,8 +293,8 @@ module api.ui.grid {
             return index >= 0;
         }
 
-        clearSelection() {
-            this.setSelectedRows([]);
+        clearSelection(debounce?: boolean) {
+            this.setSelectedRows([], debounce);
         }
 
         isAllSelected(): boolean {
@@ -298,22 +313,24 @@ module api.ui.grid {
 
         moveSelectedUp() {
             if (this.slickGrid.getDataLength() > 0) {
-                var selected: number[] = this.getSelectedRows().sort((a, b) => { return a - b; });
+                var selected: number[] = this.getSelectedRows().sort((a, b) => {
+                    return a - b;
+                });
                 var row = selected.length >= 1
                     ? selected[0] - 1
                     : -1;
 
                 if (selected.length === 1) {
                     if (row >= 0) {
-                        this.selectRow(row);
+                        this.selectRow(row, true);
                         return row;
                     } else {
-                        this.clearSelection();
+                        this.clearSelection(true);
                         return 0;
                     }
                 } else if (selected.length > 1) {
                     row = Math.max(row, 0);
-                    this.selectRow(row);
+                    this.selectRow(row, true);
                     return row;
                 }
             }
@@ -323,12 +340,14 @@ module api.ui.grid {
 
         moveSelectedDown() {
             if (this.slickGrid.getDataLength() > 0) {
-                var selected: number[] = this.getSelectedRows().sort((a, b) => { return a - b; });
+                var selected: number[] = this.getSelectedRows().sort((a, b) => {
+                    return a - b;
+                });
                 var row = selected.length >= 1
                     ? Math.min(selected[selected.length - 1] + 1, this.slickGrid.getDataLength() - 1)
                     : 0;
 
-                this.selectRow(row);
+                this.selectRow(row, true);
 
                 return row;
             }
@@ -338,13 +357,17 @@ module api.ui.grid {
 
         addSelectedUp() {
             if (this.slickGrid.getDataLength() > 0) {
-                var selected: number[] = this.getSelectedRows().sort((a, b) => { return a - b; });
+                var selected: number[] = this.getSelectedRows().sort((a, b) => {
+                    return a - b;
+                });
 
                 if (selected.length > 0 && (selected[0] - 1) >= 0) {
                     var row = selected[0] - 1;
                     selected.push(row);
-                    selected = selected.sort((a, b) => { return a - b; });
-                    this.setSelectedRows(selected);
+                    selected = selected.sort((a, b) => {
+                        return a - b;
+                    });
+                    this.setSelectedRows(selected, true);
                     return row;
                 }
             }
@@ -354,12 +377,14 @@ module api.ui.grid {
 
         addSelectedDown(): number {
             if (this.slickGrid.getDataLength() > 0) {
-                var selected: number[] = this.getSelectedRows().sort((a, b) => { return a - b; });
+                var selected: number[] = this.getSelectedRows().sort((a, b) => {
+                    return a - b;
+                });
 
                 if (selected.length > 0 && (selected[selected.length - 1] + 1) < this.slickGrid.getDataLength()) {
                     var row = selected[selected.length - 1] + 1;
                     selected.push(row);
-                    this.setSelectedRows(selected);
+                    this.setSelectedRows(selected, true);
                     return row;
                 } else if (selected.length === 0) {
                     this.moveSelectedDown();
@@ -432,7 +457,14 @@ module api.ui.grid {
         }
 
         subscribeOnSelectedRowsChanged(callback: (e, args) => void) {
-            this.slickGrid.onSelectedRowsChanged.subscribe(callback);
+            var debouncedCallback = api.util.AppHelper.debounce(callback, 500, false);
+            this.slickGrid.onSelectedRowsChanged.subscribe((e, args) => {
+                if (this.debounceSelectionChange) {
+                    debouncedCallback(e, args);
+                } else {
+                    callback(e, args);
+                }
+            });
         }
 
         subscribeOnClick(callback: (e, args) => void) {

@@ -7,13 +7,13 @@ module api.app.browse {
 
     export interface BrowsePanelParams<M extends api.Equitable> {
 
-        browseToolbar:api.ui.toolbar.Toolbar;
+        browseToolbar: api.ui.toolbar.Toolbar;
 
-        treeGrid?:api.ui.treegrid.TreeGrid<Object>;
+        treeGrid?: api.ui.treegrid.TreeGrid<Object>;
 
-        browseItemPanel:BrowseItemPanel<M>;
+        browseItemPanel: BrowseItemPanel<M>;
 
-        filterPanel?:api.app.browse.filter.BrowseFilterPanel;
+        filterPanel?: api.app.browse.filter.BrowseFilterPanel;
 
         hasDetailsPanel?: boolean;
     }
@@ -45,6 +45,8 @@ module api.app.browse {
         private filterPanelIsHiddenByDefault: boolean = true;
 
         private toggleFilterPanelAction: api.ui.Action;
+
+        private toggleFilterPanelButton: api.ui.button.ActionButton;
 
         constructor(params: BrowsePanelParams<M>) {
             super();
@@ -88,31 +90,39 @@ module api.app.browse {
                     this.togglePreviewPanelDependingOnScreenSize(item);
                 }
             });
+
+            this.onShown(() => {
+                if (this.treeGrid.isFiltered()) {
+                    this.filterPanel.refresh();
+                }
+            });
         }
 
-        doRender(): boolean {
-            this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
-                .setAlignmentTreshold(BrowsePanel.SPLIT_PANEL_ALIGNMENT_TRESHOLD)
-                .build();
+        doRender(): wemQ.Promise<boolean> {
+            return super.doRender().then((rendered) => {
+                this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
+                    .setAlignmentTreshold(BrowsePanel.SPLIT_PANEL_ALIGNMENT_TRESHOLD)
+                    .build();
 
-            this.gridAndItemsSplitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
+                this.gridAndItemsSplitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
 
-            this.browseToolbar.addClass("browse-toolbar");
-            this.gridAndItemsSplitPanel.addClass("content-grid-and-browse-split-panel");
+                this.browseToolbar.addClass("browse-toolbar");
+                this.gridAndItemsSplitPanel.addClass("content-grid-and-browse-split-panel");
 
-            if (this.filterPanel) {
-                this.gridAndToolbarPanel = new api.ui.panel.Panel();
-                this.gridAndToolbarPanel.appendChildren<any>(this.browseToolbar, this.gridAndItemsSplitPanel);
+                if (this.filterPanel) {
+                    this.gridAndToolbarPanel = new api.ui.panel.Panel();
+                    this.gridAndToolbarPanel.appendChildren<any>(this.browseToolbar, this.gridAndItemsSplitPanel);
 
-                this.filterAndGridSplitPanel = this.setupFilterPanel();
-                this.appendChild(this.filterAndGridSplitPanel);
-                if (this.filterPanelIsHiddenByDefault) {
-                    this.hideFilterPanel();
+                    this.filterAndGridSplitPanel = this.setupFilterPanel();
+                    this.appendChild(this.filterAndGridSplitPanel);
+                    if (this.filterPanelIsHiddenByDefault) {
+                        this.hideFilterPanel();
+                    }
+                } else {
+                    this.appendChildren<any>(this.browseToolbar, this.gridAndItemsSplitPanel);
                 }
-            } else {
-                this.appendChildren<any>(this.browseToolbar, this.gridAndItemsSplitPanel);
-            }
-            return true;
+                return rendered;
+            });
         }
 
         getFilterAndGridSplitPanel(): api.ui.panel.Panel {
@@ -136,7 +146,7 @@ module api.app.browse {
         }
 
         refreshFilter() {
-            if (this.filterPanel) {
+            if (this.filterPanel && this.filterPanel.isVisible()) {
                 this.filterPanel.refresh();
             }
         }
@@ -172,6 +182,7 @@ module api.app.browse {
             this.filterAndGridSplitPanel.showFirstPanel();
             this.filterPanel.giveFocusToSearch();
             this.toggleFilterPanelAction.setVisible(false);
+            this.toggleFilterPanelButton.removeClass("filtered");
         }
 
         private hideFilterPanel() {
@@ -181,6 +192,10 @@ module api.app.browse {
             this.filterAndGridSplitPanel.hideFirstPanel();
 
             this.toggleFilterPanelAction.setVisible(true);
+            if (this.filterPanel.hasFilterSet()) {
+                this.toggleFilterPanelButton.addClass("filtered");
+            }
+
         }
 
         private setupFilterPanel() {
@@ -201,7 +216,7 @@ module api.app.browse {
             this.toggleFilterPanelAction = new api.app.browse.action.ToggleFilterPanelAction(this);
             var existingActions: api.ui.Action[] = this.browseToolbar.getActions();
             this.browseToolbar.removeActions();
-            this.browseToolbar.addAction(this.toggleFilterPanelAction);
+            this.toggleFilterPanelButton = this.browseToolbar.addAction(this.toggleFilterPanelAction);
             this.browseToolbar.addActions(existingActions);
             this.toggleFilterPanelAction.setVisible(false);
         }

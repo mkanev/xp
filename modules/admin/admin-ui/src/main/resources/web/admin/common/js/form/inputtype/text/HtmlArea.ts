@@ -30,6 +30,11 @@ module api.form.inputtype.text {
 
         private blurListeners: {(event: FocusEvent): void}[] = [];
 
+        private tools: any = {
+            include: "",
+            exclude: ""
+        };
+
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
 
             super(config);
@@ -39,6 +44,13 @@ module api.form.inputtype.text {
             this.contentPath = config.contentPath;
             this.content = config.content;
             this.applicationKeys = config.site ? config.site.getApplicationKeys() : [];
+
+            this.readConfig(config.inputConfig);
+        }
+
+        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+            this.tools.include = inputConfig['include'];
+            this.tools.exclude = inputConfig['exclude'];
         }
 
         getValueType(): ValueType {
@@ -109,13 +121,14 @@ module api.form.inputtype.text {
 
             var blurHandler = (e) => {
                 //checking if remove occurence button clicked or not
+                api.util.AppHelper.dispatchCustomEvent("focusout", this);
+
                 if (!isMouseOverRemoveOccurenceButton) {
                     this.setStaticInputHeight();
                     textAreaWrapper.removeClass(focusedEditorCls);
                 }
                 this.notifyBlurred(e);
 
-                api.util.AppHelper.dispatchCustomEvent("focusout", this);
             };
 
             var keydownHandler = (e) => {
@@ -145,9 +158,12 @@ module api.form.inputtype.text {
 
             new HTMLAreaBuilder().
                 setSelector('textarea.' + id.replace(/\./g, '_')).
-                setAssetsUri(baseUrl).setInline(false).onCreateDialog(createDialogHandler).setFocusHandler(focusHandler).setBlurHandler(
-                blurHandler).setKeydownHandler(keydownHandler).setKeyupHandler(notifyValueChanged).setNodeChangeHandler(
+                setAssetsUri(baseUrl).setInline(false).onCreateDialog(createDialogHandler).
+                setFocusHandler(focusHandler.bind(this)).
+                setBlurHandler(blurHandler.bind(this)).
+                setKeydownHandler(keydownHandler).setKeyupHandler(notifyValueChanged).setNodeChangeHandler(
                 notifyValueChanged).setContentPath(this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).
+                setTools(this.tools).
                 createEditor().
                 then((editor: HtmlAreaEditor) => {
                     this.setEditorContent(id, property);
@@ -361,25 +377,10 @@ module api.form.inputtype.text {
         }
 
         private reInitEditor(id: string) {
-            var savedEditor: HtmlAreaOccurrenceInfo = this.findElementByFieldValue(this.editors, "id", id);
+            var savedEditor: HtmlAreaOccurrenceInfo = api.util.ArrayHelper.findElementByFieldValue(this.editors, "id", id);
 
             this.initEditor(id, savedEditor.property, savedEditor.textAreaWrapper);
         }
-
-        private findElementByFieldValue<T>(array: Array<T>, field: string, value: any): T {
-            var result: T;
-
-            array.every((element: T) => {
-                if (element[field] == value) {
-                    result = element;
-                    return false;
-                }
-                return true;
-            });
-
-            return result;
-        }
-
 
     }
 

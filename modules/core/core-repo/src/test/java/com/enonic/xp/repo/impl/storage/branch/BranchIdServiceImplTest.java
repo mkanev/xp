@@ -102,7 +102,6 @@ public class BranchIdServiceImplTest
 
         final NodeBranchEntry fetchEntry = this.branchService.get( path, context );
 
-        Mockito.verify( this.searchDao, Mockito.never() );
         assertNotNull( fetchEntry );
     }
 }

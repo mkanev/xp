@@ -7,10 +7,9 @@ module api.content.form.inputtype.image {
     import ValueTypes = api.data.ValueTypes;
     import ContentId = api.content.ContentId;
     import ContentSummary = api.content.ContentSummary;
-    import ContentSummaryLoader = api.content.ContentSummaryLoader;
+    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
     import ContentComboBox = api.content.form.inputtype.image.ImageContentComboBox;
     import ContentTypeName = api.schema.content.ContentTypeName;
-    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
@@ -29,6 +28,9 @@ module api.content.form.inputtype.image {
     import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
 
     import ContentSelectorLoader = api.content.form.inputtype.contentselector.ContentSelectorLoader;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
     export class ImageSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<ContentId> {
 
@@ -42,7 +44,7 @@ module api.content.form.inputtype.image {
 
         private contentRequestsAllowed: boolean;
 
-        private uploader: ImageUploaderEl;
+        private uploader: api.content.image.ImageUploaderEl;
 
         private editContentRequestListeners: {(content: ContentSummary): void }[] = [];
 
@@ -89,7 +91,11 @@ module api.content.form.inputtype.image {
 
                 var selectedContentIdsMap: {} = {};
                 this.selectedOptionsView.getSelectedOptions().forEach(
-                    (selectedOption: any) => selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = "");
+                    (selectedOption: any) => {
+                        if (!!selectedOption.getOption().displayValue && !!selectedOption.getOption().displayValue.getContentId()) {
+                            selectedContentIdsMap[selectedOption.getOption().displayValue.getContentId().toString()] = ""
+                        }
+                    });
 
                 event.getDeletedItems().filter(deletedItem => !deletedItem.isPending() &&
                                                               selectedContentIdsMap.hasOwnProperty(
@@ -99,7 +105,7 @@ module api.content.form.inputtype.image {
                             this.selectedOptionsView.removeSelectedOptions([option]);
                         }
                     });
-            }
+            };
 
             ContentDeletedEvent.on(this.contentDeletedListener);
 
@@ -198,7 +204,7 @@ module api.content.form.inputtype.image {
 
             var contentTypes = this.allowedContentTypes.length ? this.allowedContentTypes :
                                relationshipAllowedContentTypes.length ? relationshipAllowedContentTypes :
-                                   [ContentTypeName.IMAGE.toString()];
+                                   [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
             var contentSelectorLoader = ContentSelectorLoader.create().setContent(this.config.content).
                 setInputName(inputName).
@@ -231,17 +237,25 @@ module api.content.form.inputtype.image {
             });
             comboBox.setInputIconUrl(inputIconUrl);
 
-            comboBox.onOptionDeselected((removed: SelectedOption<ImageSelectorDisplayValue>) => {
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageSelectorDisplayValue>) => {
                 // property not found.
-                if (!!removed.getOption().displayValue.getContentSummary()) {
-                    this.getPropertyArray().remove(removed.getIndex());
+                const option = event.getSelectedOption();
+                if (option.getOption().displayValue.getContentSummary()) {
+                    this.getPropertyArray().remove(option.getIndex());
                 }
                 this.validate(false);
             });
 
-            comboBox.onOptionSelected((added: SelectedOption<ImageSelectorDisplayValue>) => {
+            comboBox.onContentMissing((ids: string[]) => {
+                ids.forEach(id => this.removePropertyWithId(id));
+                this.validate(false);
+            });
+
+            comboBox.onOptionSelected((event: SelectedOptionEvent<ImageSelectorDisplayValue>) => {
+                this.fireFocusSwitchEvent(event);
+
                 if (!this.isLayoutInProgress()) {
-                    var contentId = added.getOption().displayValue.getContentId();
+                    var contentId = event.getSelectedOption().getOption().displayValue.getContentId();
                     if (!contentId) {
                         return;
                     }
@@ -291,6 +305,18 @@ module api.content.form.inputtype.image {
             });
         }
 
+        private removePropertyWithId(id: string) {
+            var length = this.getPropertyArray().getSize();
+            for (let i = 0; i < length; i++) {
+                if (this.getPropertyArray().get(i).getValue().getString() == id) {
+                    this.getPropertyArray().remove(i);
+                    api.notify.NotifyManager.get().showWarning("Failed to load image with id " + id +
+                                                               ". The reference will be removed upon save.");
+                    break;
+                }
+            }
+        }
+
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
                 if (!unchangedOnly || !this.contentComboBox.isDirty()) {
@@ -299,21 +325,19 @@ module api.content.form.inputtype.image {
             });
         }
 
-        private createUploader(): ImageUploaderEl {
+        private createUploader(): api.content.image.ImageUploaderEl {
             var multiSelection = (this.getInput().getOccurrences().getMaximum() != 1);
 
-            this.uploader = new api.content.ImageUploaderEl({
+            this.uploader = new api.content.image.ImageUploaderEl({
                 params: {
                     parent: this.config.content.getContentId().toString()
                 },
-                operation: api.content.MediaUploaderElOperation.create,
+                operation: api.ui.uploader.MediaUploaderElOperation.create,
                 name: 'image-selector-upload-dialog',
                 showCancel: false,
-                showReset: false,
                 showResult: false,
                 maximumOccurrences: this.getRemainingOccurrences(),
                 allowMultiSelection: multiSelection,
-                scaleWidth: false,
                 deferred: true
             });
 
@@ -378,37 +402,24 @@ module api.content.form.inputtype.image {
                 this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
             });
 
-            /*
-             * Drag N' Drop
-             */
-            var body = api.dom.Body.get();
-
-            this.uploader.addClass("minimized");
-            var dragOverEl;
-            // make use of the fact that when dragging
-            // first drag enter occurs on the child element and after that
-            // drag leave occurs on the parent element that we came from
-            // meaning that to know when we left some element
-            // we need to compare it to the one currently dragged over
+            //Drag N' Drop
+            // in order to toggle appropriate class during drag event
+            // we catch drag enter on this element and trigger uploader to appear,
+            // then catch drag leave on uploader's dropzone to get back to previous state
             this.onDragEnter((event: DragEvent) => {
-                var target = <HTMLElement> event.target;
+                event.stopPropagation();
                 this.uploader.giveFocus();
-                this.uploader.toggleClass("minimized", false);
-                dragOverEl = target;
+                this.uploader.setDefaultDropzoneVisible(true, true);
             });
 
-            body.onDragLeave((event: DragEvent) => {
-                var targetEl = <HTMLElement> event.target;
-                if (dragOverEl == targetEl) {
-                    this.uploader.giveBlur();
-                    this.uploader.toggleClass("minimized", true);
-                    dragOverEl = null;
-                }
+            this.uploader.onDropzoneDragLeave((event: DragEvent) => {
+                this.uploader.giveBlur();
+                this.uploader.setDefaultDropzoneVisible(false);
             });
 
-            body.onDrop((event: DragEvent) => {
+            this.uploader.onDropzoneDrop((event) => {
                 this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
-                this.uploader.toggleClass("minimized", true);
+                this.uploader.setDefaultDropzoneVisible(false);
             });
 
             return this.uploader;
@@ -422,7 +433,7 @@ module api.content.form.inputtype.image {
                     contentIds.push(ContentId.fromReference(property.getReference()));
                 }
             });
-            return new api.content.GetContentSummaryByIds(contentIds).sendAndParse();
+            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
         }
 
         protected getNumberOfValids(): number {

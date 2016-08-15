@@ -7,6 +7,8 @@ module api.content.form.inputtype.principalselector {
     import ValueTypes = api.data.ValueTypes;
     import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
     import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
     export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.security.Principal> {
 
@@ -26,10 +28,8 @@ module api.content.form.inputtype.principalselector {
         private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             var principalTypeConfig = inputConfig['principalType'] || [];
             this.principalTypes =
-                principalTypeConfig.map((cfg) => cfg['value']).
-                    filter((val) => !!val).
-                    map((val: string) => api.security.PrincipalType[val]).
-                    filter((val) => !!val);
+                principalTypeConfig.map((cfg) => cfg['value']).filter((val) => !!val).map(
+                    (val: string) => api.security.PrincipalType[val]).filter((val) => !!val);
         }
 
         public getPrincipalComboBox(): api.ui.security.PrincipalComboBox {
@@ -71,16 +71,20 @@ module api.content.form.inputtype.principalselector {
         private createComboBox(input: api.form.Input): api.ui.security.PrincipalComboBox {
 
             var value = this.getValueFromPropertyArray(this.getPropertyArray());
-            var principalLoader = new api.security.PrincipalLoader().
-                setAllowedTypes(this.principalTypes);
-            var comboBox = new api.ui.security.PrincipalComboBox(principalLoader, input.getOccurrences().getMaximum(), value);
+            var principalLoader = new api.security.PrincipalLoader().setAllowedTypes(this.principalTypes);
 
-            comboBox.onOptionDeselected((removed: api.ui.selector.combobox.SelectedOption<api.security.Principal>) => {
-                this.getPropertyArray().remove(removed.getIndex());
+            var comboBox = api.ui.security.PrincipalComboBox.create().setLoader(principalLoader).setMaxOccurences(
+                input.getOccurrences().getMaximum()).setValue(value).build();
+
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<api.security.Principal>) => {
+                this.getPropertyArray().remove(event.getSelectedOption().getIndex());
                 this.validate(false);
             });
 
-            comboBox.onOptionSelected((selectedOption: api.ui.selector.combobox.SelectedOption<api.security.Principal>) => {
+            comboBox.onOptionSelected((event: SelectedOptionEvent<api.security.Principal>) => {
+                this.fireFocusSwitchEvent(event);
+
+                const selectedOption = event.getSelectedOption();
                 var key = selectedOption.getOption().displayValue.getKey();
                 if (!key) {
                     return;

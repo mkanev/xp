@@ -42,11 +42,21 @@
 
     .remove, .edit {
       &:extend(.icon);
+      .focusable();
 
+      border: 1px solid transparent;
       float: right;
       font-size: 12px;
       text-decoration: none;
       cursor: pointer;
+    }
+
+    &.non-editable {
+      .edit {
+        cursor: default;
+        pointer-events: none;
+        opacity: 0.5;
+      }
     }
   }
 }

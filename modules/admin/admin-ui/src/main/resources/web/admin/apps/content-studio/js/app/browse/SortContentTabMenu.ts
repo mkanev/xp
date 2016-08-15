@@ -1,12 +1,10 @@
 import "../../api.ts";
-
-import ChildOrder = api.content.ChildOrder;
-import FieldOrderExpr = api.content.FieldOrderExpr;
-import FieldOrderExprBuilder = api.content.FieldOrderExprBuilder;
-import ContentSummary = api.content.ContentSummary;
-import DropdownHandle = api.ui.button.DropdownHandle;
 import {SortContentTabMenuItem} from "./SortContentTabMenuItem";
 import {SortContentTabMenuItems} from "./SortContentTabMenuItems";
+
+import ChildOrder = api.content.order.ChildOrder;
+import ContentSummary = api.content.ContentSummary;
+import DropdownHandle = api.ui.button.DropdownHandle;
 
 export class SortContentTabMenu extends api.ui.tab.TabMenu {
 
@@ -36,13 +34,13 @@ export class SortContentTabMenu extends api.ui.tab.TabMenu {
 
     }
 
-    hideMenu() {
+    protected hideMenu() {
         super.hideMenu();
         this.dropdownHandle.up();
 
     }
 
-    showMenu() {
+    protected showMenu() {
         super.showMenu();
         this.dropdownHandle.down();
     }

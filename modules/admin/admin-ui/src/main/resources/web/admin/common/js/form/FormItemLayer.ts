@@ -2,6 +2,7 @@ module api.form {
 
     import PropertySet = api.data.PropertySet;
     import PropertyArray = api.data.PropertyArray;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
     export class FormItemLayer {
 
@@ -36,18 +37,20 @@ module api.form {
             return this;
         }
 
-        layout(propertySet: PropertySet): wemQ.Promise<FormItemView[]> {
+        layout(propertySet: PropertySet, validate: boolean = true): wemQ.Promise<FormItemView[]> {
 
             this.formItemViews = [];
 
-            return this.doLayoutPropertySet(propertySet).then(() => {
+            return this.doLayoutPropertySet(propertySet, validate).then(() => {
                 return wemQ<FormItemView[]>(this.formItemViews);
             });
         }
 
-        private doLayoutPropertySet(propertySet: PropertySet): wemQ.Promise<void> {
+        private doLayoutPropertySet(propertySet: PropertySet, validate: boolean = true): wemQ.Promise<void> {
 
-            var layoutPromises: wemQ.Promise<void>[] = [];
+            let layoutPromises: wemQ.Promise<void>[] = [];
+
+            const inputs: InputView[] = [];
 
             this.formItems.forEach((formItem: FormItem) => {
 
@@ -72,9 +75,8 @@ module api.form {
                     this.parentEl.appendChild(formItemSetView);
                     this.formItemViews.push(formItemSetView);
 
-                    layoutPromises.push(formItemSetView.layout());
-                }
-                else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
+                    layoutPromises.push(formItemSetView.layout(validate));
+                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
 
                     var fieldSet: FieldSet = <FieldSet>formItem;
                     var fieldSetView = new FieldSetView(<FieldSetViewConfig>{
@@ -88,8 +90,7 @@ module api.form {
                     this.formItemViews.push(fieldSetView);
 
                     layoutPromises.push(fieldSetView.layout());
-                }
-                else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
+                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
 
                     var input: Input = <Input>formItem;
 
@@ -102,9 +103,33 @@ module api.form {
                     this.parentEl.appendChild(inputView);
                     this.formItemViews.push(inputView);
 
-                    layoutPromises.push(inputView.layout());
+                    inputs.push(inputView);
+
+                    layoutPromises.push(inputView.layout(validate));
                 }
             });
+
+            // Bind next focus targets
+            if (inputs.length > 1) {
+                FocusSwitchEvent.on((event: FocusSwitchEvent) => {
+                    const inputTypeView = event.getInputTypeView();
+                    const lastIndex = inputs.length - 1;
+                    let currentIndex = -1;
+                    inputs.map((input) => input.getInputTypeView()).some((input, index) => {
+                        // quick equality check
+                        if (input.getElement() === inputTypeView.getElement()) {
+                            currentIndex = index;
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    if (currentIndex >= 0) {
+                        const nextIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+                        inputs[nextIndex].giveFocus();
+                    }
+                });
+            }
 
             return wemQ.all(layoutPromises).spread<void>(() => {
                 return wemQ<void>(null);

@@ -5,8 +5,8 @@ import {ImageSelectorForm} from "./ImageSelectorForm";
 import ImageComponent = api.content.page.region.ImageComponent;
 import ContentSummary = api.content.ContentSummary;
 import ContentId = api.content.ContentId;
-import ContentSummaryLoader = api.content.ContentSummaryLoader;
-import GetContentSummaryByIdRequest = api.content.GetContentSummaryByIdRequest;
+import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
+import GetContentSummaryByIdRequest = api.content.resource.GetContentSummaryByIdRequest;
 import ContentComboBox = api.content.ContentComboBox;
 import ContentTypeName = api.schema.content.ContentTypeName;
 import LiveEditModel = api.liveedit.LiveEditModel;
@@ -15,6 +15,7 @@ import ComponentPropertyChangedEvent = api.content.page.region.ComponentProperty
 import Option = api.ui.selector.Option;
 import SelectedOption = api.ui.selector.combobox.SelectedOption;
 import PropertyTree = api.data.PropertyTree;
+import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
 export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponent> {
 
@@ -38,8 +39,8 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
         super(<ComponentInspectionPanelConfig>{
             iconClass: api.liveedit.ItemViewIconClassResolver.resolveByType("image", "icon-xlarge")
         });
-        this.loader = new api.content.ContentSummaryLoader();
-        this.loader.setAllowedContentTypeNames([ContentTypeName.IMAGE]);
+        this.loader = new api.content.resource.ContentSummaryLoader();
+        this.loader.setAllowedContentTypeNames([ContentTypeName.IMAGE, ContentTypeName.MEDIA_VECTOR]);
         this.imageSelector = ContentComboBox.create().setMaximumOccurrences(1).setLoader(this.loader).build();
 
         this.imageSelectorForm = new ImageSelectorForm(this.imageSelector, "Image");
@@ -134,15 +135,15 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
 
     private initSelectorListeners() {
 
-        this.imageSelector.onOptionSelected((selectedOption: SelectedOption<ContentSummary>) => {
+        this.imageSelector.onOptionSelected((event: SelectedOptionEvent<ContentSummary>) => {
             if (this.handleSelectorEvents) {
-                var option: Option<ContentSummary> = selectedOption.getOption();
+                var option: Option<ContentSummary> = event.getSelectedOption().getOption();
                 var imageContent = option.displayValue;
                 this.imageComponent.setImage(imageContent.getContentId(), imageContent.getDisplayName());
             }
         });
 
-        this.imageSelector.onOptionDeselected((option: SelectedOption<ContentSummary>) => {
+        this.imageSelector.onOptionDeselected((event: SelectedOptionEvent<ContentSummary>) => {
             if (this.handleSelectorEvents) {
                 this.imageComponent.reset();
             }

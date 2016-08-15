@@ -1,6 +1,6 @@
 module api.content.form.inputtype.image {
 
-    import ContentSummaryLoader = api.content.ContentSummaryLoader;
+    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Option = api.ui.selector.Option;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
@@ -23,7 +23,9 @@ module api.content.form.inputtype.image {
                 setOptionDisplayValueViewer(new ImageSelectorViewer()).
                 setDelayedInputValueChangedHandling(750).
                 setValue(builder.value).
-                setMinWidth(builder.minWidth);
+                setMinWidth(builder.minWidth).
+                setRemoveMissingSelectedOptions(true).
+                setDisplayMissingSelectedOptions(true);
 
             // Actually the hack.
             // ImageSelectorSelectedOptionsView and BaseSelectedOptionsView<ContentSummary> are incompatible in loaders.

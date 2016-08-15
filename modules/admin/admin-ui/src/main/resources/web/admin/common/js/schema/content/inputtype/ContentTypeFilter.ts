@@ -14,6 +14,8 @@ module api.schema.content.inputtype {
     import ContentTypeSummary = api.schema.content.ContentTypeSummary;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import ApplicationKey = api.application.ApplicationKey;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
     export class ContentTypeFilter extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
 
@@ -41,7 +43,7 @@ module api.schema.content.inputtype {
             var contentId = this.context.site.getContentId(),
                 loader = new api.schema.content.PageTemplateContentTypeLoader(contentId);
 
-            loader.setComparator(new api.content.ContentSummaryByDisplayNameComparator());
+            loader.setComparator(new api.content.ContentTypeSummaryByDisplayNameComparator());
 
             return loader;
         }
@@ -51,8 +53,14 @@ module api.schema.content.inputtype {
                 comboBox = new ContentTypeComboBox(this.getInput().getOccurrences().getMaximum(), loader);
 
             comboBox.onLoaded(this.onContentTypesLoadedHandler);
-            comboBox.onOptionSelected((selectedOption: api.ui.selector.combobox.SelectedOption<ContentTypeSummary>) => this.onContentTypeSelected(selectedOption));
-            comboBox.onOptionDeselected((option: SelectedOption<ContentTypeSummary>) => this.onContentTypeDeselected(option));
+
+            comboBox.onOptionSelected((event: SelectedOptionEvent<ContentTypeSummary>) => {
+                this.fireFocusSwitchEvent(event);
+                this.onContentTypeSelected(event.getSelectedOption());
+            });
+
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTypeSummary>) =>
+                this.onContentTypeDeselected(event.getSelectedOption()));
 
             return comboBox;
         }
@@ -63,8 +71,6 @@ module api.schema.content.inputtype {
 
             this.setLayoutInProgress(false);
             this.combobox.unLoaded(this.onContentTypesLoadedHandler);
-
-            this.validate(false);
         }
 
         private onContentTypeSelected(selectedOption: api.ui.selector.combobox.SelectedOption<ContentTypeSummary>): void {
@@ -99,7 +105,10 @@ module api.schema.content.inputtype {
 
             this.appendChild(this.combobox = this.createComboBox());
 
-            return wemQ<void>(null);
+            return this.combobox.getLoader().load().then(() => {
+                this.validate(false);
+                return wemQ<void>(null);
+            });
         }
 
 

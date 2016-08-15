@@ -1,14 +1,15 @@
 module api.content.form.inputtype.image {
 
-    import ContentIconUrlResolver = api.content.ContentIconUrlResolver;
     import ContentSummary = api.content.ContentSummary;
     import UploadItem = api.ui.uploader.UploadItem;
 
     export class ImageSelectorDisplayValue {
 
-        private uploadItem: api.ui.uploader.UploadItem<ContentSummary>;
+        private uploadItem: UploadItem<ContentSummary>;
 
         private content: ContentSummary;
+
+        private empty: boolean;
 
         constructor() {
         }
@@ -19,6 +20,19 @@ module api.content.form.inputtype.image {
 
         static fromContentSummary(content: ContentSummary) {
             return new ImageSelectorDisplayValue().setContentSummary(content);
+        }
+
+        static makeEmpty() {
+            return new ImageSelectorDisplayValue().setEmpty(true);
+        }
+
+        isEmptyContent(): boolean {
+            return this.empty;
+        }
+
+        setEmpty(value: boolean): ImageSelectorDisplayValue {
+            this.empty = value;
+            return this;
         }
 
         setUploadItem(item: UploadItem<ContentSummary>): ImageSelectorDisplayValue {
@@ -48,7 +62,7 @@ module api.content.form.inputtype.image {
         }
 
         getImageUrl(): string {
-            return this.content ? new ContentIconUrlResolver().setContent(this.content).resolve() : null;
+            return this.content ? new api.content.util.ContentIconUrlResolver().setContent(this.content).resolve() : null;
         }
 
         getLabel(): string {
