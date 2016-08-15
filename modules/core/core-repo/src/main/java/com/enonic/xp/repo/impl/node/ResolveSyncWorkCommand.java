@@ -23,7 +23,6 @@ import com.enonic.xp.node.NodeIndexPath;
 import com.enonic.xp.node.NodeNotFoundException;
 import com.enonic.xp.node.NodePath;
 import com.enonic.xp.node.NodePaths;
-import com.enonic.xp.node.NodeVersionDiffResult;
 import com.enonic.xp.node.ResolveSyncWorkResult;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.search.SearchService;
@@ -126,16 +125,16 @@ public class ResolveSyncWorkCommand
 
         final Stopwatch timer = Stopwatch.createStarted();
 
-        final NodeVersionDiffResult nodesWithVersionDifference = findNodesWithVersionDifference( this.publishRootNode.path() );
+        final NodeIds nodesWithVersionDifference = findNodesWithVersionDifference( this.publishRootNode.path() );
 
         System.out.println( "Diff-query result in " + timer.stop() );
 
-        return NodeIds.from( nodesWithVersionDifference.getNodesWithDifferences().stream().
+        return NodeIds.from( nodesWithVersionDifference.stream().
             filter( ( nodeId ) -> !this.excludedIds.contains( nodeId ) ).
             collect( Collectors.toSet() ) );
     }
 
-    private NodeVersionDiffResult findNodesWithVersionDifference( final NodePath nodePath )
+    private NodeIds findNodesWithVersionDifference( final NodePath nodePath )
     {
         return FindNodesWithVersionDifferenceCommand.create().
             target( target ).

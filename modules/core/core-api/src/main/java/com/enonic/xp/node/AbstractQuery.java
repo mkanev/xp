@@ -20,6 +20,8 @@ import com.enonic.xp.query.filter.Filters;
 public class AbstractQuery
     implements Query
 {
+    public final static int GET_ALL_SIZE_FLAG = -1;
+
     private final static int DEFAULT_QUERY_SIZE = 10;
 
     private final QueryExpr query;
@@ -129,6 +131,8 @@ public class AbstractQuery
 
         private final Set<AggregationQuery> aggregationQueries = Sets.newHashSet();
 
+        private final List<OrderExpr> orderBys = Lists.newLinkedList();
+
         private QueryExpr query;
 
         private int from;
@@ -136,8 +140,6 @@ public class AbstractQuery
         private int size = DEFAULT_QUERY_SIZE;
 
         private int batchSize = 5_000;
-
-        private final List<OrderExpr> orderBys = Lists.newLinkedList();
 
         private SearchMode searchMode = SearchMode.SEARCH;
 

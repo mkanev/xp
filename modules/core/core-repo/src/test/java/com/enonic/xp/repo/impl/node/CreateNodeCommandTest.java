@@ -5,10 +5,10 @@ import org.junit.Test;
 
 import com.google.common.io.ByteSource;
 
+import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.index.ChildOrder;
-import com.enonic.xp.index.IndexType;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.FindNodesByQueryResult;
@@ -17,11 +17,13 @@ import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeAlreadyExistAtPathException;
 import com.enonic.xp.node.NodeBinaryReferenceException;
 import com.enonic.xp.node.NodeId;
+import com.enonic.xp.node.NodeIds;
 import com.enonic.xp.node.NodeIndexPath;
 import com.enonic.xp.node.NodeNotFoundException;
 import com.enonic.xp.node.NodePath;
 import com.enonic.xp.node.NodeQuery;
 import com.enonic.xp.query.filter.ValueFilter;
+import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.util.BinaryReference;
 import com.enonic.xp.util.Reference;
 
@@ -77,10 +79,6 @@ public class CreateNodeCommandTest
         final Node storedNode = getNodeById( node.id() );
 
         assertNotNull( storedNode.getTimestamp() );
-
-        refresh();
-
-        printIndex( TEST_REPO.getId(), IndexType.CHANGELOG );
     }
 
     @Test

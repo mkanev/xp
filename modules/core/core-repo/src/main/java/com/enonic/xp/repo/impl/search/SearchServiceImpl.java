@@ -4,6 +4,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.enonic.xp.index.IndexType;
+import com.enonic.xp.node.ChangelogQueryResult;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeQuery;
 import com.enonic.xp.node.NodeVersionDiffResult;
@@ -11,6 +12,7 @@ import com.enonic.xp.node.NodeVersionQueryResult;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.ReturnFields;
 import com.enonic.xp.repo.impl.StorageSettings;
+import com.enonic.xp.repo.impl.branch.search.ChangelogQuery;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQuery;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResult;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResultFactory;
@@ -146,6 +148,30 @@ public class SearchServiceImpl
         return builder.build();
     }
 
+    @Override
+    public ChangelogQueryResult query( final ChangelogQuery query, final InternalContext context )
+    {
+        final SearchRequest searchRequest = SearchRequest.create().
+            settings( StorageSettings.create().
+                indexType( IndexType.CHANGELOG ).
+                repositoryId( context.getRepositoryId() ).
+                branch( context.getBranchId() ).
+                build() ).
+            acl( context.getPrincipalsKeys() ).
+            query( query ).
+            build();
+
+        final SearchResult result = searchDao.search( searchRequest );
+
+        final ChangelogQueryResult.Builder builder = ChangelogQueryResult.create();
+
+        for ( final SearchHit hit : result.getResults() )
+        {
+            builder.add( NodeId.from( hit.getId() ) );
+        }
+
+        return builder.build();
+    }
 
     @Reference
     public void setSearchDao( final SearchDao searchDao )

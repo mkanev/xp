@@ -16,6 +16,7 @@ import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.ReturnValues;
 import com.enonic.xp.repo.impl.branch.storage.BranchIndexPath;
 import com.enonic.xp.repo.impl.branch.storage.BranchServiceImpl;
+import com.enonic.xp.repo.impl.changelog.ChangelogServiceImpl;
 import com.enonic.xp.repo.impl.search.SearchDao;
 import com.enonic.xp.repo.impl.search.SearchRequest;
 import com.enonic.xp.repo.impl.search.result.SearchResult;
@@ -30,8 +31,9 @@ import static org.junit.Assert.*;
 
 public class BranchIdServiceImplTest
 {
-
     private BranchServiceImpl branchService;
+
+    private ChangelogServiceImpl changelogService;
 
     private StorageDao storageDao;
 
@@ -46,9 +48,12 @@ public class BranchIdServiceImplTest
         this.storageDao = Mockito.mock( StorageDao.class );
         this.searchDao = Mockito.mock( SearchDao.class );
 
+        this.changelogService = Mockito.mock( ChangelogServiceImpl.class );
+
         this.branchService = new BranchServiceImpl();
         this.branchService.setStorageDao( storageDao );
         this.branchService.setSearchDao( searchDao );
+        this.branchService.setChangelogService( this.changelogService );
 
         context = InternalContext.create().
             branch( BranchId.from( "myBranch" ) ).

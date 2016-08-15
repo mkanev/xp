@@ -110,6 +110,8 @@ public abstract class AbstractNodeTest
 
     protected IndexDataServiceImpl indexedDataService;
 
+    protected ChangelogServiceImpl changelogService;
+
     @Before
     public void setUp()
         throws Exception
@@ -136,8 +138,9 @@ public abstract class AbstractNodeTest
 
         // Branch and version-services
 
-        final ChangelogServiceImpl changelogService = new ChangelogServiceImpl();
+        this.changelogService = new ChangelogServiceImpl();
         changelogService.setStorageDao( storageDao );
+        changelogService.setSearchDao( searchDao );
 
         this.branchService = new BranchServiceImpl();
         this.branchService.setStorageDao( storageDao );

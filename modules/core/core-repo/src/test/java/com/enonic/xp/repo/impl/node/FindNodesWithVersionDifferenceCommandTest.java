@@ -9,7 +9,6 @@ import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeIds;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeVersionDiffResult;
 import com.enonic.xp.node.PushNodesResult;
 import com.enonic.xp.node.UpdateNodeParams;
 
@@ -39,13 +38,13 @@ public class FindNodesWithVersionDifferenceCommandTest
 
         refresh();
 
-        assertEquals( 2, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
+        assertEquals( 2, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
 
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, this.rootNode );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 0, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 0, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -72,17 +71,17 @@ public class FindNodesWithVersionDifferenceCommandTest
             parent( child1_1.path() ).
             build() );
 
-        assertEquals( 5, getDiff( WS_DEFAULT, WS_OTHER, NodePath.ROOT ).getNodesWithDifferences().getSize() );
-        assertEquals( 4, getDiff( WS_DEFAULT, WS_OTHER, node.path() ).getNodesWithDifferences().getSize() );
-        assertEquals( 3, getDiff( WS_DEFAULT, WS_OTHER, child1.path() ).getNodesWithDifferences().getSize() );
-        assertEquals( 2, getDiff( WS_DEFAULT, WS_OTHER, child1_1.path() ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER, child1_1_1.path() ).getNodesWithDifferences().getSize() );
+        assertEquals( 5, getDiff( WS_DEFAULT, WS_OTHER, NodePath.ROOT ).getSize() );
+        assertEquals( 4, getDiff( WS_DEFAULT, WS_OTHER, node.path() ).getSize() );
+        assertEquals( 3, getDiff( WS_DEFAULT, WS_OTHER, child1.path() ).getSize() );
+        assertEquals( 2, getDiff( WS_DEFAULT, WS_OTHER, child1_1.path() ).getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER, child1_1_1.path() ).getSize() );
 
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, child1 );
         doPushNode( WS_OTHER, child1_1 );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER, node.path() ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER, node.path() ).getSize() );
     }
 
     @Test
@@ -97,8 +96,8 @@ public class FindNodesWithVersionDifferenceCommandTest
         doPushNode( WS_OTHER, rootNode );
         doPushNode( WS_OTHER, node );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 0, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 0, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -115,8 +114,8 @@ public class FindNodesWithVersionDifferenceCommandTest
 
         doUpdateNode( node );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -133,8 +132,8 @@ public class FindNodesWithVersionDifferenceCommandTest
 
         CTX_OTHER.runWith( () -> doUpdateNode( node ) );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -155,12 +154,12 @@ public class FindNodesWithVersionDifferenceCommandTest
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, node2 );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
 
         doMoveNode( node, node2 );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -181,12 +180,12 @@ public class FindNodesWithVersionDifferenceCommandTest
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, node2 );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
 
         CTX_OTHER.runWith( () -> doMoveNode( node, node2 ) );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -207,12 +206,12 @@ public class FindNodesWithVersionDifferenceCommandTest
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, node2 );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
 
         doDeleteNode( node.id() );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        //assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        //assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     @Test
@@ -255,12 +254,12 @@ public class FindNodesWithVersionDifferenceCommandTest
         CTX_OTHER.runWith( () -> doUpdateNode( node1_1 ) );
         CTX_OTHER.runWith( () -> doUpdateNode( node1 ) );
 
-        NodeVersionDiffResult result = getDiff( WS_DEFAULT, WS_OTHER, node1.path() );
+        NodeIds result = getDiff( WS_DEFAULT, WS_OTHER, node1.path() );
 
-        assertEquals( 4, result.getNodesWithDifferences().getSize() );
+        assertEquals( 4, result.getSize() );
 
         int counter = 0;
-        for ( final NodeId nodeId : result.getNodesWithDifferences() )
+        for ( final NodeId nodeId : result )
         {
             if ( counter == 0 )
             {
@@ -301,12 +300,12 @@ public class FindNodesWithVersionDifferenceCommandTest
         doPushNode( WS_OTHER, node );
         doPushNode( WS_OTHER, node2 );
 
-        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
+        assertEquals( 0, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
 
         CTX_OTHER.runWith( () -> doDeleteNode( node.id() ) );
 
-        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getNodesWithDifferences().getSize() );
-        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getNodesWithDifferences().getSize() );
+        assertEquals( 1, getDiff( WS_DEFAULT, WS_OTHER ).getSize() );
+        assertEquals( 1, getDiff( WS_OTHER, WS_DEFAULT ).getSize() );
     }
 
     private void doMoveNode( final Node node, final Node newParent )
@@ -321,13 +320,13 @@ public class FindNodesWithVersionDifferenceCommandTest
             execute();
     }
 
-    private NodeVersionDiffResult getDiff( final BranchId source, final BranchId target )
+    private NodeIds getDiff( final BranchId source, final BranchId target )
     {
         return getDiff( source, target, null );
     }
 
 
-    private NodeVersionDiffResult getDiff( final BranchId source, final BranchId target, final NodePath nodePath )
+    private NodeIds getDiff( final BranchId source, final BranchId target, final NodePath nodePath )
     {
         refresh();
 

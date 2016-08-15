@@ -6,9 +6,11 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.enonic.xp.node.NodeQuery;
 import com.enonic.xp.query.Query;
+import com.enonic.xp.repo.impl.branch.search.ChangelogQuery;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQuery;
 import com.enonic.xp.repo.impl.elasticsearch.executor.SearchExecutor;
 import com.enonic.xp.repo.impl.elasticsearch.query.ElasticsearchQuery;
+import com.enonic.xp.repo.impl.elasticsearch.query.translator.ChangelogQueryTranslator;
 import com.enonic.xp.repo.impl.elasticsearch.query.translator.NodeBranchQueryTranslator;
 import com.enonic.xp.repo.impl.elasticsearch.query.translator.NodeQueryTranslator;
 import com.enonic.xp.repo.impl.elasticsearch.query.translator.NodeVersionDiffQueryTranslator;
@@ -30,6 +32,8 @@ public class SearchDaoImpl
     private final NodeVersionDiffQueryTranslator nodeVersionDiffQueryTranslator = new NodeVersionDiffQueryTranslator();
 
     private final NodeBranchQueryTranslator nodeBranchQueryTranslator = new NodeBranchQueryTranslator();
+
+    private final ChangelogQueryTranslator changelogQueryTranslator = new ChangelogQueryTranslator();
 
     private Client client;
 
@@ -65,6 +69,11 @@ public class SearchDaoImpl
         if ( query instanceof NodeBranchQuery )
         {
             return nodeBranchQueryTranslator.translate( searchRequest );
+        }
+
+        if ( query instanceof ChangelogQuery )
+        {
+            return changelogQueryTranslator.translate( searchRequest );
         }
 
         throw new UnsupportedOperationException( "Queries of type " + query.getClass() + " not implemented yes" );

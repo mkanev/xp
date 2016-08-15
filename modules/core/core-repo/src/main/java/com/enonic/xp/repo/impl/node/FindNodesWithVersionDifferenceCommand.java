@@ -2,19 +2,20 @@ package com.enonic.xp.repo.impl.node;
 
 import com.enonic.xp.branch.BranchId;
 import com.enonic.xp.context.ContextAccessor;
+import com.enonic.xp.node.ChangelogQueryResult;
 import com.enonic.xp.node.NodeBranchEntries;
 import com.enonic.xp.node.NodeBranchEntry;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeIds;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeVersionDiffResult;
 import com.enonic.xp.query.expr.OrderExpr;
+import com.enonic.xp.query.expr.QueryExpr;
 import com.enonic.xp.repo.impl.InternalContext;
+import com.enonic.xp.repo.impl.branch.search.ChangelogQuery;
 import com.enonic.xp.repo.impl.search.SearchService;
 import com.enonic.xp.repo.impl.storage.StorageService;
 import com.enonic.xp.repo.impl.version.search.ExcludeEntries;
 import com.enonic.xp.repo.impl.version.search.ExcludeEntry;
-import com.enonic.xp.repo.impl.version.search.NodeVersionDiffQuery;
 
 public class FindNodesWithVersionDifferenceCommand
 {
@@ -59,20 +60,28 @@ public class FindNodesWithVersionDifferenceCommand
         return new Builder();
     }
 
-    public NodeVersionDiffResult execute()
+    public NodeIds execute()
     {
         final InternalContext context = InternalContext.from( ContextAccessor.current() );
 
         final ExcludeEntries excludeEntries = getExcludePaths( context );
 
-        return this.searchService.query( NodeVersionDiffQuery.create().
-            source( source ).
-            target( target ).
-            nodePath( nodePath ).
+        final ChangelogQueryResult query = this.searchService.query( ChangelogQuery.create().
+            query( createQuery() ).
             excludes( excludeEntries ).
-            size( this.size ).
+            size( 100 ).
             batchSize( batchSize ).
             build(), context );
+
+        return query.getNodeIds();
+    }
+
+    private QueryExpr createQuery()
+    {
+        return null;
+
+//        return QueryExpr.from(
+//            CompareExpr.like( FieldExpr.from( ChangelogIndexPath.PATH ), ValueExpr.string( this.nodePath.toString() + "*" ) ) );
     }
 
     private ExcludeEntries getExcludePaths( final InternalContext context )

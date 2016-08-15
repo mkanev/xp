@@ -829,7 +829,10 @@ public class ResolveSyncWorkCommandTest
 
         final ResolveSyncWorkResult result = resolveSyncWorkResult( NodeId.from( "a1" ), true );
 
-        assertEquals( 2, result.getSize() );
+        assertNodes( result, ExpectedNodes.create().
+            implicit( "a1" ).
+            parent( "s1" ) );
+
     }
 
     /*

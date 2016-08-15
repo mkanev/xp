@@ -12,10 +12,6 @@
       "path": {
         "type": "string",
         "index": "not_analyzed"
-      },
-      "nodeid": {
-        "type": "string",
-        "index": "not_analyzed"
       }
     }
   }

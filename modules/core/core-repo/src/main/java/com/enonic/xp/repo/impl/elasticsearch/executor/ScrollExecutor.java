@@ -14,7 +14,7 @@ import com.enonic.xp.repo.impl.elasticsearch.result.SearchHitsFactory;
 import com.enonic.xp.repo.impl.search.result.SearchHits;
 import com.enonic.xp.repo.impl.search.result.SearchResult;
 
-class ScrollExecutor
+public class ScrollExecutor
     extends AbstractExecutor
 {
     private static final TimeValue defaultScrollTime = new TimeValue( 30, TimeUnit.SECONDS );
