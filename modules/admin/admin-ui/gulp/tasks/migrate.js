@@ -69,7 +69,7 @@ var pathsList = [
 
 // Step 1
 // remove _module.ts
-gulp.task('migrate:1', function (cb) {
+gulp.task('migrate:1_0', function (cb) {
     var src = resolvePath('/common/js/**/_module.ts');
 
     return del(src)
@@ -82,7 +82,7 @@ gulp.task('migrate:1', function (cb) {
 
 // Step 2
 // Create a map for each export
-gulp.task('migrate:2', function (cb) {
+gulp.task('migrate:2_0', function (cb) {
     var src = resolvePath('/common/js/**/*.ts');
     var base = resolvePath('/common/js/');
 
@@ -107,11 +107,25 @@ gulp.task('migrate:2', function (cb) {
 
 // Step 3
 // remove module declaration and add api.ts imports
-gulp.task('migrate:3', ['migrate:2'], function (cb) {
-    // var src = resolvePath('/common/js/ObjectHelper.ts'); // test
-    var src = resolvePath('/apps/content-studio/js/app/ContentAppPanel.ts'); // test
-    // var src = resolvePath('/common/js/**/*.ts');
-    var base = resolvePath('/common/js/');
+var step3tasks = [
+    {name: 'common', src: '/common/js/**/*.ts', base: '/common/js/', isCommon: true},
+    {name: 'content', src: '/apps/content-studio/js/**/*.ts', base: '/apps/content-studio/js/'},
+    {name: 'user', src: '/apps/user-manager/js/**/*.ts', base: '/apps/user-manager/js/'},
+    {name: 'applications', src: '/apps/applications/js/**/*.ts', base: '/apps/applications/js/'},
+    {name: 'live', src: '/live-edit/js/LiveEditPage.ts', base: '/live-edit/js/'}
+];
+
+step3tasks.forEach(function (value) {
+    gulp.task('migrate:3_' + value.name, ['migrate:2_0'], function (cb) {
+        var src = resolvePath(value.src);
+        var base = resolvePath(value.base);
+
+        return createModuleMigrationStream(src, base, value.isCommon);
+    });
+});
+
+function createModuleMigrationStream(src, base, isCommon) {
+    isCommon = isCommon || false;
 
     var regex = {
         lastBracket: /}[\s*\n]*$/g,
@@ -123,12 +137,32 @@ gulp.task('migrate:3', ['migrate:2'], function (cb) {
 
     var files = new Map();
 
-    return gulp.src(src, {base: base})
-    // Save potential imports from the same module
-        .pipe(replace(regex.importApi, ''))
-        .pipe(insert.transform(function (contents, file) {
-            var data = {imports: []};
-            files.set(file.path, data);
+    var stream = gulp.src(src, {base: base});
+
+    // Remove `api.ts` imports. Common modules don't have them.
+    if (!isCommon) {
+        stream = stream.pipe(replace(regex.importApi, ''));
+    }
+
+    // Save all unique module usage to the import list
+    stream = stream.pipe(insert.transform(function (contents, file) {
+        var data = {imports: []};
+        files.set(file.path, data);
+
+        // find module usage
+        var modulesUsage = _.uniq(findModulesUsage(contents));
+        modulesUsage.forEach(function (value) {
+            data.imports.push(findPathByModule(pathsList, value));
+        });
+
+        return contents;
+    }));
+
+    // Save potential imports from the same module to the import list
+    // Non-common TS already have them imported.
+    if (isCommon) {
+        stream = stream.pipe(insert.transform(function (contents, file) {
+            var data = files.get(file.path);
 
             // Get file module and search for the non-imported classes
             // from the same module to add the to the import list
@@ -142,20 +176,17 @@ gulp.task('migrate:3', ['migrate:2'], function (cb) {
                 }
             });
 
-            // find module usage
-            var modulesUsage = _.uniq(findModulesUsage(contents));
-            modulesUsage.forEach(function (value) {
-                data.imports.push(findPathByModule(pathsList, value));
-            });
-
             return contents;
         }))
-        // Remove module definition and TS style imports.
-        // .pipe(replace(regex.moduleDefinition, ''))
-        // .pipe(replace(regex.lastBracket, ''))
-        .pipe(replace(regex.importDefinition, ''))
+        // Also, remove the module definition with the last bracket 
+            .pipe(replace(regex.moduleDefinition, ''))
+            .pipe(replace(regex.lastBracket, ''));
+    }
+
+    // Remove the imports definition and module usage
+    return stream.pipe(replace(regex.importDefinition, ''))
         .pipe(replace(regex.moduleUsage, ''))
-        // Add imports
+        // Add removed imports in their valid definitions
         .pipe(insert.transform(function (contents, file) {
             var importList = [];
             var importApi = 'import "' + resolveRelativePath(file.path, base) + '/api.ts";\n';
@@ -167,10 +198,12 @@ gulp.task('migrate:3', ['migrate:2'], function (cb) {
                 importList.push('import {' + value.name + '} from "' + relativePath + '/' + value.name + '"');
             });
 
-            return importList.join('\n') + '\n' + contents;
+            return importList.join('\n') + '\n\n' + contents;
         }))
+        // write files
         .pipe(gulp.dest(base));
-});
+}
 
-
-gulp.task('migrate', gulpSequence('migrate:1', 'migrate:3'));
+gulp.task('migrate', gulpSequence('migrate:1_0', step3tasks.map(function (value) {
+    return 'migrate:3_' + value.name;
+})));
