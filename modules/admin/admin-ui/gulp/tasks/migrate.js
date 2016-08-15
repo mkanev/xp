@@ -16,6 +16,11 @@ function resolvePath(filePath) {
     return path.join(CONFIG.root.src, filePath);
 }
 
+function resolveRelativePath(filePath, baseDirPath) {
+    var relativePath = path.relative(path.dirname(filePath), baseDirPath);
+    return relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
+}
+
 function findAll(regex, content) {
     var match;
     var result = [];
@@ -38,7 +43,7 @@ function findModules(content) {
 }
 
 function findModulesUsage(content) {
-    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*\w+)/g;
+    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*[A-Z]\w+)/g;
     return findAll(moduleUsagePattern, content);
 }
 
@@ -104,21 +109,23 @@ gulp.task('migrate:2', function (cb) {
 // remove module declaration and add api.ts imports
 gulp.task('migrate:3', ['migrate:2'], function (cb) {
     // var src = resolvePath('/common/js/ObjectHelper.ts'); // test
-    // var src = resolvePath('/apps/content-studio/js/app/ContentAppPanel.ts'); // test
-    var src = resolvePath('/common/js/**/*.ts');
+    var src = resolvePath('/apps/content-studio/js/app/ContentAppPanel.ts'); // test
+    // var src = resolvePath('/common/js/**/*.ts');
     var base = resolvePath('/common/js/');
 
     var regex = {
         lastBracket: /}[\s*\n]*$/g,
         moduleDefinition: /module\s+[A-Za-z\.]*\s+\{\s*\n*/g,
         importDefinition: /(import\s+\w+\s*=\s*[\w\.]+;\s*\n*)/g,
-        moduleUsage: /api\.([a-z0-9_]+\.)*/g
+        importApi: /(import\s+["'].*api\.ts["'];\s*\n*)/g,
+        moduleUsage: /(?!api\.ts)(api\.(?:[a-z0-9_]+\.)*)/g
     };
 
     var files = new Map();
 
     return gulp.src(src, {base: base})
     // Save potential imports from the same module
+        .pipe(replace(regex.importApi, ''))
         .pipe(insert.transform(function (contents, file) {
             var data = {imports: []};
             files.set(file.path, data);
@@ -136,29 +143,33 @@ gulp.task('migrate:3', ['migrate:2'], function (cb) {
             });
 
             // find module usage
-            // excluding 'api.ts' definition
-            var modulesUsage = _.without(_.uniq(findModulesUsage(contents)), 'api.ts');
+            var modulesUsage = _.uniq(findModulesUsage(contents));
             modulesUsage.forEach(function (value) {
                 data.imports.push(findPathByModule(pathsList, value));
             });
 
-            // console.log(data.imports);
-
             return contents;
-        }));
-    // // Remove module definition and TS style imports.
-    // .pipe(replace(regex.moduleDefinition, ''))
-    // .pipe(replace(regex.lastBracket, ''))
-    // .pipe(replace(regex.importDefinition, ''))
-    // .pipe(replace(regex.moduleUsage, ''))
-    // //
-    // .pipe(insert.transform(function (contents, file) {
-    //     var relativePath = path.relative(path.dirname(file.path), basePath);
-    //     relativePath = relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
-    //     var importApi = 'import "' + relativePath + '/api.ts";\n\n';
-    //     return importApi + contents;
-    // }))
-    // .pipe(gulp.dest(base));
+        }))
+        // Remove module definition and TS style imports.
+        // .pipe(replace(regex.moduleDefinition, ''))
+        // .pipe(replace(regex.lastBracket, ''))
+        .pipe(replace(regex.importDefinition, ''))
+        .pipe(replace(regex.moduleUsage, ''))
+        // Add imports
+        .pipe(insert.transform(function (contents, file) {
+            var importList = [];
+            var importApi = 'import "' + resolveRelativePath(file.path, base) + '/api.ts";\n';
+            importList.push(importApi);
+
+            var data = files.get(file.path);
+            data.imports.forEach(function (value) {
+                var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
+                importList.push('import {' + value.name + '} from "' + relativePath + '/' + value.name + '"');
+            });
+
+            return importList.join('\n') + '\n' + contents;
+        }))
+        .pipe(gulp.dest(base));
 });
 
 
