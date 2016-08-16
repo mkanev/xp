@@ -220,6 +220,9 @@ gulp.task('migrate:3_common_files', function () {
         .pipe(gulp.dest(dest));
 });
 
-gulp.task('migrate', gulpSequence('migrate:1', step3tasks.map(function (value) {
+var step3tasksNames = step3tasks.map(function (value) {
     return 'migrate:3_' + value.name;
-}).push('migrate:3_common_files')));
+});
+step3tasksNames.push('migrate:3_common_files');
+
+gulp.task('migrate', gulpSequence('migrate:1', step3tasksNames));
