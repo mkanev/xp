@@ -22,19 +22,24 @@ function resolveRelativePath(filePath, baseDirPath) {
     return relativePath ? path.normalize(relativePath).replace(/\\/g, '/') : '.';
 }
 
+// Can match 2 alternatives, like (regex1|regex2)
 function findAll(regex, content) {
     var match;
     var result = [];
 
     while ((match = regex.exec(content)) !== null) {
-        result.push(match[1]);
+        // var optimizedMatch =  _.compact(match.slice(1));
+        var optimizedMatch = match.slice(1).filter(function (value) {
+            return value != null;
+        });
+        result.push(optimizedMatch.length > 1 ? optimizedMatch : optimizedMatch[0]);
     }
 
     return result;
 }
 
 function findExports(content) {
-    var exportDefinition = /(?:[\s\n]*export\s+(?:class|interface|enum)\s+)([A-Z]{1}\w+)/g;
+    var exportDefinition = /(?:[\s\n]*export\s+(?:class|interface|enum)\s+)([A-Z]\w+)|(?:[\s\n]*export\s+(?:function)\s*)(\w+)/g;
     return findAll(exportDefinition, content);
 }
 
@@ -44,8 +49,16 @@ function findModules(content) {
 }
 
 function findModulesUsage(content) {
-    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*[A-Z]\w+)/g;
+    // (api\.(?:[a-z0-9]+\.)*[A-Z]\w+)      // api.module.Class
+    // (api\.(?:[a-z0-9]+\.)*[a-z]\w+)(\()  // api.module.func()
+    // (api\.(?:[a-z0-9]+\.)*[A-Z]\w+)|(api\.(?:[a-z0-9]+\.)*[a-z]\w+)(?:\() // both
+    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*[A-Z]\w+)|(api\.(?:[a-z0-9]+\.)*[a-z]\w+)(?:\()/g;
     return findAll(moduleUsagePattern, content);
+}
+
+function findImports(content) {
+    var importPattern = /import\s+(\w+)\s*=\s*(api.[\w\.]+);\s*\n*/g;
+    return findAll(importPattern, content);
 }
 
 function filterRelativeExports(paths, moduleName) {
@@ -66,6 +79,7 @@ var pathsList = [
     // module: api.dom
     // full: api.dom.Name
     // path: d:/../js/dom/Name.ts
+    // importAs: NewName
 ];
 
 // Step 1
@@ -145,10 +159,36 @@ function createModuleMigrationStream(src, base, isCommon) {
         stream = stream.pipe(replace(regex.importApi, ''));
     }
 
-    // Save all unique module usage to the import list
+    // Module Definitions or Imports
+    // Save all module definitions to the import list
+    // Module definitions may have different names from the exports
     stream = stream.pipe(insert.transform(function (contents, file) {
         var data = {imports: []};
         files.set(file.path, data);
+
+        // find module usage
+        var importsDefinitions = _.uniq(findImports(contents));
+        importsDefinitions.forEach(function (value) {
+            var find = findPathByModule(pathsList, value[1]);
+            if (!find) {
+                var color = 'red';
+                logger.log('Cannot resolve module: ' + value[1] + '\n' + file.path, color);
+            } else {
+                var shallow = _.clone(find);
+                if (value[0] !== find.name) {
+                    shallow.importAs = value[0];
+                }
+                data.imports.push(shallow);
+            }
+        });
+
+        return contents;
+    }));
+
+    // Module Usage
+    // Save all unique module usage to the import list
+    stream = stream.pipe(insert.transform(function (contents, file) {
+        var data = files.get(file.path);
 
         // find module usage
         var modulesUsage = _.uniq(findModulesUsage(contents));
@@ -206,7 +246,8 @@ function createModuleMigrationStream(src, base, isCommon) {
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
                 var baseName = path.basename(value.path, '.ts');
-                importList.push('import {' + value.name + '} from "' + relativePath + '/' + baseName + '";');
+                var importName = !value.importAs ? value.name : value.name + ' as ' + value.importAs;
+                importList.push('import {' + importName + '} from "' + relativePath + '/' + baseName + '";');
             });
 
             return importList.join('\n') + '\n\n' + contents;
