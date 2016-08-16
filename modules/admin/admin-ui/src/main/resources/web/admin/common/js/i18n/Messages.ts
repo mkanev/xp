@@ -29,11 +29,14 @@ module api.i18n {
             return args[arguments[1] - 1];
         });
     }
+    
+    export function _i18n(key: string, ...args: any[]) {
+        return message(key, args);
+    }
 
 }
 
-// Global i18n message method
-var _i18n = (key: string, ...args: any[]) => api.i18n.message(key, args);
+
 
 
 
