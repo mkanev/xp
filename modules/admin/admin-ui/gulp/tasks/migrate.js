@@ -200,6 +200,9 @@ function createModuleMigrationStream(src, base, isCommon) {
             importList.push(importApi);
 
             var data = files.get(file.path);
+            data.imports = _.uniqWith(data.imports, function (value, other) {
+                return value.full === other.full;
+            });
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
                 var baseName = path.basename(value.path, '.ts');
