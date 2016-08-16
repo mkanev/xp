@@ -57,7 +57,7 @@ function findModulesUsage(content) {
 }
 
 function findImports(content) {
-    var importPattern = /import\s+(\w+)\s*=\s*(api.[\w\.]+);\s*\n*/g;
+    var importPattern = /import\s+(\w+)\s*=\s*(api.[\w\.]+);?\s*\n*/g;
     return findAll(importPattern, content);
 }
 
@@ -144,7 +144,7 @@ function createModuleMigrationStream(src, base, isCommon) {
 
     var regex = {
         lastBracket: /}[\s*\n]*$/g,
-        moduleDefinition: /module\s+[A-Za-z\.]*\s+\{\s*\n*/g,
+        moduleDefinition: /module\s+[A-Za-z0-9\.]*\s+\{\s*\n*/g,
         importDefinition: /(import\s+\w+\s*=\s*[\w\.]+;\s*\n*)/g,
         importApi: /(import\s+["'].*api\.ts["'];\s*\n*)/g,
         moduleUsage: /(?!api\.ts)(api\.(?:[a-z0-9_]+\.)*)/g
@@ -242,6 +242,9 @@ function createModuleMigrationStream(src, base, isCommon) {
             var data = files.get(file.path);
             data.imports = _.uniqWith(data.imports, function (value, other) {
                 return value.full === other.full;
+            });
+            data.imports = data.imports.filter(function (value) {
+                return value.path !== file.path;
             });
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
