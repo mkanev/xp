@@ -38,7 +38,7 @@ function findExports(content) {
 }
 
 function findModules(content) {
-    var modulePattern = /(?:module\s+)([A-Za-z\.]+)(?:\s+\{\s*\n*)/g;
+    var modulePattern = /(?:module\s+)([A-Za-z\.]+)(?:\s*\{\s*\n*)/g;
     return findAll(modulePattern, content);
 }
 
@@ -152,7 +152,13 @@ function createModuleMigrationStream(src, base, isCommon) {
         // find module usage
         var modulesUsage = _.uniq(findModulesUsage(contents));
         modulesUsage.forEach(function (value) {
-            data.imports.push(findPathByModule(pathsList, value));
+            var find = findPathByModule(pathsList, value);
+            if (!find) {
+                var color = 'red';
+                logger.log('Cannot resolve module: ' + value + '\n' + file.path, color);
+            } else {
+                data.imports.push(find);
+            }
         });
 
         return contents;
@@ -178,7 +184,7 @@ function createModuleMigrationStream(src, base, isCommon) {
 
             return contents;
         }))
-        // Also, remove the module definition with the last bracket 
+        // Also, remove the module definition with the last bracket
             .pipe(replace(regex.moduleDefinition, ''))
             .pipe(replace(regex.lastBracket, ''));
     }
@@ -195,7 +201,8 @@ function createModuleMigrationStream(src, base, isCommon) {
             var data = files.get(file.path);
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
-                importList.push('import {' + value.name + '} from "' + relativePath + '/' + value.name + '"');
+                var baseName = path.basename(value.path, '.ts')
+                importList.push('import {' + value.name + '} from "' + relativePath + '/' + baseName + '"');
             });
 
             return importList.join('\n') + '\n\n' + contents;

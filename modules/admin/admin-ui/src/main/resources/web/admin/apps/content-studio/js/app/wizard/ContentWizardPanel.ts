@@ -1142,7 +1142,6 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
             var contentToDisplay = (content.getDisplayName() && content.getDisplayName().length > 0) ?
                                    '\"' + content.getDisplayName() + '\"' : "Content";
             api.notify.showFeedback(contentToDisplay + ' saved');
-            //new api.content.ContentUpdatedEvent(content.getContentId()).fire();
 
             return content;
         });

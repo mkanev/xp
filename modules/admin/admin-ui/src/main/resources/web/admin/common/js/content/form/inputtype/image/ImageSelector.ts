@@ -368,8 +368,6 @@ module api.content.form.inputtype.image {
                 var item = event.getUploadItem();
                 var createdContent = item.getModel();
 
-                //new api.content.ContentUpdatedEvent(this.config.contentId).fire();
-
                 var selectedOption = this.selectedOptionsView.getById(item.getId());
                 var option = selectedOption.getOption();
                 option.displayValue.setContentSummary(createdContent);

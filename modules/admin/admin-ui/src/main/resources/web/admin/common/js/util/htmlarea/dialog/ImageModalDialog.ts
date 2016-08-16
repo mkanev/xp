@@ -308,8 +308,7 @@ module api.util.htmlarea.dialog {
             uploader.onFileUploaded((event: FileUploadedEvent<Content>) => {
                 var item = event.getUploadItem();
                 var createdContent = item.getModel();
-
-                //new api.content.ContentUpdatedEvent(this.contentId).fire();
+                
                 this.imageSelector.setContent(createdContent);
             });
 

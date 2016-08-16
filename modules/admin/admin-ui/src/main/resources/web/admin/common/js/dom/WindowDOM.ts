@@ -2,7 +2,7 @@ module api.dom {
 
     export class WindowDOM {
 
-        private el: any; // Window clashes with api.dom.Window
+        private el: any; // Window clashes with api.dom.WindowDOM
 
         private static instance: WindowDOM = new WindowDOM();
 
@@ -19,7 +19,7 @@ module api.dom {
 
             this.el.onbeforeunload = (event) => {
                 this.onBeforeUnloadListeners.forEach((listener) => listener(event));
-            }
+            };
 
             this.el.onunload = (event) => {
                 this.onUnloadListeners.forEach((listener) => listener(event));
@@ -55,7 +55,7 @@ module api.dom {
             if (parent === this.el) {
                 return null;
             }
-            return parent.api.dom.WindowDOM.get();
+            return parent.WindowDOM.get();
         }
 
         getHTMLElement(): HTMLElement {
