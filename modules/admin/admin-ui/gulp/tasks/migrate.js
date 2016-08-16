@@ -7,6 +7,7 @@ var gulp = require("gulp");
 var gulpSequence = require("gulp-sequence");
 var insert = require("gulp-insert");
 var replace = require('gulp-replace');
+var vinylFile = require('gulp-file');
 var del = require("del");
 var path = require("path");
 var _ = require("lodash");
@@ -69,7 +70,7 @@ var pathsList = [
 
 // Step 1
 // remove _module.ts
-gulp.task('migrate:1_0', function (cb) {
+gulp.task('migrate:1', function (cb) {
     var src = resolvePath('/common/js/**/_module.ts');
 
     return del(src)
@@ -82,7 +83,7 @@ gulp.task('migrate:1_0', function (cb) {
 
 // Step 2
 // Create a map for each export
-gulp.task('migrate:2_0', function (cb) {
+gulp.task('migrate:2', function (cb) {
     var src = resolvePath('/common/js/**/*.ts');
     var base = resolvePath('/common/js/');
 
@@ -108,7 +109,7 @@ gulp.task('migrate:2_0', function (cb) {
 // Step 3
 // remove module declaration and add api.ts imports
 var step3tasks = [
-    {name: 'common', src: '/common/js/**/*.ts', base: '/common/js/', isCommon: true},
+    {name: 'common', src: '/common/js/main.ts', base: '/common/js/', isCommon: true},
     {name: 'content', src: '/apps/content-studio/js/**/*.ts', base: '/apps/content-studio/js/'},
     {name: 'user', src: '/apps/user-manager/js/**/*.ts', base: '/apps/user-manager/js/'},
     {name: 'applications', src: '/apps/applications/js/**/*.ts', base: '/apps/applications/js/'},
@@ -116,7 +117,7 @@ var step3tasks = [
 ];
 
 step3tasks.forEach(function (value) {
-    gulp.task('migrate:3_' + value.name, ['migrate:2_0'], function (cb) {
+    gulp.task('migrate:3_' + value.name, ['migrate:2'], function (cb) {
         var src = resolvePath(value.src);
         var base = resolvePath(value.base);
 
@@ -201,7 +202,7 @@ function createModuleMigrationStream(src, base, isCommon) {
             var data = files.get(file.path);
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
-                var baseName = path.basename(value.path, '.ts')
+                var baseName = path.basename(value.path, '.ts');
                 importList.push('import {' + value.name + '} from "' + relativePath + '/' + baseName + '"');
             });
 
@@ -211,6 +212,14 @@ function createModuleMigrationStream(src, base, isCommon) {
         .pipe(gulp.dest(base));
 }
 
-gulp.task('migrate', gulpSequence('migrate:1_0', step3tasks.map(function (value) {
+gulp.task('migrate:3_common_files', function () {
+    var apiTs = "///<reference path='./_all.d.ts' />";
+    var dest = resolvePath('/common/js/');
+
+    return vinylFile('api.ts', apiTs, {src: true})
+        .pipe(gulp.dest(dest));
+});
+
+gulp.task('migrate', gulpSequence('migrate:1', step3tasks.map(function (value) {
     return 'migrate:3_' + value.name;
-})));
+}).push('migrate:3_common_files')));
