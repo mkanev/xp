@@ -135,7 +135,7 @@ step3tasks.forEach(function (value) {
         var src = resolvePath(value.src);
         var base = resolvePath(value.base);
 
-        return createModuleMigrationStream(src, base, value.isCommon);
+        return createModuleMigrationStream([src, '!*.d.ts'], base, value.isCommon);
     });
 });
 
