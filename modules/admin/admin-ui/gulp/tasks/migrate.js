@@ -109,7 +109,7 @@ gulp.task('migrate:2', function (cb) {
 // Step 3
 // remove module declaration and add api.ts imports
 var step3tasks = [
-    {name: 'common', src: '/common/js/main.ts', base: '/common/js/', isCommon: true},
+    {name: 'common', src: '/common/js/**/*.ts', base: '/common/js/', isCommon: true},
     {name: 'content', src: '/apps/content-studio/js/**/*.ts', base: '/apps/content-studio/js/'},
     {name: 'user', src: '/apps/user-manager/js/**/*.ts', base: '/apps/user-manager/js/'},
     {name: 'applications', src: '/apps/applications/js/**/*.ts', base: '/apps/applications/js/'},
