@@ -1,12 +1,12 @@
 module api.form.inputtype.text {
 
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
+    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
 
-    export class TextLine extends support.BaseInputTypeNotManagingAdd<string> {
+    export class TextLine extends BaseInputTypeNotManagingAdd<string> {
 
         private regexpStr: string;
         private regexp: RegExp;

@@ -1,6 +1,5 @@
 module api.content.form.inputtype.time {
 
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
@@ -8,11 +7,12 @@ module api.content.form.inputtype.time {
     import Timezone = api.util.Timezone;
     import DateTimePicker = api.ui.time.DateTimePicker;
     import DateTimePickerBuilder = api.ui.time.DateTimePickerBuilder;
+    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
 
     /**
      * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDateTime]].
      */
-    export class DateTime extends support.BaseInputTypeNotManagingAdd<Date> {
+    export class DateTime extends BaseInputTypeNotManagingAdd<Date> {
 
         private withTimezone: boolean = false;
         private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;

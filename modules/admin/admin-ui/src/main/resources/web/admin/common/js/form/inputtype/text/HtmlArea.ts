@@ -1,8 +1,8 @@
 module api.form.inputtype.text {
 
+    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
     declare var CONFIG;
 
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
@@ -19,7 +19,7 @@ module api.form.inputtype.text {
     import ElementHelper = api.dom.ElementHelper;
     import ApplicationKey = api.application.ApplicationKey
 
-    export class HtmlArea extends support.BaseInputTypeNotManagingAdd<string> {
+    export class HtmlArea extends BaseInputTypeNotManagingAdd<string> {
 
         private editors: HtmlAreaOccurrenceInfo[];
         private content: api.content.ContentSummary;
