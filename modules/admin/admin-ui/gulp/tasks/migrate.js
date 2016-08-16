@@ -44,7 +44,7 @@ function findExports(content) {
 }
 
 function findModules(content) {
-    var modulePattern = /(?:module\s+)([A-Za-z\.]+)(?:\s*\{\s*\n*)/g;
+    var modulePattern = /(?:module\s+)([A-Za-z0-9\.]+)(?:\s*\{\s*\n*)/g;
     return findAll(modulePattern, content);
 }
 
@@ -172,7 +172,7 @@ function createModuleMigrationStream(src, base, isCommon) {
             var find = findPathByModule(pathsList, value[1]);
             if (!find) {
                 var color = 'red';
-                logger.log('Cannot resolve module: ' + value[1] + '\n' + file.path, color);
+                logger.log('Module definition: Can\'t resolve module: ' + value[1] + '\n' + file.path, color);
             } else {
                 var shallow = _.clone(find);
                 if (value[0] !== find.name) {
@@ -196,7 +196,7 @@ function createModuleMigrationStream(src, base, isCommon) {
             var find = findPathByModule(pathsList, value);
             if (!find) {
                 var color = 'red';
-                logger.log('Cannot resolve module: ' + value + '\n' + file.path, color);
+                logger.log('Module usage: Can\'t resolve module: ' + value + '\n' + file.path, color);
             } else {
                 data.imports.push(find);
             }
