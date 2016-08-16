@@ -52,7 +52,7 @@ function findModulesUsage(content) {
     // (api\.(?:[a-z0-9]+\.)*[A-Z]\w+)      // api.module.Class
     // (api\.(?:[a-z0-9]+\.)*[a-z]\w+)(\()  // api.module.func()
     // (api\.(?:[a-z0-9]+\.)*[A-Z]\w+)|(api\.(?:[a-z0-9]+\.)*[a-z]\w+)(?:\() // both
-    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*[A-Z]\w+)|(api\.(?:[a-z0-9]+\.)*[a-z]\w+)(?:\()/g;
+    var moduleUsagePattern = /(api\.(?:[a-z0-9]+\.)*[A-Z]\w+)|(api\.(?:[a-z0-9]+\.)*[a-z_]\w+)(?:\()/g;
     return findAll(moduleUsagePattern, content);
 }
 
@@ -133,9 +133,10 @@ var step3tasks = [
 step3tasks.forEach(function (value) {
     gulp.task('migrate:3_' + value.name, ['migrate:2'], function (cb) {
         var src = resolvePath(value.src);
+        var srcDTS = resolvePath('/**/*.d.ts');
         var base = resolvePath(value.base);
 
-        return createModuleMigrationStream([src, '!*.d.ts'], base, value.isCommon);
+        return createModuleMigrationStream([src, '!' + srcDTS], base, value.isCommon);
     });
 });
 
