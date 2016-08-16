@@ -63,7 +63,7 @@ function findImports(content) {
 
 function filterRelativeExports(paths, moduleName) {
     return paths.filter(function (value) {
-        return value.module === moduleName;
+        return moduleName.includes(value.module);
     });
 }
 
