@@ -14,9 +14,22 @@ module.exports.handleErrors = function (errorObject) {
 
 module.exports.handleWebpackErrors = function (errorObject) {
     var logger = gulpUtil.colors.red;
-    var filePath = path.relative(__dirname + '/../..', errorObject.module.userRequest);
-    var fileName = path.basename(errorObject.module.userRequest);
+    var filePath = '';
+    var fileName = '';
+    var location;
+    if (errorObject.module) {
+        filePath = errorObject.module.userRequest.replace('\\\\', '/');
+        fileName = path.basename(errorObject.module.userRequest);
+    } else if (errorObject.file) {
+        fileName = path.basename(errorObject.file);
+        filePath = errorObject.file.replace('\\\\', '/');
+    }
 
-    var message = filePath + '\n' + fileName + ' ' + errorObject.message + '\n';
+    if (errorObject.location) {
+        location = errorObject.location.line + ':' + errorObject.location.character;
+    }
+
+    var message = fileName + ' ' + errorObject.message + '\n' + filePath + (location ? ':' + location : '');
+
     gulpUtil.log(logger(message));
 };

@@ -25,7 +25,7 @@ module.exports = function (tasks) {
             loaders: [
                 {
                     test: /\.ts$/,
-                    exclude: /(node_modules|bower_components)/,
+                    // exclude: /(node_modules|bower_components)/,
                     loader: 'ts-loader'
                 }
             ]

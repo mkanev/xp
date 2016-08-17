@@ -35,12 +35,8 @@ var CONFIG = {
         },
         js: {
             files: {
-                // still processed with gulp
-                common: {src: '/common/js/_module.ts', dest: '/common/js/_all.js'},
-                // live: {src: '/live-edit/js/_module.ts', dest: '/live-edit/js/_all.js'},
-                // webpack
                 // default target path is under /apps, but not for common or live-edit
-                // common: {src: '/common/js/main.ts', name: 'common'},
+                common: {src: '/common/js/main.ts', name: 'common'},
                 live: {src: '/live-edit/js/main.ts', name: 'live-edit'},
                 home: {src: '/js/home/main.js', name: 'apps/home', assets: true},
                 launcher: {src: '/js/launcher/main.js', name: 'apps/launcher', assets: true},

@@ -20,7 +20,6 @@ var webpackConfig = require("../util/webpackConfig");
 var logger = require("../util/compileLogger");
 
 var subtasks = CONFIG.tasks.js.files;
-var tsResolver = nameResolver.bind(null, 'ts');
 
 function filterTasks(tasks, callback) {
     const filtered = {};
@@ -35,45 +34,9 @@ function filterTasks(tasks, callback) {
 }
 
 /*
- Modules processed with plain TS compiler and gulp.
- Will be moved to webpack in the nearest future.
+ Modules processed with webpack.
  js:common
  js:live
- */
-var tsTasks = filterTasks(subtasks, function (task) {
-    return !task.name;
-});
-
-_.forOwn(tsTasks, function (task, name) {
-    var taskPath = pathResolver.commonPaths(task.src, task.dest, CONFIG.root.src);
-    var newerPath = pathResolver.anyPath(taskPath.src.dir, 'ts');
-
-    var tsOptions = assign({typescript: typescript, out: taskPath.dest.full}, CONFIG.tasks.js.ts);
-
-    gulp.task(tsResolver(name), function () {
-        var tsNewer = gulp.src(newerPath)
-            .pipe(newer(taskPath.dest.full))
-            .pipe(newerStream(taskPath.src.full));
-
-        var tsResult = tsNewer
-            .pipe(sourcemaps.init())
-            .pipe(tsc(tsOptions));
-
-        // generate *.js
-        tsResult.js
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest('./'));
-
-        // generate *.d.js
-        return tsResult.dts
-            .pipe(gulp.dest('./'));
-    });
-});
-
-gulp.task('ts', gulpSequence(Object.keys(tsTasks).map(tsResolver)));
-
-/*
- Modules processed with webpack.
  js:home
  js:launcher
  js:applications
@@ -84,14 +47,9 @@ var webpackTasks = filterTasks(subtasks, function (task) {
     return !!task.name;
 });
 
-gulp.task('webpack', function (cb) {
+gulp.task('js', function (cb) {
     webpack(webpackConfig(webpackTasks), function (err, stats) {
         logger.logWebpack(err, stats);
         cb();
     });
 });
-
-/*
- Main JS task
- */
-gulp.task('js', gulpSequence('ts:common', [/*'ts:live',*/ 'webpack']));
