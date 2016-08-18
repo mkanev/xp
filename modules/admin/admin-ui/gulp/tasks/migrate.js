@@ -7,7 +7,6 @@ var gulp = require("gulp");
 var gulpSequence = require("gulp-sequence");
 var insert = require("gulp-insert");
 var replace = require('gulp-replace');
-var vinylFile = require('gulp-file');
 var del = require("del");
 var path = require("path");
 var _ = require("lodash");
@@ -62,8 +61,9 @@ function findImports(content) {
 }
 
 function filterRelativeExports(paths, moduleName) {
+    var name = moduleName + '.';
     return !moduleName ? [] : paths.filter(function (value) {
-        return moduleName.includes(value.module);
+        return name.includes(value.module + '.');
     });
 }
 
@@ -83,9 +83,13 @@ var pathsList = [
 ];
 
 // Step 1
-// remove _module.ts
+// remove _module.ts and api.ts
 gulp.task('migrate:1', function (cb) {
-    var src = resolvePath('/common/js/**/_module.ts');
+    var src = [
+        resolvePath('/common/js/**/_module.ts'),
+        resolvePath('/common/js/**/_module-doc.ts'),
+        resolvePath('/**/api.ts')
+    ];
 
     return del(src)
         .catch(function (e) {
@@ -129,6 +133,11 @@ var step3tasks = [
     {name: 'applications', src: '/apps/applications/js/**/*.ts', base: '/apps/applications/js/'},
     {name: 'live', src: '/live-edit/js/LiveEditPage.ts', base: '/live-edit/js/'}
 ];
+
+// step3tasks = [
+//     // {name: 'common', src: '/common/js/application/Application.ts', base: '/common/js/', isCommon: true}
+//     {name: 'common', src: '/common/js/util/htmlarea/dialog/LinkModalDialog.ts', base: '/common/js/', isCommon: true}
+// ];
 
 step3tasks.forEach(function (value) {
     gulp.task('migrate:3_' + value.name, ['migrate:2'], function (cb) {
@@ -206,6 +215,7 @@ function createModuleMigrationStream(src, base, isCommon) {
         return contents;
     }));
 
+    // SAME MODULE elements that are used directly
     // Save potential imports from the same module to the import list
     // Non-common TS already have them imported.
     if (isCommon) {
@@ -231,14 +241,18 @@ function createModuleMigrationStream(src, base, isCommon) {
             .pipe(replace(regex.lastBracket, ''));
     }
 
+    // CHILDREN MODULE that are used directly
+    // Save potential imports from the CHILDREN module to the import list
+    // Non-common TS already have them imported.
+    if (isCommon) {
+    }
+
     // Remove the imports definition and module usage
     return stream.pipe(replace(regex.importDefinition, ''))
         .pipe(replace(regex.moduleUsage, ''))
         // Add removed imports in their valid definitions
         .pipe(insert.transform(function (contents, file) {
             var importList = [];
-            var importApi = 'import "' + resolveRelativePath(file.path, base) + '/api.ts";\n';
-            importList.push(importApi);
 
             var data = files.get(file.path);
             data.imports = _.uniqWith(data.imports, function (value, other) {
@@ -249,6 +263,9 @@ function createModuleMigrationStream(src, base, isCommon) {
             });
             data.imports.forEach(function (value) {
                 var relativePath = resolveRelativePath(file.path, path.dirname(value.path));
+                if (!relativePath.startsWith('.')) {
+                    relativePath = './' + relativePath;
+                }
                 var baseName = path.basename(value.path, '.ts');
                 var importName = !value.importAs ? value.name : value.name + ' as ' + value.importAs;
                 importList.push('import {' + importName + '} from "' + relativePath + '/' + baseName + '";');
@@ -260,17 +277,8 @@ function createModuleMigrationStream(src, base, isCommon) {
         .pipe(gulp.dest(base));
 }
 
-gulp.task('migrate:3_common_files', function () {
-    var apiTs = "///<reference path='./_all.d.ts' />";
-    var dest = resolvePath('/common/js/');
-
-    return vinylFile('api.ts', apiTs, {src: true})
-        .pipe(gulp.dest(dest));
-});
-
 var step3tasksNames = step3tasks.map(function (value) {
     return 'migrate:3_' + value.name;
 });
-step3tasksNames.push('migrate:3_common_files');
 
 gulp.task('migrate', gulpSequence('migrate:1', step3tasksNames));
