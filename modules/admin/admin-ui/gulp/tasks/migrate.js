@@ -155,7 +155,7 @@ function createModuleMigrationStream(src, base, isCommon) {
     var regex = {
         lastBracket: /}[\s*\n]*$/g,
         moduleDefinition: /module\s+[A-Za-z0-9\.]*\s*\{\s*\n*/g,
-        importDefinition: /(import\s+\w+\s*=\s*[\w\.]+;\s*\n*)/g,
+        importDefinition: /(import\s+\w+\s*=\s*[\w\.]+;?\s*\n*)/g,
         importApi: /(import\s+["'].*api\.ts["'];?\s*\n*)/g,
         moduleUsage: /(?!api\.ts)(api\.(?:[a-z0-9_]+\.)*)/g
     };
