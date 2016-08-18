@@ -9,6 +9,7 @@
     "jqueryui": "registry:dt/jqueryui#1.11.0+20160727153854",
     "js-signals": "registry:dt/js-signals#0.0.0+20160316155526",
     "mousetrap": "registry:dt/mousetrap#1.5.0+20160501152135",
+    "mousetrap-global-bind": "registry:dt/mousetrap-global-bind#1.4.6+20160501152135",
     "noconflict": "file:./src/main/resources/web/admin/common/js/lib/noconflict.d.ts",
     "q": "registry:dt/q#0.0.0+20160613154756",
     "slickgrid": "registry:dt/slickgrid#2.1.0+20160427001147",
