@@ -51,7 +51,7 @@ module api.content.order {
 
         direction: string;
 
-        constructor(json?: json.OrderExprJson) {
+        constructor(json?: OrderExprJson) {
             if (json) {
                 this.direction = json.direction;
             }

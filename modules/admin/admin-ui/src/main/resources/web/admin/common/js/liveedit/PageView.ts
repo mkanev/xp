@@ -403,7 +403,7 @@ module api.liveedit {
         private isTextEditorDialogClicked(event: MouseEvent) {
             var target = <HTMLElement> event.target;
             while (target) {
-                if (target.classList.contains(api.util.htmlarea.dialog.ModalDialog.CLASS_NAME)) {
+                if (target.classList.contains(api.util.htmlarea.dialog.HtmlModalDialog.CLASS_NAME)) {
                     return true;
                 }
                 target = target.parentElement;

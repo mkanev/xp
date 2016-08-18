@@ -1,5 +1,8 @@
 module api.content.resource {
 
+    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
+    import ContentSummaryJson = api.content.json.ContentSummaryJson;
+    import ContentJson = api.content.json.ContentJson;
     export class ContentResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
         public static EXPAND_NONE = 'none';
@@ -17,40 +20,39 @@ module api.content.resource {
             return this.resourcePath;
         }
 
-        fromJsonToContent(json: json.ContentJson): Content {
+        fromJsonToContent(json: ContentJson): Content {
             return Content.fromJson(json);
         }
 
-        fromJsonToContentArray(json: json.ContentJson[]): Content[] {
+        fromJsonToContentArray(json: ContentJson[]): Content[] {
 
             var array: Content[] = [];
-            json.forEach((itemJson: json.ContentJson) => {
+            json.forEach((itemJson: ContentJson) => {
                 array.push(this.fromJsonToContent(itemJson));
             });
 
             return array;
         }
 
-        fromJsonToContentSummary(json: json.ContentSummaryJson): ContentSummary {
+        fromJsonToContentSummary(json: ContentSummaryJson): ContentSummary {
             return ContentSummary.fromJson(json);
         }
 
-        fromJsonToContentSummaryArray(json: json.ContentSummaryJson[]): ContentSummary[] {
+        fromJsonToContentSummaryArray(json: ContentSummaryJson[]): ContentSummary[] {
 
             var array: ContentSummary[] = [];
-            json.forEach((itemJson: json.ContentSummaryJson) => {
+            json.forEach((itemJson: ContentSummaryJson) => {
                 array.push(this.fromJsonToContentSummary(itemJson));
             });
 
             return array;
         }
 
-        fromJsonToContentIdBaseItem(json: json.ContentIdBaseItemJson): ContentIdBaseItem {
+        fromJsonToContentIdBaseItem(json: ContentIdBaseItemJson): ContentIdBaseItem {
             return ContentIdBaseItem.fromJson(json);
         }
 
-        fromJsonToContentIdBaseItemArray(jsonArray: json.ContentIdBaseItemJson[]): ContentIdBaseItem[] {
-
+        fromJsonToContentIdBaseItemArray(jsonArray: ContentIdBaseItemJson[]): ContentIdBaseItem[] {
             return ContentIdBaseItem.fromJsonArray(jsonArray);
         }
     }

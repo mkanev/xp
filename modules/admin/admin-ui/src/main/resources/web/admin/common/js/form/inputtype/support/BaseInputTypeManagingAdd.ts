@@ -13,7 +13,7 @@ module api.form.inputtype.support {
 
         private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
 
-        private inputValueChangedListeners: {(event: api.form.inputtype.ValueChangedEvent): void}[] = [];
+        private inputValueChangedListeners: {(event: api.form.inputtype.InputValueChangedEvent): void}[] = [];
 
         private input: api.form.Input;
 
@@ -201,18 +201,18 @@ module api.form.inputtype.support {
             });
         }
 
-        onValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        onValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
             this.inputValueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        unValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
             this.inputValueChangedListeners = this.inputValueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        protected notifyValueChanged(event: api.form.inputtype.ValueChangedEvent) {
-            this.inputValueChangedListeners.forEach((listener: (event: api.form.inputtype.ValueChangedEvent)=>void) => {
+        protected notifyValueChanged(event: api.form.inputtype.InputValueChangedEvent) {
+            this.inputValueChangedListeners.forEach((listener: (event: api.form.inputtype.InputValueChangedEvent)=>void) => {
                 listener(event);
             });
         }

@@ -5,7 +5,7 @@ module api.util.htmlarea.dialog {
     import FormItem = api.ui.form.FormItem;
     import FormItemBuilder = api.ui.form.FormItemBuilder;
 
-    export class ModalDialog extends api.ui.dialog.ModalDialog {
+    export class HtmlModalDialog extends api.ui.dialog.ModalDialog {
         private fields: { [id: string]: api.dom.FormItemEl } = {};
         private validated = false;
         private editor: HtmlAreaEditor;
@@ -24,7 +24,7 @@ module api.util.htmlarea.dialog {
 
             this.editor = editor;
 
-            this.getEl().addClass(ModalDialog.CLASS_NAME + (cls ? " " + cls : ""));
+            this.getEl().addClass(HtmlModalDialog.CLASS_NAME + (cls ? " " + cls : ""));
 
             this.layout();
             this.initializeActions();

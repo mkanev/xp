@@ -7,6 +7,7 @@ module api.form {
     import ValueTypes = api.data.ValueTypes;
     import PropertySet = api.data.PropertySet;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
+    import InputTypeManager = api.form.inputtype.InputTypeManager;
 
     export interface InputViewConfig {
 
@@ -196,12 +197,12 @@ module api.form {
             var inputTypeViewContext = this.getContext().createInputTypeViewContext(this.input.getInputTypeConfig(),
                 this.parentPropertySet.getPropertyPath(), this.input);
 
-            if (inputtype.InputTypeManager.isRegistered(inputType.getName())) {
-                return inputtype.InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
+            if (InputTypeManager.isRegistered(inputType.getName())) {
+                return InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
             }
             else {
                 console.warn("Input type [" + inputType.getName() + "] needs to be registered first.");
-                return inputtype.InputTypeManager.createView("NoInputTypeFound", inputTypeViewContext);
+                return InputTypeManager.createView("NoInputTypeFound", inputTypeViewContext);
             }
         }
 

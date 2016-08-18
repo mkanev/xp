@@ -3,7 +3,7 @@ module api.util.htmlarea.dialog {
     import FormItem = api.ui.form.FormItem;
     import Validators = api.ui.form.Validators;
 
-    export class AnchorModalDialog extends ModalDialog {
+    export class AnchorModalDialog extends HtmlModalDialog {
 
         constructor(editor:HtmlAreaEditor) {
 

@@ -1,5 +1,6 @@
 module api.form {
 
+    import OccurrencesJson = api.form.json.OccurrencesJson;
     export class OccurrencesBuilder {
 
         minimum: number;
@@ -16,7 +17,7 @@ module api.form {
             return this;
         }
 
-        fromJson(json: json.OccurrencesJson) {
+        fromJson(json: OccurrencesJson) {
             this.minimum = json.minimum;
             this.maximum = json.maximum;
         }
@@ -32,7 +33,7 @@ module api.form {
 
         private maximum: number;
 
-        static fromJson(json: json.OccurrencesJson): Occurrences {
+        static fromJson(json: OccurrencesJson): Occurrences {
             var builder = new OccurrencesBuilder();
             builder.fromJson(json);
             return builder.build();

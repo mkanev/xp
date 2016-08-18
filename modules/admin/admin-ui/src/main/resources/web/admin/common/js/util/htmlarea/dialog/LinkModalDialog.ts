@@ -10,7 +10,7 @@ module api.util.htmlarea.dialog {
     import Option = api.ui.selector.Option;
     import LabelPosition = api.ui.LabelPosition;
 
-    export class LinkModalDialog extends ModalDialog {
+    export class LinkModalDialog extends HtmlModalDialog {
         private dockedPanel: DockedPanel;
         private link: HTMLElement;
         private linkText: string;

@@ -5,6 +5,8 @@ module api.content {
     import Property = api.data.Property;
     import PropertyTree = api.data.PropertyTree;
     import PropertyPath = api.data.PropertyPath;
+    import PageTemplateBuilder = api.content.page.PageTemplateBuilder;
+    import SiteBuilder = api.content.site.SiteBuilder;
 
     export class Content extends ContentSummary implements api.Equitable, api.Cloneable {
 
@@ -171,10 +173,10 @@ module api.content {
             var type = new api.schema.content.ContentTypeName(json.type);
 
             if (type.isSite()) {
-                return new site.SiteBuilder().fromContentJson(json).build();
+                return new SiteBuilder().fromContentJson(json).build();
             }
             else if (type.isPageTemplate()) {
-                return new page.PageTemplateBuilder().fromContentJson(json).build();
+                return new PageTemplateBuilder().fromContentJson(json).build();
             }
             return new ContentBuilder().fromContentJson(json).build();
         }

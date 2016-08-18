@@ -1,5 +1,6 @@
 module api.content.order {
 
+    import OrderExprJson = api.content.json.OrderExprJson;
     export class DynamicOrderExpr extends OrderExpr {
 
         private function: string;
@@ -17,7 +18,7 @@ module api.content.order {
             return this.function + " " + super.getDirection();
         }
 
-        toJson(): json.OrderExprJson {
+        toJson(): OrderExprJson {
             return {
                 "function": this.function,
                 "direction": this.getDirection()
@@ -29,7 +30,7 @@ module api.content.order {
 
         function: string;
 
-        constructor(json: json.OrderExprJson) {
+        constructor(json: OrderExprJson) {
             super(json);
             this.function = json.function;
         }

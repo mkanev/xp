@@ -7,8 +7,9 @@ module api.util.htmlarea.dialog {
     import FormContext = api.form.FormContext;
     import ApplicationKey = api.application.ApplicationKey
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import ModalDialogHeader = api.ui.dialog.ModalDialogHeader;
 
-    export class MacroModalDialog extends ModalDialog {
+    export class MacroModalDialog extends HtmlModalDialog {
 
         private content: api.content.ContentSummary;
 
@@ -22,7 +23,7 @@ module api.util.htmlarea.dialog {
             this.content = content;
             this.applicationKeys = applicationKeys;
             this.callback = config.callback;
-            super(config.editor, new api.ui.dialog.ModalDialogHeader("Insert Macro"), "macro-modal-dialog");
+            super(config.editor, new ModalDialogHeader("Insert Macro"), "macro-modal-dialog");
         }
 
         protected layout() {

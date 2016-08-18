@@ -7,7 +7,7 @@ module api.content.form.inputtype.image {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import ValueChangedEvent = api.form.inputtype.ValueChangedEvent;
+    import ValueChangedEvent = api.form.inputtype.InputValueChangedEvent;
     import LoadMask = api.ui.mask.LoadMask;
     import Tooltip = api.ui.Tooltip;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;

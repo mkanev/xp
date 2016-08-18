@@ -7,16 +7,19 @@ module api.content.resource {
     import FieldOrderExpr = api.query.expr.FieldOrderExpr;
     import OrderDirection = api.query.expr.OrderDirection;
     import ConstraintExpr = api.query.expr.ConstraintExpr;
+    import ContentSummaryJson = api.content.json.ContentSummaryJson;
+    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
+    import ContentQuery = api.content.query.ContentQuery;
 
-    export class ContentSummaryRequest extends api.rest.ResourceRequest<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary[]> {
+    export class ContentSummaryRequest extends api.rest.ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
 
-        private contentQuery: query.ContentQuery;
+        private contentQuery: ContentQuery;
 
         private path: ContentPath;
 
         private searchString: string = "";
 
-        private request: ContentQueryRequest<json.ContentSummaryJson, ContentSummary>;
+        private request: ContentQueryRequest<ContentSummaryJson, ContentSummary>;
 
         public static MODIFIED_TIME_DESC = new FieldOrderExpr(new FieldExpr("modifiedTime"), OrderDirection.DESC);
 
@@ -26,9 +29,9 @@ module api.content.resource {
 
         constructor() {
             super();
-            this.contentQuery = new query.ContentQuery();
+            this.contentQuery = new ContentQuery();
             this.request =
-                new ContentQueryRequest<json.ContentSummaryJson, ContentSummary>(this.contentQuery).setExpand(api.rest.Expand.SUMMARY);
+                new ContentQueryRequest<ContentSummaryJson, ContentSummary>(this.contentQuery).setExpand(api.rest.Expand.SUMMARY);
         }
 
         getSearhchString(): string {
@@ -51,7 +54,7 @@ module api.content.resource {
             return this.request.getParams();
         }
 
-        send(): wemQ.Promise<api.rest.JsonResponse<json.ContentQueryResultJson<json.ContentSummaryJson>>> {
+        send(): wemQ.Promise<api.rest.JsonResponse<ContentQueryResultJson<ContentSummaryJson>>> {
             this.buildSearchQueryExpr();
 
             return this.request.send();
@@ -61,7 +64,7 @@ module api.content.resource {
             this.buildSearchQueryExpr();
 
             return this.request.sendAndParse().then(
-                (queryResult: api.content.resource.result.ContentQueryResult<ContentSummary,json.ContentSummaryJson>) => {
+                (queryResult: api.content.resource.result.ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
                 return queryResult.getContents();
             });
         }

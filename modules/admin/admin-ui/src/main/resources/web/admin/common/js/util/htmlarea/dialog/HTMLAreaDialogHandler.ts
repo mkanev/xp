@@ -2,9 +2,9 @@ module api.util.htmlarea.dialog {
 
     export class HTMLAreaDialogHandler {
 
-        private static modalDialog: ModalDialog;
+        private static modalDialog: HtmlModalDialog;
 
-        static createAndOpenDialog(event: CreateHtmlAreaDialogEvent): ModalDialog {
+        static createAndOpenDialog(event: CreateHtmlAreaDialogEvent): HtmlModalDialog {
             let modalDialog;
 
             switch (event.getType()) {
@@ -32,28 +32,28 @@ module api.util.htmlarea.dialog {
             return this.modalDialog;
         }
 
-        static getOpenDialog(): ModalDialog {
+        static getOpenDialog(): HtmlModalDialog {
             return this.modalDialog;
         }
 
-        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary): ModalDialog {
+        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary): HtmlModalDialog {
             return this.openDialog(new LinkModalDialog(config, content));
         }
 
-        private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): ModalDialog {
+        private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): HtmlModalDialog {
             return this.openDialog(new ImageModalDialog(config, content));
         }
 
-        private static openAnchorDialog(editor: HtmlAreaEditor): ModalDialog {
+        private static openAnchorDialog(editor: HtmlAreaEditor): HtmlModalDialog {
             return this.openDialog(new AnchorModalDialog(editor));
         }
 
         private static openMacroDialog(config: HtmlAreaMacro, content: api.content.ContentSummary,
-                                       applicationKeys: api.application.ApplicationKey[]): ModalDialog {
+                                       applicationKeys: api.application.ApplicationKey[]): HtmlModalDialog {
             return this.openDialog(new MacroModalDialog(config, content, applicationKeys));
         }
 
-        private static openDialog(dialog: ModalDialog): ModalDialog {
+        private static openDialog(dialog: HtmlModalDialog): HtmlModalDialog {
             dialog.open();
             return dialog;
         }

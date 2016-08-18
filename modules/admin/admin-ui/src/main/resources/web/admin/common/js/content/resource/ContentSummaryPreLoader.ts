@@ -1,8 +1,11 @@
 module api.content.resource {
 
-    export class ContentSummaryPreLoader extends api.util.loader.BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary> {
+    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
+    import ContentSummaryJson = api.content.json.ContentSummaryJson;
 
-        constructor(request: api.rest.ResourceRequest<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary[]>) {
+    export class ContentSummaryPreLoader extends api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary> {
+
+        constructor(request: api.rest.ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]>) {
             super(request);
         }
 

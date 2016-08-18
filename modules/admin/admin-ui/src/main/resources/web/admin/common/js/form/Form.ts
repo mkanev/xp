@@ -1,5 +1,6 @@
 module api.form {
 
+    import FormJson = api.form.json.FormJson;
     export class FormBuilder {
 
         formItems: FormItem[] = [];
@@ -16,7 +17,7 @@ module api.form {
             return this;
         }
 
-        fromJson(json: json.FormJson): FormBuilder {
+        fromJson(json: FormJson): FormBuilder {
             json.formItems.forEach((formItemJson: api.form.json.FormItemJson) => {
                 var formItem = FormItemFactory.createFormItem(formItemJson);
                 if (formItem) {
@@ -45,7 +46,7 @@ module api.form {
 
         private formItemByName: {[name:string] : FormItem; } = {};
 
-        static fromJson(json: json.FormJson) {
+        static fromJson(json: FormJson) {
             var builder = new FormBuilder();
             builder.fromJson(json);
             return builder.build();

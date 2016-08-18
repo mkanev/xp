@@ -1,4 +1,4 @@
-declare module Slick {
+declare namespace Slick {
 
     // Added via Typings
     // export class RowSelectionModel<T extends Slick.SlickData, E> extends Slick.SelectionModel<T,E> {

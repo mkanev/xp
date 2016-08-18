@@ -2,7 +2,7 @@ module api.form.inputtype {
 
     import Value = api.data.Value;
 
-    export class ValueAddedEvent {
+    export class InputValueAddedEvent {
 
         private value: Value;
 

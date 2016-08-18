@@ -89,7 +89,7 @@ module api.app {
                 this.handleServerEvent(jsonEvent);
             });
 
-            this.ws.addEventListener('open', (event: Event) => {
+            this.ws.addEventListener('open', (event) => {
                 if (ServerEventsConnection.debug) {
                     var m = 'ServerEventsConnection: connection opened to ' + wsUrl;
                     if (this.downTime > 0) {

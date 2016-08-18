@@ -1,5 +1,6 @@
 module api.form {
 
+    import InputJson = api.form.json.InputJson;
     export class InputBuilder {
 
         name: string;
@@ -81,7 +82,7 @@ module api.form {
             return this;
         }
 
-        fromJson(json: json.InputJson): InputBuilder {
+        fromJson(json: InputJson): InputBuilder {
             this.name = json.name;
             this.inputType = InputTypeName.parseInputTypeName(json.inputType);
             this.label = json.label;

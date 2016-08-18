@@ -1,5 +1,6 @@
 module api.content.order {
 
+    import OrderExprJson = api.content.json.OrderExprJson;
     export class FieldOrderExpr extends OrderExpr {
 
         private fieldName: string;
@@ -13,7 +14,7 @@ module api.content.order {
             return this.fieldName;
         }
 
-        toJson(): json.OrderExprJson {
+        toJson(): OrderExprJson {
             return {
                 "fieldName": this.fieldName,
                 "direction": this.getDirection()
@@ -43,7 +44,7 @@ module api.content.order {
 
         fieldName: string;
 
-        constructor(json?: json.OrderExprJson) {
+        constructor(json?: OrderExprJson) {
             super(json);
             if (json) {
                 this.fieldName = json.fieldName;

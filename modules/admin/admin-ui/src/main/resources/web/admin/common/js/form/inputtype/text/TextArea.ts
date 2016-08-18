@@ -5,6 +5,7 @@ module api.form.inputtype.text {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
+    import ValueChangedEvent = api.ValueChangedEvent;
 
     export class TextArea extends BaseInputTypeNotManagingAdd<string> {
 
@@ -28,7 +29,7 @@ module api.form.inputtype.text {
             var value = property.hasNonNullValue() ? property.getString() : undefined;
             var inputEl = new api.ui.text.TextArea(this.getInput().getName() + "-" + index, value);
 
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+            inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var value = ValueTypes.STRING.newValue(event.getNewValue());
                 this.notifyOccurrenceValueChanged(inputEl, value);
             });

@@ -11,7 +11,7 @@ module api.liveedit.text {
     import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
+    import ModalDialog = api.util.htmlarea.dialog.HtmlModalDialog;
 
     export class TextComponentViewBuilder extends ComponentViewBuilder<TextComponent> {
         constructor() {

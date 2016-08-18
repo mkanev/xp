@@ -15,7 +15,7 @@ module api.form.inputtype.text {
     import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
+    import ModalDialog = api.util.htmlarea.dialog.HtmlModalDialog;
     import ElementHelper = api.dom.ElementHelper;
     import ApplicationKey = api.application.ApplicationKey
 

@@ -697,7 +697,7 @@ export class LiveEditPageProxy {
         this.createHtmlAreaDialogListeners.forEach((listener) => listener(event));
     }
 
-    notifyLiveEditPageDialogCreated(modalDialog: api.util.htmlarea.dialog.ModalDialog, config: any) {
+    notifyLiveEditPageDialogCreated(modalDialog: api.util.htmlarea.dialog.HtmlModalDialog, config: any) {
         new LiveEditPageDialogCreatedEvent(modalDialog, config).fire(this.liveEditWindow);
     }
 

@@ -13,7 +13,7 @@ module api.util.htmlarea.dialog {
     import Action = api.ui.Action;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
-    export class ImageModalDialog extends ModalDialog {
+    export class ImageModalDialog extends HtmlModalDialog {
 
         private imagePreviewContainer: api.dom.DivEl;
         private imageCaptionField: FormItem;

@@ -3,7 +3,7 @@ module api.schema.content.inputtype {
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
     import InputValidationRecording = api.form.inputtype.InputValidationRecording;
     import InputValidityChangedEvent = api.form.inputtype.InputValidityChangedEvent;
-    import ValueChangedEvent = api.form.inputtype.ValueChangedEvent;
+    import ValueChangedEvent = api.form.inputtype.InputValueChangedEvent;
     import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;

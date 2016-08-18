@@ -2,9 +2,13 @@ module api.content.resource {
 
     import ContentQuery = api.content.query.ContentQuery;
     import ContentQueryResult = api.content.resource.result.ContentQueryResult;
+    import ContentJson = api.content.json.ContentJson;
+    import ContentSummaryJson = api.content.json.ContentSummaryJson;
+    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
+    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
 
-    export class ContentQueryRequest<CONTENT_JSON extends json.ContentIdBaseItemJson,CONTENT extends ContentIdBaseItem>
-    extends ContentResourceRequest<json.ContentQueryResultJson<CONTENT_JSON>, ContentQueryResult<CONTENT,CONTENT_JSON>> {
+    export class ContentQueryRequest<CONTENT_JSON extends ContentIdBaseItemJson,CONTENT extends ContentIdBaseItem>
+    extends ContentResourceRequest<ContentQueryResultJson<CONTENT_JSON>, ContentQueryResult<CONTENT,CONTENT_JSON>> {
 
         private contentQuery: ContentQuery;
 
@@ -43,13 +47,13 @@ module api.content.resource {
 
         sendAndParse(): wemQ.Promise<ContentQueryResult<CONTENT,CONTENT_JSON>> {
 
-            return this.send().then((response: api.rest.JsonResponse<json.ContentQueryResultJson<CONTENT_JSON>>) => {
+            return this.send().then((response: api.rest.JsonResponse<ContentQueryResultJson<CONTENT_JSON>>) => {
 
-                var responseResult: json.ContentQueryResultJson<CONTENT_JSON> = response.getResult();
+                var responseResult: ContentQueryResultJson<CONTENT_JSON> = response.getResult();
 
                 var aggregations = api.aggregation.Aggregation.fromJsonArray(responseResult.aggregations);
 
-                var contentsAsJson: json.ContentIdBaseItemJson[] = responseResult.contents;
+                var contentsAsJson: ContentIdBaseItemJson[] = responseResult.contents;
 
                 var contentQueryResult: ContentQueryResult<CONTENT, CONTENT_JSON>;
 
@@ -63,13 +67,13 @@ module api.content.resource {
                             metadata);
                 }
                 else if (this.expand == api.rest.Expand.SUMMARY) {
-                    var contentSummaries: CONTENT[] = <any[]> this.fromJsonToContentSummaryArray(<json.ContentSummaryJson[]>contentsAsJson);
+                    var contentSummaries: CONTENT[] = <any[]> this.fromJsonToContentSummaryArray(<ContentSummaryJson[]>contentsAsJson);
                     contentQueryResult =
                         new ContentQueryResult<CONTENT,CONTENT_JSON>(contentSummaries, aggregations, <CONTENT_JSON[]>contentsAsJson,
                             metadata);
                 }
                 else {
-                    var contents: CONTENT[] = <any[]>this.fromJsonToContentArray(<json.ContentJson[]>contentsAsJson);
+                    var contents: CONTENT[] = <any[]>this.fromJsonToContentArray(<ContentJson[]>contentsAsJson);
                     contentQueryResult =
                         new ContentQueryResult<CONTENT,CONTENT_JSON>(contents, aggregations, <CONTENT_JSON[]>contentsAsJson, metadata);
                 }

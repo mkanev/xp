@@ -1,6 +1,8 @@
 module api.content.resource.result {
 
-    export class ContentQueryResult<C extends ContentIdBaseItem,CJ extends json.ContentIdBaseItemJson> {
+    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
+
+    export class ContentQueryResult<C extends ContentIdBaseItem,CJ extends ContentIdBaseItemJson> {
 
         private contents: C[];
         private aggregations: api.aggregation.Aggregation[];

@@ -125,11 +125,11 @@ module api.form.inputtype.support {
             });
         }
 
-        onValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        onValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
             throw new Error("User onOccurrenceValueChanged instead");
         }
 
-        unValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        unValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
             throw new Error("User onOccurrenceValueChanged instead");
         }
 

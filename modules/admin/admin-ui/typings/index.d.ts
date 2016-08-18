@@ -8,6 +8,7 @@
 /// <reference path="globals/jquery/index.d.ts" />
 /// <reference path="globals/jqueryui/index.d.ts" />
 /// <reference path="globals/js-signals/index.d.ts" />
+/// <reference path="globals/mousetrap-global-bind/index.d.ts" />
 /// <reference path="globals/mousetrap/index.d.ts" />
 /// <reference path="globals/noconflict/index.d.ts" />
 /// <reference path="globals/q/index.d.ts" />

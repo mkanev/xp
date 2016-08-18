@@ -1,6 +1,6 @@
 module api.liveedit {
 
-    import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
+    import ModalDialog = api.util.htmlarea.dialog.HtmlModalDialog;
 
     export class LiveEditPageDialogCreatedEvent extends api.event.Event {
 

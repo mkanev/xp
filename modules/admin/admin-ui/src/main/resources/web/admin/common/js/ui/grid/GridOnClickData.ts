@@ -37,7 +37,7 @@ module api.ui.grid {
         }
     }
 
-    export class GridOnClickData implements Slick.OnClickEventData {
+    export class GridOnClickData implements Slick.OnClickEventArgs<any> {
 
         row: number;
 
