@@ -226,11 +226,17 @@ function createModuleMigrationStream(src, base, isCommon) {
             // from the same module to add the to the import list
             var module = findModules(contents)[0];
             var relativeFiles = filterRelativeExports(pathsList, module);
+            var exports = findExports(contents);
             relativeFiles.forEach(function (value) {
-                var hasModule = contents.search(new RegExp(value.name + '\\W+')) >= 0;
-                var isSameFile = value.path === file.path;
-                if (hasModule && !isSameFile) {
-                    data.imports.push(value);
+                var isExport = exports.some(function (exportName) {
+                    return exportName === value.name;
+                });
+                if (!isExport) {
+                    var hasModule = contents.search(new RegExp('\\W' + value.name + '\\W+')) >= 0;
+                    var isSameFile = value.path === file.path;
+                    if (hasModule && !isSameFile) {
+                        data.imports.push(value);
+                    }
                 }
             });
 
