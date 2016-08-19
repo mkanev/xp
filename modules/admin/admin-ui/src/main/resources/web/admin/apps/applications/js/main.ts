@@ -7,8 +7,8 @@ import {InstallAppPromptEvent} from "./app/installation/InstallAppPromptEvent";
 
 import Application = api.application.Application;
 
-function getApplication(): api.app.Application {
-    var application = new api.app.Application('applications', 'Applications', 'AM', 'applications');
+function getApplication(): api.app.App {
+    var application = new api.app.App('applications', 'Applications', 'AM', 'applications');
     application.setPath(api.rest.Path.fromString("/"));
     application.setWindow(window);
     this.serverEventsListener = new api.app.ServerEventsListener([application]);
@@ -33,7 +33,7 @@ function getApplication(): api.app.Application {
 
 function startApplication() {
 
-    var application: api.app.Application = getApplication();
+    var application: api.app.App = getApplication();
     var appBar = new api.app.bar.AppBar(application);
     var appPanel = new ApplicationAppPanel(appBar, application.getPath());
 

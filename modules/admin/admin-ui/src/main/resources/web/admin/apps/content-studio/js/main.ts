@@ -21,8 +21,8 @@ declare var CONFIG;
  }
  */
 
-function getApplication(): api.app.Application {
-    var application = new api.app.Application('content-studio', 'Content Studio', 'CM', 'content-studio');
+function getApplication(): api.app.App {
+    var application = new api.app.App('content-studio', 'Content Studio', 'CM', 'content-studio');
     application.setPath(api.rest.Path.fromString(Router.getPath()));
     application.setWindow(window);
     this.serverEventsListener = new api.app.ServerEventsListener([application]);
@@ -90,7 +90,7 @@ function initToolTip() {
 
 function startApplication() {
 
-    var application: api.app.Application = getApplication();
+    var application: api.app.App = getApplication();
 
     var body = api.dom.Body.get();
 

@@ -4,7 +4,7 @@ module api.app.bar {
 
     export class AppBar extends api.dom.DivEl implements api.ui.ActionContainer {
 
-        private application: Application;
+        private application: App;
 
         private launcherButton: api.dom.ButtonEl;
 
@@ -14,7 +14,7 @@ module api.app.bar {
 
         private showAppLauncherAction: ShowAppLauncherAction;
 
-        constructor(application: Application) {
+        constructor(application: App) {
             super("appbar");
 
             this.application = application;
@@ -71,7 +71,7 @@ module api.app.bar {
 
     export class HomeButton extends api.ui.button.Button {
 
-        constructor(app: Application, action: api.ui.Action) {
+        constructor(app: App, action: api.ui.Action) {
 
             super(app.getName());
 

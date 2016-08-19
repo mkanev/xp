@@ -10,7 +10,7 @@ module api {
                 throw error;
             }
             else if (api.ObjectHelper.iFrameSafeInstanceOf(error, AccessDeniedException)) {
-                var application: api.app.Application = api.app.Application.getApplication();
+                var application: api.app.App = api.app.App.getApplication();
                 var wnd = application.getWindow();
                 new api.app.ShowAppLauncherEvent(application, true).fire(wnd.parent);
                 new api.app.ShowAppLauncherEvent(application, true).fire(wnd);

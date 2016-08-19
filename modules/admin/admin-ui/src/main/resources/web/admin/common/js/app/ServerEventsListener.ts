@@ -5,10 +5,10 @@ module api.app {
     export class ServerEventsListener {
 
         private serverEventsConnection: api.app.ServerEventsConnection;
-        private applications: api.app.Application[];
+        private applications: api.app.App[];
         private aggregator: ServerEventAggregator;
 
-        constructor(applications: api.app.Application[]) {
+        constructor(applications: api.app.App[]) {
             this.applications = applications;
             this.serverEventsConnection = api.app.ServerEventsConnection.getInstance();
             this.serverEventsConnection.onServerEvent((event: api.event.Event) => this.onServerEvent(event));

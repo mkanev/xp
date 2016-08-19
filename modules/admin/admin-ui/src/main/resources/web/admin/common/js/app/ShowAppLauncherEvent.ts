@@ -2,17 +2,17 @@ module api.app {
 
     export class ShowAppLauncherEvent extends api.event.Event {
 
-        private application: Application;
+        private application: App;
 
         private sessionExpired: boolean;
 
-        constructor(application: Application, sessionExpired?: boolean) {
+        constructor(application: App, sessionExpired?: boolean) {
             super();
             this.application = application;
             this.sessionExpired = !!sessionExpired;
         }
 
-        getApplication(): Application {
+        getApplication(): App {
             return this.application;
         }
 

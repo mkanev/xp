@@ -6,7 +6,7 @@ module api.app {
         DISPLAYED
     }
 
-    export class Application {
+    export class App {
         private id: string;
         private name: string;
         private shortName: string;
@@ -30,8 +30,8 @@ module api.app {
             this.status = ApplicationShowStatus.NOT_DISPLAYED;
         }
 
-        static getApplication(): api.app.Application {
-            return window.parent['getApplication'] ? window.parent['getApplication'](Application.getAppId()) : null;
+        static getApplication(): api.app.App {
+            return window.parent['getApplication'] ? window.parent['getApplication'](App.getAppId()) : null;
         }
 
         static getAppId(): string {
@@ -82,12 +82,12 @@ module api.app {
             this.status = ApplicationShowStatus.DISPLAYED;
         }
 
-        setOpenTabs(value: number): Application {
+        setOpenTabs(value: number): App {
             this.openTabs = value;
             return this;
         }
 
-        setLoaded(value: boolean): Application {
+        setLoaded(value: boolean): App {
             this.loaded = value;
             this.notifyLoaded();
             return this;
@@ -97,12 +97,12 @@ module api.app {
             this.status = status;
         }
 
-        setFullSizeIcon(value: boolean): Application {
+        setFullSizeIcon(value: boolean): App {
             this.fullSizeIcon = value;
             return this;
         }
 
-        setPath(path: api.rest.Path): Application {
+        setPath(path: api.rest.Path): App {
             this.path = path;
             return this;
         }

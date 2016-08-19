@@ -5,8 +5,8 @@ import {UserAppPanel} from "./app/UserAppPanel";
 import {ChangeUserPasswordDialog} from "./app/wizard/ChangeUserPasswordDialog";
 import {Router} from "./app/Router";
 
-function getApplication(): api.app.Application {
-    var application = new api.app.Application('user-manager', 'Users', 'UM', 'user-manager');
+function getApplication(): api.app.App {
+    var application = new api.app.App('user-manager', 'Users', 'UM', 'user-manager');
     application.setPath(api.rest.Path.fromString(Router.getPath()));
     application.setWindow(window);
     this.serverEventsListener = new api.app.ServerEventsListener([application]);
@@ -31,7 +31,7 @@ function getApplication(): api.app.Application {
 
 function startApplication() {
 
-    var application: api.app.Application = getApplication();
+    var application: api.app.App = getApplication();
     var appBar = new api.app.bar.AppBar(application);
     var appPanel = new UserAppPanel(appBar, application.getPath());
 

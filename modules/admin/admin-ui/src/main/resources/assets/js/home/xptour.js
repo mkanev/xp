@@ -255,7 +255,7 @@ function loadDemoApps() {
 
 // Required to update progress bar
 function enableApplicationServerEventsListener() {
-    var application = new api.app.Application('applications', 'Applications', 'AM', 'applications');
+    var application = new api.app.App('applications', 'Applications', 'AM', 'applications');
     application.setPath(api.rest.Path.fromString("/"));
     application.setWindow(window);
     var serverEventsListener = new api.app.ServerEventsListener([application]);
