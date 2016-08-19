@@ -150,13 +150,13 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
 
     private initSchemas(applicationKey: ApplicationKey): wemQ.Promise<ItemDataGroup> {
 
-        var schemaPromises = [
+        var schemaPromises: wemQ.Promise<any>[] = [
             new api.schema.content.GetContentTypesByApplicationRequest(applicationKey).sendAndParse(),
             new api.schema.mixin.GetMixinsByApplicationRequest(applicationKey).sendAndParse(),
             new api.schema.relationshiptype.GetRelationshipTypesByApplicationRequest(applicationKey).sendAndParse()
         ];
 
-        return wemQ.all(schemaPromises).spread(
+        return wemQ.all(schemaPromises).spread<any>(
             (contentTypes: ContentTypeSummary[], mixins: Mixin[], relationshipTypes: RelationshipType[]) => {
                 var schemasGroup = new ItemDataGroup("Schemas", "schemas");
 
