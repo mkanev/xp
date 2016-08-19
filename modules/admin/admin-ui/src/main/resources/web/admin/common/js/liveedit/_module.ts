@@ -49,7 +49,7 @@
 ///<reference path='PageSelectedEvent.ts' />
 ///<reference path='RegionSelectedEvent.ts' />
 ///<reference path='LiveComponentAddedEvent.ts' />
-///<reference path='ComponentRemovedEvent.ts' />
+///<reference path='LiveComponentRemovedEvent.ts' />
 ///<reference path='LiveComponentResetEvent.ts' />
 ///<reference path='ComponentDuplicatedEvent.ts' />
 ///<reference path='ComponentLoadedEvent.ts' />

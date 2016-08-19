@@ -94,7 +94,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
             this.doUpdateActionsEnabledState(contentBrowseItems)
         ];
 
-        wemQ.all(parallelPromises).spread<>(() => {
+        wemQ.all(parallelPromises).spread<any>(() => {
             deferred.resolve(contentBrowseItems);
             return wemQ(null);
         }).catch(api.DefaultErrorHandler.handle);

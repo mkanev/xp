@@ -1,6 +1,6 @@
 module api.ui.text {
 
-    export class TextArea extends api.dom.FormInputEl {
+    export class TextAreaInput extends api.dom.FormInputEl {
 
         private attendant: api.dom.Element;
 

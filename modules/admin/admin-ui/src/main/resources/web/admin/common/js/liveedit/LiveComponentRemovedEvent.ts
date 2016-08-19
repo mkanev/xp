@@ -2,7 +2,7 @@ module api.liveedit {
 
     import Component = api.content.page.region.Component;
 
-    export class ComponentRemovedEvent extends api.event.Event {
+    export class LiveComponentRemovedEvent extends api.event.Event {
 
         private componentView: ComponentView<Component>;
         private parentRegionView: RegionView;
@@ -21,11 +21,11 @@ module api.liveedit {
             return this.parentRegionView;
         }
 
-        static on(handler: (event: ComponentRemovedEvent) => void, contextWindow: Window = window) {
+        static on(handler: (event: LiveComponentRemovedEvent) => void, contextWindow: Window = window) {
             api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
         }
 
-        static un(handler?: (event: ComponentRemovedEvent) => void, contextWindow: Window = window) {
+        static un(handler?: (event: LiveComponentRemovedEvent) => void, contextWindow: Window = window) {
             api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
         }
     }

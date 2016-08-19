@@ -729,7 +729,7 @@ export class ContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
             }
         });
 
-        wemQ.all(parallelPromises).spread<>(() => {
+        wemQ.all(parallelPromises).spread<any>(() => {
             this.triggerSelectionChangedListeners();
             return wemQ(null);
         }).catch((reason: any) => api.DefaultErrorHandler.handle(reason)).done();
@@ -814,7 +814,7 @@ export class ContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
             }
         });
 
-        return wemQ.all(parallelPromises).spread<>(() => {
+        return wemQ.all(parallelPromises).spread<any>(() => {
             return wemQ(null);
         }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
     }

@@ -67,7 +67,7 @@ module api.form.inputtype.text {
             }
 
             var value = HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString());
-            var textAreaEl = new api.ui.text.TextArea(this.getInput().getName() + "-" + index, value);
+            var textAreaEl = new api.ui.text.TextAreaInput(this.getInput().getName() + "-" + index, value);
 
             var editorId = textAreaEl.getId();
 
@@ -93,7 +93,7 @@ module api.form.inputtype.text {
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var textArea = <api.ui.text.TextArea> occurrence.getFirstChild();
+            var textArea = <api.ui.text.TextAreaInput> occurrence.getFirstChild();
             var id = textArea.getId();
 
             if (!unchangedOnly || !textArea.isDirty()) {

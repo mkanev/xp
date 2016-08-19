@@ -341,7 +341,7 @@ module api.liveedit {
                 componentView.getComponent().remove();
             }
 
-            new ComponentRemovedEvent(componentView, this).fire();
+            new LiveComponentRemovedEvent(componentView, this).fire();
         }
 
         getComponentViews(): ComponentView<Component>[] {

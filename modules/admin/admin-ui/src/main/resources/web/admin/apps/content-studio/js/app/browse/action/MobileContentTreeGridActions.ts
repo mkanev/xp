@@ -95,7 +95,7 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
                         })
                     })
             ];
-            wemQ.all(parallelPromises).spread<void>(() => {
+            wemQ.all(parallelPromises).spread<any>(() => {
                 deferred.resolve(contentBrowseItems);
                 return wemQ(null);
             }).done();

@@ -37,7 +37,7 @@ module api.ui.text {
 
     export class CodeArea extends api.dom.CompositeFormInputEl {
 
-        private textArea: api.ui.text.TextArea;
+        private textArea: api.ui.text.TextAreaInput;
 
         private options: CodeMirrorOptions;
 
@@ -46,7 +46,7 @@ module api.ui.text {
         private mode: string;
 
         constructor(builder: CodeAreaBuilder) {
-            this.textArea = new TextArea(builder.name, builder.value);
+            this.textArea = new TextAreaInput(builder.name, builder.value);
 
             super(this.textArea);
 

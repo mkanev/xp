@@ -5,7 +5,7 @@ import {PageComponentsTreeGrid} from "./PageComponentsTreeGrid";
 import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
 import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
 import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
-import ComponentRemovedEvent = api.liveedit.ComponentRemovedEvent;
+import ComponentRemovedEvent = api.liveedit.LiveComponentRemovedEvent;
 import ComponentLoadedEvent = api.liveedit.ComponentLoadedEvent;
 import ComponentResetEvent = api.liveedit.LiveComponentResetEvent;
 

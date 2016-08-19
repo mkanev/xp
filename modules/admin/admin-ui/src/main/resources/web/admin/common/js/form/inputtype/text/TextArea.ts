@@ -27,7 +27,7 @@ module api.form.inputtype.text {
             }
 
             var value = property.hasNonNullValue() ? property.getString() : undefined;
-            var inputEl = new api.ui.text.TextArea(this.getInput().getName() + "-" + index, value);
+            var inputEl = new api.ui.text.TextAreaInput(this.getInput().getName() + "-" + index, value);
 
             inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var value = ValueTypes.STRING.newValue(event.getNewValue());
@@ -38,7 +38,7 @@ module api.form.inputtype.text {
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var input = <api.ui.text.TextArea> occurrence;
+            var input = <api.ui.text.TextAreaInput> occurrence;
 
             if (!unchangedOnly || !input.isDirty()) {
                 input.setValue(property.getString());
