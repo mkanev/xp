@@ -935,7 +935,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                 formViewLayoutPromises.push(metadataFormView.layout(formContext, data, metadataForm));
             });
 
-            return wemQ.all(formViewLayoutPromises).spread<void>(() => {
+            return wemQ.all(formViewLayoutPromises).spread<>(() => {
 
                 this.contentWizardStepForm.getFormView().addClass("panel-may-display-validation-errors");
                 if (this.isNew) {

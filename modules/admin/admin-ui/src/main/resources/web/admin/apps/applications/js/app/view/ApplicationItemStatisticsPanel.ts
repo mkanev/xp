@@ -100,7 +100,7 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
 
     }
 
-    private initMacros(applicationKey: ApplicationKey): wemQ.Promise<ItemDataGroup> {
+    private initMacros(applicationKey: ApplicationKey): wemQ.Promise<any> {
         var macroPromises = [new api.macro.resource.GetMacrosRequest([applicationKey]).sendAndParse()]
 
         return wemQ.all(macroPromises).spread((macros: api.macro.MacroDescriptor[])=> {
@@ -119,7 +119,7 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
         }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
     }
 
-    private initDescriptors(applicationKey: ApplicationKey): wemQ.Promise<ItemDataGroup> {
+    private initDescriptors(applicationKey: ApplicationKey): wemQ.Promise<any> {
 
         var descriptorPromises = [
             new api.content.page.GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse(),
