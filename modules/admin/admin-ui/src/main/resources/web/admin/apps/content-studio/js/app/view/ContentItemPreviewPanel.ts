@@ -140,7 +140,7 @@ export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
                 this.showMask();
                 if (item.isRenderable()) {
                     this.getEl().removeClass("image-preview no-preview svg-preview").addClass('page-preview');
-                    var src = api.rendering.UriHelper.getPortalUri(item.getPath(), RenderingMode.PREVIEW, api.content.Branch.DRAFT);
+                    var src = api.rendering.PortalUriHelper.getPortalUri(item.getPath(), RenderingMode.PREVIEW, api.content.Branch.DRAFT);
                     // test if it returns no error( like because of used app was deleted ) first and show no preview otherwise
                     wemjq.get(src).done(() => this.frame.setSrc(src)).fail(() => this.setNoPreview());
                 } else {

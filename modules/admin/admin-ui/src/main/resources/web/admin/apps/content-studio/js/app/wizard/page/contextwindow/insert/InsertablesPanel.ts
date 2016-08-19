@@ -210,7 +210,8 @@ export class InsertablesPanel extends api.ui.panel.Panel {
             this.iFrameDraggable = livejq(event.target).clone();
             livejq('body').append(this.iFrameDraggable);
             this.liveEditPageProxy.createDraggable(this.iFrameDraggable);
-            this.iFrameDraggable.simulate('mousedown').hide();
+            this.iFrameDraggable.simulate('mousedown');
+            this.iFrameDraggable.hide();
         }
 
         // show the helper of the iframe draggable

@@ -1,5 +1,6 @@
 module api.content.resource {
 
+    import SetChildOrderJson = api.content.json.SetChildOrderJson;
     export class OrderContentRequest extends ContentResourceRequest<any, any> {
 
         private silent: boolean = false;
@@ -32,7 +33,7 @@ module api.content.resource {
             return this.contentToJson();
         }
 
-        private contentToJson(): json.SetChildOrderJson {
+        private contentToJson(): SetChildOrderJson {
             return api.content.order.ChildOrder.toSetChildOrderJson(this.contentId, this.childOrder, this.silent);
         }
 

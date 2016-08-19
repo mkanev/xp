@@ -143,24 +143,12 @@ module api.liveedit {
                 clone.select();
                 clone.hideContextMenu();
 
-                new api.liveedit.ComponentResetEvent(clone, this).fire();
+                new LiveComponentResetEvent(clone, this).fire();
             };
 
             this.setComponent(builder.component);
             this.onRemoved(event => this.unregisterComponentListeners(this.component));
-
-            // TODO: by task about using HTML5 DnD api (JVS 2014-06-23) - do not remove
-            //this.setDraggable(true);
-            //this.onDragStart(this.handleDragStart2.bind(this));
-            //this.onDrag(this.handleDrag.bind(this));
-            //this.onDragEnd(this.handleDragEnd.bind(this));
         }
-
-        //remove(): ComponentView {
-        //    super.remove();
-        //    this.unregisterComponentListeners(this.component);
-        //    return this;
-        //}
 
         private registerComponentListeners(component: COMPONENT) {
             component.onReset(this.resetListener);

@@ -432,10 +432,10 @@ export class ContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
 
 
     selectAll() {
-        this.grid.mask();
+        this.getGrid().mask();
         setTimeout(() => {
             super.selectAll();
-            this.grid.unmask();
+            this.getGrid().unmask();
         }, 5);
     }
     /*
@@ -714,7 +714,7 @@ export class ContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
 
         nodes = this.xFilterParentNodes(nodes);
 
-        var parallelPromises: wemQ.Promise<any>[] = [];
+        var parallelPromises = [];
 
         nodes.forEach((node) => {
             if (!node.hasChildren()) {
@@ -770,7 +770,7 @@ export class ContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
 
     xSortNodesChildren(nodes: TreeNode<ContentSummaryAndCompareStatus>[]): wemQ.Promise<void> {
 
-        var parallelPromises: wemQ.Promise<any>[] = [];
+        var parallelPromises = [];
 
         nodes.sort((a, b) => {
             return a.getDataId().localeCompare(b.getDataId())

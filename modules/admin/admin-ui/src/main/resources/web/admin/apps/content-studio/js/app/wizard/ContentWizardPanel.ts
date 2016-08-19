@@ -908,7 +908,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
             contentData.onChanged(this.dataChangedListener);
 
-            var formViewLayoutPromises: wemQ.Promise<void>[] = [];
+            var formViewLayoutPromises = [];
             formViewLayoutPromises.push(this.contentWizardStepForm.layout(formContext, contentData, this.contentType.getForm()));
             // Must pass FormView from contentWizardStepForm displayNameScriptExecutor, since a new is created for each call to renderExisting
             this.displayNameScriptExecutor.setFormView(this.contentWizardStepForm.getFormView());

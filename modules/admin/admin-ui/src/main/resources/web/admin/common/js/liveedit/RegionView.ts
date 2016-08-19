@@ -326,7 +326,7 @@ module api.liveedit {
             this.insertChild(componentView, index);
             this.registerComponentView(componentView, index, isNew);
 
-            new ComponentAddedEvent(componentView, this).fire();
+            new LiveComponentAddedEvent(componentView, this).fire();
         }
 
         removeComponentView(componentView: ComponentView<Component>) {

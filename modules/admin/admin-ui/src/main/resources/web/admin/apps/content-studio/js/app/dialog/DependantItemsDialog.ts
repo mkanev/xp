@@ -5,7 +5,7 @@ import {DependantItemViewer} from "./DependantItemViewer";
 import ContentSummary = api.content.ContentSummary;
 import ContentIds = api.content.ContentIds;
 import ContentId = api.content.ContentId;
-import GetDescendantsOfContents = api.content.resource.GetDescendantsOfContentsRequest;
+import GetDescendantsOfContentsRequest = api.content.resource.GetDescendantsOfContentsRequest;
 import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
 import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import CompareStatus = api.content.CompareStatus;
@@ -224,11 +224,11 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
         let size = this.getDependantList().getItemCount();
 
         if (!this.loading) {
-            if (lastVisible + GetDescendantsOfContents.LOAD_SIZE / 2 >= size && size < this.dependantIds.length) {
+            if (lastVisible + GetDescendantsOfContentsRequest.LOAD_SIZE / 2 >= size && size < this.dependantIds.length) {
 
                 this.loading = true;
 
-                this.loadDescendants(size, GetDescendantsOfContents.LOAD_SIZE).then((newItems) => {
+                this.loadDescendants(size, GetDescendantsOfContentsRequest.LOAD_SIZE).then((newItems) => {
 
                     this.addDependantItems(newItems);
                     this.loading = false;

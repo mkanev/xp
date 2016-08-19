@@ -89,7 +89,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
 
         let previewHandler = (<PreviewContentAction>this.PREVIEW_CONTENT).getPreviewHandler();
 
-        let parallelPromises: wemQ.Promise<any>[] = [
+        let parallelPromises = [
             previewHandler.updateState(contentBrowseItems, changes),
             this.doUpdateActionsEnabledState(contentBrowseItems)
         ];

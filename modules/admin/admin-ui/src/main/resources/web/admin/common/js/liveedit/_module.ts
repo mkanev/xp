@@ -48,9 +48,9 @@
 ///<reference path='ComponentViewDragDroppedEventEvent.ts' />
 ///<reference path='PageSelectedEvent.ts' />
 ///<reference path='RegionSelectedEvent.ts' />
-///<reference path='ComponentAddedEvent.ts' />
+///<reference path='LiveComponentAddedEvent.ts' />
 ///<reference path='ComponentRemovedEvent.ts' />
-///<reference path='ComponentResetEvent.ts' />
+///<reference path='LiveComponentResetEvent.ts' />
 ///<reference path='ComponentDuplicatedEvent.ts' />
 ///<reference path='ComponentLoadedEvent.ts' />
 ///<reference path='FragmentComponentLoadedEvent.ts' />

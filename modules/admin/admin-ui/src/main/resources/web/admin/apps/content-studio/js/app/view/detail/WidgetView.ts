@@ -1,11 +1,11 @@
 import "../../../api.ts";
+import {DetailsPanel} from "./DetailsPanel";
+import {WidgetItemView} from "./WidgetItemView";
 
 import ViewItem = api.app.view.ViewItem;
 import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import RenderingMode = api.rendering.RenderingMode;
 import Widget = api.content.Widget;
-import {DetailsPanel} from "./DetailsPanel";
-import {WidgetItemView} from "./WidgetItemView";
 
 export class WidgetView extends api.dom.DivEl {
 
@@ -52,7 +52,7 @@ export class WidgetView extends api.dom.DivEl {
     }
 
     private getWidgetUrl() {
-        return api.rendering.UriHelper.getAdminUri(this.widget.getUrl(), "/");
+        return api.rendering.PortalUriHelper.getAdminUri(this.widget.getUrl(), "/");
     }
 
     private getFullUrl(url: string) {

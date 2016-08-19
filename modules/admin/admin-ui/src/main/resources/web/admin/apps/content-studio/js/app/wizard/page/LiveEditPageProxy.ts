@@ -28,13 +28,13 @@ import PageTextModeStartedEvent = api.liveedit.PageTextModeStartedEvent;
 import RegionSelectedEvent = api.liveedit.RegionSelectedEvent;
 import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
 import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
-import ComponentAddedEvent = api.liveedit.ComponentAddedEvent;
+import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
 import ComponentRemovedEvent = api.liveedit.ComponentRemovedEvent;
 import ComponentDuplicatedEvent = api.liveedit.ComponentDuplicatedEvent;
 import ComponentInspectedEvent = api.liveedit.ComponentInspectedEvent;
 import PageInspectedEvent = api.liveedit.PageInspectedEvent;
 import ComponentLoadedEvent = api.liveedit.ComponentLoadedEvent;
-import ComponentResetEvent = api.liveedit.ComponentResetEvent;
+import ComponentResetEvent = api.liveedit.LiveComponentResetEvent;
 import LiveEditPageInitializationErrorEvent = api.liveedit.LiveEditPageInitializationErrorEvent;
 import ComponentFragmentCreatedEvent = api.liveedit.ComponentFragmentCreatedEvent;
 import ShowWarningLiveEditEvent = api.liveedit.ShowWarningLiveEditEvent;
@@ -218,7 +218,7 @@ export class LiveEditPageProxy {
         this.showLoadMaskHandler();
 
         var contentId = this.liveEditModel.getContent().getContentId().toString();
-        var pageUrl = api.rendering.UriHelper.getPortalUri(contentId, RenderingMode.EDIT, Workspace.DRAFT);
+        var pageUrl = api.rendering.PortalUriHelper.getPortalUri(contentId, RenderingMode.EDIT, Workspace.DRAFT);
         if (LiveEditPageProxy.debug) {
             console.log("LiveEditPageProxy.load pageUrl: " + pageUrl);
         }

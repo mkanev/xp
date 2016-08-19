@@ -63,7 +63,7 @@ import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
 import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
 import ComponentInspectedEvent = api.liveedit.ComponentInspectedEvent;
 import PageInspectedEvent = api.liveedit.PageInspectedEvent;
-import ComponentAddedEvent = api.liveedit.ComponentAddedEvent;
+import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
 import ComponentRemovedEvent = api.liveedit.ComponentRemovedEvent;
 import ComponentDuplicatedEvent = api.liveedit.ComponentDuplicatedEvent;
 import LiveEditPageInitializationErrorEvent = api.liveedit.LiveEditPageInitializationErrorEvent;
@@ -377,7 +377,7 @@ export class LiveFormPanel extends api.ui.panel.Panel {
         api.util.assertNotNull(componentView, "componentView cannot be null");
 
         this.pageSkipReload = true;
-        var componentUrl = api.rendering.UriHelper.getComponentUri(this.content.getContentId().toString(),
+        var componentUrl = api.rendering.PortalUriHelper.getComponentUri(this.content.getContentId().toString(),
             componentView.getComponentPath(),
             RenderingMode.EDIT,
             api.content.Branch.DRAFT);

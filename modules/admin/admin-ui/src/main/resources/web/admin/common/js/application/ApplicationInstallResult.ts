@@ -1,5 +1,6 @@
 module api.application {
 
+    import ApplicationInstallResultJson = api.application.json.ApplicationInstallResultJson;
     export class ApplicationInstallResult implements api.Equitable{
 
         private application: Application;
@@ -33,7 +34,7 @@ module api.application {
                    api.ObjectHelper.equals(this.application, other.application);
         }
 
-        static fromJson(json: json.ApplicationInstallResultJson) : ApplicationInstallResult {
+        static fromJson(json: ApplicationInstallResultJson): ApplicationInstallResult {
             let result = new ApplicationInstallResult();
             result.application = json.applicationInstalledJson ? Application.fromJson(json.applicationInstalledJson) : null;
             result.failure = json.failure;

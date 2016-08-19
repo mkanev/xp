@@ -11,6 +11,7 @@ import LayoutDescriptor = api.content.page.region.LayoutDescriptor;
 import ItemDataGroup = api.app.view.ItemDataGroup;
 import ApplicationKey = api.application.ApplicationKey;
 import Application = api.application.Application;
+import MacroDescriptor = api.macro.MacroDescriptor;
 
 export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsPanel<api.application.Application> {
 
@@ -95,7 +96,7 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
             if (providersGroup && !providersGroup.isEmpty()) {
                 this.applicationDataContainer.appendChild(providersGroup);
             }
-        })
+        });
 
     }
 
@@ -153,7 +154,7 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
             new api.schema.content.GetContentTypesByApplicationRequest(applicationKey).sendAndParse(),
             new api.schema.mixin.GetMixinsByApplicationRequest(applicationKey).sendAndParse(),
             new api.schema.relationshiptype.GetRelationshipTypesByApplicationRequest(applicationKey).sendAndParse()
-        ]
+        ];
 
         return wemQ.all(schemaPromises).spread(
             (contentTypes: ContentTypeSummary[], mixins: Mixin[], relationshipTypes: RelationshipType[]) => {

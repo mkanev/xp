@@ -78,7 +78,7 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
             this.DUPLICATE_CONTENT.setEnabled(true);
             this.MOVE_CONTENT.setEnabled(true);
             this.PUBLISH_CONTENT.setEnabled(true);
-            var parallelPromises: wemQ.Promise<any>[] = [
+            var parallelPromises = [
                 // check if selected content allows children and if user has create permission for it
                 new api.schema.content.GetContentTypeByNameRequest(contentSummary.getType()).sendAndParse().then(
                     (contentType: api.schema.content.ContentType) => {

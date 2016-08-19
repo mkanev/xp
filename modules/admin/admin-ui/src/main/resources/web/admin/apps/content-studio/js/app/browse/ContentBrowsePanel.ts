@@ -312,7 +312,7 @@ export class ContentBrowsePanel extends api.app.browse.BrowsePanel<ContentSummar
     }
 
     private getPathFromPreviewPath(contentPreviewPath: string): string {
-        return api.rendering.UriHelper.getPathFromPortalPreviewUri(contentPreviewPath, api.rendering.RenderingMode.PREVIEW,
+        return api.rendering.PortalUriHelper.getPathFromPortalPreviewUri(contentPreviewPath, api.rendering.RenderingMode.PREVIEW,
             api.content.Branch.DRAFT);
     }
 

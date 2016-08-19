@@ -1,5 +1,6 @@
 module api.content.resource {
 
+    import ReorderChildContentsJson = api.content.json.ReorderChildContentsJson;
     export class OrderChildContentRequest extends ContentResourceRequest<any, any> {
 
         private silent: boolean = false;
@@ -42,7 +43,7 @@ module api.content.resource {
             return this;
         }
 
-        getParams(): json.ReorderChildContentsJson {
+        getParams(): ReorderChildContentsJson {
             return {
                 "silent": this.silent,
                 "manualOrder": this.manualOrder,
