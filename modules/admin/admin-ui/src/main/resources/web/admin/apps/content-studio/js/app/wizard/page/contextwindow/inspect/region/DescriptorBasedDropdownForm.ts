@@ -1,12 +1,12 @@
 import "../../../../../../api.ts";
 
-import Dropdown = api.ui.selector.dropdown.Dropdown;
+import DropdownInput = api.ui.selector.dropdown.DropdownInput;
 
 export class DescriptorBasedDropdownForm extends api.ui.form.Form {
 
-    private templateSelector: Dropdown<api.content.page.Descriptor>;
+    private templateSelector: DropdownInput<api.content.page.Descriptor>;
 
-    constructor(templateSelector: Dropdown<api.content.page.Descriptor>, title?: string) {
+    constructor(templateSelector: DropdownInput<api.content.page.Descriptor>, title?: string) {
         super('descriptor-based-dropdown-form');
         this.templateSelector = templateSelector;
 
@@ -21,7 +21,7 @@ export class DescriptorBasedDropdownForm extends api.ui.form.Form {
         this.add(fieldSet);
     }
 
-    getSelector(): Dropdown<api.content.page.Descriptor> {
+    getSelector(): DropdownInput<api.content.page.Descriptor> {
         return this.templateSelector;
     }
 

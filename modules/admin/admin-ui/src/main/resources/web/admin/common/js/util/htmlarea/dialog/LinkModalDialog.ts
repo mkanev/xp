@@ -5,7 +5,7 @@ module api.util.htmlarea.dialog {
     import Panel = api.ui.panel.Panel;
     import DockedPanel = api.ui.panel.DockedPanel;
     import Validators = api.ui.form.Validators;
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
+    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
     import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import Option = api.ui.selector.Option;
     import LabelPosition = api.ui.LabelPosition;
@@ -264,7 +264,7 @@ module api.util.htmlarea.dialog {
         }
 
         private createAnchorDropdown(): FormItem {
-            var dropDown = new Dropdown<string>(name, <DropdownConfig<string>>{});
+            var dropDown = new DropdownInput<string>(name, <DropdownConfig<string>>{});
 
             this.anchorList.forEach((anchor: string) => {
                 dropDown.addOption(<Option<string>>{value: "#" + anchor, displayValue: anchor});

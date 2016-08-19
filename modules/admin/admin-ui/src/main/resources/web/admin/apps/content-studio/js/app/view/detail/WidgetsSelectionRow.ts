@@ -3,7 +3,7 @@ import {WidgetView} from "./WidgetView";
 import {DetailsPanel} from "./DetailsPanel";
 import {InfoWidgetToggleButton} from "./button/InfoWidgetToggleButton";
 
-import Dropdown = api.ui.selector.dropdown.Dropdown;
+import DropdownInput = api.ui.selector.dropdown.DropdownInput;
 import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
 import Option = api.ui.selector.Option;
 import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
@@ -88,7 +88,7 @@ export class WidgetsSelectionRow extends api.dom.DivEl {
     }
 }
 
-export class WidgetSelectorDropdown extends Dropdown<WidgetViewOption> {
+export class WidgetSelectorDropdown extends DropdownInput<WidgetViewOption> {
 
     constructor(detailsPanel: DetailsPanel) {
         super("widgetSelector", <DropdownConfig<WidgetViewOption>>{disableFilter: true, skipExpandOnClick: true});

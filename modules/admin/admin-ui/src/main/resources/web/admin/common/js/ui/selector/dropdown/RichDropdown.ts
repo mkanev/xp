@@ -2,7 +2,7 @@ module api.ui.selector.dropdown {
 
     import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
 
-    export class RichDropdown<OPTION_DISPLAY_VALUE> extends Dropdown<OPTION_DISPLAY_VALUE> {
+    export class RichDropdown<OPTION_DISPLAY_VALUE> extends DropdownInput<OPTION_DISPLAY_VALUE> {
 
         private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
 

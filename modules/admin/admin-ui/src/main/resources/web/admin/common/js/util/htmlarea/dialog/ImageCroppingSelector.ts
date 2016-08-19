@@ -1,11 +1,11 @@
 module api.util.htmlarea.dialog {
 
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
+    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
     import Option = api.ui.selector.Option;
     import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
 
-    export class ImageCroppingSelector extends Dropdown<ImageCroppingOption> {
+    export class ImageCroppingSelector extends DropdownInput<ImageCroppingOption> {
 
 
         constructor() {

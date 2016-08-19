@@ -1,6 +1,6 @@
 module api.content.page.region {
 
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
+    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
     import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import Option = api.ui.selector.Option;
     import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;

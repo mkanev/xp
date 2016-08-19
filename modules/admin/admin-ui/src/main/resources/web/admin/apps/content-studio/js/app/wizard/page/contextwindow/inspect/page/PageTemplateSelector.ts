@@ -1,4 +1,7 @@
 import "../../../../../../api.ts";
+import {PageTemplateOption} from "./PageTemplateOption";
+import {PageTemplateOptions} from "./PageTemplateOptions";
+import {PageTemplateOptionViewer} from "./PageTemplateOptionViewer";
 
 import PropertyChangedEvent = api.PropertyChangedEvent;
 import ContentId = api.content.ContentId;
@@ -7,16 +10,13 @@ import PageTemplate = api.content.page.PageTemplate;
 import PageTemplateBuilder = api.content.page.PageTemplateBuilder;
 import Option = api.ui.selector.Option;
 import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-import Dropdown = api.ui.selector.dropdown.Dropdown;
+import DropdownInput = api.ui.selector.dropdown.DropdownInput;
 import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
 import PageModel = api.content.page.PageModel;
 import LiveEditModel = api.liveedit.LiveEditModel;
 import PageMode = api.content.page.PageMode;
-import {PageTemplateOption} from "./PageTemplateOption";
-import {PageTemplateOptions} from "./PageTemplateOptions";
-import {PageTemplateOptionViewer} from "./PageTemplateOptionViewer";
 
-export class PageTemplateSelector extends Dropdown<PageTemplateOption> {
+export class PageTemplateSelector extends DropdownInput<PageTemplateOption> {
 
     private pageModel: PageModel;
 

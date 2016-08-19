@@ -28,7 +28,7 @@ module api.ui.selector.dropdown {
         noOptionsText?: string;
     }
 
-    export class Dropdown<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
+    export class DropdownInput<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
 
         private icon: api.dom.ImgEl;
 
@@ -53,7 +53,7 @@ module api.ui.selector.dropdown {
         private noOptionsText: string;
 
         /**
-         * Indicates if Dropdown currently has focus
+         * Indicates if DropdownInput currently has focus
          * @type {boolean}
          */
         private active: boolean = false;
@@ -248,7 +248,7 @@ module api.ui.selector.dropdown {
             return this.dropdownList.getOptionByRow(rowIndex);
         }
 
-        setValue(value: string): Dropdown<OPTION_DISPLAY_VALUE> {
+        setValue(value: string): DropdownInput<OPTION_DISPLAY_VALUE> {
             var option = this.getOptionByValue(value);
             if (option != null) {
                 this.selectOption(option);
