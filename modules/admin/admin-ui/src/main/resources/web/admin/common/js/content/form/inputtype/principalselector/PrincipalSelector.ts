@@ -1,24 +1,34 @@
-module api.content.form.inputtype.principalselector {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {GetRelationshipTypeByNameRequest} from "../../../../schema/relationshiptype/GetRelationshipTypeByNameRequest";
+import {RelationshipTypeName} from "../../../../schema/relationshiptype/RelationshipTypeName";
+import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../../ui/FocusSwitchEvent";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {Principal} from "../../../../security/Principal";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {PrincipalType} from "../../../../security/PrincipalType";
+import {PrincipalComboBox} from "../../../../ui/security/PrincipalComboBox";
+import {Input} from "../../../../form/Input";
+import {PrincipalLoader} from "../../../../security/PrincipalLoader";
+import {PrincipalSelectedOptionView} from "../../../../ui/security/PrincipalComboBox";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {Option} from "../../../../ui/selector/Option";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+export class PrincipalSelector extends BaseInputTypeManagingAdd<Principal> {
 
-    export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.security.Principal> {
+        private config: ContentInputTypeViewContext;
 
-        private config: api.content.form.inputtype.ContentInputTypeViewContext;
+        private principalTypes: PrincipalType[];
 
-        private principalTypes: api.security.PrincipalType[];
+        private comboBox: PrincipalComboBox;
 
-        private comboBox: api.ui.security.PrincipalComboBox;
-
-        constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config?: ContentInputTypeViewContext) {
             super("relationship");
             this.addClass("input-type-view");
             this.config = config;
@@ -29,10 +39,10 @@ module api.content.form.inputtype.principalselector {
             var principalTypeConfig = inputConfig['principalType'] || [];
             this.principalTypes =
                 principalTypeConfig.map((cfg) => cfg['value']).filter((val) => !!val).map(
-                    (val: string) => api.security.PrincipalType[val]).filter((val) => !!val);
+                    (val: string) => PrincipalType[val]).filter((val) => !!val);
         }
 
-        public getPrincipalComboBox(): api.ui.security.PrincipalComboBox {
+        public getPrincipalComboBox(): PrincipalComboBox {
             return this.comboBox;
         }
 
@@ -44,7 +54,7 @@ module api.content.form.inputtype.principalselector {
             return null;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
 
             super.layout(input, propertyArray);
             this.comboBox = this.createComboBox(input);
@@ -56,7 +66,7 @@ module api.content.form.inputtype.principalselector {
             return wemQ<void>(null);
         }
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             var superPromise = super.update(propertyArray, unchangedOnly);
 
             if (!unchangedOnly || !this.comboBox.isDirty()) {
@@ -68,20 +78,20 @@ module api.content.form.inputtype.principalselector {
             }
         }
 
-        private createComboBox(input: api.form.Input): api.ui.security.PrincipalComboBox {
+        private createComboBox(input: Input): PrincipalComboBox {
 
             var value = this.getValueFromPropertyArray(this.getPropertyArray());
-            var principalLoader = new api.security.PrincipalLoader().setAllowedTypes(this.principalTypes);
+            var principalLoader = new PrincipalLoader().setAllowedTypes(this.principalTypes);
 
-            var comboBox = api.ui.security.PrincipalComboBox.create().setLoader(principalLoader).setMaxOccurences(
+            var comboBox = PrincipalComboBox.create().setLoader(principalLoader).setMaxOccurences(
                 input.getOccurrences().getMaximum()).setValue(value).build();
 
-            comboBox.onOptionDeselected((event: SelectedOptionEvent<api.security.Principal>) => {
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<Principal>) => {
                 this.getPropertyArray().remove(event.getSelectedOption().getIndex());
                 this.validate(false);
             });
 
-            comboBox.onOptionSelected((event: SelectedOptionEvent<api.security.Principal>) => {
+            comboBox.onOptionSelected((event: SelectedOptionEvent<Principal>) => {
                 this.fireFocusSwitchEvent(event);
 
                 const selectedOption = event.getSelectedOption();
@@ -89,13 +99,13 @@ module api.content.form.inputtype.principalselector {
                 if (!key) {
                     return;
                 }
-                var selectedOptionView: api.ui.security.PrincipalSelectedOptionView = <api.ui.security.PrincipalSelectedOptionView>selectedOption.getOptionView();
+                var selectedOptionView: PrincipalSelectedOptionView = <PrincipalSelectedOptionView>selectedOption.getOptionView();
                 this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
                 this.validate(false);
             });
 
-            comboBox.onOptionMoved((selectedOption: api.ui.selector.combobox.SelectedOption<api.security.Principal>) => {
-                var selectedOptionView: api.ui.security.PrincipalSelectedOptionView = <api.ui.security.PrincipalSelectedOptionView> selectedOption.getOptionView();
+            comboBox.onOptionMoved((selectedOption: SelectedOption<Principal>) => {
+                var selectedOptionView: PrincipalSelectedOptionView = <PrincipalSelectedOptionView> selectedOption.getOptionView();
                 this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
                 this.validate(false);
             });
@@ -103,7 +113,7 @@ module api.content.form.inputtype.principalselector {
             return comboBox;
         }
 
-        private saveToSet(principalOption: api.ui.selector.Option<api.security.Principal>, index) {
+        private saveToSet(principalOption: Option<Principal>, index) {
             this.getPropertyArray().set(index, ValueTypes.REFERENCE.newValue(principalOption.value));
         }
 
@@ -140,5 +150,4 @@ module api.content.form.inputtype.principalselector {
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("PrincipalSelector", PrincipalSelector));
-}
+    InputTypeManager.register(new Class("PrincipalSelector", PrincipalSelector));

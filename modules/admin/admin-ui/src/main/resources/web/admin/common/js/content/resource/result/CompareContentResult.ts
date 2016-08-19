@@ -1,9 +1,11 @@
-module api.content.resource.result {
+import {Equitable} from "../../../Equitable";
+import {CompareStatus} from "../../CompareStatus";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {CompareContentResultJson} from "../../json/CompareContentResultJson";
 
+export class CompareContentResult implements Equitable {
 
-    export class CompareContentResult implements api.Equitable {
-
-        compareStatus: api.content.CompareStatus;
+        compareStatus: CompareStatus;
 
         id: string;
 
@@ -21,26 +23,25 @@ module api.content.resource.result {
             return this.compareStatus;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, CompareContentResult)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, CompareContentResult)) {
                 return false;
             }
 
             var other = <CompareContentResult>o;
 
-            if (!api.ObjectHelper.stringEquals(this.id.toString(), other.id.toString())) {
+            if (!ObjectHelper.stringEquals(this.id.toString(), other.id.toString())) {
                 return false;
             }
 
             return true;
         }
 
-        static fromJson(json: api.content.json.CompareContentResultJson): CompareContentResult {
+        static fromJson(json: CompareContentResultJson): CompareContentResult {
 
             var status: CompareStatus = <CompareStatus>CompareStatus[json.compareStatus];
 
             return new CompareContentResult(json.id, status);
         }
     }
-}

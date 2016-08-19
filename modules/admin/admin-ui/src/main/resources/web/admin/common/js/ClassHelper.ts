@@ -1,6 +1,6 @@
-module api {
 
-    export class ClassHelper {
+
+export class ClassHelper {
 
         static MAX_NEST_LEVEL = 7;
         static ALLOWED_PACKAGES = ['api', 'app', 'LiveEdit'];
@@ -140,4 +140,3 @@ module api {
 
     }
 
-}

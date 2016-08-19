@@ -1,6 +1,6 @@
-module api.ui.mask {
+import {Mask} from "./Mask";
 
-    /**
+/**
      * A statically accessible object for masking the whole body.
      */
     export class BodyMask extends Mask {
@@ -20,4 +20,3 @@ module api.ui.mask {
         }
 
     }
-}

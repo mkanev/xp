@@ -1,7 +1,6 @@
-module api.query.expr {
 
-    export enum OrderDirection {
+
+export enum OrderDirection {
         ASC,
         DESC
     }
-}

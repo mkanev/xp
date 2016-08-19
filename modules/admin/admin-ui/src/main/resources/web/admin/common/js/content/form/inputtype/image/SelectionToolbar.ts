@@ -1,8 +1,7 @@
-module api.content.form.inputtype.image {
+import {Button} from "../../../../ui/button/Button";
+import {DivEl} from "../../../../dom/DivEl";
 
-    import Button = api.ui.button.Button;
-
-    export class SelectionToolbar extends api.dom.DivEl {
+export class SelectionToolbar extends DivEl {
 
         private editButton: Button;
 
@@ -80,4 +79,3 @@ module api.content.form.inputtype.image {
 
     }
 
-}

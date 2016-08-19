@@ -1,6 +1,8 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {ItemView} from "./ItemView";
 
-    export class ItemViewDeselectedEvent extends api.event.Event {
+export class ItemViewDeselectedEvent extends Event {
 
         private itemView: ItemView;
 
@@ -14,11 +16,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: ItemViewDeselectedEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: ItemViewDeselectedEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

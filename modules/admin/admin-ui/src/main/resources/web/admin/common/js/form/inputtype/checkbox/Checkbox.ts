@@ -1,19 +1,24 @@
-module api.content.form.inputtype.checkbox {
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {BaseInputTypeSingleOccurrence} from "../support/BaseInputTypeSingleOccurrence";
+import {LabelPosition} from "../../../ui/Checkbox";
+import {Checkbox} from "../../../ui/Checkbox";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Input} from "../../Input";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {InputValidationRecording} from "../InputValidationRecording";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import BaseInputTypeSingleOccurrence = api.form.inputtype.support.BaseInputTypeSingleOccurrence;
-    import LabelPosition = api.ui.LabelPosition;
+export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
 
-    export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
-
-        private checkbox: api.ui.Checkbox;
+        private checkbox: Checkbox;
 
         public static debug: boolean = false;
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
+        constructor(config: InputTypeViewContext) {
             super(config);
         }
 
@@ -25,17 +30,17 @@ module api.content.form.inputtype.checkbox {
             return ValueTypes.BOOLEAN.newBoolean(false);
         }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
+        layoutProperty(input: Input, property: Property): wemQ.Promise<void> {
             var checked = property.hasNonNullValue() ? property.getBoolean() : false;
             this.checkbox =
-                api.ui.Checkbox.create().setLabelText(input.getLabel()).setChecked(checked).setLabelPosition(LabelPosition.TOP).build();
+                Checkbox.create().setLabelText(input.getLabel()).setChecked(checked).setLabelPosition(LabelPosition.TOP).build();
             this.appendChild(this.checkbox);
 
             if (!ValueTypes.BOOLEAN.equals(property.getType())) {
                 property.convertValueType(ValueTypes.BOOLEAN);
             }
 
-            this.checkbox.onValueChanged((event: api.ValueChangedEvent) => {
+            this.checkbox.onValueChanged((event: ValueChangedEvent) => {
                 var newValue = ValueTypes.BOOLEAN.newValue(event.getNewValue());
 
                 this.saveToProperty(newValue);
@@ -58,9 +63,9 @@ module api.content.form.inputtype.checkbox {
             return this.checkbox.giveFocus();
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
+        validate(silent: boolean = true): InputValidationRecording {
 
-            return new api.form.inputtype.InputValidationRecording();
+            return new InputValidationRecording();
         }
 
         onFocus(listener: (event: FocusEvent) => void) {
@@ -80,6 +85,5 @@ module api.content.form.inputtype.checkbox {
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("Checkbox", Checkbox));
+    InputTypeManager.register(new Class("Checkbox", Checkbox));
 
-}

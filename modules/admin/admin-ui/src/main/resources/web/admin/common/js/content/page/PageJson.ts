@@ -1,18 +1,19 @@
-module api.content.page {
+import {RegionJson} from "./region/RegionJson";
+import {ComponentJson} from "./region/ComponentJson";
+import {PropertyArrayJson} from "../../data/PropertyArrayJson";
 
-    export interface PageJson {
+export interface PageJson {
 
         controller:string;
 
         template:string;
 
-        regions: api.content.page.region.RegionJson[];
+        regions: RegionJson[];
 
-        fragment: api.content.page.region.ComponentJson;
+        fragment: ComponentJson;
 
-        config: api.data.PropertyArrayJson[];
+        config: PropertyArrayJson[];
 
         customized: boolean;
 
     }
-}

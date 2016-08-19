@@ -1,33 +1,58 @@
-module api.liveedit {
+import {Region} from "../content/page/region/Region";
+import {RegionPath} from "../content/page/region/RegionPath";
+import {Component} from "../content/page/region/Component";
+import {ComponentPath} from "../content/page/region/ComponentPath";
+import {PropertyTree} from "../data/PropertyTree";
+import {ComponentName} from "../content/page/region/ComponentName";
+import {ComponentType} from "../content/page/region/ComponentType";
+import {DescriptorBasedComponent} from "../content/page/region/DescriptorBasedComponent";
+import {DescriptorBasedComponentBuilder} from "../content/page/region/DescriptorBasedComponent";
+import {Element} from "../dom/Element";
+import {ComponentAddedEvent} from "../content/page/region/ComponentAddedEvent";
+import {ComponentRemovedEvent} from "../content/page/region/ComponentRemovedEvent";
+import {ObjectHelper} from "../ObjectHelper";
+import {Action} from "../ui/Action";
+import {LayoutComponentView} from "./layout/LayoutComponentView";
+import {StringHelper} from "../util/StringHelper";
+import {assert} from "../util/Assert";
+import {Name} from "../Name";
+import {ComponentView} from "./ComponentView";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {DragAndDrop} from "./DragAndDrop";
+import {ItemType} from "./ItemType";
+import {ItemViewBuilder} from "./ItemView";
+import {ItemView} from "./ItemView";
+import {ItemViewAddedEvent} from "./ItemViewAddedEvent";
+import {ItemViewContextMenuPosition} from "./ItemViewContextMenuPosition";
+import {ItemViewRemovedEvent} from "./ItemViewRemovedEvent";
+import {LiveComponentAddedEvent} from "./LiveComponentAddedEvent";
+import {LiveComponentRemovedEvent} from "./LiveComponentRemovedEvent";
+import {LiveEditModel} from "./LiveEditModel";
+import {Position} from "./Position";
+import {RegionComponentViewer} from "./RegionComponentViewer";
+import {RegionItemType} from "./RegionItemType";
+import {RegionPlaceholder} from "./RegionPlaceholder";
+import {RegionSelectedEvent} from "./RegionSelectedEvent";
+import {RegionViewContextMenuTitle} from "./RegionViewContextMenuTitle";
 
-    import Region = api.content.page.region.Region;
-    import RegionPath = api.content.page.region.RegionPath;
-    import Component = api.content.page.region.Component;
-    import ComponentPath = api.content.page.region.ComponentPath;
-    import PropertyTree = api.data.PropertyTree;
-    import ComponentName = api.content.page.region.ComponentName;
-    import ComponentType = api.content.page.region.ComponentType;
-    import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-    import DescriptorBasedComponentBuilder = api.content.page.region.DescriptorBasedComponentBuilder;
-
-    export class RegionViewBuilder {
+export class RegionViewBuilder {
 
         liveEditModel: LiveEditModel;
 
-        parentElement: api.dom.Element;
+        parentElement: Element;
 
         parentView: ItemView;
 
         region: Region;
 
-        element: api.dom.Element;
+        element: Element;
 
         setLiveEditModel(value: LiveEditModel): RegionViewBuilder {
             this.liveEditModel = value;
             return this;
         }
 
-        setParentElement(value: api.dom.Element): RegionViewBuilder {
+        setParentElement(value: Element): RegionViewBuilder {
             this.parentElement = value;
             return this;
         }
@@ -42,7 +67,7 @@ module api.liveedit {
             return this;
         }
 
-        setElement(value: api.dom.Element): RegionViewBuilder {
+        setElement(value: Element): RegionViewBuilder {
             this.element = value;
             return this;
         }
@@ -66,9 +91,9 @@ module api.liveedit {
 
         private itemViewRemovedListener: (event: ItemViewRemovedEvent) => void;
 
-        private componentAddedListener: (event: api.content.page.region.ComponentAddedEvent) => void;
+        private componentAddedListener: (event: ComponentAddedEvent) => void;
 
-        private componentRemovedListener: (event: api.content.page.region.ComponentRemovedEvent) => void;
+        private componentRemovedListener: (event: ComponentRemovedEvent) => void;
 
         private mouseDownLastTarget: HTMLElement;
 
@@ -89,7 +114,7 @@ module api.liveedit {
             this.itemViewRemovedListener = (event: ItemViewRemovedEvent) => {
 
                 // Check if removed ItemView is a child, and remove it if so
-                if (api.ObjectHelper.iFrameSafeInstanceOf(event.getView(), ComponentView)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(event.getView(), ComponentView)) {
 
                     var removedComponentView: ComponentView<Component> = <ComponentView<Component>>event.getView();
                     var childIndex = this.getComponentViewIndex(removedComponentView);
@@ -112,14 +137,14 @@ module api.liveedit {
 
             this.addClassEx("region-view");
 
-            this.componentAddedListener = (event: api.content.page.region.ComponentAddedEvent) => {
+            this.componentAddedListener = (event: ComponentAddedEvent) => {
                 if (RegionView.debug) {
                     console.log('RegionView.handleComponentAdded: ' + event.getComponentPath().toString())
                 }
 
                 this.refreshEmptyState();
             };
-            this.componentRemovedListener = (event: api.content.page.region.ComponentRemovedEvent) => {
+            this.componentRemovedListener = (event: ComponentRemovedEvent) => {
                 if (RegionView.debug) {
                     console.log('RegionView.handleComponentRemoved: ' + event.getComponentPath().toString())
                 }
@@ -161,11 +186,11 @@ module api.liveedit {
         }
 
         private createRegionContextMenuActions(liveEditModel: LiveEditModel) {
-            var actions: api.ui.Action[] = [];
+            var actions: Action[] = [];
 
             actions.push(this.createSelectParentAction());
             actions.push(this.createInsertAction(liveEditModel));
-            actions.push(new api.ui.Action('Reset').onExecuted(() => {
+            actions.push(new Action('Reset').onExecuted(() => {
                 this.deselect();
                 this.empty();
             }));
@@ -369,9 +394,9 @@ module api.liveedit {
 
             for (var i = 0; i < this.componentViews.length; i++) {
                 var componentView = this.componentViews[i];
-                if (api.ObjectHelper.iFrameSafeInstanceOf(componentView, api.liveedit.layout.LayoutComponentView)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(componentView, LayoutComponentView)) {
 
-                    var layoutView = <api.liveedit.layout.LayoutComponentView>componentView;
+                    var layoutView = <LayoutComponentView>componentView;
                     var match = layoutView.getComponentViewByPath(path.removeFirstLevel());
                     if (match) {
                         return match;
@@ -383,7 +408,7 @@ module api.liveedit {
         }
 
         hasParentLayoutComponentView(): boolean {
-            return api.ObjectHelper.iFrameSafeInstanceOf(this.parentView, api.liveedit.layout.LayoutComponentView);
+            return ObjectHelper.iFrameSafeInstanceOf(this.parentView, LayoutComponentView);
         }
 
         hasOnlyMovingComponentViews(): boolean {
@@ -468,7 +493,7 @@ module api.liveedit {
 
             var builder = componentType.newComponentBuilder().setName(componentType.getDefaultName());
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(builder, DescriptorBasedComponentBuilder)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(builder, DescriptorBasedComponentBuilder)) {
                 var descriptorBuilder = <DescriptorBasedComponentBuilder<DescriptorBasedComponent>> builder;
                 descriptorBuilder.setConfig(new PropertyTree());
             }
@@ -492,7 +517,7 @@ module api.liveedit {
         static isRegionViewFromHTMLElement(htmlElement: HTMLElement): boolean {
 
             var name = htmlElement.getAttribute("data-" + ItemType.ATTRIBUTE_REGION_NAME);
-            return !api.util.StringHelper.isBlank(name);
+            return !StringHelper.isBlank(name);
         }
 
         private parseComponentViews() {
@@ -506,14 +531,14 @@ module api.liveedit {
             this.doParseComponentViews();
         }
 
-        private doParseComponentViews(parentElement?: api.dom.Element) {
+        private doParseComponentViews(parentElement?: Element) {
 
             var children = parentElement ? parentElement.getChildren() : this.getChildren();
             var region = this.getRegion();
 
-            children.forEach((childElement: api.dom.Element) => {
+            children.forEach((childElement: Element) => {
                 var itemType = ItemType.fromElement(childElement);
-                var isComponentView = api.ObjectHelper.iFrameSafeInstanceOf(childElement, ComponentView);
+                var isComponentView = ObjectHelper.iFrameSafeInstanceOf(childElement, ComponentView);
                 var component, componentView;
 
                 if (isComponentView) {
@@ -527,7 +552,7 @@ module api.liveedit {
                         this.registerComponentView(componentView, this.componentIndex);
                     }
                 } else if (itemType) {
-                    api.util.assert(itemType.isComponentType(),
+                    assert(itemType.isComponentType(),
                         "Expected ItemView beneath a Region to be a Component: " + itemType.getShortName());
                     // components may be nested on different levels so use region wide var for count
                     component = region.getComponentByIndex(this.componentIndex++);
@@ -583,4 +608,3 @@ module api.liveedit {
             }
         }
     }
-}

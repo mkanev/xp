@@ -1,8 +1,22 @@
-module api.content.page.region {
+import {PropertyTree} from "../../../data/PropertyTree";
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {Regions} from "./Regions";
+import {DescriptorKey} from "../DescriptorKey";
+import {Component} from "./Component";
+import {ComponentName} from "./ComponentName";
+import {ComponentPath} from "./ComponentPath";
+import {ComponentPropertyChangedEvent} from "./ComponentPropertyChangedEvent";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {DescriptorBasedComponent} from "./DescriptorBasedComponent";
+import {DescriptorBasedComponentBuilder} from "./DescriptorBasedComponent";
+import {LayoutComponentJson} from "./LayoutComponentJson";
+import {LayoutComponentType} from "./LayoutComponentType";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {Region} from "./Region";
 
-    import PropertyTree = api.data.PropertyTree;
-
-    export class LayoutComponent extends DescriptorBasedComponent implements api.Equitable, api.Cloneable {
+export class LayoutComponent extends DescriptorBasedComponent implements Equitable, Cloneable {
 
         public static debug: boolean = false;
 
@@ -56,7 +70,7 @@ module api.content.page.region {
             this.regions = value;
             this.registerRegionsListeners(this.regions);
 
-            if (!api.ObjectHelper.equals(oldValue, value)) {
+            if (!ObjectHelper.equals(oldValue, value)) {
                 if (LayoutComponent.debug) {
                     console.debug("LayoutComponent[" + this.getPath().toString() + "].regions reassigned: ", event);
                 }
@@ -91,9 +105,9 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, LayoutComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, LayoutComponent)) {
                 return false;
             }
 
@@ -103,7 +117,7 @@ module api.content.page.region {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.regions, other.regions)) {
+            if (!ObjectHelper.equals(this.regions, other.regions)) {
                 return false;
             }
 
@@ -114,12 +128,12 @@ module api.content.page.region {
             return new LayoutComponentBuilder(this).build();
         }
 
-        private registerRegionsListeners(regions: api.content.page.region.Regions) {
+        private registerRegionsListeners(regions: Regions) {
             regions.onChanged(this.regionsChangedEventHandler);
             regions.onComponentPropertyChanged(this.componentPropertyChangedEventHandler);
         }
 
-        private unregisterRegionsListeners(regions: api.content.page.region.Regions) {
+        private unregisterRegionsListeners(regions: Regions) {
             regions.unChanged(this.regionsChangedEventHandler);
             regions.unComponentPropertyChanged(this.componentPropertyChangedEventHandler);
         }
@@ -156,7 +170,7 @@ module api.content.page.region {
         public fromJson(json: LayoutComponentJson, region: Region): LayoutComponent {
 
             if (json.descriptor) {
-                this.setDescriptor(api.content.page.DescriptorKey.fromString(json.descriptor));
+                this.setDescriptor(DescriptorKey.fromString(json.descriptor));
             }
             this.setName(json.name ? new ComponentName(json.name) : null);
             if (json.config) {
@@ -179,4 +193,3 @@ module api.content.page.region {
             return new LayoutComponent(this);
         }
     }
-}

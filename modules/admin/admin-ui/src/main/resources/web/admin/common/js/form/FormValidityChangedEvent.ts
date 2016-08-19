@@ -1,6 +1,6 @@
-module api.form {
+import {ValidationRecording} from "./ValidationRecording";
 
-    export class FormValidityChangedEvent {
+export class FormValidityChangedEvent {
 
         private recording: ValidationRecording;
 
@@ -19,4 +19,3 @@ module api.form {
             return this.recording;
         }
     }
-}

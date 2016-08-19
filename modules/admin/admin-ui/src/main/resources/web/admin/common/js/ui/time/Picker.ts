@@ -1,12 +1,15 @@
-module api.ui.time {
+import {DivEl} from "../../dom/DivEl";
+import {TextInput} from "../text/TextInput";
+import {Button} from "../button/Button";
+import {Element} from "../../dom/Element";
 
-    export class Picker extends api.dom.DivEl {
+export class Picker extends DivEl {
 
         protected popup: any;
 
-        protected input: api.ui.text.TextInput;
+        protected input: TextInput;
 
-        protected popupTrigger: api.ui.button.Button;
+        protected popupTrigger: Button;
 
         protected validUserInput: boolean;
 
@@ -55,8 +58,8 @@ module api.ui.time {
         }
 
         protected wrapChildrenAndAppend() {
-            var wrapper = new api.dom.DivEl('wrapper');
-            wrapper.appendChildren<api.dom.Element>(this.input, this.popup, this.popupTrigger);
+            var wrapper = new DivEl('wrapper');
+            wrapper.appendChildren<Element>(this.input, this.popup, this.popupTrigger);
 
             this.appendChild(wrapper);
         }
@@ -85,4 +88,3 @@ module api.ui.time {
             return this.input.giveFocus();
         }
     }
-}

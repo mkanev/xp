@@ -1,6 +1,8 @@
-module api.content.event {
+import {NodeServerEvent} from "../../event/NodeServerEvent";
+import {NodeEventJson} from "../../event/NodeServerEvent";
+import {ContentServerChange} from "./ContentServerChange";
 
-    export class ContentServerEvent extends api.event.NodeServerEvent {
+export class ContentServerEvent extends NodeServerEvent {
 
         constructor(change: ContentServerChange) {
             super(change);
@@ -10,13 +12,12 @@ module api.content.event {
             return <ContentServerChange>super.getNodeChange();
         }
 
-        static is(eventJson: api.event.NodeEventJson): boolean {
+        static is(eventJson: NodeEventJson): boolean {
             return eventJson.data.nodes.some(node => node.path.indexOf("/content") == 0);
         }
 
-        static fromJson(nodeEventJson: api.event.NodeEventJson): ContentServerEvent {
+        static fromJson(nodeEventJson: NodeEventJson): ContentServerEvent {
             var change = ContentServerChange.fromJson(nodeEventJson);
             return new ContentServerEvent(change);
         }
     }
-}

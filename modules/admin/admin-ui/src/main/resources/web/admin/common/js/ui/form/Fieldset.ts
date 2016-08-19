@@ -1,9 +1,14 @@
-module api.ui.form {
-    export class Fieldset extends api.dom.FieldsetEl {
+import {FieldsetEl} from "../../dom/FieldsetEl";
+import {LegendEl} from "../../dom/LegendEl";
+import {FormItem} from "./FormItem";
+import {ValidityChangedEvent} from "../../ValidityChangedEvent";
+import {ValidationResult} from "./ValidationResult";
 
-        private legend: api.dom.LegendEl;
+export class Fieldset extends FieldsetEl {
 
-        private items: api.ui.form.FormItem[] = [];
+        private legend: LegendEl;
+
+        private items: FormItem[] = [];
 
         private focusListeners: {(event: FocusEvent):void}[] = [];
 
@@ -14,7 +19,7 @@ module api.ui.form {
         constructor(legend?: string) {
             super();
             if (legend) {
-                this.legend = new api.dom.LegendEl(legend);
+                this.legend = new LegendEl(legend);
                 this.appendChild(this.legend);
             }
         }
@@ -47,14 +52,14 @@ module api.ui.form {
         }
 
         validate(validationResult:ValidationResult, markInvalid?: boolean) {
-            this.items.forEach((item: api.ui.form.FormItem) => {
+            this.items.forEach((item: FormItem) => {
                 item.validate(validationResult, markInvalid);
             });
         }
 
         setFieldsetData(data: any) {
             var input, inputValue;
-            this.items.forEach((item: api.ui.form.FormItem) => {
+            this.items.forEach((item: FormItem) => {
                 input = item.getInput();
                 inputValue = data[input.getName()];
                 if (inputValue) {
@@ -65,7 +70,7 @@ module api.ui.form {
 
         getFieldsetData(): any {
             var input, data = {};
-            this.items.forEach((item: api.ui.form.FormItem) => {
+            this.items.forEach((item: FormItem) => {
                 input = item.getInput();
                 data[input.getName()] = input.getValue();
             });
@@ -120,4 +125,3 @@ module api.ui.form {
             });
         }
     }
-}

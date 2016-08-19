@@ -1,14 +1,16 @@
-import "../../../../../../api.ts";
+import {NamesAndIconViewer} from "../../../../../../../../../common/js/ui/NamesAndIconViewer";
+import {PageTemplateDisplayName} from "../../../../../../../../../common/js/content/page/PageMode";
+
 import {PageTemplateOption} from "./PageTemplateOption";
 
-export class PageTemplateOptionViewer extends api.ui.NamesAndIconViewer<PageTemplateOption> {
+export class PageTemplateOptionViewer extends NamesAndIconViewer<PageTemplateOption> {
 
     constructor() {
         super();
     }
 
     resolveDisplayName(object: PageTemplateOption): string {
-        var pageTemplateDisplayName = api.content.page.PageTemplateDisplayName;
+        var pageTemplateDisplayName = PageTemplateDisplayName;
 
         return !!object.getPageTemplate() ?
                (object.isCustom() ? pageTemplateDisplayName[pageTemplateDisplayName.Custom] : object.getPageTemplate().getDisplayName())

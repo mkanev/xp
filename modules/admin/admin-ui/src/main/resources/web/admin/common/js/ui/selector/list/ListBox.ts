@@ -1,10 +1,11 @@
-module api.ui.selector.list {
+import {UlEl} from "../../../dom/UlEl";
+import {Element} from "../../../dom/Element";
 
-    export class ListBox<I> extends api.dom.UlEl {
+export class ListBox<I> extends UlEl {
 
         private items: I[] = [];
 
-        private itemViews: {[key: string]: api.dom.Element} = {};
+        private itemViews: {[key: string]: Element} = {};
 
         private itemsAddedListeners: {(items: I[]): void}[] = [];
         private itemsRemovedListeners: {(items: I[]): void}[] = [];
@@ -97,7 +98,7 @@ module api.ui.selector.list {
             return this.items.length;
         }
 
-        protected createItemView(item: I, readOnly: boolean): api.dom.Element {
+        protected createItemView(item: I, readOnly: boolean): Element {
             throw new Error("You must override createListItem to create views for list items");
         }
 
@@ -172,4 +173,3 @@ module api.ui.selector.list {
 
     }
 
-}

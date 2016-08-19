@@ -1,14 +1,18 @@
-import "../../../api.ts";
+import {AggregationGroupView} from "../../../../../../common/js/aggregation/AggregationGroupView";
+import {SearchInputValues} from "../../../../../../common/js/query/SearchInputValues";
+import {Principal} from "../../../../../../common/js/security/Principal";
+import {FindPrincipalsRequest} from "../../../../../../common/js/security/FindPrincipalsRequest";
+import {PrincipalType} from "../../../../../../common/js/security/PrincipalType";
+import {BrowseFilterPanel} from "../../../../../../common/js/app/browse/filter/BrowseFilterPanel";
+import {Element} from "../../../../../../common/js/dom/Element";
+import {FindPrincipalsResult} from "../../../../../../common/js/security/FindPrincipalsResult";
+import {StringHelper} from "../../../../../../common/js/util/StringHelper";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
 
-import AggregationGroupView = api.aggregation.AggregationGroupView;
-import SearchInputValues = api.query.SearchInputValues;
-import Principal = api.security.Principal;
-import FindPrincipalsRequest = api.security.FindPrincipalsRequest;
-import PrincipalType = api.security.PrincipalType;
 import {PrincipalBrowseResetEvent} from "./PrincipalBrowseResetEvent";
 import {PrincipalBrowseSearchEvent} from "./PrincipalBrowseSearchEvent";
 
-export class PrincipalBrowseFilterPanel extends api.app.browse.filter.BrowseFilterPanel {
+export class PrincipalBrowseFilterPanel extends BrowseFilterPanel {
 
 
     constructor() {
@@ -30,7 +34,7 @@ export class PrincipalBrowseFilterPanel extends api.app.browse.filter.BrowseFilt
         this.searchFacets(true);
     }
 
-    doSearch(elementChanged?: api.dom.Element) {
+    doSearch(elementChanged?: Element) {
         this.searchFacets();
     }
 
@@ -63,15 +67,15 @@ export class PrincipalBrowseFilterPanel extends api.app.browse.filter.BrowseFilt
 
     private searchDataAndHandleResponse(searchString: string, fireEvent: boolean = true) {
         new FindPrincipalsRequest().setAllowedTypes([PrincipalType.GROUP, PrincipalType.USER, PrincipalType.ROLE]).setSearchQuery(
-            searchString).sendAndParse().then((result: api.security.FindPrincipalsResult) => {
+            searchString).sendAndParse().then((result: FindPrincipalsResult) => {
 
             let principals = result.getPrincipals();
             if (fireEvent) {
                 new PrincipalBrowseSearchEvent(principals).fire();
             }
-            this.updateHitsCounter(principals ? principals.length : 0, api.util.StringHelper.isBlank(searchString));
+            this.updateHitsCounter(principals ? principals.length : 0, StringHelper.isBlank(searchString));
         }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 

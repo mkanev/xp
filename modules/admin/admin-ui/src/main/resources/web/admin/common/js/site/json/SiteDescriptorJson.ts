@@ -1,9 +1,8 @@
-module api.site.json {
+import {FormJson} from "../../form/json/FormJson";
 
-    export interface SiteDescriptorJson {
+export interface SiteDescriptorJson {
 
-        form: api.form.json.FormJson;
+        form: FormJson;
         metaSteps: string[];
     }
 
-}

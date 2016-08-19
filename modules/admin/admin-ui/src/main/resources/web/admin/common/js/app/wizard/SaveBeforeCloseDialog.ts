@@ -1,22 +1,27 @@
-module api.app.wizard {
+import {ModalDialog} from "../../ui/dialog/ModalDialog";
+import {WizardPanel} from "./WizardPanel";
+import {Action} from "../../ui/Action";
+import {ModalDialogHeader} from "../../ui/dialog/ModalDialog";
+import {H6El} from "../../dom/H6El";
+import {Body} from "../../dom/Body";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
 
+export class SaveBeforeCloseDialog extends ModalDialog {
 
-    export class SaveBeforeCloseDialog extends api.ui.dialog.ModalDialog {
+        private wizardPanel: WizardPanel<any>;
 
-        private wizardPanel: api.app.wizard.WizardPanel<any>;
+        private yesAction = new Action('Yes', 'y');
 
-        private yesAction = new api.ui.Action('Yes', 'y');
+        private noAction = new Action('No', 'n');
 
-        private noAction = new api.ui.Action('No', 'n');
-
-        constructor(wizardPanel: api.app.wizard.WizardPanel<any>) {
+        constructor(wizardPanel: WizardPanel<any>) {
             super({
-                title: new api.ui.dialog.ModalDialogHeader("Close wizard")
+                title: new ModalDialogHeader("Close wizard")
             });
 
             this.wizardPanel = wizardPanel;
 
-            var message = new api.dom.H6El();
+            var message = new H6El();
             message.getEl().setInnerHtml("There are unsaved changes, do you want to save them before closing?");
             this.appendChildToContentPanel(message);
 
@@ -36,7 +41,7 @@ module api.app.wizard {
         }
 
         show() {
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
             super.show();
         }
 
@@ -50,7 +55,7 @@ module api.app.wizard {
             this.close();
             this.wizardPanel.saveChanges().
                 then(() => this.wizardPanel.close(true)).
-                catch((reason: any) => api.DefaultErrorHandler.handle(reason)).
+                catch((reason: any) => DefaultErrorHandler.handle(reason)).
                 done();
         }
 
@@ -62,4 +67,3 @@ module api.app.wizard {
 
     }
 
-}

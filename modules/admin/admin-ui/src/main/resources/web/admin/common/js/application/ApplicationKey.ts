@@ -1,6 +1,8 @@
-module api.application {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {Application} from "./Application";
 
-    export class ApplicationKey implements api.Equitable {
+export class ApplicationKey implements Equitable {
 
         static SYSTEM: ApplicationKey = ApplicationKey.fromString('system');
         static BASE: ApplicationKey = ApplicationKey.fromString('base');
@@ -40,14 +42,14 @@ module api.application {
             return this.name;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ApplicationKey)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ApplicationKey)) {
                 return false;
             }
 
             var other = <ApplicationKey>o;
-            return api.ObjectHelper.stringEquals(this.name, other.name);
+            return ObjectHelper.stringEquals(this.name, other.name);
         }
 
         static toStringArray(keys: ApplicationKey[]): string[] {
@@ -66,4 +68,3 @@ module api.application {
                 .map<ApplicationKey>((mod: Application) => mod.getApplicationKey());
         }
     }
-}

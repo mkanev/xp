@@ -1,8 +1,13 @@
-module api.schema.content {
+import {MixinNames} from "../mixin/MixinNames";
+import {Schema} from "../Schema";
+import {Equitable} from "../../Equitable";
+import {ContentTypeName} from "./ContentTypeName";
+import {StringHelper} from "../../util/StringHelper";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ContentTypeSummaryJson} from "./ContentTypeSummaryJson";
+import {SchemaBuilder} from "../Schema";
 
-    import MixinNames = api.schema.mixin.MixinNames;
-
-    export class ContentTypeSummary extends api.schema.Schema implements api.Equitable {
+export class ContentTypeSummary extends Schema implements Equitable {
 
         private allowChildContent: boolean;
 
@@ -10,7 +15,7 @@ module api.schema.content {
 
         private final: boolean;
 
-        private superType: api.schema.content.ContentTypeName;
+        private superType: ContentTypeName;
 
         private contentDisplayNameScript: string;
 
@@ -32,8 +37,8 @@ module api.schema.content {
             this.metadata = builder.metadata;
         }
 
-        getContentTypeName(): api.schema.content.ContentTypeName {
-            return new api.schema.content.ContentTypeName(this.getName());
+        getContentTypeName(): ContentTypeName {
+            return new ContentTypeName(this.getName());
         }
 
         isSite(): boolean {
@@ -64,12 +69,12 @@ module api.schema.content {
             return this.allowChildContent;
         }
 
-        getSuperType(): api.schema.content.ContentTypeName {
+        getSuperType(): ContentTypeName {
             return this.superType;
         }
 
         hasContentDisplayNameScript(): boolean {
-            return !api.util.StringHelper.isBlank(this.contentDisplayNameScript);
+            return !StringHelper.isBlank(this.contentDisplayNameScript);
         }
 
         getContentDisplayNameScript(): string {
@@ -88,9 +93,9 @@ module api.schema.content {
             return this.metadata;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummary)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummary)) {
                 return false;
             }
 
@@ -131,22 +136,22 @@ module api.schema.content {
             return true;
         }
 
-        static fromJsonArray(jsonArray: api.schema.content.ContentTypeSummaryJson[]): ContentTypeSummary[] {
+        static fromJsonArray(jsonArray: ContentTypeSummaryJson[]): ContentTypeSummary[] {
             var array: ContentTypeSummary[] = [];
 
-            jsonArray.forEach((summaryJson: api.schema.content.ContentTypeSummaryJson) => {
+            jsonArray.forEach((summaryJson: ContentTypeSummaryJson) => {
                 array.push(ContentTypeSummary.fromJson(summaryJson));
             });
             return array;
         }
 
-        static fromJson(json: api.schema.content.ContentTypeSummaryJson): ContentTypeSummary {
+        static fromJson(json: ContentTypeSummaryJson): ContentTypeSummary {
             return new ContentTypeSummaryBuilder().fromContentTypeSummaryJson(json).build();
         }
 
     }
 
-    export class ContentTypeSummaryBuilder extends api.schema.SchemaBuilder {
+    export class ContentTypeSummaryBuilder extends SchemaBuilder {
 
         allowChildContent: boolean;
 
@@ -154,7 +159,7 @@ module api.schema.content {
 
         final: boolean;
 
-        superType: api.schema.content.ContentTypeName;
+        superType: ContentTypeName;
 
         contentDisplayNameScript: string;
 
@@ -178,13 +183,13 @@ module api.schema.content {
             }
         }
 
-        fromContentTypeSummaryJson(json: api.schema.content.ContentTypeSummaryJson): ContentTypeSummaryBuilder {
+        fromContentTypeSummaryJson(json: ContentTypeSummaryJson): ContentTypeSummaryBuilder {
             super.fromSchemaJson(json);
 
             this.allowChildContent = json.allowChildContent;
             this.final = json.final;
             this.abstract = json.abstract;
-            this.superType = json.superType ? new api.schema.content.ContentTypeName(json.superType) : null;
+            this.superType = json.superType ? new ContentTypeName(json.superType) : null;
             this.contentDisplayNameScript = json.contentDisplayNameScript;
             this.owner = json.owner;
             this.modifier = json.modifier;
@@ -196,4 +201,3 @@ module api.schema.content {
             return new ContentTypeSummary(this);
         }
     }
-}

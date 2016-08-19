@@ -1,6 +1,9 @@
-module api.data {
+import {StringHelper} from "../util/StringHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeBoolean extends ValueType {
+export class ValueTypeBoolean extends ValueType {
 
         constructor() {
             super("Boolean");
@@ -11,7 +14,7 @@ module api.data {
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             if (!(value == "true" || value == "false" )) {
@@ -49,11 +52,10 @@ module api.data {
         }
 
         valueEquals(a: boolean, b: boolean): boolean {
-            return api.ObjectHelper.booleanEquals(a, b);
+            return ObjectHelper.booleanEquals(a, b);
         }
 
         newBoolean(value: boolean): Value {
             return new Value(value, this);
         }
     }
-}

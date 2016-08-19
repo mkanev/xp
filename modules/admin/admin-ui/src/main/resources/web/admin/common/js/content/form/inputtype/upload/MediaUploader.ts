@@ -1,29 +1,47 @@
-module api.content.form.inputtype.upload {
+import {Property} from "../../../../data/Property";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {FileUploadStartedEvent} from "../../../../ui/uploader/FileUploadStartedEvent";
+import {BaseInputTypeSingleOccurrence} from "../../../../form/inputtype/support/BaseInputTypeSingleOccurrence";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {MediaUploaderEl} from "../../../../ui/uploader/MediaUploaderEl";
+import {DivEl} from "../../../../dom/DivEl";
+import {ImgEl} from "../../../../dom/ImgEl";
+import {Input} from "../../../../form/Input";
+import {FileUploadedEvent} from "../../../../ui/uploader/FileUploadedEvent";
+import {Content} from "../../../Content";
+import {showFeedback} from "../../../../notify/MessageBus";
+import {InputValidationRecording} from "../../../../form/inputtype/InputValidationRecording";
+import {ContentImageUrlResolver} from "../../../util/ContentImageUrlResolver";
+import {GetContentByIdRequest} from "../../../resource/GetContentByIdRequest";
+import {DeleteContentRequest} from "../../../resource/DeleteContentRequest";
+import {DeleteContentResult} from "../../../resource/result/DeleteContentResult";
+import {showError} from "../../../../notify/MessageBus";
+import {StringHelper} from "../../../../util/StringHelper";
+import {Button} from "../../../../ui/button/Button";
+import {MediaUploaderElOperation} from "../../../../ui/uploader/MediaUploaderEl";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-
-    export interface MediaUploaderConfigAllowType {
+export interface MediaUploaderConfigAllowType {
         name: string;
         extensions: string;
     }
 
-    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
-        private config: api.content.form.inputtype.ContentInputTypeViewContext;
-        private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
-        private uploaderWrapper: api.dom.DivEl;
-        private svgImage: api.dom.ImgEl;
+    export class MediaUploader extends BaseInputTypeSingleOccurrence<string> {
+        private config: ContentInputTypeViewContext;
+        private mediaUploaderEl: MediaUploaderEl;
+        private uploaderWrapper: DivEl;
+        private svgImage: ImgEl;
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
             super(config, "media-uploader");
             this.config = config;
         }
 
-        getContext(): api.content.form.inputtype.ContentInputTypeViewContext {
-            return <api.content.form.inputtype.ContentInputTypeViewContext>super.getContext();
+        getContext(): ContentInputTypeViewContext {
+            return <ContentInputTypeViewContext>super.getContext();
         }
 
         getValueType(): ValueType {
@@ -34,7 +52,7 @@ module api.content.form.inputtype.upload {
             return ValueTypes.STRING.newNullValue();
         }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
+        layoutProperty(input: Input, property: Property): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(property.getType()) && !ValueTypes.DATA.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
@@ -48,7 +66,7 @@ module api.content.form.inputtype.upload {
                 this.uploaderWrapper.removeClass("empty");
             });
 
-            this.mediaUploaderEl.onFileUploaded((event: api.ui.uploader.FileUploadedEvent<api.content.Content>) => {
+            this.mediaUploaderEl.onFileUploaded((event: FileUploadedEvent<Content>) => {
 
                 var content = event.getUploadItem().getModel(),
                     value = this.mediaUploaderEl.getMediaValue(content),
@@ -65,7 +83,7 @@ module api.content.form.inputtype.upload {
                     break;
                 }
 
-                api.notify.showFeedback('\"' + fileName + '\" uploaded');
+                showFeedback('\"' + fileName + '\" uploaded');
 
                 this.manageSVGImageIfPresent(content);
             });
@@ -95,8 +113,8 @@ module api.content.form.inputtype.upload {
             return wemQ<void>(null);
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
-            return new api.form.inputtype.InputValidationRecording();
+        validate(silent: boolean = true): InputValidationRecording {
+            return new InputValidationRecording();
         }
 
         updateProperty(property: Property, unchangedOnly?: boolean): wemQ.Promise<void> {
@@ -111,10 +129,10 @@ module api.content.form.inputtype.upload {
             return wemQ<void>(null);
         }
 
-        private manageSVGImageIfPresent(content: api.content.Content) {
+        private manageSVGImageIfPresent(content: Content) {
             if (content.getType().isVectorMedia()) {
                 this.addClass("with-svg-image");
-                var imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(
+                var imgUrl = new ContentImageUrlResolver().setContentId(
                     this.getContext().content.getContentId()).setTimestamp(
                     content.getModifiedTime()).resolve();
 
@@ -127,21 +145,21 @@ module api.content.form.inputtype.upload {
         private deleteContent(property: Property) {
             var contentId = this.getContext().content.getContentId();
 
-            new api.content.resource.GetContentByIdRequest(contentId).sendAndParse().then((content: api.content.Content) => {
-                var deleteRequest = new api.content.resource.DeleteContentRequest();
+            new GetContentByIdRequest(contentId).sendAndParse().then((content: Content) => {
+                var deleteRequest = new DeleteContentRequest();
 
                 deleteRequest.addContentPath(content.getPath());
-                deleteRequest.sendAndParse().then((result: api.content.resource.result.DeleteContentResult) => {
+                deleteRequest.sendAndParse().then((result: DeleteContentResult) => {
                     this.mediaUploaderEl.getResultContainer().removeChildren();
                     this.uploaderWrapper.addClass("empty");
                     property.setValue(this.newInitialValue());
 
-                    api.notify.showFeedback('\"' + result.getDeleted()[0].getName() + '\" deleted');
+                    showFeedback('\"' + result.getDeleted()[0].getName() + '\" deleted');
                 }).catch((reason: any) => {
                     if (reason && reason.message) {
-                        api.notify.showError(reason.message);
+                        showError(reason.message);
                     } else {
-                        api.notify.showError('Content could not be deleted.');
+                        showError('Content could not be deleted.');
                     }
                 }).done();
             });
@@ -166,7 +184,7 @@ module api.content.form.inputtype.upload {
         private propertyAlreadyHasAttachment(property: Property): boolean {
             return (property.getValue() != null &&
                     property.getType() == ValueTypes.DATA &&
-                    !api.util.StringHelper.isEmpty(property.getPropertySet().getString('attachment')));
+                    !StringHelper.isEmpty(property.getPropertySet().getString('attachment')));
         }
 
         private getAllowTypeFromFileName(fileName: string): MediaUploaderConfigAllowType[] {
@@ -175,18 +193,18 @@ module api.content.form.inputtype.upload {
 
         private createSvgImageWrapperIfNeeded() {
             if (this.config.formContext.getContentTypeName().isVectorMedia()) {
-                this.svgImage = new api.dom.ImgEl();
+                this.svgImage = new ImgEl();
                 this.addClass("with-svg-image");
 
                 var content = this.config.formContext.getPersistedContent();
 
-                var imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(
+                var imgUrl = new ContentImageUrlResolver().setContentId(
                     this.getContext().content.getContentId()).setTimestamp(
                     content.getModifiedTime()).resolve();
 
                 this.svgImage.setSrc(imgUrl);
 
-                this.appendChild(new api.dom.DivEl("svg-image-wrapper").appendChild(this.svgImage));
+                this.appendChild(new DivEl("svg-image-wrapper").appendChild(this.svgImage));
 
                 this.svgImage.onLoaded((event: UIEvent) => {
                     this.mediaUploaderEl.setResultVisible(true); // need to call it manually as svg images are uploaded too quickly
@@ -194,10 +212,10 @@ module api.content.form.inputtype.upload {
             }
         }
 
-        private createUploaderWrapper(property: Property): api.dom.DivEl {
-            var wrapper = new api.dom.DivEl("uploader-wrapper");
+        private createUploaderWrapper(property: Property): DivEl {
+            var wrapper = new DivEl("uploader-wrapper");
 
-            var uploadButton = new api.ui.button.Button();
+            var uploadButton = new Button();
             uploadButton.addClass('upload-button');
 
             uploadButton.onClicked((event: MouseEvent) => {
@@ -213,7 +231,7 @@ module api.content.form.inputtype.upload {
             return wrapper;
         }
 
-        private createUploader(property: Property): api.ui.uploader.MediaUploaderEl {
+        private createUploader(property: Property): MediaUploaderEl {
 
             var predefinedAllowTypes,
                 attachmentFileName = this.getFileNameFromProperty(property);
@@ -230,11 +248,11 @@ module api.content.form.inputtype.upload {
 
             var hideDropZone = (<any>(this.config.inputConfig)).hideDropZone;
 
-            return new api.ui.uploader.MediaUploaderEl({
+            return new MediaUploaderEl({
                 params: {
                     content: this.getContext().content.getContentId().toString()
                 },
-                operation: api.ui.uploader.MediaUploaderElOperation.update,
+                operation: MediaUploaderElOperation.update,
                 allowTypes: allowTypes,
                 name: this.getContext().input.getName(),
                 maximumOccurrences: 1,
@@ -261,5 +279,4 @@ module api.content.form.inputtype.upload {
             this.mediaUploaderEl.unBlur(listener);
         }
     }
-    api.form.inputtype.InputTypeManager.register(new api.Class("MediaUploader", MediaUploader));
-}
+    InputTypeManager.register(new Class("MediaUploader", MediaUploader));

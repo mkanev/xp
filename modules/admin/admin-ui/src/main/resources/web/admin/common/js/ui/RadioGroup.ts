@@ -1,11 +1,15 @@
-module api.ui {
+import {FormInputEl} from "../dom/FormInputEl";
+import {ElementRegistry} from "../dom/ElementRegistry";
+import {ValueChangedEvent} from "../ValueChangedEvent";
+import {InputEl} from "../dom/InputEl";
+import {LabelEl} from "../dom/LabelEl";
 
-    export enum RadioOrientation {
+export enum RadioOrientation {
         VERTICAL,
         HORIZONTAL
     }
 
-    export class RadioGroup extends api.dom.FormInputEl {
+    export class RadioGroup extends FormInputEl {
 
         // Group name is similar to name, but have and addition counter
         // to prevent inappropriate behaviour of the radio group on one page
@@ -17,7 +21,7 @@ module api.ui {
         constructor(name: string, originalValue?: string) {
             super("div", "radio-group", undefined, originalValue);
             this.setName(name);
-            this.groupName = `${name}-${api.dom.ElementRegistry.getElementCountById(this.getId())}`;
+            this.groupName = `${name}-${ElementRegistry.getElementCountById(this.getId())}`;
         }
 
         public setOrientation(orientation: RadioOrientation): RadioGroup {
@@ -27,7 +31,7 @@ module api.ui {
 
         public addOption(value: string, label: string, checked?: boolean) {
             var radio = new RadioButton(label, value, this.groupName, checked);
-            radio.onValueChanged((event: api.ValueChangedEvent) => {
+            radio.onValueChanged((event: ValueChangedEvent) => {
                 this.setValue(this.doGetValue(), false, true);
             });
             this.options.push(radio);
@@ -61,22 +65,22 @@ module api.ui {
     }
 
 
-    export class RadioButton extends api.dom.FormInputEl {
+    export class RadioButton extends FormInputEl {
 
-        private radio: api.dom.InputEl;
-        private label: api.dom.LabelEl;
+        private radio: InputEl;
+        private label: LabelEl;
 
         public static debug: boolean = false;
 
         constructor(label: string, value: string, name: string, checked?: boolean) {
             super("span", "radio-button", undefined, String(checked != undefined ? checked : false));
 
-            this.radio = new api.dom.InputEl();
+            this.radio = new InputEl();
             this.radio.getEl().setAttribute('type', 'radio');
             this.radio.setName(name).setValue(value);
             this.appendChild(this.radio);
 
-            this.label = new api.dom.LabelEl(label, this.radio);
+            this.label = new LabelEl(label, this.radio);
             this.appendChild(this.label);
 
             wemjq(this.radio.getHTMLElement()).on('change', () => {
@@ -130,4 +134,3 @@ module api.ui {
         }
 
     }
-}

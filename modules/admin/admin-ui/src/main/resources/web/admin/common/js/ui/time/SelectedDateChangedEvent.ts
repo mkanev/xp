@@ -1,6 +1,6 @@
-module api.ui.time {
 
-    export class SelectedDateChangedEvent {
+
+export class SelectedDateChangedEvent {
 
         private date: Date;
 
@@ -14,4 +14,3 @@ module api.ui.time {
     }
 
 
-}

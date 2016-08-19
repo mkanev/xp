@@ -1,12 +1,12 @@
-import "../../api.ts";
+import {ChildOrder} from "../../../../../common/js/content/order/ChildOrder";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {DropdownHandle} from "../../../../../common/js/ui/button/DropdownHandle";
+import {TabMenu} from "../../../../../common/js/ui/tab/TabMenu";
+
 import {SortContentTabMenuItem} from "./SortContentTabMenuItem";
 import {SortContentTabMenuItems} from "./SortContentTabMenuItems";
 
-import ChildOrder = api.content.order.ChildOrder;
-import ContentSummary = api.content.ContentSummary;
-import DropdownHandle = api.ui.button.DropdownHandle;
-
-export class SortContentTabMenu extends api.ui.tab.TabMenu {
+export class SortContentTabMenu extends TabMenu {
 
     private sortOrderChangedListeners: {():void}[] = [];
 

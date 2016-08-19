@@ -1,47 +1,60 @@
-module api.ui.dialog {
+import {DivEl} from "../../dom/DivEl";
+import {ResponsiveRanges} from "../responsive/ResponsiveRanges";
+import {Action} from "../Action";
+import {Element} from "../../dom/Element";
+import {StyleHelper} from "../../StyleHelper";
+import {Body} from "../../dom/Body";
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {AppHelper} from "../../util/AppHelper";
+import {ClassHelper} from "../../ClassHelper";
+import {HTMLAreaDialogHandler} from "../../util/htmlarea/dialog/HTMLAreaDialogHandler";
+import {KeyHelper} from "../KeyHelper";
+import {BodyMask} from "../mask/BodyMask";
+import {KeyBindings} from "../KeyBindings";
+import {H2El} from "../../dom/H2El";
+import {KeyBinding} from "../KeyBinding";
+import {DialogButton} from "./DialogButton";
 
-    import DivEl = api.dom.DivEl;
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-    export interface ModalDialogConfig {
-        title: api.ui.dialog.ModalDialogHeader;
+export interface ModalDialogConfig {
+        title: ModalDialogHeader;
     }
 
-    export class ModalDialog extends api.dom.DivEl {
+    export class ModalDialog extends DivEl {
 
         private config: ModalDialogConfig;
 
-        private title: api.ui.dialog.ModalDialogHeader;
+        private title: ModalDialogHeader;
 
         private contentPanel: ModalDialogContentPanel;
 
         private buttonRow: ModalDialogButtonRow;
 
-        private cancelAction: api.ui.Action;
+        private cancelAction: Action;
 
-        private actions: api.ui.Action[] = [];
+        private actions: Action[] = [];
 
         private mouseClickListener: {(MouseEvent): void};
 
-        private cancelButton: api.dom.DivEl;
+        private cancelButton: DivEl;
 
         private static openDialogsCounter: number = 0;
 
         private buttonRowIsFocused: boolean = false;
 
-        private tabbable: api.dom.Element[];
+        private tabbable: Element[];
 
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig) {
-            super("modal-dialog", api.StyleHelper.COMMON_PREFIX);
+            super("modal-dialog", StyleHelper.COMMON_PREFIX);
 
             this.config = config;
 
-            var wrapper = new api.dom.DivEl("modal-dialog-content-wrapper");
+            var wrapper = new DivEl("modal-dialog-content-wrapper");
             this.appendChild(wrapper);
 
             this.cancelAction = this.createDefaultCancelAction();
-            this.cancelButton = new api.dom.DivEl("cancel-button-top");
+            this.cancelButton = new DivEl("cancel-button-top");
             this.cancelButton.onClicked(() => this.cancelAction.execute());
             wrapper.appendChild(this.cancelButton);
 
@@ -51,10 +64,10 @@ module api.ui.dialog {
             this.contentPanel = new ModalDialogContentPanel();
             wrapper.appendChild(this.contentPanel);
 
-            var push = new api.dom.DivEl("modal-dialog-content-push");
+            var push = new DivEl("modal-dialog-content-push");
             wrapper.appendChild(push);
 
-            var footer = new api.dom.DivEl("modal-dialog-footer");
+            var footer = new DivEl("modal-dialog-footer");
             this.appendChild(footer);
 
             this.buttonRow = new ModalDialogButtonRow();
@@ -74,13 +87,13 @@ module api.ui.dialog {
             };
 
             this.onRemoved(() => {
-                api.dom.Body.get().unMouseDown(this.mouseClickListener);
+                Body.get().unMouseDown(this.mouseClickListener);
             });
             this.onAdded(() => {
-                api.dom.Body.get().onMouseDown(this.mouseClickListener);
+                Body.get().onMouseDown(this.mouseClickListener);
             });
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item) => {
+            ResponsiveManager.onAvailableSizeChanged(this, (item) => {
                 if (this.isVisible()) {
                     this.centerMyself();
                 }
@@ -88,7 +101,7 @@ module api.ui.dialog {
 
             let buttonRowFocusOutTimeout;
 
-            api.util.AppHelper.focusInOut(this, () => {
+            AppHelper.focusInOut(this, () => {
                 if (this.hasTabbable() && !this.hasSubDialog()) {
                     // last focusable - Cancel
                     // first focusable - X
@@ -120,7 +133,7 @@ module api.ui.dialog {
         }
 
         private createDefaultCancelAction() {
-            var cancelAction = new api.ui.Action("Cancel", "esc");
+            var cancelAction = new Action("Cancel", "esc");
             cancelAction.setIconClass("cancel-button-top");
             cancelAction.setLabel("");
             cancelAction.onExecuted(()=> {
@@ -130,12 +143,12 @@ module api.ui.dialog {
             return cancelAction;
         }
 
-        getCancelAction(): api.ui.Action {
+        getCancelAction(): Action {
             return this.cancelAction;
         }
 
         addCancelButtonToBottom(buttonLabel: string = "Cancel") {
-            var cancelAction = new api.ui.Action(buttonLabel);
+            var cancelAction = new Action(buttonLabel);
             cancelAction.setIconClass("cancel-button-bottom");
             cancelAction.onExecuted(() => this.cancelAction.execute());
             this.buttonRow.addAction(cancelAction);
@@ -145,19 +158,19 @@ module api.ui.dialog {
             this.title.setTitle(value);
         }
 
-        appendChildToContentPanel(child: api.dom.Element) {
+        appendChildToContentPanel(child: Element) {
             this.contentPanel.appendChild(child);
         }
 
-        appendChildToTitle(child: api.dom.Element) {
+        appendChildToTitle(child: Element) {
             this.title.appendChild(child);
         }
 
-        removeChildFromContentPanel(child: api.dom.Element) {
+        removeChildFromContentPanel(child: Element) {
             this.contentPanel.removeChild(child);
         }
 
-        addAction(action: api.ui.Action, useDefault?: boolean, prepend?: boolean): DialogButton {
+        addAction(action: Action, useDefault?: boolean, prepend?: boolean): DialogButton {
             this.actions.push(action);
             return this.buttonRow.addAction(action, useDefault, prepend);
         }
@@ -170,7 +183,7 @@ module api.ui.dialog {
 
         protected centerMyself() {
             if (ModalDialog.debug) {
-                console.debug("ModalDialog.centerMyself", api.ClassHelper.getClassName(this));
+                console.debug("ModalDialog.centerMyself", ClassHelper.getClassName(this));
             }
             var el = this.getEl();
             el.setMarginTop("-" + (el.getHeightWithBorder() / 2) + "px");
@@ -199,7 +212,7 @@ module api.ui.dialog {
 
         protected hasSubDialog(): boolean {
             // html area can spawn sub dialogs so check none is open
-            return !!api.util.htmlarea.dialog.HTMLAreaDialogHandler.getOpenDialog();
+            return !!HTMLAreaDialogHandler.getOpenDialog();
         }
 
         private hasTabbable(): boolean {
@@ -240,15 +253,15 @@ module api.ui.dialog {
             }
         }
 
-        protected overwriteDefaultArrows(element: api.dom.Element) {
+        protected overwriteDefaultArrows(element: Element) {
             element.onKeyDown((event) => {
 
 
-                if (api.ui.KeyHelper.isArrowLeftKey(event)) {
+                if (KeyHelper.isArrowLeftKey(event)) {
                     this.focusPreviousTabbable();
                     event.stopPropagation();
                     event.preventDefault();
-                } else if (api.ui.KeyHelper.isArrowRightKey(event)) {
+                } else if (KeyHelper.isArrowRightKey(event)) {
                     this.focusNextTabbable();
                     event.stopPropagation();
                     event.preventDefault();
@@ -258,13 +271,13 @@ module api.ui.dialog {
 
         open() {
 
-            api.ui.mask.BodyMask.get().show();
+            BodyMask.get().show();
 
-            api.ui.KeyBindings.get().shelveBindings();
+            KeyBindings.get().shelveBindings();
 
             this.show();
 
-            let keyBindings = api.ui.Action.getKeyBindings(this.actions);
+            let keyBindings = Action.getKeyBindings(this.actions);
 
             this.updateTabbable();
 
@@ -283,7 +296,7 @@ module api.ui.dialog {
                 })
             ]);
 
-            api.ui.KeyBindings.get().bindKeys(keyBindings);
+            KeyBindings.get().bindKeys(keyBindings);
 
             ModalDialog.openDialogsCounter++;
         }
@@ -291,25 +304,25 @@ module api.ui.dialog {
         close() {
 
             if (ModalDialog.openDialogsCounter == 1) {
-                api.ui.mask.BodyMask.get().hide();
+                BodyMask.get().hide();
             }
 
             this.hide();
 
-            api.ui.KeyBindings.get().unshelveBindings();
+            KeyBindings.get().unshelveBindings();
 
             ModalDialog.openDialogsCounter--;
         }
     }
 
-    export class ModalDialogHeader extends api.dom.DivEl {
+    export class ModalDialogHeader extends DivEl {
 
-        private titleEl: api.dom.H2El;
+        private titleEl: H2El;
 
         constructor(title: string) {
             super("dialog-header");
 
-            this.titleEl = new api.dom.H2El('title');
+            this.titleEl = new H2El('title');
             this.titleEl.setHtml(title);
             this.appendChild(this.titleEl);
         }
@@ -319,27 +332,27 @@ module api.ui.dialog {
         }
     }
 
-    export class ModalDialogContentPanel extends api.dom.DivEl {
+    export class ModalDialogContentPanel extends DivEl {
 
         constructor() {
             super("dialog-content");
         }
     }
 
-    export class ModalDialogButtonRow extends api.dom.DivEl {
+    export class ModalDialogButtonRow extends DivEl {
 
         private defaultButton: DialogButton;
 
-        private buttonContainer: api.dom.DivEl;
+        private buttonContainer: DivEl;
 
         constructor() {
             super("dialog-buttons");
 
-            this.buttonContainer = new api.dom.DivEl('button-container');
+            this.buttonContainer = new DivEl('button-container');
             this.appendChild(this.buttonContainer);
         }
 
-        addAction(action: api.ui.Action, useDefault?: boolean, prepend?: boolean): DialogButton {
+        addAction(action: Action, useDefault?: boolean, prepend?: boolean): DialogButton {
             var button = new DialogButton(action);
             if (useDefault) {
                 this.defaultButton = button;
@@ -363,9 +376,8 @@ module api.ui.dialog {
             }
         }
 
-        getLastButton(): api.dom.Element {
+        getLastButton(): Element {
             return this.buttonContainer.getLastChild();
         }
     }
 
-}

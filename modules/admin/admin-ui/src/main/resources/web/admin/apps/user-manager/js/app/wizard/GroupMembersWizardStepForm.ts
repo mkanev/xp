@@ -1,9 +1,8 @@
-import "../../api.ts";
+import {Role} from "../../../../../common/js/security/Role";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
 
-import Role = api.security.Role;
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalType = api.security.PrincipalType;
 import {PrincipalMembersWizardStepForm} from "./PrincipalMembersWizardStepForm";
 
 export class GroupMembersWizardStepForm extends PrincipalMembersWizardStepForm {

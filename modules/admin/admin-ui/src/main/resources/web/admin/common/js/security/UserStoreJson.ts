@@ -1,12 +1,12 @@
-module api.security {
+import {UserStoreAccessControlEntryJson} from "./acl/UserStoreAccessControlEntryJson";
+import {AuthConfigJson} from "./AuthConfigJson";
 
-    export interface UserStoreJson {
+export interface UserStoreJson {
 
         displayName: string;
         key: string;
         description?: string;
         authConfig?: AuthConfigJson;
         idProviderMode: string;
-        permissions?: api.security.acl.UserStoreAccessControlEntryJson[];
+        permissions?: UserStoreAccessControlEntryJson[];
     }
-}

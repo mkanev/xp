@@ -1,6 +1,6 @@
-module api.ui.panel {
+import {Panel} from "./Panel";
 
-    export class PanelShownEvent {
+export class PanelShownEvent {
 
         private panel: Panel;
 
@@ -26,4 +26,3 @@ module api.ui.panel {
             return this.previousPanel;
         }
     }
-}

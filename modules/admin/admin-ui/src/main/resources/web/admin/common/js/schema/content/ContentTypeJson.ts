@@ -1,7 +1,7 @@
-module api.schema.content {
+import {FormJson} from "../../form/json/FormJson";
+import {ContentTypeSummaryJson} from "./ContentTypeSummaryJson";
 
-    export interface ContentTypeJson extends ContentTypeSummaryJson {
+export interface ContentTypeJson extends ContentTypeSummaryJson {
 
-        form: api.form.json.FormJson;
+        form: FormJson;
     }
-}

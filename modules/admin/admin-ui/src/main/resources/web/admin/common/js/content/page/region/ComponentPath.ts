@@ -1,6 +1,11 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {StringHelper} from "../../../util/StringHelper";
+import {assertNotNull} from "../../../util/Assert";
+import {assert} from "../../../util/Assert";
+import {RegionPath} from "./RegionPath";
 
-    export class ComponentPath implements api.Equitable {
+export class ComponentPath implements Equitable {
 
         private static DIVIDER = "/";
 
@@ -75,15 +80,15 @@ module api.content.page.region {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ComponentPath)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ComponentPath)) {
                 return false;
             }
 
             var other = <ComponentPath>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
@@ -96,7 +101,7 @@ module api.content.page.region {
                 return null;
             }
 
-            var elements: string[] = api.util.StringHelper.removeEmptyStrings(str.split(ComponentPath.DIVIDER));
+            var elements: string[] = StringHelper.removeEmptyStrings(str.split(ComponentPath.DIVIDER));
 
             var regionAndComponentList: ComponentPathRegionAndComponent[] = [];
             for (var i = 0; i < elements.length - 1; i += 2) {
@@ -110,8 +115,8 @@ module api.content.page.region {
         }
 
         public static fromRegionPathAndComponentIndex(regionPath: RegionPath, componentIndex: number): ComponentPath {
-            api.util.assertNotNull(regionPath, "regionPath cannot be null");
-            api.util.assert(componentIndex >= 0, "componentIndex must be zero or more");
+            assertNotNull(regionPath, "regionPath cannot be null");
+            assert(componentIndex >= 0, "componentIndex must be zero or more");
 
             var regionAndComponentList: ComponentPathRegionAndComponent[] = [];
             if (regionPath.getParentComponentPath()) {
@@ -152,4 +157,3 @@ module api.content.page.region {
             return this.refString;
         }
     }
-}

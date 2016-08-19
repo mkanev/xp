@@ -1,6 +1,11 @@
-module api.rest {
+import {AccessDeniedException} from "../AccessDeniedException";
+import {UriHelper} from "../util/UriHelper";
+import {BrowserHelper} from "../BrowserHelper";
+import {JsonResponse} from "./JsonResponse";
+import {Path} from "./Path";
+import {RequestError} from "./RequestError";
 
-    export class JsonRequest<RAW_JSON_TYPE> {
+export class JsonRequest<RAW_JSON_TYPE> {
 
         private path: Path;
 
@@ -47,7 +52,7 @@ module api.rest {
                         deferred.resolve(new JsonResponse<RAW_JSON_TYPE>(request.response));
                     }
                     else if (request.status === 403) {
-                        deferred.reject(new api.AccessDeniedException('Access denied'));
+                        deferred.reject(new AccessDeniedException('Access denied'));
                     }
                     else {
                         try {
@@ -75,11 +80,11 @@ module api.rest {
         }
 
         private prepareGETRequest(request: XMLHttpRequest) {
-            var paramString = api.util.UriHelper.encodeUrlParams(this.params);
-            request.open(this.method, api.util.UriHelper.getUri(this.path.toString()) + '?' + paramString, true);
+            var paramString = UriHelper.encodeUrlParams(this.params);
+            request.open(this.method, UriHelper.getUri(this.path.toString()) + '?' + paramString, true);
             request.timeout = this.timeoutMillis;
             request.setRequestHeader("Accept", "application/json");
-            if (api.BrowserHelper.isIE()) {
+            if (BrowserHelper.isIE()) {
                 request.setRequestHeader("Pragma", "no-cache");
                 request.setRequestHeader("Cache-Control", "no-cache");
             }
@@ -87,10 +92,9 @@ module api.rest {
         }
 
         private preparePOSTRequest(request: XMLHttpRequest) {
-            request.open(this.method, api.util.UriHelper.getUri(this.path.toString()), true);
+            request.open(this.method, UriHelper.getUri(this.path.toString()), true);
             request.timeout = this.timeoutMillis;
             request.setRequestHeader("Accept", "application/json");
             request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         }
     }
-}

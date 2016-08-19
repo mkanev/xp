@@ -1,8 +1,8 @@
-module api.ui {
+import {DivEl} from "../dom/DivEl";
 
-    export class ProgressBar extends api.dom.DivEl {
+export class ProgressBar extends DivEl {
 
-        private progress: api.dom.DivEl;
+        private progress: DivEl;
         private value: number;
 
         /**
@@ -13,7 +13,7 @@ module api.ui {
             super("progress-bar");
             this.value = value || 0;
 
-            var progress = this.progress = new api.dom.DivEl("progress-indicator");
+            var progress = this.progress = new DivEl("progress-indicator");
             this.getEl().appendChild(progress.getHTMLElement());
             this.setValue(this.value);
         }
@@ -49,4 +49,3 @@ module api.ui {
 
     }
 
-}

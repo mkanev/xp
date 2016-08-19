@@ -1,16 +1,30 @@
-module api.form {
+import {PropertySet} from "../data/PropertySet";
+import {PropertyArray} from "../data/PropertyArray";
+import {FocusSwitchEvent} from "../ui/FocusSwitchEvent";
+import {Element} from "../dom/Element";
+import {ObjectHelper} from "../ObjectHelper";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {FieldSet} from "./FieldSet";
+import {FieldSetViewConfig} from "./FieldSetView";
+import {FieldSetView} from "./FieldSetView";
+import {FormContext} from "./FormContext";
+import {FormItem} from "./FormItem";
+import {FormItemSet} from "./FormItemSet";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {FormItemSetViewConfig} from "./FormItemSetView";
+import {FormItemSetView} from "./FormItemSetView";
+import {FormItemView} from "./FormItemView";
+import {Input} from "./Input";
+import {InputViewConfig} from "./InputView";
+import {InputView} from "./InputView";
 
-    import PropertySet = api.data.PropertySet;
-    import PropertyArray = api.data.PropertyArray;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-
-    export class FormItemLayer {
+export class FormItemLayer {
 
         private context: FormContext;
 
         private formItems: FormItem[];
 
-        private parentEl: api.dom.Element;
+        private parentEl: Element;
 
         private formItemViews: FormItemView[] = [];
 
@@ -27,7 +41,7 @@ module api.form {
             return this;
         }
 
-        setParentElement(parentEl: api.dom.Element): FormItemLayer {
+        setParentElement(parentEl: Element): FormItemLayer {
             this.parentEl = parentEl;
             return this;
         }
@@ -54,7 +68,7 @@ module api.form {
 
             this.formItems.forEach((formItem: FormItem) => {
 
-                if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
 
                     var formItemSet: FormItemSet = <FormItemSet>formItem;
                     var propertyArray: PropertyArray = propertySet.getPropertyArray(formItemSet.getName());
@@ -76,7 +90,7 @@ module api.form {
                     this.formItemViews.push(formItemSetView);
 
                     layoutPromises.push(formItemSetView.layout(validate));
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
+                } else if (ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
 
                     var fieldSet: FieldSet = <FieldSet>formItem;
                     var fieldSetView = new FieldSetView(<FieldSetViewConfig>{
@@ -90,7 +104,7 @@ module api.form {
                     this.formItemViews.push(fieldSetView);
 
                     layoutPromises.push(fieldSetView.layout());
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
+                } else if (ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
 
                     var input: Input = <Input>formItem;
 
@@ -148,7 +162,6 @@ module api.form {
 
             return wemQ.all(updatePromises).spread<void>(() => {
                 return wemQ<void>(null);
-            }).catch(api.DefaultErrorHandler.handle);
+            }).catch(DefaultErrorHandler.handle);
         }
     }
-}

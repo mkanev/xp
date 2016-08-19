@@ -1,36 +1,45 @@
-import "../../../../api.ts";
+import {Grid} from "../../../../../../../common/js/ui/grid/Grid";
+import {DataView} from "../../../../../../../common/js/ui/grid/DataView";
+import {GridOptions} from "../../../../../../../common/js/ui/grid/GridOptions";
+import {GridOptionsBuilder} from "../../../../../../../common/js/ui/grid/GridOptions";
+import {GridColumn} from "../../../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../../../common/js/ui/grid/GridColumn";
+import {DivEl} from "../../../../../../../common/js/dom/DivEl";
+import {FontIcon} from "../../../../../../../common/js/ui/FontIcon";
+import {H5El} from "../../../../../../../common/js/dom/H5El";
+import {H6El} from "../../../../../../../common/js/dom/H6El";
 
-export class EmulatorGrid extends api.ui.grid.Grid<any> {
+export class EmulatorGrid extends Grid<any> {
 
-    constructor(dataView: api.ui.grid.DataView<any>) {
+    constructor(dataView: DataView<any>) {
         super(dataView, this.createColumns(), this.createOptions());
     }
 
-    private createOptions(): api.ui.grid.GridOptions<any> {
-        return new api.ui.grid.GridOptionsBuilder().setHideColumnHeaders(true).setRowHeight(50).setHeight(450).setWidth(320)
+    private createOptions(): GridOptions<any> {
+        return new GridOptionsBuilder().setHideColumnHeaders(true).setRowHeight(50).setHeight(450).setWidth(320)
             .build();
     }
 
-    private createColumns(): api.ui.grid.GridColumn<any>[] {
-        return [new api.ui.grid.GridColumnBuilder().setName("device").setField("device").setId("device").setWidth(320).setCssClass(
+    private createColumns(): GridColumn<any>[] {
+        return [new GridColumnBuilder().setName("device").setField("device").setId("device").setWidth(320).setCssClass(
             "grid-row").setFormatter((row, cell, value, columnDef, dataContext) => {
             return this.buildRow(row, cell, value).toString();
         }).build()
         ];
     }
 
-    private buildRow(row, cell, data): api.dom.DivEl {
-        var rowEl = new api.dom.DivEl();
+    private buildRow(row, cell, data): DivEl {
+        var rowEl = new DivEl();
         rowEl.getEl().setData('width', data.width);
         rowEl.getEl().setData('height', data.height);
         rowEl.getEl().setData('units', data.units);
 
-        var icon = new api.ui.FontIcon("icon-" + data.device_type);
+        var icon = new FontIcon("icon-" + data.device_type);
 
-        var title = new api.dom.H5El();
+        var title = new H5El();
         title.getEl().setInnerHtml(data.name);
 
-        var subtitle = new api.dom.H6El();
+        var subtitle = new H6El();
         var units = data.display_units ? data.units : "";
         subtitle.getEl().setInnerHtml(data.width + units + " &times; " + data.height + units, false);
         rowEl.appendChild(icon);
@@ -38,7 +47,7 @@ export class EmulatorGrid extends api.ui.grid.Grid<any> {
         rowEl.appendChild(subtitle);
 
         if (data.rotatable == true) {
-            var rotator = new api.dom.DivEl();
+            var rotator = new DivEl();
             rotator.addClass('rotate');
             rotator.addClassEx('icon-loop');
             rowEl.appendChild(rotator);

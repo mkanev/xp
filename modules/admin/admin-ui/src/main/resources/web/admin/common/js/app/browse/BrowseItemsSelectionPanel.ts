@@ -1,20 +1,28 @@
-module api.app.browse {
+import {Equitable} from "../../Equitable";
+import {Panel} from "../../ui/panel/Panel";
+import {DivEl} from "../../dom/DivEl";
+import {ArrayHelper} from "../../util/ArrayHelper";
+import {Viewer} from "../../ui/Viewer";
+import {BrowseItem} from "./BrowseItem";
+import {BrowseItemsChanges} from "./BrowseItemsChanges";
+import {ItemDeselectedEvent} from "./ItemDeselectedEvent";
+import {SelectionItem} from "./SelectionItem";
 
-    export class BrowseItemsSelectionPanel<M extends api.Equitable> extends api.ui.panel.Panel {
+export class BrowseItemsSelectionPanel<M extends Equitable> extends Panel {
 
         private deselectedListeners: {(event: ItemDeselectedEvent<M>): void}[] = [];
         private items: BrowseItem<M>[] = [];
         private selectionItems: SelectionItem<M>[] = [];
         private messageForNoSelection = "You are wasting this space - select something!";
         private mobileView: boolean = false;
-        private itemsContainer: api.dom.DivEl;
+        private itemsContainer: DivEl;
         private itemsLimit;
 
         constructor(itemsLimit?: number) {
             super("items-selection-panel");
             this.getEl().addClass('no-selection');
 
-            this.itemsContainer = new api.dom.DivEl("items-container");
+            this.itemsContainer = new DivEl("items-container");
             this.appendChild(this.itemsContainer);
 
             this.itemsContainer.setHtml(this.messageForNoSelection);
@@ -124,11 +132,11 @@ module api.app.browse {
                 return false;
             };
 
-            let itemsToRemove = api.util.ArrayHelper.difference(this.items, items, doFilter);
+            let itemsToRemove = ArrayHelper.difference(this.items, items, doFilter);
 
-            let itemsToAdd = api.util.ArrayHelper.difference(items, this.items, doFilter);
+            let itemsToAdd = ArrayHelper.difference(items, this.items, doFilter);
 
-            let itemsUpdated = api.util.ArrayHelper.intersection(items, this.items, doFilter);
+            let itemsUpdated = ArrayHelper.intersection(items, this.items, doFilter);
 
             itemsToRemove.forEach((item: BrowseItem<M>) => {
                 this.removeItem(item);
@@ -149,8 +157,8 @@ module api.app.browse {
             return changes;
         }
 
-        createItemViewer(item: BrowseItem<M>): api.ui.Viewer<M> {
-            var viewer = new api.ui.Viewer<M>();
+        createItemViewer(item: BrowseItem<M>): Viewer<M> {
+            var viewer = new Viewer<M>();
             viewer.setObject(item.getModel());
             return viewer;
         }
@@ -189,4 +197,3 @@ module api.app.browse {
             });
         }
     }
-}

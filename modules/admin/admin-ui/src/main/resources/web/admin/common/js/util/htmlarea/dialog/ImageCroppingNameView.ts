@@ -1,8 +1,9 @@
-module api.util.htmlarea.dialog {
+import {DivEl} from "../../../dom/DivEl";
+import {H6El} from "../../../dom/H6El";
 
-    export class ImageCroppingNameView extends api.dom.DivEl {
+export class ImageCroppingNameView extends DivEl {
 
-        private mainNameEl: api.dom.H6El;
+        private mainNameEl: H6El;
 
         private addTitleAttribute: boolean;
 
@@ -11,7 +12,7 @@ module api.util.htmlarea.dialog {
 
             this.addTitleAttribute = addTitleAttribute
 
-            this.mainNameEl = new api.dom.H6El("main-name");
+            this.mainNameEl = new H6El("main-name");
             this.appendChild(this.mainNameEl);
         }
 
@@ -23,4 +24,3 @@ module api.util.htmlarea.dialog {
             return this;
         }
     }
-}

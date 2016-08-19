@@ -1,17 +1,19 @@
-module api.app.wizard {
+import {TabBarItem} from "../../ui/tab/TabBarItem";
+import {TabBarItemBuilder} from "../../ui/tab/TabBarItem";
+import {WizardStepForm} from "./WizardStepForm";
 
-    export class WizardStep {
+export class WizardStep {
 
-        private tabBarItem: api.ui.tab.TabBarItem;
+        private tabBarItem: TabBarItem;
 
         private stepForm: WizardStepForm;
 
         constructor(label: string, stepForm: WizardStepForm) {
-            this.tabBarItem = new api.ui.tab.TabBarItemBuilder().setAddLabelTitleAttribute(false).setLabel(label).build();
+            this.tabBarItem = new TabBarItemBuilder().setAddLabelTitleAttribute(false).setLabel(label).build();
             this.stepForm = stepForm;
         }
 
-        getTabBarItem(): api.ui.tab.TabBarItem {
+        getTabBarItem(): TabBarItem {
             return this.tabBarItem;
         }
 
@@ -20,4 +22,3 @@ module api.app.wizard {
         }
 
     }
-}

@@ -1,6 +1,6 @@
-module api.ui {
 
-    export enum KeyBindingAction {
+
+export enum KeyBindingAction {
         KEYDOWN,
         KEYUP,
         KEYPRESS
@@ -72,4 +72,3 @@ module api.ui {
     }
 
 
-}

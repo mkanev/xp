@@ -1,19 +1,17 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
 
-    import Event = api.event.Event;
-
-    export class PageInspectedEvent extends Event {
+export class PageInspectedEvent extends Event {
 
         constructor() {
             super();
         }
 
         static on(handler: (event: PageInspectedEvent) => void, contextWindow: Window = window) {
-            Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler: (event: PageInspectedEvent) => void, contextWindow: Window = window) {
-            Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

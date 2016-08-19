@@ -1,7 +1,6 @@
-module api.content.page.region {
 
-    export class RegionsChangedEvent {
+
+export class RegionsChangedEvent {
 
 
     }
-}

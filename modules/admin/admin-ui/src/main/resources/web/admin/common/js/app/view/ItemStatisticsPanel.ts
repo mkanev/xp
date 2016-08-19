@@ -1,6 +1,9 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {Panel} from "../../ui/panel/Panel";
+import {ViewItem} from "./ViewItem";
+import {ItemStatisticsHeader} from "./ItemStatisticsHeader";
 
-    export class ItemStatisticsPanel<M extends api.Equitable> extends api.ui.panel.Panel {
+export class ItemStatisticsPanel<M extends Equitable> extends Panel {
 
         private browseItem: ViewItem<M>;
 
@@ -18,7 +21,7 @@ module api.app.view {
         }
 
 
-        setItem(item: api.app.view.ViewItem<M>) {
+        setItem(item: ViewItem<M>) {
             this.browseItem = item;
             this.header.setItem(item);
         }
@@ -27,4 +30,3 @@ module api.app.view {
             return this.browseItem;
         }
     }
-}

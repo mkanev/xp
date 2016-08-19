@@ -1,4 +1,10 @@
-import "../../api.ts";
+import {ItemViewPanel} from "../../../../../common/js/app/view/ItemViewPanel";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+import {DeckPanel} from "../../../../../common/js/ui/panel/DeckPanel";
+import {Action} from "../../../../../common/js/ui/Action";
+import {ElementShownEvent} from "../../../../../common/js/dom/ElementShownEvent";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
 
 import {ContentItemPreviewPanel} from "./ContentItemPreviewPanel";
 import {ContentItemViewToolbar} from "./ContentItemViewToolbar";
@@ -10,9 +16,9 @@ import {Router} from "../Router";
 import {ShowPreviewEvent} from "../browse/ShowPreviewEvent";
 import {ShowDetailsEvent} from "../browse/ShowDetailsEvent";
 
-export class ContentItemViewPanel extends api.app.view.ItemViewPanel<api.content.ContentSummaryAndCompareStatus> {
+export class ContentItemViewPanel extends ItemViewPanel<ContentSummaryAndCompareStatus> {
 
-    private statisticsPanel: api.app.view.ItemStatisticsPanel<api.content.ContentSummaryAndCompareStatus>;
+    private statisticsPanel: ItemStatisticsPanel<ContentSummaryAndCompareStatus>;
 
     private statisticsPanelIndex: number;
 
@@ -22,19 +28,19 @@ export class ContentItemViewPanel extends api.app.view.ItemViewPanel<api.content
 
     private previewPanelIndex: number;
 
-    private deckPanel: api.ui.panel.DeckPanel;
+    private deckPanel: DeckPanel;
 
-    private editAction: api.ui.Action;
+    private editAction: Action;
 
-    private deleteAction: api.ui.Action;
+    private deleteAction: Action;
 
-    private closeAction: api.ui.Action;
+    private closeAction: Action;
 
-    private actions: api.ui.Action[];
+    private actions: Action[];
 
     constructor() {
 
-        this.deckPanel = new api.ui.panel.DeckPanel();
+        this.deckPanel = new DeckPanel();
 
         this.editAction = new EditAction(this);
         this.deleteAction = new DeleteAction(this);
@@ -65,14 +71,14 @@ export class ContentItemViewPanel extends api.app.view.ItemViewPanel<api.content
             this.showPreview(false);
         });
 
-        this.onShown((event: api.dom.ElementShownEvent) => {
+        this.onShown((event: ElementShownEvent) => {
             if (this.getItem()) {
                 Router.setHash("view/" + this.getItem().getModel().getId());
             }
         });
     }
 
-    setItem(item: api.app.view.ViewItem<api.content.ContentSummaryAndCompareStatus>) {
+    setItem(item: ViewItem<ContentSummaryAndCompareStatus>) {
         super.setItem(item);
         this.statisticsPanel.setItem(item);
         this.previewPanel.setItem(item);
@@ -89,11 +95,11 @@ export class ContentItemViewPanel extends api.app.view.ItemViewPanel<api.content
         }
     }
 
-    public getCloseAction(): api.ui.Action {
+    public getCloseAction(): Action {
         return this.closeAction;
     }
 
-    getActions(): api.ui.Action[] {
+    getActions(): Action[] {
         return this.actions;
     }
 

@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {BaseLoader} from "../../../util/loader/BaseLoader";
+import {PartDescriptor} from "./PartDescriptor";
+import {PartDescriptorsJson} from "./PartDescriptorsJson";
+import {PartDescriptorsResourceRequest} from "./PartDescriptorsResourceRequest";
 
-    export class PartDescriptorLoader extends api.util.loader.BaseLoader<PartDescriptorsJson, PartDescriptor> {
+export class PartDescriptorLoader extends BaseLoader<PartDescriptorsJson, PartDescriptor> {
 
         constructor(request: PartDescriptorsResourceRequest) {
             super(request);
@@ -12,4 +15,3 @@ module api.content.page.region {
 
 
     }
-}

@@ -1,10 +1,10 @@
-module api.dom {
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
 
-    export class LegendEl extends Element {
+export class LegendEl extends Element {
 
         constructor(legend: string, className?: string) {
             super(new NewElementBuilder().setTagName("legend").setClassName(className));
             this.getEl().setInnerHtml(legend);
         }
     }
-}

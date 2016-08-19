@@ -1,8 +1,11 @@
-module api.ui.time {
+import {Timezone} from "../../util/Timezone";
+import {UlEl} from "../../dom/UlEl";
+import {AEl} from "../../dom/AEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {LiEl} from "../../dom/LiEl";
+import {Body} from "../../dom/Body";
 
-    import Timezone = api.util.Timezone;
-
-    export class TimePickerPopupBuilder {
+export class TimePickerPopupBuilder {
 
         hours: number;
 
@@ -55,17 +58,17 @@ module api.ui.time {
 
     }
 
-    export class TimePickerPopup extends api.dom.UlEl {
+    export class TimePickerPopup extends UlEl {
 
-        private nextHour: api.dom.AEl;
-        private hour: api.dom.SpanEl;
-        private prevHour: api.dom.AEl;
-        private nextMinute: api.dom.AEl;
-        private minute: api.dom.SpanEl;
-        private prevMinute: api.dom.AEl;
+        private nextHour: AEl;
+        private hour: SpanEl;
+        private prevHour: AEl;
+        private nextMinute: AEl;
+        private minute: SpanEl;
+        private prevMinute: AEl;
 
-        private timezoneOffset: api.dom.SpanEl;
-        private timezoneLocation: api.dom.SpanEl;
+        private timezoneOffset: SpanEl;
+        private timezoneLocation: SpanEl;
 
         private selectedHour: number;
         private selectedMinute: number;
@@ -79,10 +82,10 @@ module api.ui.time {
         constructor(builder: TimePickerPopupBuilder) {
             super('time-picker-dialog');
 
-            var hourContainer = new api.dom.LiEl();
+            var hourContainer = new LiEl();
             this.appendChild(hourContainer);
 
-            this.nextHour = new api.dom.AEl('next');
+            this.nextHour = new AEl('next');
             this.nextHour.onMouseDown((e: MouseEvent) => {
                 this.addHour(+1);
                 this.startInterval(this.addHour, 1);
@@ -92,16 +95,16 @@ module api.ui.time {
                 e.preventDefault();
                 return false;
             });
-            api.dom.Body.get().onMouseUp((e: MouseEvent) => {
+            Body.get().onMouseUp((e: MouseEvent) => {
                 this.stopInterval();
             });
-            this.nextHour.appendChild(new api.dom.SpanEl());
+            this.nextHour.appendChild(new SpanEl());
             hourContainer.appendChild(this.nextHour);
 
-            this.hour = new api.dom.SpanEl();
+            this.hour = new SpanEl();
             hourContainer.appendChild(this.hour);
 
-            this.prevHour = new api.dom.AEl('prev');
+            this.prevHour = new AEl('prev');
             this.prevHour.onMouseDown((e: MouseEvent) => {
                 this.addHour(-1);
                 this.startInterval(this.addHour, -1);
@@ -111,15 +114,15 @@ module api.ui.time {
                 e.preventDefault();
                 return false;
             });
-            this.prevHour.appendChild(new api.dom.SpanEl());
+            this.prevHour.appendChild(new SpanEl());
             hourContainer.appendChild(this.prevHour);
 
-            this.appendChild(new api.dom.LiEl('colon'));
+            this.appendChild(new LiEl('colon'));
 
-            var minuteContainer = new api.dom.LiEl();
+            var minuteContainer = new LiEl();
             this.appendChild(minuteContainer);
 
-            this.nextMinute = new api.dom.AEl('next');
+            this.nextMinute = new AEl('next');
             this.nextMinute.onMouseDown((e: MouseEvent) => {
                 this.addMinute(+1);
                 this.startInterval(this.addMinute, 1);
@@ -129,13 +132,13 @@ module api.ui.time {
                 e.preventDefault();
                 return false;
             });
-            this.nextMinute.appendChild(new api.dom.SpanEl());
+            this.nextMinute.appendChild(new SpanEl());
             minuteContainer.appendChild(this.nextMinute);
 
-            this.minute = new api.dom.SpanEl();
+            this.minute = new SpanEl();
             minuteContainer.appendChild(this.minute);
 
-            this.prevMinute = new api.dom.AEl('prev');
+            this.prevMinute = new AEl('prev');
             this.prevMinute.onMouseDown((e: MouseEvent) => {
                 this.addMinute(-1);
                 this.startInterval(this.addMinute, -1);
@@ -145,7 +148,7 @@ module api.ui.time {
                 e.preventDefault();
                 return false;
             });
-            this.prevMinute.appendChild(new api.dom.SpanEl());
+            this.prevMinute.appendChild(new SpanEl());
             minuteContainer.appendChild(this.prevMinute);
 
             this.selectedHour = this.isHoursValid(builder.getHours()) ? builder.getHours() : null;
@@ -158,10 +161,10 @@ module api.ui.time {
             }
 
             if (this.timezone) {
-                var timezoneContainer = new api.dom.LiEl("timezone");
+                var timezoneContainer = new LiEl("timezone");
 
-                this.timezoneLocation = new api.dom.SpanEl("timezone-location").setHtml(this.timezone.getLocation());
-                this.timezoneOffset = new api.dom.SpanEl("timezone-offset").setHtml(this.getUTCString(this.timezone.getOffset()));
+                this.timezoneLocation = new SpanEl("timezone-location").setHtml(this.timezone.getLocation());
+                this.timezoneOffset = new SpanEl("timezone-offset").setHtml(this.getUTCString(this.timezone.getOffset()));
 
                 timezoneContainer.appendChild(this.timezoneLocation);
                 timezoneContainer.appendChild(this.timezoneOffset);
@@ -276,4 +279,3 @@ module api.ui.time {
         }
     }
 
-}

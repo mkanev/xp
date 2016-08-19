@@ -1,6 +1,18 @@
-module api.content.page.region {
+import {Component} from "./Component";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {FragmentComponent} from "./FragmentComponent";
+import {FragmentComponentBuilder} from "./FragmentComponent";
+import {ImageComponent} from "./ImageComponent";
+import {ImageComponentBuilder} from "./ImageComponent";
+import {LayoutComponent} from "./LayoutComponent";
+import {LayoutComponentBuilder} from "./LayoutComponent";
+import {PartComponent} from "./PartComponent";
+import {PartComponentBuilder} from "./PartComponent";
+import {Region} from "./Region";
+import {TextComponent} from "./TextComponent";
+import {TextComponentBuilder} from "./TextComponent";
 
-    export class ComponentFactory {
+export class ComponentFactory {
 
         public static createFromJson(json: ComponentTypeWrapperJson, componentIndex: number, region: Region): Component {
 
@@ -26,4 +38,3 @@ module api.content.page.region {
             }
         }
     }
-}

@@ -1,23 +1,42 @@
-module api.util.htmlarea.dialog {
+import {Form} from "../../../ui/form/Form";
+import {FormItem} from "../../../ui/form/FormItem";
+import {Panel} from "../../../ui/panel/Panel";
+import {DockedPanel} from "../../../ui/panel/DockedPanel";
+import {Validators} from "../../../ui/form/Validators";
+import {DropdownInput} from "../../../ui/selector/dropdown/DropdownInput";
+import {DropdownConfig} from "../../../ui/selector/dropdown/DropdownInput";
+import {Option} from "../../../ui/selector/Option";
+import {LabelPosition} from "../../../ui/Checkbox";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {ModalDialogHeader} from "../../../ui/dialog/ModalDialog";
+import {StringHelper} from "../../StringHelper";
+import {ContentTypeName} from "../../../schema/content/ContentTypeName";
+import {FormInputEl} from "../../../dom/FormInputEl";
+import {Checkbox} from "../../../ui/Checkbox";
+import {Action} from "../../../ui/Action";
+import {ContentSummaryLoader} from "../../../content/resource/ContentSummaryLoader";
+import {ContentComboBox} from "../../../content/ContentComboBox";
+import {DropdownExpandedEvent} from "../../../ui/selector/DropdownExpandedEvent";
+import {KeyHelper} from "../../../ui/KeyHelper";
+import {FormItemEl} from "../../../dom/FormItemEl";
+import {Element} from "../../../dom/Element";
+import {ElementHelper} from "../../../dom/ElementHelper";
+import {AEl} from "../../../dom/AEl";
+import {TextInput} from "../../../ui/text/TextInput";
+import {NavigatedDeckPanel} from "../../../ui/panel/NavigatedDeckPanel";
+import {TabBarItem} from "../../../ui/tab/TabBarItem";
+import {Link} from "../../Link";
+import {HtmlModalDialog} from "./HtmlModalDialog";
+import {HtmlAreaAnchor} from "./HtmlModalDialog";
 
-    import Form = api.ui.form.Form;
-    import FormItem = api.ui.form.FormItem;
-    import Panel = api.ui.panel.Panel;
-    import DockedPanel = api.ui.panel.DockedPanel;
-    import Validators = api.ui.form.Validators;
-    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-    import Option = api.ui.selector.Option;
-    import LabelPosition = api.ui.LabelPosition;
-
-    export class LinkModalDialog extends HtmlModalDialog {
+export class LinkModalDialog extends HtmlModalDialog {
         private dockedPanel: DockedPanel;
         private link: HTMLElement;
         private linkText: string;
         private anchorList: string[];
         private onlyTextSelected: boolean;
 
-        private content: api.content.ContentSummary;
+        private content: ContentSummary;
 
         private static tabNames: any = {
             content: "Content",
@@ -32,7 +51,7 @@ module api.util.htmlarea.dialog {
         private static emailPrefix = "mailto:";
         private static subjectPrefix = "?subject=";
 
-        constructor(config: HtmlAreaAnchor, content: api.content.ContentSummary) {
+        constructor(config: HtmlAreaAnchor, content: ContentSummary) {
             this.link = config.element;
             this.linkText = config.text;
             this.anchorList = config.anchorList;
@@ -40,11 +59,11 @@ module api.util.htmlarea.dialog {
 
             this.content = content;
 
-            super(config.editor, new api.ui.dialog.ModalDialogHeader("Insert Link"), "link-modal-dialog");
+            super(config.editor, new ModalDialogHeader("Insert Link"), "link-modal-dialog");
         }
 
         private getHref(): string {
-            return this.link ? this.link.getAttribute("href") : api.util.StringHelper.EMPTY_STRING;
+            return this.link ? this.link.getAttribute("href") : StringHelper.EMPTY_STRING;
         }
 
         private getLinkText(): string {
@@ -52,7 +71,7 @@ module api.util.htmlarea.dialog {
         }
 
         private getToolTip(): string {
-            return this.link ? this.link.getAttribute("title") : api.util.StringHelper.EMPTY_STRING;
+            return this.link ? this.link.getAttribute("title") : StringHelper.EMPTY_STRING;
         }
 
         private isContentLink(): boolean {
@@ -61,9 +80,9 @@ module api.util.htmlarea.dialog {
 
         private getContentId(): string {
             if (this.link && this.isContentLink()) {
-                return this.getHref().replace(LinkModalDialog.contentPrefix, api.util.StringHelper.EMPTY_STRING);
+                return this.getHref().replace(LinkModalDialog.contentPrefix, StringHelper.EMPTY_STRING);
             }
-            return api.util.StringHelper.EMPTY_STRING;
+            return StringHelper.EMPTY_STRING;
         }
 
         private isDownloadLink(): boolean {
@@ -72,8 +91,8 @@ module api.util.htmlarea.dialog {
 
         private getDownloadId(): string {
             return this.isDownloadLink() ?
-                   this.getHref().replace(LinkModalDialog.downloadPrefix, api.util.StringHelper.EMPTY_STRING) :
-                   api.util.StringHelper.EMPTY_STRING;
+                   this.getHref().replace(LinkModalDialog.downloadPrefix, StringHelper.EMPTY_STRING) :
+                   StringHelper.EMPTY_STRING;
         }
 
         private isUrl(): boolean {
@@ -81,7 +100,7 @@ module api.util.htmlarea.dialog {
         }
 
         private getUrl(): string {
-            return this.isUrl() ? this.getHref() : api.util.StringHelper.EMPTY_STRING;
+            return this.isUrl() ? this.getHref() : StringHelper.EMPTY_STRING;
         }
 
         private isEmail(): boolean {
@@ -90,10 +109,10 @@ module api.util.htmlarea.dialog {
 
         private getEmail(): string {
             if (!this.isEmail()) {
-                return api.util.StringHelper.EMPTY_STRING;
+                return StringHelper.EMPTY_STRING;
             }
             var emailArr = this.getHref().split(LinkModalDialog.subjectPrefix);
-            return emailArr[0].replace(LinkModalDialog.emailPrefix, api.util.StringHelper.EMPTY_STRING);
+            return emailArr[0].replace(LinkModalDialog.emailPrefix, StringHelper.EMPTY_STRING);
         }
 
         private isAnchor(): boolean {
@@ -101,15 +120,15 @@ module api.util.htmlarea.dialog {
         }
 
         private getAnchor(): string {
-            return this.isAnchor() ? this.getHref() : api.util.StringHelper.EMPTY_STRING;
+            return this.isAnchor() ? this.getHref() : StringHelper.EMPTY_STRING;
         }
 
         private getSubject(): string {
             if (!this.isEmail() || this.getHref().indexOf(LinkModalDialog.subjectPrefix) == -1) {
-                return api.util.StringHelper.EMPTY_STRING;
+                return StringHelper.EMPTY_STRING;
             }
             var emailArr = this.getHref().split(LinkModalDialog.subjectPrefix);
-            return decodeURI(emailArr[1].replace(LinkModalDialog.subjectPrefix, api.util.StringHelper.EMPTY_STRING));
+            return decodeURI(emailArr[1].replace(LinkModalDialog.subjectPrefix, StringHelper.EMPTY_STRING));
         }
 
         protected layout() {
@@ -135,7 +154,7 @@ module api.util.htmlarea.dialog {
 
         private createDownloadPanel(): Panel {
             return this.createFormPanel([
-                this.createContentSelector("downloadId", "Target", this.getDownloadId(), api.schema.content.ContentTypeName.getMediaTypes())
+                this.createContentSelector("downloadId", "Target", this.getDownloadId(), ContentTypeName.getMediaTypes())
             ]);
         }
 
@@ -163,7 +182,7 @@ module api.util.htmlarea.dialog {
             ]);
         }
 
-        private static validationRequiredEmail(input: api.dom.FormInputEl): string {
+        private static validationRequiredEmail(input: FormInputEl): string {
             var isValid;
 
             if (!(isValid = Validators.required(input))) {
@@ -174,11 +193,11 @@ module api.util.htmlarea.dialog {
         }
 
         private getTarget(isTabSelected: boolean): boolean {
-            return isTabSelected ? !api.util.StringHelper.isBlank(this.link.getAttribute("target")) : false;
+            return isTabSelected ? !StringHelper.isBlank(this.link.getAttribute("target")) : false;
         }
 
         private createTargetCheckbox(id: string, isTabSelected: boolean): FormItem {
-            var checkbox = api.ui.Checkbox.create().setLabelText("Open in new tab").setChecked(
+            var checkbox = Checkbox.create().setLabelText("Open in new tab").setChecked(
                 this.getTarget(isTabSelected)).setLabelPosition(LabelPosition.LEFT).build();
 
             return this.createFormItem(id, null, null, null, checkbox);
@@ -218,7 +237,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected initializeActions() {
-            var submitAction = new api.ui.Action(this.link ? "Update" : "Insert");
+            var submitAction = new Action(this.link ? "Update" : "Insert");
             this.setSubmitAction(submitAction);
 
             this.addAction(submitAction.onExecuted(() => {
@@ -232,11 +251,11 @@ module api.util.htmlarea.dialog {
         }
 
         private createContentSelector(id: string, label: string, value: string,
-                                      contentTypeNames?: api.schema.content.ContentTypeName[]): FormItem {
-            let loader = new api.content.resource.ContentSummaryLoader();
+                                      contentTypeNames?: ContentTypeName[]): FormItem {
+            let loader = new ContentSummaryLoader();
             loader.setContentPath(this.content.getPath());
 
-            let contentSelector = api.content.ContentComboBox.create().setLoader(loader).setMaximumOccurrences(1).build(),
+            let contentSelector = ContentComboBox.create().setLoader(loader).setMaximumOccurrences(1).build(),
                 contentSelectorComboBox = contentSelector.getComboBox();
 
             contentSelectorComboBox.onValueChanged(() => {
@@ -247,20 +266,20 @@ module api.util.htmlarea.dialog {
                 loader.setAllowedContentTypeNames(contentTypeNames);
             }
 
-            contentSelectorComboBox.onExpanded((event: api.ui.selector.DropdownExpandedEvent) => {
+            contentSelectorComboBox.onExpanded((event: DropdownExpandedEvent) => {
                 this.adjustDropDown(contentSelectorComboBox.getInput(), event.getDropdownElement().getEl());
             });
 
 
             contentSelectorComboBox.onKeyDown((e: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isEscKey(e) && !contentSelectorComboBox.isDropdownShown()) {
+                if (KeyHelper.isEscKey(e) && !contentSelectorComboBox.isDropdownShown()) {
                     // Prevent modal dialog from closing on Esc key when dropdown is expanded
                     e.preventDefault();
                     e.stopPropagation();
                 }
             });
 
-            return this.createFormItem(id, label, Validators.required, value, <api.dom.FormItemEl>contentSelector);
+            return this.createFormItem(id, label, Validators.required, value, <FormItemEl>contentSelector);
         }
 
         private createAnchorDropdown(): FormItem {
@@ -270,7 +289,7 @@ module api.util.htmlarea.dialog {
                 dropDown.addOption(<Option<string>>{value: "#" + anchor, displayValue: anchor});
             });
 
-            dropDown.onExpanded((event: api.ui.selector.DropdownExpandedEvent) => {
+            dropDown.onExpanded((event: DropdownExpandedEvent) => {
                 this.adjustDropDown(dropDown, event.getDropdownElement().getEl());
             });
 
@@ -278,10 +297,10 @@ module api.util.htmlarea.dialog {
                 dropDown.setValue(this.getAnchor());
             }
 
-            return this.createFormItem("anchor", "Anchor", Validators.required, null, <api.dom.FormItemEl>dropDown);
+            return this.createFormItem("anchor", "Anchor", Validators.required, null, <FormItemEl>dropDown);
         }
 
-        private adjustDropDown(inputElement: api.dom.Element, dropDownElement: api.dom.ElementHelper) {
+        private adjustDropDown(inputElement: Element, dropDownElement: ElementHelper) {
             var inputPosition = wemjq(inputElement.getHTMLElement()).offset();
 
             dropDownElement.setMaxWidthPx(inputElement.getEl().getWidthWithBorder());
@@ -302,60 +321,60 @@ module api.util.htmlarea.dialog {
             return mainFormValid && dockPanelValid;
         }
 
-        private createContentLink(): api.dom.AEl {
-            var contentSelector = <api.content.ContentComboBox>this.getFieldById("contentId"),
-                targetCheckbox = <api.ui.Checkbox>this.getFieldById("contentTarget");
+        private createContentLink(): AEl {
+            var contentSelector = <ContentComboBox>this.getFieldById("contentId"),
+                targetCheckbox = <Checkbox>this.getFieldById("contentTarget");
 
-            var linkEl = new api.dom.AEl();
+            var linkEl = new AEl();
             linkEl.setUrl(LinkModalDialog.contentPrefix + contentSelector.getValue(), targetCheckbox.isChecked() ? "_blank" : null);
 
             return linkEl;
         }
 
-        private createDownloadLink(): api.dom.AEl {
-            var contentSelector = <api.content.ContentComboBox>this.getFieldById("downloadId");
+        private createDownloadLink(): AEl {
+            var contentSelector = <ContentComboBox>this.getFieldById("downloadId");
 
-            var linkEl = new api.dom.AEl();
+            var linkEl = new AEl();
             linkEl.setUrl(LinkModalDialog.downloadPrefix + contentSelector.getValue());
 
             return linkEl;
         }
 
-        private createUrlLink(): api.dom.AEl {
-            var url = (<api.ui.text.TextInput>this.getFieldById("url")).getValue(),
-                targetCheckbox = <api.ui.Checkbox>this.getFieldById("urlTarget");
+        private createUrlLink(): AEl {
+            var url = (<TextInput>this.getFieldById("url")).getValue(),
+                targetCheckbox = <Checkbox>this.getFieldById("urlTarget");
 
-            var linkEl = new api.dom.AEl();
+            var linkEl = new AEl();
             linkEl.setUrl(url, targetCheckbox.isChecked() ? "_blank" : null);
 
             return linkEl;
         }
 
-        private createAnchor(): api.dom.AEl {
-            var anchorName = (<api.ui.text.TextInput>this.getFieldById("anchor")).getValue();
+        private createAnchor(): AEl {
+            var anchorName = (<TextInput>this.getFieldById("anchor")).getValue();
 
-            var linkEl = new api.dom.AEl();
+            var linkEl = new AEl();
             linkEl.setUrl(anchorName);
 
             return linkEl;
         }
 
-        private createEmailLink(): api.dom.AEl {
-            var email = (<api.ui.text.TextInput>this.getFieldById("email")).getValue(),
-                subject = (<api.ui.text.TextInput>this.getFieldById("subject")).getValue();
+        private createEmailLink(): AEl {
+            var email = (<TextInput>this.getFieldById("email")).getValue(),
+                subject = (<TextInput>this.getFieldById("subject")).getValue();
 
-            var linkEl = new api.dom.AEl();
+            var linkEl = new AEl();
             linkEl.setUrl(LinkModalDialog.emailPrefix + email + (subject ? LinkModalDialog.subjectPrefix + encodeURI(subject) : ""));
 
             return linkEl;
         }
 
         private createLink(): void {
-            var linkEl: api.dom.AEl,
-                deck = <api.ui.panel.NavigatedDeckPanel>this.dockedPanel.getDeck(),
-                selectedTab = <api.ui.tab.TabBarItem>deck.getSelectedNavigationItem(),
-                linkText: string = this.onlyTextSelected ? (<api.ui.text.TextInput>this.getFieldById("linkText")).getValue() : "",
-                toolTip: string = (<api.ui.text.TextInput>this.getFieldById("toolTip")).getValue();
+            var linkEl: AEl,
+                deck = <NavigatedDeckPanel>this.dockedPanel.getDeck(),
+                selectedTab = <TabBarItem>deck.getSelectedNavigationItem(),
+                linkText: string = this.onlyTextSelected ? (<TextInput>this.getFieldById("linkText")).getValue() : "",
+                toolTip: string = (<TextInput>this.getFieldById("toolTip")).getValue();
 
             switch (selectedTab.getLabel()) {
             case (LinkModalDialog.tabNames.content):
@@ -402,4 +421,3 @@ module api.util.htmlarea.dialog {
         }
 
     }
-}

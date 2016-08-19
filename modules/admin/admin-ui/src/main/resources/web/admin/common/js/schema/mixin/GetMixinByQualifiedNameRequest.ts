@@ -1,6 +1,11 @@
-module api.schema.mixin {
+import {MixinJson} from "./MixinJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Mixin} from "./Mixin";
+import {MixinName} from "./MixinName";
+import {MixinResourceRequest} from "./MixinResourceRequest";
 
-    export class GetMixinByQualifiedNameRequest extends MixinResourceRequest<api.schema.mixin.MixinJson, Mixin> {
+export class GetMixinByQualifiedNameRequest extends MixinResourceRequest<MixinJson, Mixin> {
 
         private name: MixinName;
 
@@ -16,15 +21,14 @@ module api.schema.mixin {
             };
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return super.getResourcePath();
         }
 
         sendAndParse(): wemQ.Promise<Mixin> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.schema.mixin.MixinJson>) => {
+            return this.send().then((response: JsonResponse<MixinJson>) => {
                 return this.fromJsonToMixin(response.getResult());
             });
         }
     }
-}

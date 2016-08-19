@@ -1,6 +1,8 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertySet} from "./PropertySet";
+import {PropertyTree} from "./PropertyTree";
 
-    export class PropertyTreeComparator {
+export class PropertyTreeComparator {
 
         public compareTree(treeA: PropertyTree, treeB: PropertyTree) {
             if (!treeA || !treeB) {
@@ -46,4 +48,3 @@ module api.data {
 
         }
     }
-}

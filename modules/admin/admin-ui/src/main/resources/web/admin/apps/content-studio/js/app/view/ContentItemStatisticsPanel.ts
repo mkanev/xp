@@ -1,11 +1,12 @@
-import "../../api.ts";
-
-import Panel = api.ui.panel.Panel;
-import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
+import {Panel} from "../../../../../common/js/ui/panel/Panel";
+import {TabMenuItemBuilder} from "../../../../../common/js/ui/tab/TabMenuItem";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
 
 import {ContentItemPreviewPanel} from "./ContentItemPreviewPanel";
 
-export class ContentItemStatisticsPanel extends api.app.view.ItemStatisticsPanel<api.content.ContentSummaryAndCompareStatus> {
+export class ContentItemStatisticsPanel extends ItemStatisticsPanel<ContentSummaryAndCompareStatus> {
 
     private previewPanel: ContentItemPreviewPanel;
 
@@ -17,7 +18,7 @@ export class ContentItemStatisticsPanel extends api.app.view.ItemStatisticsPanel
         this.appendChild(this.previewPanel);
     }
 
-    setItem(item: api.app.view.ViewItem<api.content.ContentSummaryAndCompareStatus>) {
+    setItem(item: ViewItem<ContentSummaryAndCompareStatus>) {
         if (this.getItem() != item) {
             super.setItem(item);
             this.previewPanel.setItem(item);

@@ -1,6 +1,9 @@
-module api.content.json {
+import {ItemJson} from "../../item/ItemJson";
+import {ThumbnailJson} from "../../thumb/ThumbnailJson";
+import {ChildOrderJson} from "./ChildOrderJson";
+import {ContentIdBaseItemJson} from "./ContentIdBaseItemJson";
 
-    export interface ContentSummaryJson extends ContentIdBaseItemJson, api.item.ItemJson {
+export interface ContentSummaryJson extends ContentIdBaseItemJson, ItemJson {
 
         name:string;
 
@@ -16,7 +19,7 @@ module api.content.json {
 
         iconUrl:string;
 
-        thumbnail: api.thumb.ThumbnailJson;
+        thumbnail: ThumbnailJson;
 
         modifier:string;
 
@@ -34,4 +37,3 @@ module api.content.json {
 
         contentState: string;
     }
-}

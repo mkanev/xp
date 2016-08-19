@@ -1,26 +1,37 @@
-module api.form.inputtype.combobox {
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {SelectedOption} from "../../../ui/selector/combobox/SelectedOption";
+import {OptionSelectedEvent} from "../../../ui/selector/OptionSelectedEvent";
+import {SelectedOptionEvent} from "../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../ui/FocusSwitchEvent";
+import {BaseInputTypeManagingAdd} from "../support/BaseInputTypeManagingAdd";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {ComboBox} from "../../../ui/selector/combobox/ComboBox";
+import {SelectedOptionsView} from "../../../ui/selector/combobox/SelectedOptionsView";
+import {Input} from "../../Input";
+import {BaseSelectedOptionsView} from "../../../ui/selector/combobox/BaseSelectedOptionsView";
+import {Element} from "../../../dom/Element";
+import {OptionFilterInputValueChangedEvent} from "../../../ui/selector/OptionFilterInputValueChangedEvent";
+import {Option} from "../../../ui/selector/Option";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
+import {ComboBoxDisplayValueViewer} from "./ComboBoxDisplayValueViewer";
+import {ComboBoxOption} from "./ComboBoxOption";
 
-    import PropertyArray = api.data.PropertyArray;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+export class ComboBox extends BaseInputTypeManagingAdd<string> {
 
-    export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
-
-        private context: api.form.inputtype.InputTypeViewContext;
+        private context: InputTypeViewContext;
 
         private comboBoxOptions: ComboBoxOption[];
 
-        private comboBox: api.ui.selector.combobox.ComboBox<string>;
+        private comboBox: ComboBox<string>;
 
-        private selectedOptionsView: api.ui.selector.combobox.SelectedOptionsView<string>;
+        private selectedOptionsView: SelectedOptionsView<string>;
 
-        constructor(context: api.form.inputtype.InputTypeViewContext) {
+        constructor(context: InputTypeViewContext) {
             super("");
             this.context = context;
             this.readConfig(context.inputConfig);
@@ -38,7 +49,7 @@ module api.form.inputtype.combobox {
             this.comboBoxOptions = options;
         }
 
-        getComboBox(): api.ui.selector.combobox.ComboBox<string> {
+        getComboBox(): ComboBox<string> {
             return this.comboBox;
         }
 
@@ -54,13 +65,13 @@ module api.form.inputtype.combobox {
             return null;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.STRING);
             }
             super.layout(input, propertyArray);
 
-            this.selectedOptionsView = new api.ui.selector.combobox.BaseSelectedOptionsView<string>();
+            this.selectedOptionsView = new BaseSelectedOptionsView<string>();
             this.comboBox = this.createComboBox(input, propertyArray);
 
             this.comboBoxOptions.forEach((option: ComboBoxOption) => {
@@ -68,14 +79,14 @@ module api.form.inputtype.combobox {
             });
 
             this.appendChild(this.comboBox);
-            this.appendChild(<api.dom.Element> this.selectedOptionsView);
+            this.appendChild(<Element> this.selectedOptionsView);
 
             this.setLayoutInProgress(false);
 
             return wemQ<void>(null);
         }
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             var superPromise = super.update(propertyArray, unchangedOnly);
 
             if (!unchangedOnly || !this.comboBox.isDirty()) {
@@ -87,8 +98,8 @@ module api.form.inputtype.combobox {
             }
         }
 
-        createComboBox(input: api.form.Input, propertyArray: PropertyArray): api.ui.selector.combobox.ComboBox<string> {
-            var comboBox = new api.ui.selector.combobox.ComboBox<string>(name, {
+        createComboBox(input: Input, propertyArray: PropertyArray): ComboBox<string> {
+            var comboBox = new ComboBox<string>(name, {
                 filter: this.comboBoxFilter,
                 selectedOptionsView: this.selectedOptionsView,
                 maximumOccurrences: input.getOccurrences().getMaximum(),
@@ -97,7 +108,7 @@ module api.form.inputtype.combobox {
                 value: this.getValueFromPropertyArray(propertyArray)
             });
 
-            comboBox.onOptionFilterInputValueChanged((event: api.ui.selector.OptionFilterInputValueChangedEvent<string>) => {
+            comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent<string>) => {
                 this.comboBox.setFilterArgs({searchString: event.getNewValue()});
             });
             comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {
@@ -145,7 +156,7 @@ module api.form.inputtype.combobox {
             });
         }
 
-        private comboBoxFilter(item: api.ui.selector.Option<string>, args) {
+        private comboBoxFilter(item: Option<string>, args) {
             return !(args && args.searchString && item.displayValue.toUpperCase().indexOf(args.searchString.toUpperCase()) == -1);
         }
 
@@ -172,5 +183,4 @@ module api.form.inputtype.combobox {
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("ComboBox", ComboBox));
-}
+    InputTypeManager.register(new Class("ComboBox", ComboBox));

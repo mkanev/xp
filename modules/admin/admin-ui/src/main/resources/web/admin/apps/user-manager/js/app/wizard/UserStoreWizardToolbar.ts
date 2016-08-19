@@ -1,11 +1,12 @@
-import "../../api.ts";
+import {Action} from "../../../../../common/js/ui/Action";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
 
 export interface UserStoreWizardToolbarParams {
-    saveAction:api.ui.Action;
-    deleteAction:api.ui.Action;
+    saveAction:Action;
+    deleteAction:Action;
 }
 
-export class UserStoreWizardToolbar extends api.ui.toolbar.Toolbar {
+export class UserStoreWizardToolbar extends Toolbar {
 
     constructor(params: UserStoreWizardToolbarParams) {
         super();

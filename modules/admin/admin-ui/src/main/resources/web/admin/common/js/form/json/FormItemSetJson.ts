@@ -1,6 +1,8 @@
-module api.form.json {
+import {FormItemJson} from "./FormItemJson";
+import {FormItemTypeWrapperJson} from "./FormItemTypeWrapperJson";
+import {OccurrencesJson} from "./OccurrencesJson";
 
-    export interface FormItemSetJson extends FormItemJson {
+export interface FormItemSetJson extends FormItemJson {
 
         customText: string;
 
@@ -14,4 +16,3 @@ module api.form.json {
 
         occurrences: OccurrencesJson;
     }
-}

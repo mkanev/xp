@@ -1,9 +1,10 @@
-import "../../api.ts";
+import {Application} from "../../../../../common/js/application/Application";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
+
 import {ApplicationTreeGrid} from "../browse/ApplicationTreeGrid";
 
-import  Application = api.application.Application;
-
-export class InstallAppPromptEvent extends api.event.Event {
+export class InstallAppPromptEvent extends Event {
 
     private installedApplications: Application[];
 
@@ -17,10 +18,10 @@ export class InstallAppPromptEvent extends api.event.Event {
     }
 
     static on(handler: (event: InstallAppPromptEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: InstallAppPromptEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

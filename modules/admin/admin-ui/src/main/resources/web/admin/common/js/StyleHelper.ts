@@ -1,6 +1,6 @@
-module api {
 
-    export class StyleHelper {
+
+export class StyleHelper {
 
         static COMMON_PREFIX = "xp-admin-common-";
 
@@ -13,20 +13,20 @@ module api {
         static currentPrefix = "";
 
         static setCurrentPrefix(prefix: string) {
-            api.StyleHelper.currentPrefix = prefix;
+            StyleHelper.currentPrefix = prefix;
         }
 
         static getCurrentPrefix(): string {
-            return api.StyleHelper.currentPrefix;
+            return StyleHelper.currentPrefix;
         }
 
-        static getCls(cls: string, prefix: string = api.StyleHelper.currentPrefix): string {
+        static getCls(cls: string, prefix: string = StyleHelper.currentPrefix): string {
             if (!prefix) {
                 return cls;
             }
             var clsArr = cls.trim().split(" ");
             clsArr.forEach((clsEl: string, index: number, arr: string[]) => {
-                if (!api.StyleHelper.isPrefixed(clsEl, prefix)) {
+                if (!StyleHelper.isPrefixed(clsEl, prefix)) {
                     arr[index] = prefix + clsEl;
                 }
             });
@@ -34,15 +34,14 @@ module api {
         }
 
         static getIconCls(iconCls: string): string {
-            return api.StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls);
+            return StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls);
         }
 
         static getCommonIconCls(iconCls: string): string {
-            return api.StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls, StyleHelper.COMMON_PREFIX);
+            return StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls, StyleHelper.COMMON_PREFIX);
         }
 
         private static isPrefixed(cls: string, prefix: string): boolean {
             return cls.indexOf(prefix) == 0;
         }
     }
-}

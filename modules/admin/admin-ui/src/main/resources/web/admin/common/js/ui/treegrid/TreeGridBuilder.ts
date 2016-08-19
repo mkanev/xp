@@ -1,12 +1,13 @@
-module api.ui.treegrid {
+import {GridColumn} from "../grid/GridColumn";
+import {GridColumnBuilder} from "../grid/GridColumn";
+import {GridOptions} from "../grid/GridOptions";
+import {GridOptionsBuilder} from "../grid/GridOptions";
+import {ContextMenu} from "../menu/ContextMenu";
+import {TreeGrid} from "./TreeGrid";
+import {TreeGridContextMenu} from "./TreeGridContextMenu";
+import {TreeNode} from "./TreeNode";
 
-    import GridColumn = api.ui.grid.GridColumn;
-    import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-    import GridOptions = api.ui.grid.GridOptions;
-    import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
-    import ContextMenu = api.ui.menu.ContextMenu;
-
-    export class TreeGridBuilder<NODE> {
+export class TreeGridBuilder<NODE> {
 
         private expandAll: boolean = false;
 
@@ -267,4 +268,3 @@ module api.ui.treegrid {
         }
 
     }
-}

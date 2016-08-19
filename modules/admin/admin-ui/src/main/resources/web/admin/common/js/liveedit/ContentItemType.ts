@@ -1,8 +1,11 @@
-module api.liveedit {
+import {PartComponentView} from "./part/PartComponentView";
+import {ContentViewBuilder} from "./ContentView";
+import {ContentView} from "./ContentView";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {ItemType} from "./ItemType";
+import {ItemTypeConfigJson} from "./ItemTypeConfig";
 
-    import PartComponentView = api.liveedit.part.PartComponentView;
-
-    export class ContentItemType extends ItemType {
+export class ContentItemType extends ItemType {
 
         private static INSTANCE = new ContentItemType();
 
@@ -34,4 +37,3 @@ module api.liveedit {
     }
 
     ContentItemType.get();
-}

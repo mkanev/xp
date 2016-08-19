@@ -1,6 +1,9 @@
-module api.form {
+import {FormItem} from "./FormItem";
+import {FormItemOccurrences} from "./FormItemOccurrences";
+import {FormItemOccurrenceView} from "./FormItemOccurrenceView";
+import {Occurrences} from "./Occurrences";
 
-    export class FormItemOccurrence<V extends FormItemOccurrenceView> {
+export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 
         private occurrences: FormItemOccurrences<V>;
 
@@ -62,4 +65,3 @@ module api.form {
             return this.index == this.occurrences.countOccurrences() - 1;
         }
     }
-}

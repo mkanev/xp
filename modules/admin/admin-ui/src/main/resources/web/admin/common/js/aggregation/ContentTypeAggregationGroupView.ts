@@ -1,25 +1,30 @@
-module api.aggregation {
+import {LoadMask} from "../ui/mask/LoadMask";
+import {ElementRenderedEvent} from "../dom/ElementRenderedEvent";
+import {GetAllContentTypesRequest} from "../schema/content/GetAllContentTypesRequest";
+import {ContentTypeSummary} from "../schema/content/ContentTypeSummary";
+import {AggregationView} from "./AggregationView";
+import {AggregationGroupView} from "./AggregationGroupView";
 
-    export class ContentTypeAggregationGroupView extends AggregationGroupView {
+export class ContentTypeAggregationGroupView extends AggregationGroupView {
 
         initialize() {
 
             var displayNameMap: {[name:string]:string} = {};
 
-            var mask: api.ui.mask.LoadMask = new api.ui.mask.LoadMask(this);
+            var mask: LoadMask = new LoadMask(this);
             this.appendChild(mask);
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
+            this.onRendered((event: ElementRenderedEvent) => {
                 mask.show();
             });
 
-            var request = new api.schema.content.GetAllContentTypesRequest();
-            request.sendAndParse().done((contentTypes: api.schema.content.ContentTypeSummary[]) => {
+            var request = new GetAllContentTypesRequest();
+            request.sendAndParse().done((contentTypes: ContentTypeSummary[]) => {
 
-                contentTypes.forEach((contentType: api.schema.content.ContentTypeSummary)=> {
+                contentTypes.forEach((contentType: ContentTypeSummary)=> {
                     displayNameMap[contentType.getName().toLowerCase()] = contentType.getDisplayName();
                 });
 
-                this.getAggregationViews().forEach((aggregationView: api.aggregation.AggregationView)=> {
+                this.getAggregationViews().forEach((aggregationView: AggregationView)=> {
                     aggregationView.setDisplayNamesMap(displayNameMap);
                 });
                 mask.remove();
@@ -30,4 +35,3 @@ module api.aggregation {
 
     }
 
-}

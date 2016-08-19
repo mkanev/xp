@@ -1,25 +1,27 @@
-import "../../api.ts";
+import {SelectedOption} from "../../../../../common/js/ui/selector/combobox/SelectedOption";
+import {MoveContentSummaryLoader} from "../../../../../common/js/content/resource/MoveContentSummaryLoader";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentSelectedOptionsView} from "../../../../../common/js/content/ContentComboBox";
+import {ContentPath} from "../../../../../common/js/content/ContentPath";
+import {RichComboBox} from "../../../../../common/js/ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../../../../../common/js/ui/selector/combobox/RichComboBox";
+import {ContentSummaryViewer} from "../../../../../common/js/content/ContentSummaryViewer";
+import {ContentType} from "../../../../../common/js/schema/content/ContentType";
 
-import SelectedOption = api.ui.selector.combobox.SelectedOption;
-import MoveContentSummaryLoader = api.content.resource.MoveContentSummaryLoader;
-import ContentSummary = api.content.ContentSummary;
-import ContentSelectedOptionsView = api.content.ContentSelectedOptionsView;
-import ContentPath = api.content.ContentPath;
-
-export class ContentMoveComboBox extends api.ui.selector.combobox.RichComboBox<ContentSummary> {
+export class ContentMoveComboBox extends RichComboBox<ContentSummary> {
 
     contentLoader: MoveContentSummaryLoader;
 
     constructor() {
         this.contentLoader = new MoveContentSummaryLoader();
         this.contentLoader.setSize(-1);
-        var richComboBoxBuilder: api.ui.selector.combobox.RichComboBoxBuilder<ContentSummary> = new api.ui.selector.combobox.RichComboBoxBuilder<ContentSummary>();
+        var richComboBoxBuilder: RichComboBoxBuilder<ContentSummary> = new RichComboBoxBuilder<ContentSummary>();
         richComboBoxBuilder
             .setMaximumOccurrences(1)
             .setComboBoxName("contentSelector")
             .setLoader(this.contentLoader)
             .setSelectedOptionsView(new ContentSelectedOptionsView())
-            .setOptionDisplayValueViewer(new api.content.ContentSummaryViewer())
+            .setOptionDisplayValueViewer(new ContentSummaryViewer())
             .setDelayedInputValueChangedHandling(500);
 
         super(richComboBoxBuilder);
@@ -29,7 +31,7 @@ export class ContentMoveComboBox extends api.ui.selector.combobox.RichComboBox<C
         this.contentLoader.setFilterContentPath(contentPath);
     }
 
-    setFilterSourceContentType(contentType: api.schema.content.ContentType) {
+    setFilterSourceContentType(contentType: ContentType) {
         this.contentLoader.setFilterSourceContentType(contentType);
     }
 

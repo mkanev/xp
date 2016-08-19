@@ -1,6 +1,6 @@
-module api.content.page.region {
+import {ComponentPath} from "./ComponentPath";
 
-    export class ComponentChangedEvent {
+export class ComponentChangedEvent {
 
         private path: ComponentPath;
 
@@ -12,4 +12,3 @@ module api.content.page.region {
             return this.path;
         }
     }
-}

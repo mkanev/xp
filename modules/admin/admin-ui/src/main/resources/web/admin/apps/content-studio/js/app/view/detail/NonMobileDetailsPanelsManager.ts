@@ -1,19 +1,21 @@
-import "../../../api.ts";
+import {ResponsiveRanges} from "../../../../../../common/js/ui/responsive/ResponsiveRanges";
+import {ResponsiveItem} from "../../../../../../common/js/ui/responsive/ResponsiveItem";
+import {SplitPanel} from "../../../../../../common/js/ui/panel/SplitPanel";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+import {AppHelper} from "../../../../../../common/js/util/AppHelper";
 
-import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 import {DetailsPanel} from "./DetailsPanel";
 import {NonMobileDetailsPanelToggleButton} from "./button/NonMobileDetailsPanelToggleButton";
 import {ActiveDetailsPanelManager} from "./ActiveDetailsPanelManager";
 
 export class NonMobileDetailsPanelsManager {
 
-    private splitPanelWithGridAndDetails: api.ui.panel.SplitPanel;
+    private splitPanelWithGridAndDetails: SplitPanel;
     private defaultDockedDetailsPanel: DetailsPanel;
     private floatingDetailsPanel: DetailsPanel;
     private resizeEventMonitorLocked: boolean = false;
-    private toggleButton: api.dom.DivEl = new NonMobileDetailsPanelToggleButton();
-    private debouncedResizeHandler: () => void = api.util.AppHelper.debounce(this.doHandleResizeEvent, 300, false);
+    private toggleButton: DivEl = new NonMobileDetailsPanelToggleButton();
+    private debouncedResizeHandler: () => void = AppHelper.debounce(this.doHandleResizeEvent, 300, false);
 
     constructor(builder: NonMobileDetailsPanelsManagerBuilder) {
 
@@ -126,7 +128,7 @@ export class NonMobileDetailsPanelsManager {
         this.splitPanelWithGridAndDetails.foldSecondPanel();
     }
 
-    getToggleButton(): api.dom.DivEl {
+    getToggleButton(): DivEl {
         return this.toggleButton;
     }
 
@@ -214,14 +216,14 @@ export class NonMobileDetailsPanelsManager {
 
 
 export class NonMobileDetailsPanelsManagerBuilder {
-    private splitPanelWithGridAndDetails: api.ui.panel.SplitPanel;
+    private splitPanelWithGridAndDetails: SplitPanel;
     private defaultDockedDetailsPanel: DetailsPanel;
     private floatingDetailsPanel: DetailsPanel;
 
     constructor() {
     }
 
-    setSplitPanelWithGridAndDetails(splitPanelWithGridAndDetails: api.ui.panel.SplitPanel) {
+    setSplitPanelWithGridAndDetails(splitPanelWithGridAndDetails: SplitPanel) {
         this.splitPanelWithGridAndDetails = splitPanelWithGridAndDetails;
     }
 
@@ -233,7 +235,7 @@ export class NonMobileDetailsPanelsManagerBuilder {
         this.floatingDetailsPanel = floatingDetailsPanel;
     }
 
-    getSplitPanelWithGridAndDetails(): api.ui.panel.SplitPanel {
+    getSplitPanelWithGridAndDetails(): SplitPanel {
         return this.splitPanelWithGridAndDetails;
     }
 

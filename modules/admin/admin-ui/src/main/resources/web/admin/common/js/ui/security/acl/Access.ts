@@ -1,6 +1,6 @@
-module api.ui.security.acl {
 
-    export enum Access {
+
+export enum Access {
         FULL,
         READ,
         WRITE,
@@ -8,4 +8,3 @@ module api.ui.security.acl {
         CUSTOM
     }
 
-}

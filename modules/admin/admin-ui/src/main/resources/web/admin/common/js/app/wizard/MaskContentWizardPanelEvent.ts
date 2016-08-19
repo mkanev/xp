@@ -1,8 +1,8 @@
-module api.app.wizard {
+import {ContentId} from "../../content/ContentId";
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
 
-    import ContentId = api.content.ContentId;
-
-    export class MaskContentWizardPanelEvent extends api.event.Event {
+export class MaskContentWizardPanelEvent extends Event {
 
         private contentId: ContentId;
 
@@ -24,12 +24,11 @@ module api.app.wizard {
         }
 
         static on(handler: (event: MaskContentWizardPanelEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: MaskContentWizardPanelEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
 
-}

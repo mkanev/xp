@@ -1,10 +1,14 @@
-module api.application {
+import {ListMarketApplicationsRequest} from "./ListMarketApplicationsRequest";
+import {Application} from "./Application";
+import {MarketApplication} from "./MarketApplication";
+import {MarketAppStatus} from "./MarketApplication";
+import {MarketApplicationResponse} from "./MarketApplicationResponse";
 
-    export class MarketApplicationsFetcher {
+export class MarketApplicationsFetcher {
 
         static fetchChildren(version: string, installedApplications: Application[], from: number = 0,
                              size: number = -1): wemQ.Promise<MarketApplicationResponse> {
-            return new api.application.ListMarketApplicationsRequest()
+            return new ListMarketApplicationsRequest()
                 .setStart(from)
                 .setCount(size)
                 .setVersion(version)
@@ -57,4 +61,3 @@ module api.application {
             return 0;
         }
     }
-}

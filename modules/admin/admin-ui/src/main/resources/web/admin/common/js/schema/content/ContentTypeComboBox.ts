@@ -1,10 +1,20 @@
-module api.schema.content {
+import {RichComboBox} from "../../ui/selector/combobox/RichComboBox";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {ContentTypeSummaryListJson} from "./ContentTypeSummaryListJson";
+import {RichComboBoxBuilder} from "../../ui/selector/combobox/RichComboBox";
+import {BaseSelectedOptionsView} from "../../ui/selector/combobox/BaseSelectedOptionsView";
+import {Option} from "../../ui/selector/Option";
+import {SelectedOption} from "../../ui/selector/combobox/SelectedOption";
+import {RichSelectedOptionView} from "../../ui/selector/combobox/RichSelectedOptionView";
+import {ContentTypeSummary} from "./ContentTypeSummary";
+import {ContentTypeSummaryLoader} from "./ContentTypeSummaryLoader";
+import {ContentTypeSummaryViewer} from "./ContentTypeSummaryViewer";
 
-    export class ContentTypeComboBox extends api.ui.selector.combobox.RichComboBox<ContentTypeSummary> {
+export class ContentTypeComboBox extends RichComboBox<ContentTypeSummary> {
 
-        constructor(maximumOccurrences: number = 0, loader? : api.util.loader.BaseLoader<api.schema.content.ContentTypeSummaryListJson, ContentTypeSummary>) {
+        constructor(maximumOccurrences: number = 0, loader? : BaseLoader<ContentTypeSummaryListJson, ContentTypeSummary>) {
             var loader = loader || new ContentTypeSummaryLoader();
-            super(new api.ui.selector.combobox.RichComboBoxBuilder<ContentTypeSummary>()
+            super(new RichComboBoxBuilder<ContentTypeSummary>()
                 .setLoader(loader)
                 .setSelectedOptionsView(new ContentTypeSelectedOptionsView())
                 .setOptionDisplayValueViewer(new ContentTypeSummaryViewer())
@@ -13,18 +23,18 @@ module api.schema.content {
 
     }
 
-    export class ContentTypeSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTypeSummary> {
+    export class ContentTypeSelectedOptionsView extends BaseSelectedOptionsView<ContentTypeSummary> {
 
-        createSelectedOption(option: api.ui.selector.Option<ContentTypeSummary>): api.ui.selector.combobox.SelectedOption<ContentTypeSummary> {
+        createSelectedOption(option: Option<ContentTypeSummary>): SelectedOption<ContentTypeSummary> {
 
             var optionView = new ContentTypeSelectedOptionView(option);
-            return new api.ui.selector.combobox.SelectedOption<ContentTypeSummary>(optionView, this.count());
+            return new SelectedOption<ContentTypeSummary>(optionView, this.count());
         }
     }
 
-    export class ContentTypeSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentTypeSummary> {
+    export class ContentTypeSelectedOptionView extends RichSelectedOptionView<ContentTypeSummary> {
 
-        constructor(option: api.ui.selector.Option<ContentTypeSummary>) {
+        constructor(option: Option<ContentTypeSummary>) {
             super(option);
         }
 
@@ -41,4 +51,3 @@ module api.schema.content {
         }
 
     }
-}

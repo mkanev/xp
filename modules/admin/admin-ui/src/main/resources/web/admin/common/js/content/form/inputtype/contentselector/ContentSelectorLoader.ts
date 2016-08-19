@@ -1,9 +1,8 @@
-module api.content.form.inputtype.contentselector {
+import {ContentSummaryPreLoader} from "../../../resource/ContentSummaryPreLoader";
+import {ContentSelectorQueryRequest} from "../../../resource/ContentSelectorQueryRequest";
+import {ContentSummary} from "../../../ContentSummary";
 
-    import ContentSummaryPreLoader = api.content.resource.ContentSummaryPreLoader;
-    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
-
-    export class ContentSelectorLoader extends ContentSummaryPreLoader {
+export class ContentSelectorLoader extends ContentSummaryPreLoader {
 
         private contentSelectorQueryRequest: ContentSelectorQueryRequest;
 
@@ -96,4 +95,3 @@ module api.content.form.inputtype.contentselector {
             return new ContentSelectorLoader(this);
         }
     }
-}

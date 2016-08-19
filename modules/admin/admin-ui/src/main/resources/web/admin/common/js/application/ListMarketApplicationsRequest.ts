@@ -1,6 +1,12 @@
-module api.application {
+import {MarketApplicationsListJson} from "./json/MarketApplicationsListJson";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {ApplicationResourceRequest} from "./ApplicationResourceRequest";
+import {MarketApplication} from "./MarketApplication";
+import {MarketApplicationMetadata} from "./MarketApplicationMetadata";
+import {MarketApplicationResponse} from "./MarketApplicationResponse";
 
-    export class ListMarketApplicationsRequest extends ApplicationResourceRequest<api.application.json.MarketApplicationsListJson, MarketApplicationResponse> {
+export class ListMarketApplicationsRequest extends ApplicationResourceRequest<MarketApplicationsListJson, MarketApplicationResponse> {
 
         private version: string;
         private start: number = 0;
@@ -34,12 +40,12 @@ module api.application {
             }
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "getMarketApplications");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "getMarketApplications");
         }
 
         sendAndParse(): wemQ.Promise<MarketApplicationResponse> {
-            return this.send().then((response: api.rest.JsonResponse<api.application.json.MarketApplicationsListJson>) => {
+            return this.send().then((response: JsonResponse<MarketApplicationsListJson>) => {
                 let applications = MarketApplication.fromJsonArray(response.getResult().hits);
                 let hits = applications.length;
                 let totalHits = response.getResult().total;
@@ -47,4 +53,3 @@ module api.application {
             });
         }
     }
-}

@@ -1,12 +1,20 @@
-module api.content.resource {
+import {ContentJson} from "../json/ContentJson";
+import {PropertyTree} from "../../data/PropertyTree";
+import {PrincipalKey} from "../../security/PrincipalKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Content} from "../Content";
+import {ContentName} from "../ContentName";
+import {ExtraData} from "../ExtraData";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class UpdateContentRequest extends ContentResourceRequest<api.content.json.ContentJson, Content> {
+export class UpdateContentRequest extends ContentResourceRequest<ContentJson, Content> {
 
         private id: string;
 
         private name: ContentName;
 
-        private data: api.data.PropertyTree;
+        private data: PropertyTree;
 
         private meta: ExtraData[];
 
@@ -16,7 +24,7 @@ module api.content.resource {
 
         private language: string;
 
-        private owner: api.security.PrincipalKey;
+        private owner: PrincipalKey;
 
         constructor(id: string) {
             super();
@@ -35,7 +43,7 @@ module api.content.resource {
             return this;
         }
 
-        setData(contentData: api.data.PropertyTree): UpdateContentRequest {
+        setData(contentData: PropertyTree): UpdateContentRequest {
             this.data = contentData;
             return this;
         }
@@ -60,7 +68,7 @@ module api.content.resource {
             return this;
         }
 
-        setOwner(owner: api.security.PrincipalKey): UpdateContentRequest {
+        setOwner(owner: PrincipalKey): UpdateContentRequest {
             this.owner = owner;
             return this;
         }
@@ -78,17 +86,16 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "update");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "update");
         }
 
         sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return this.fromJsonToContent(response.getResult());
             });
         }
 
     }
 
-}

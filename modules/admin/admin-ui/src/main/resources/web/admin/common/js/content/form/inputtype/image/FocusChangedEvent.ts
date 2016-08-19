@@ -1,6 +1,6 @@
-module api.content.form.inputtype.image {
 
-    export class FocusChangedEvent {
+
+export class FocusChangedEvent {
 
         private focused:boolean;
 
@@ -12,4 +12,3 @@ module api.content.form.inputtype.image {
             return this.focused;
         }
     }
-}

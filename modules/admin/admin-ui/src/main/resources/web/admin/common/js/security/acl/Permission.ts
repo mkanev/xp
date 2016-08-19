@@ -1,6 +1,6 @@
-module api.security.acl {
 
-    /**
+
+/**
      *  enum Color{
      *      Red, Green
      *  }
@@ -27,4 +27,3 @@ module api.security.acl {
         DENY,
         INHERIT
     }
-}

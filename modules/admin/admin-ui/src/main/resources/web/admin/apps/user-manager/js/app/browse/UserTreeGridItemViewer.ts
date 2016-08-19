@@ -1,7 +1,8 @@
-import "../../api.ts";
+import {NamesAndIconViewer} from "../../../../../common/js/ui/NamesAndIconViewer";
+
 import {UserTreeGridItem, UserTreeGridItemType} from "./UserTreeGridItem";
 
-export class UserTreeGridItemViewer extends api.ui.NamesAndIconViewer<UserTreeGridItem> {
+export class UserTreeGridItemViewer extends NamesAndIconViewer<UserTreeGridItem> {
 
     constructor() {
         super();

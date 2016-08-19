@@ -1,9 +1,8 @@
-module api.util.loader.event {
 
-    export class LoaderEvent {
+
+export class LoaderEvent {
 
         constructor() {
 
         }
     }
-}

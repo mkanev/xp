@@ -1,6 +1,11 @@
-module api.ui.time {
+import {LiEl} from "../../dom/LiEl";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {CalendarDayClickedEvent} from "./CalendarDayClickedEvent";
+import {DayOfWeek} from "./DayOfWeek";
+import {DaysOfWeek} from "./DaysOfWeek";
 
-    export class CalendarDayBuilder {
+export class CalendarDayBuilder {
 
         date: Date;
 
@@ -35,7 +40,7 @@ module api.ui.time {
         }
     }
 
-    export class CalendarDay extends api.dom.LiEl implements api.Equitable {
+    export class CalendarDay extends LiEl implements Equitable {
 
         private date: Date;
 
@@ -158,19 +163,19 @@ module api.ui.time {
             }
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, CalendarDay)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, CalendarDay)) {
                 return false;
             }
 
             var other = <CalendarDay>o;
 
-            if (!api.ObjectHelper.dateEquals(this.date, other.date)) {
+            if (!ObjectHelper.dateEquals(this.date, other.date)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.numberEquals(this.month, other.month)) {
+            if (!ObjectHelper.numberEquals(this.month, other.month)) {
                 return false;
             }
 
@@ -194,4 +199,3 @@ module api.ui.time {
             });
         }
     }
-}

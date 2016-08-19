@@ -1,17 +1,18 @@
-module api.util.htmlarea.editor {
+import {AnchorModalDialog} from "../dialog/AnchorModalDialog";
+import {ImageModalDialog} from "../dialog/ImageModalDialog";
+import {LinkModalDialog} from "../dialog/LinkModalDialog";
+import {HtmlAreaAnchor} from "../dialog/HtmlModalDialog";
+import {HtmlAreaImage} from "../dialog/HtmlModalDialog";
+import {StringHelper} from "../../StringHelper";
+import {ContentImageUrlResolver} from "../../../content/util/ContentImageUrlResolver";
+import {ContentId} from "../../../content/ContentId";
 
-    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
-    import ImageModalDialog = api.util.htmlarea.dialog.ImageModalDialog;
-    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
-    import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
-    import HtmlAreaImage = api.util.htmlarea.dialog.HtmlAreaImage;
-
-    export class HTMLAreaHelper {
+export class HTMLAreaHelper {
 
         private static getConvertedImageSrc(imgSrc:string):string {
-            var contentId = imgSrc.replace(ImageModalDialog.imagePrefix, api.util.StringHelper.EMPTY_STRING),
-                imageUrl = new api.content.util.ContentImageUrlResolver().
-                    setContentId(new api.content.ContentId(contentId)).
+            var contentId = imgSrc.replace(ImageModalDialog.imagePrefix, StringHelper.EMPTY_STRING),
+                imageUrl = new ContentImageUrlResolver().
+                    setContentId(new ContentId(contentId)).
                     setScaleWidth(true).
                     setSize(ImageModalDialog.maxImageWidth).
                     resolve();
@@ -55,7 +56,7 @@ module api.util.htmlarea.editor {
                         src = /<img.*?src="(.*?)".*?>/.exec(imgTags[0])[1];
 
                     var convertedImg = imgTag.replace(src, dataSrc).replace(" data-src=\"" + dataSrc + "\"",
-                        api.util.StringHelper.EMPTY_STRING);
+                        StringHelper.EMPTY_STRING);
                     processedContent = processedContent.replace(imgTag, convertedImg);
                 }
             }
@@ -96,10 +97,10 @@ module api.util.htmlarea.editor {
             switch (alignment) {
                 case 'left':
                 case 'right':
-                    styleAttr = api.util.StringHelper.format(styleFormat, alignment, "15px", "40");
+                    styleAttr = StringHelper.format(styleFormat, alignment, "15px", "40");
                     break;
                 case 'center':
-                    styleAttr = styleAttr + api.util.StringHelper.format(styleFormat, "none", "auto", "60");
+                    styleAttr = styleAttr + StringHelper.format(styleFormat, "none", "auto", "60");
                     break;
             }
 
@@ -111,4 +112,3 @@ module api.util.htmlarea.editor {
             return image.getAttribute("data-src").indexOf("keepSize=true") > 0;
         }
     }
-}

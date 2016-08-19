@@ -1,8 +1,10 @@
-import "../../../../../../api.ts";
+import {FragmentDropdown} from "../../../../../../../../../common/js/content/page/region/FragmentDropdown";
+import {Form} from "../../../../../../../../../common/js/ui/form/Form";
+import {Fieldset} from "../../../../../../../../../common/js/ui/form/Fieldset";
+import {StringHelper} from "../../../../../../../../../common/js/util/StringHelper";
+import {FormItemBuilder} from "../../../../../../../../../common/js/ui/form/FormItem";
 
-import FragmentDropdown = api.content.page.region.FragmentDropdown;
-
-export class FragmentSelectorForm extends api.ui.form.Form {
+export class FragmentSelectorForm extends Form {
 
     private fragmentSelector: FragmentDropdown;
 
@@ -10,12 +12,12 @@ export class FragmentSelectorForm extends api.ui.form.Form {
         super('fragment-dropdown-form');
         this.fragmentSelector = fragmentSelector;
 
-        var fieldSet = new api.ui.form.Fieldset();
-        if (!api.util.StringHelper.isBlank(title)) {
-            fieldSet.add(new api.ui.form.FormItemBuilder(fragmentSelector).setLabel(title).build());
+        var fieldSet = new Fieldset();
+        if (!StringHelper.isBlank(title)) {
+            fieldSet.add(new FormItemBuilder(fragmentSelector).setLabel(title).build());
         }
         else {
-            fieldSet.add(new api.ui.form.FormItemBuilder(fragmentSelector).build());
+            fieldSet.add(new FormItemBuilder(fragmentSelector).build());
         }
 
         this.add(fieldSet);

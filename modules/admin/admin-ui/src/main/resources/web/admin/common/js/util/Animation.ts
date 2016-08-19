@@ -1,6 +1,6 @@
-module api.util {
 
-    export class Animation {
+
+export class Animation {
 
         private static DEFAULT_INTERVAL:number = 10;
 
@@ -53,4 +53,3 @@ module api.util {
             return new Date().getTime();
         }
     }
-}

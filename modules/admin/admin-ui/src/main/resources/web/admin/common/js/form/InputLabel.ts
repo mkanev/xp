@@ -1,6 +1,7 @@
-module api.form {
+import {DivEl} from "../dom/DivEl";
+import {Input} from "./Input";
 
-    export class InputLabel extends api.dom.DivEl {
+export class InputLabel extends DivEl {
 
         private input:Input;
 
@@ -9,8 +10,8 @@ module api.form {
 
             this.input = input;
 
-            var wrapper = new api.dom.DivEl("wrapper");
-            var label = new api.dom.DivEl("label");
+            var wrapper = new DivEl("wrapper");
+            var label = new DivEl("label");
             label.getEl().setInnerHtml(input.getLabel());
             wrapper.getEl().appendChild(label.getHTMLElement());
 
@@ -21,4 +22,3 @@ module api.form {
             this.getEl().appendChild(wrapper.getHTMLElement());
         }
     }
-}

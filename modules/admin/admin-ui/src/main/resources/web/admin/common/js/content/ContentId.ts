@@ -1,6 +1,9 @@
-module api.content {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "../util/StringHelper";
+import {Reference} from "../util/Reference";
 
-    export class ContentId implements api.Equitable {
+export class ContentId implements Equitable {
 
         private value: string;
 
@@ -15,15 +18,15 @@ module api.content {
             return this.value;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentId)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentId)) {
                 return false;
             }
 
             var other = <ContentId>o;
 
-            if (!api.ObjectHelper.stringEquals(this.value, other.value)) {
+            if (!ObjectHelper.stringEquals(this.value, other.value)) {
                 return false;
             }
 
@@ -31,11 +34,10 @@ module api.content {
         }
 
         static isValidContentId(id: string): boolean {
-            return !api.util.StringHelper.isEmpty(id) && !api.util.StringHelper.isBlank(id);
+            return !StringHelper.isEmpty(id) && !StringHelper.isBlank(id);
         }
 
-        static fromReference(reference: api.util.Reference) {
+        static fromReference(reference: Reference) {
             return new ContentId(reference.getNodeId());
         }
     }
-}

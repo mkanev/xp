@@ -1,8 +1,9 @@
-module api.ui.image {
+import {ImgEl} from "../../dom/ImgEl";
+import {DivEl} from "../../dom/DivEl";
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {ResponsiveItem} from "../responsive/ResponsiveItem";
 
-    import ImgEl = api.dom.ImgEl;
-
-    export class ImageCanvas extends api.dom.DivEl {
+export class ImageCanvas extends DivEl {
 
         private image: ImgEl;
 
@@ -25,7 +26,7 @@ module api.ui.image {
 
             this.image = image;
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+            ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
                 console.group('on size changed');
                 if (this.enabled) {
                     this.recalculateHeight(true, false);
@@ -313,4 +314,3 @@ module api.ui.image {
         }
     }
 
-}

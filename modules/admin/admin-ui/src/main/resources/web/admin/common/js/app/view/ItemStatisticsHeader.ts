@@ -1,19 +1,29 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {DivEl} from "../../dom/DivEl";
+import {Element} from "../../dom/Element";
+import {H1El} from "../../dom/H1El";
+import {H4El} from "../../dom/H4El";
+import {ImageLoader} from "../../util/loader/ImageLoader";
+import {ImgEl} from "../../dom/ImgEl";
+import {NewElementBuilder} from "../../dom/Element";
+import {ImgHelper} from "../../dom/ImgElHelper";
+import {SpanEl} from "../../dom/SpanEl";
+import {ViewItem} from "./ViewItem";
 
-    export class ItemStatisticsHeader<M extends api.Equitable> extends api.dom.DivEl {
+export class ItemStatisticsHeader<M extends Equitable> extends DivEl {
 
         private browseItem: ViewItem<M>;
 
-        private iconEl: api.dom.Element;
+        private iconEl: Element;
 
-        private headerTitleEl: api.dom.H1El;
+        private headerTitleEl: H1El;
 
-        private headerPathEl: api.dom.H4El;
+        private headerPathEl: H4El;
 
         constructor() {
             super("header");
-            this.headerTitleEl = new api.dom.H1El("title");
-            this.headerPathEl = new api.dom.H4El("path");
+            this.headerTitleEl = new H1El("title");
+            this.headerPathEl = new H4El("path");
             this.appendChild(this.headerTitleEl);
             this.appendChild(this.headerPathEl);
         }
@@ -46,10 +56,10 @@ module api.app.view {
             }
 
             var size = this.browseItem.getIconSize() || 64,
-                icon: HTMLImageElement = api.util.loader.ImageLoader.get(value + "?size=size", size, size);
+                icon: HTMLImageElement = ImageLoader.get(value + "?size=size", size, size);
 
-            this.iconEl = <api.dom.ImgEl> new api.dom.Element(new api.dom.NewElementBuilder().setTagName("img").setHelper(
-                new api.dom.ImgHelper(icon)));
+            this.iconEl = <ImgEl> new Element(new NewElementBuilder().setTagName("img").setHelper(
+                new ImgHelper(icon)));
 
             this.prependChild(this.iconEl);
         }
@@ -60,17 +70,17 @@ module api.app.view {
         }
 
         private createIconEl(item: ViewItem<M>) {
-            var iconEl: api.dom.Element;
+            var iconEl: Element;
 
             if (item.getIconUrl()) {
                 var size = item.getIconSize() || 64,
-                    icon: HTMLImageElement = api.util.loader.ImageLoader.get(item.getIconUrl() + "?size=size", size, size);
+                    icon: HTMLImageElement = ImageLoader.get(item.getIconUrl() + "?size=size", size, size);
 
-                iconEl = <api.dom.ImgEl> new api.dom.Element(new api.dom.NewElementBuilder().
+                iconEl = <ImgEl> new Element(new NewElementBuilder().
                     setTagName("img").
-                    setHelper(new api.dom.ImgHelper(icon)));
+                    setHelper(new ImgHelper(icon)));
             } else {
-                iconEl = new api.dom.DivEl(item.getIconClass());
+                iconEl = new DivEl(item.getIconClass());
             }
 
             iconEl.addClass("font-icon-default");
@@ -79,10 +89,9 @@ module api.app.view {
         }
 
         private appendToHeaderPath(value, className) {
-            var pathName = new api.dom.SpanEl(className);
+            var pathName = new SpanEl(className);
             pathName.getEl().setInnerHtml(value);
             this.headerPathEl.appendChild(pathName);
         }
     }
 
-}

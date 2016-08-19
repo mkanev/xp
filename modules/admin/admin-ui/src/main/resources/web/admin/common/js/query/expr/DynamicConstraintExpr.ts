@@ -1,6 +1,7 @@
-module api.query.expr {
+import {ConstraintExpr} from "./ConstraintExpr";
+import {FunctionExpr} from "./FunctionExpr";
 
-    export class DynamicConstraintExpr implements ConstraintExpr {
+export class DynamicConstraintExpr implements ConstraintExpr {
         private func: FunctionExpr;
 
         constructor(func: FunctionExpr) {
@@ -15,4 +16,3 @@ module api.query.expr {
             return this.func.toString();
         }
     }
-}

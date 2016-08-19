@@ -1,6 +1,7 @@
-module api.ui.uploader {
+import {Equitable} from "../../Equitable";
+import {UploadItem} from "./UploadItem";
 
-    export class FileUploadFailedEvent<ITEM extends api.Equitable> {
+export class FileUploadFailedEvent<ITEM extends Equitable> {
 
         private uploadItem: UploadItem<ITEM>;
 
@@ -12,4 +13,3 @@ module api.ui.uploader {
             return this.uploadItem;
         }
     }
-}

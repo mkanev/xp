@@ -1,7 +1,7 @@
-import "../../../../../api.ts";
+import {CompareStatus} from "../../../../../../../../common/js/content/CompareStatus";
+import {CompareStatusFormatter} from "../../../../../../../../common/js/content/CompareStatus";
+import {SpanEl} from "../../../../../../../../common/js/dom/SpanEl";
 
-import CompareStatus = api.content.CompareStatus;
-import CompareStatusFormatter = api.content.CompareStatusFormatter;
 import {WidgetItemView} from "../../WidgetItemView";
 
 export class StatusWidgetItemView extends WidgetItemView {
@@ -32,7 +32,7 @@ export class StatusWidgetItemView extends WidgetItemView {
 
         return super.layout().then(() => {
             if (this.status != undefined) {
-                var statusEl = new api.dom.SpanEl().setHtml(CompareStatusFormatter.formatStatus(this.status).toLocaleUpperCase());
+                var statusEl = new SpanEl().setHtml(CompareStatusFormatter.formatStatus(this.status).toLocaleUpperCase());
                 statusEl.addClass(CompareStatus[this.status].toLowerCase().replace("_", "-") || "unknown");
 
                 this.removeChildren();

@@ -1,6 +1,8 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {PageView} from "./PageView";
 
-    export class LiveEditPageViewReadyEvent extends api.event.Event {
+export class LiveEditPageViewReadyEvent extends Event {
 
         private pageView: PageView;
 
@@ -16,11 +18,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: LiveEditPageViewReadyEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: LiveEditPageViewReadyEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

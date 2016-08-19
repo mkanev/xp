@@ -1,6 +1,6 @@
-module api.query.expr {
+import {Expression} from "./Expression";
 
-    export class FieldExpr implements Expression {
+export class FieldExpr implements Expression {
 
         private name: string;
 
@@ -16,4 +16,3 @@ module api.query.expr {
             return this.name;
         }
     }
-}

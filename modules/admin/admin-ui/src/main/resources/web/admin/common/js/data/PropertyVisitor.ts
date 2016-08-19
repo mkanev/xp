@@ -1,6 +1,9 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertySet} from "./PropertySet";
+import {ValueType} from "./ValueType";
+import {ValueTypes} from "./ValueTypes";
 
-    export class PropertyVisitor {
+export class PropertyVisitor {
 
         private valueType: ValueType;
 
@@ -29,4 +32,3 @@ module api.data {
             throw new Error("Must be implemented by inheritor");
         }
     }
-}

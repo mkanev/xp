@@ -1,10 +1,12 @@
-module api.content.attachment {
+import {DivEl} from "../../dom/DivEl";
+import {AEl} from "../../dom/AEl";
+import {UriHelper} from "../../util/UriHelper";
 
-    export class AttachmentItem extends api.dom.DivEl {
+export class AttachmentItem extends DivEl {
 
-        private link: api.dom.AEl;
+        private link: AEl;
 
-        private removeEl: api.dom.DivEl;
+        private removeEl: DivEl;
 
         private value: string;
 
@@ -13,14 +15,14 @@ module api.content.attachment {
 
             this.value = value;
 
-            this.link = new api.dom.AEl().setUrl(api.util.UriHelper.getRestUri('content/media/' + contentId + '/' + value));
+            this.link = new AEl().setUrl(UriHelper.getRestUri('content/media/' + contentId + '/' + value));
             this.link.setHtml(value);
 
             this.initRemoveButton(removeCallback);
         }
 
         private initRemoveButton(callback?: (value) => void) {
-            this.removeEl = new api.dom.DivEl("icon remove");
+            this.removeEl = new DivEl("icon remove");
 
             this.removeEl.onClicked(() => {
                 if (callback) {
@@ -44,4 +46,3 @@ module api.content.attachment {
             });
         }
     }
-}

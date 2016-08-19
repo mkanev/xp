@@ -1,7 +1,6 @@
-import "../../../../../../api.ts";
-
-import PageModel = api.content.page.PageModel;
-import PageTemplate = api.content.page.PageTemplate;
+import {PageModel} from "../../../../../../../../../common/js/content/page/PageModel";
+import {PageTemplate} from "../../../../../../../../../common/js/content/page/PageTemplate";
+import {PageTemplateDisplayName} from "../../../../../../../../../common/js/content/page/PageMode";
 
 export class PageTemplateOption {
 
@@ -23,7 +22,7 @@ export class PageTemplateOption {
     }
 
     isCustom(): boolean {
-        var pageTemplateDisplayName = api.content.page.PageTemplateDisplayName;
+        var pageTemplateDisplayName = PageTemplateDisplayName;
 
         return this.template && this.template.getDisplayName() == pageTemplateDisplayName[pageTemplateDisplayName.Custom];
     }

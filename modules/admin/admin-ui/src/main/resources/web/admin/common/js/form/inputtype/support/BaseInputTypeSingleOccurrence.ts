@@ -1,32 +1,42 @@
-module api.form.inputtype.support {
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {DivEl} from "../../../dom/DivEl";
+import {InputTypeView} from "../InputTypeView";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Input} from "../../Input";
+import {PropertyValueChangedEvent} from "../../../data/PropertyValueChangedEvent";
+import {InputValidityChangedEvent} from "../InputValidityChangedEvent";
+import {InputValueChangedEvent} from "../InputValueChangedEvent";
+import {assertNotNull} from "../../../util/Assert";
+import {Element} from "../../../dom/Element";
+import {ClassHelper} from "../../../ClassHelper";
+import {InputValidationRecording} from "../InputValidationRecording";
+import {ContentSummary} from "../../../content/ContentSummary";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
+export class BaseInputTypeSingleOccurrence<RAW_VALUE_TYPE> extends DivEl implements InputTypeView<RAW_VALUE_TYPE> {
 
-    export class BaseInputTypeSingleOccurrence<RAW_VALUE_TYPE> extends api.dom.DivEl implements api.form.inputtype.InputTypeView<RAW_VALUE_TYPE> {
+        private context: InputTypeViewContext;
 
-        private context: api.form.inputtype.InputTypeViewContext;
-
-        protected input: api.form.Input;
+        protected input: Input;
 
         private property: Property;
 
-        private propertyListener: (event: api.data.PropertyValueChangedEvent) => void;
+        private propertyListener: (event: PropertyValueChangedEvent) => void;
 
         protected ignorePropertyChange: boolean;
 
-        private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
+        private inputValidityChangedListeners: {(event: InputValidityChangedEvent) : void}[] = [];
 
-        private inputValueChangedListeners: {(event: api.form.inputtype.InputValueChangedEvent): void}[] = [];
+        private inputValueChangedListeners: {(event: InputValueChangedEvent): void}[] = [];
 
-        constructor(ctx: api.form.inputtype.InputTypeViewContext, className?: string) {
+        constructor(ctx: InputTypeViewContext, className?: string) {
             super("input-type-view" + ( className ? " " + className : ""));
-            api.util.assertNotNull(ctx, "CONTEXT cannot be null");
+            assertNotNull(ctx, "CONTEXT cannot be null");
             this.context = ctx;
 
-            this.propertyListener = (event: api.data.PropertyValueChangedEvent) => {
+            this.propertyListener = (event: PropertyValueChangedEvent) => {
                 if (!this.ignorePropertyChange) {
                     this.updateProperty(event.getProperty(), true).done();
                 }
@@ -37,11 +47,11 @@ module api.form.inputtype.support {
 
         }
 
-        public getContext(): api.form.inputtype.InputTypeViewContext {
+        public getContext(): InputTypeViewContext {
             return this.context;
         }
 
-        getElement(): api.dom.Element {
+        getElement(): Element {
             return this;
         }
 
@@ -49,7 +59,7 @@ module api.form.inputtype.support {
             return true;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             var property = propertyArray.get(0);
             this.registerProperty(property);
 
@@ -57,9 +67,9 @@ module api.form.inputtype.support {
             return wemQ<void>(null);
         }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
+        layoutProperty(input: Input, property: Property): wemQ.Promise<void> {
 
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
@@ -70,7 +80,7 @@ module api.form.inputtype.support {
         }
 
         updateProperty(property: Property, unchangedOnly?: boolean): wemQ.Promise<void> {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         protected registerProperty(property: Property) {
@@ -95,11 +105,11 @@ module api.form.inputtype.support {
         }
 
         getValueType(): ValueType {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         newInitialValue(): Value {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         /**
@@ -113,65 +123,64 @@ module api.form.inputtype.support {
             return true;
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
+        validate(silent: boolean = true): InputValidationRecording {
 
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
-        protected notifyValidityChanged(event: api.form.inputtype.InputValidityChangedEvent) {
-            this.inputValidityChangedListeners.forEach((listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
+        protected notifyValidityChanged(event: InputValidityChangedEvent) {
+            this.inputValidityChangedListeners.forEach((listener: (event: InputValidityChangedEvent)=>void) => {
                 listener(event);
             });
         }
 
-        onValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
+        onValidityChanged(listener: (event: InputValidityChangedEvent)=>void) {
             this.inputValidityChangedListeners.push(listener);
         }
 
-        unValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
-            this.inputValidityChangedListeners.filter((currentListener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
+        unValidityChanged(listener: (event: InputValidityChangedEvent)=>void) {
+            this.inputValidityChangedListeners.filter((currentListener: (event: InputValidityChangedEvent)=>void) => {
                 return listener == currentListener;
             });
         }
 
-        onValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
+        onValueChanged(listener: (event: InputValueChangedEvent) => void) {
             this.inputValueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
+        unValueChanged(listener: (event: InputValueChangedEvent) => void) {
             this.inputValueChangedListeners = this.inputValueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        protected notifyValueChanged(event: api.form.inputtype.InputValueChangedEvent) {
-            this.inputValueChangedListeners.forEach((listener: (event: api.form.inputtype.InputValueChangedEvent)=>void) => {
+        protected notifyValueChanged(event: InputValueChangedEvent) {
+            this.inputValueChangedListeners.forEach((listener: (event: InputValueChangedEvent)=>void) => {
                 listener(event);
             });
         }
 
         onFocus(listener: (event: FocusEvent) => void) {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         unFocus(listener: (event: FocusEvent) => void) {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         onBlur(listener: (event: FocusEvent) => void) {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         unBlur(listener: (event: FocusEvent) => void) {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(listener: (content: ContentSummary) => void) {
             // Adapter for InputTypeView method, to be implemented on demand in inheritors
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(listener: (content: ContentSummary) => void) {
             // Adapter for InputTypeView method, to be implemented on demand in inheritors
         }
     }
-}

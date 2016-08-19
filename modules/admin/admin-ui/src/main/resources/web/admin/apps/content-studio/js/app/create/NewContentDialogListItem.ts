@@ -1,6 +1,4 @@
-import "../../api.ts";
-
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
 
 export class NewContentDialogListItem {
 

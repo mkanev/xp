@@ -1,6 +1,6 @@
-module api.aggregation {
+import {BucketView} from "./BucketView";
 
-    export class AggregationEntryViewSelectionChangedEvent {
+export class AggregationEntryViewSelectionChangedEvent {
 
         private oldValue: boolean;
 
@@ -26,4 +26,3 @@ module api.aggregation {
             return this.bucketView;
         }
     }
-}

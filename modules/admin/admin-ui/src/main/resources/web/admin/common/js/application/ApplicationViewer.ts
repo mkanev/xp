@@ -1,6 +1,7 @@
-module api.application {
+import {NamesAndIconViewer} from "../ui/NamesAndIconViewer";
+import {Application} from "./Application";
 
-    export class ApplicationViewer extends api.ui.NamesAndIconViewer<Application> {
+export class ApplicationViewer extends NamesAndIconViewer<Application> {
 
         constructor() {
             super("application-viewer");
@@ -34,4 +35,3 @@ module api.application {
             return "icon-puzzle icon-large";
         }
     }
-}

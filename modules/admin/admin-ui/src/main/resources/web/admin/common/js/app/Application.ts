@@ -1,6 +1,8 @@
-module api.app {
+import {Path} from "../rest/Path";
+import {IFrameEl} from "../dom/IFrameEl";
+import {ElementHelper} from "../dom/ElementHelper";
 
-    export enum ApplicationShowStatus {
+export enum ApplicationShowStatus {
         NOT_DISPLAYED,
         PREPARING,
         DISPLAYED
@@ -15,11 +17,11 @@ module api.app {
         private openTabs: number;
         private status: ApplicationShowStatus;
         private loaded: boolean;
-        private path: api.rest.Path;
+        private path: Path;
         private loadedListeners: {(): void}[] = [];
         private window: Window;
 
-        constructor(id: string, name: string, shortName: string, icon: string, appFrame: api.dom.IFrameEl = null,
+        constructor(id: string, name: string, shortName: string, icon: string, appFrame: IFrameEl = null,
                     iconImage: boolean = false) {
             this.id = id;
             this.name = name;
@@ -30,12 +32,12 @@ module api.app {
             this.status = ApplicationShowStatus.NOT_DISPLAYED;
         }
 
-        static getApplication(): api.app.App {
+        static getApplication(): App {
             return window.parent['getApplication'] ? window.parent['getApplication'](App.getAppId()) : null;
         }
 
         static getAppId(): string {
-            return window.frameElement ? new api.dom.ElementHelper(<HTMLElement>window.frameElement).getAttribute("data-wem-app-id") : null;
+            return window.frameElement ? new ElementHelper(<HTMLElement>window.frameElement).getAttribute("data-wem-app-id") : null;
         }
 
         isLoaded(): boolean {
@@ -102,12 +104,12 @@ module api.app {
             return this;
         }
 
-        setPath(path: api.rest.Path): App {
+        setPath(path: Path): App {
             this.path = path;
             return this;
         }
 
-        getPath(): api.rest.Path {
+        getPath(): Path {
             return this.path;
         }
 
@@ -140,4 +142,3 @@ module api.app {
         }
     }
 
-}

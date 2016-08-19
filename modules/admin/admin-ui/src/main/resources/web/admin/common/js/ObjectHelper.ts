@@ -1,8 +1,8 @@
-module api {
+import {NumberHelper} from "./util/NumberHelper";
+import {ClassHelper} from "./ClassHelper";
+import {Equitable} from "./Equitable";
 
-    import NumberHelper = api.util.NumberHelper;
-
-    /**
+/**
      * Helps with doing a IFRAME-safe instanceof and doing equals on different types of objects.
      */
     export class ObjectHelper {
@@ -290,4 +290,3 @@ module api {
             }
         }
     }
-}

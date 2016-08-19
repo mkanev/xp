@@ -1,6 +1,6 @@
-module api.icon {
 
-    export class IconUrlResolver {
+
+export class IconUrlResolver {
 
         appendParam(paramName: string, paramValue: string, url: string) {
             var questionIndex = url.indexOf("?");
@@ -18,4 +18,3 @@ module api.icon {
             }
         }
     }
-}

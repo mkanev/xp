@@ -1,9 +1,10 @@
-import "../../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
+
 import {ContentWizardPanel} from "../ContentWizardPanel";
 import {ContentUnpublishPromptEvent} from "../../browse/ContentUnpublishPromptEvent";
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-
-export class UnpublishAction extends api.ui.Action {
+export class UnpublishAction extends Action {
 
     private wizard: ContentWizardPanel;
 
@@ -20,7 +21,7 @@ export class UnpublishAction extends api.ui.Action {
                         this.fireContentUnpublishPromptEvent();
                     }
                 }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason)
+                    DefaultErrorHandler.handle(reason)
                 }).finally(() => this.setEnabled(true)).done();
             } else {
                 this.fireContentUnpublishPromptEvent();

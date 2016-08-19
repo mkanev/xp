@@ -1,6 +1,8 @@
-module api.app {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {App} from "./Application";
 
-    export class ShowAppLauncherEvent extends api.event.Event {
+export class ShowAppLauncherEvent extends Event {
 
         private application: App;
 
@@ -21,8 +23,7 @@ module api.app {
         }
 
         static on(handler: (event: ShowAppLauncherEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
     }
-}

@@ -1,21 +1,29 @@
-import "../../../../../api.ts";
-import {WidgetItemView} from "../../WidgetItemView";
+import {CompareStatus} from "../../../../../../../../common/js/content/CompareStatus";
+import {ContentSummary} from "../../../../../../../../common/js/content/ContentSummary";
+import {Content} from "../../../../../../../../common/js/content/Content";
+import {ContentId} from "../../../../../../../../common/js/content/ContentId";
+import {CompareStatusFormatter} from "../../../../../../../../common/js/content/CompareStatus";
+import {AccessControlList} from "../../../../../../../../common/js/security/acl/AccessControlList";
+import {Access} from "../../../../../../../../common/js/ui/security/acl/Access";
+import {AccessControlEntry} from "../../../../../../../../common/js/security/acl/AccessControlEntry";
+import {AccessControlEntryView} from "../../../../../../../../common/js/ui/security/acl/AccessControlEntryView";
+import {UserAccessListView} from "../../../../../../../../common/js/ui/security/acl/UserAccessListView";
+import {UserAccessListItemView} from "../../../../../../../../common/js/ui/security/acl/UserAccessListItemView";
+import {Permission} from "../../../../../../../../common/js/security/acl/Permission";
+import {Principal} from "../../../../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../../../../common/js/security/PrincipalKey";
+import {User} from "../../../../../../../../common/js/security/User";
+import {SpanEl} from "../../../../../../../../common/js/dom/SpanEl";
+import {RoleKeys} from "../../../../../../../../common/js/security/RoleKeys";
+import {DivEl} from "../../../../../../../../common/js/dom/DivEl";
+import {AEl} from "../../../../../../../../common/js/dom/AEl";
+import {OpenEditPermissionsDialogEvent} from "../../../../../../../../common/js/content/event/OpenEditPermissionsDialogEvent";
+import {GetEffectivePermissionsRequest} from "../../../../../../../../common/js/content/resource/GetEffectivePermissionsRequest";
+import {EffectivePermission} from "../../../../../../../../common/js/ui/security/acl/EffectivePermission";
+import {IsAuthenticatedRequest} from "../../../../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {GetContentByIdRequest} from "../../../../../../../../common/js/content/resource/GetContentByIdRequest";
 
-import CompareStatus = api.content.CompareStatus;
-import ContentSummary = api.content.ContentSummary;
-import Content = api.content.Content;
-import ContentId = api.content.ContentId;
-import CompareStatusFormatter = api.content.CompareStatusFormatter;
-import AccessControlList = api.security.acl.AccessControlList;
-import Access = api.ui.security.acl.Access;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import AccessControlEntryView = api.ui.security.acl.AccessControlEntryView;
-import UserAccessListView = api.ui.security.acl.UserAccessListView;
-import UserAccessListItemView = api.ui.security.acl.UserAccessListItemView;
-import Permission = api.security.acl.Permission;
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import User = api.security.User;
+import {WidgetItemView} from "../../WidgetItemView";
 
 export class UserAccessWidgetItemView extends WidgetItemView {
 
@@ -23,7 +31,7 @@ export class UserAccessWidgetItemView extends WidgetItemView {
 
     private accessListView: UserAccessListView;
 
-    private headerEl: api.dom.SpanEl;
+    private headerEl: SpanEl;
 
     private bottomEl;
 
@@ -57,7 +65,7 @@ export class UserAccessWidgetItemView extends WidgetItemView {
 
 
     private layoutHeader(content: Content) {
-        var entry = content.getPermissions().getEntry(api.security.RoleKeys.EVERYONE);
+        var entry = content.getPermissions().getEntry(RoleKeys.EVERYONE);
         this.everyoneAccessValue = null;
 
         if (this.hasChild(this.headerEl)) {
@@ -69,11 +77,11 @@ export class UserAccessWidgetItemView extends WidgetItemView {
             this.everyoneAccessValue = AccessControlEntryView.getAccessValueFromEntry(entry);
             var headerStr = entry.getPrincipalDisplayName() + " " + this.getOptionName(this.everyoneAccessValue) +
                             " this item";
-            var headerStrEl = new api.dom.SpanEl("header-string").setHtml(headerStr);
+            var headerStrEl = new SpanEl("header-string").setHtml(headerStr);
 
-            this.headerEl = new api.dom.DivEl("user-access-widget-header");
+            this.headerEl = new DivEl("user-access-widget-header");
 
-            this.headerEl.appendChild(new api.dom.DivEl("icon-menu4"));
+            this.headerEl.appendChild(new DivEl("icon-menu4"));
             this.headerEl.appendChild(headerStrEl);
             this.prependChild(this.headerEl);
         }
@@ -85,11 +93,11 @@ export class UserAccessWidgetItemView extends WidgetItemView {
             this.removeChild(this.bottomEl);
         }
 
-        this.bottomEl = new api.dom.AEl("edit-permissions-link").setHtml("Edit Permissions");
+        this.bottomEl = new AEl("edit-permissions-link").setHtml("Edit Permissions");
         this.appendChild(this.bottomEl);
 
         this.bottomEl.onClicked((event: MouseEvent) => {
-            new api.content.event.OpenEditPermissionsDialogEvent(content).fire();
+            new OpenEditPermissionsDialogEvent(content).fire();
             event.stopPropagation();
             event.preventDefault();
             return false;
@@ -101,9 +109,9 @@ export class UserAccessWidgetItemView extends WidgetItemView {
 
         var deferred = wemQ.defer<boolean>();
 
-        var request = new api.content.resource.GetEffectivePermissionsRequest(content.getContentId());
+        var request = new GetEffectivePermissionsRequest(content.getContentId());
 
-        request.sendAndParse().then((results: api.ui.security.acl.EffectivePermission[]) => {
+        request.sendAndParse().then((results: EffectivePermission[]) => {
 
             if (this.hasChild(this.accessListView)) {
                 this.removeChild(this.accessListView);
@@ -130,16 +138,16 @@ export class UserAccessWidgetItemView extends WidgetItemView {
     }
 
     private layoutUserAccess(): wemQ.Promise<any> {
-        return new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult) => {
+        return new IsAuthenticatedRequest().sendAndParse().then((loginResult) => {
 
             this.currentUser = loginResult.getUser();
             if (this.contentId) {
-                return new api.content.resource.GetContentByIdRequest(this.contentId).sendAndParse().then((content: Content) => {
+                return new GetContentByIdRequest(this.contentId).sendAndParse().then((content: Content) => {
                     if (content) {
                         this.layoutHeader(content);
                         return this.layoutList(content).then(() => {
                             if (content.isAnyPrincipalAllowed(loginResult.getPrincipals(),
-                                    api.security.acl.Permission.WRITE_PERMISSIONS)) {
+                                    Permission.WRITE_PERMISSIONS)) {
 
                                 this.layoutBottom(content);
                             }
@@ -150,10 +158,10 @@ export class UserAccessWidgetItemView extends WidgetItemView {
         });
     }
 
-    private getUserAccessList(results: api.ui.security.acl.EffectivePermission[]): UserAccessListItemView[] {
+    private getUserAccessList(results: EffectivePermission[]): UserAccessListItemView[] {
 
         return results.filter(item => item.getAccess() != this.everyoneAccessValue &&
-                                      item.getPermissionAccess().getCount() > 0).map((item: api.ui.security.acl.EffectivePermission) => {
+                                      item.getPermissionAccess().getCount() > 0).map((item: EffectivePermission) => {
             var view = new UserAccessListItemView();
             view.setObject(item);
             view.setCurrentUser(this.currentUser);

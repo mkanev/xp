@@ -1,14 +1,17 @@
-module api.query {
+import {ValueExpr} from "./expr/ValueExpr";
+import {FunctionExpr} from "./expr/FunctionExpr";
+import {DynamicConstraintExpr} from "./expr/DynamicConstraintExpr";
+import {LogicalExpr} from "./expr/LogicalExpr";
+import {LogicalOperator} from "./expr/LogicalOperator";
+import {Expression} from "./expr/Expression";
+import {FulltextSearchExpression} from "./FulltextSearchExpression";
+import {FulltextSearchExpressionBuilder} from "./FulltextSearchExpression";
+import {QueryField} from "./QueryField";
+import {QueryFields} from "./QueryFields";
 
-    import ValueExpr = api.query.expr.ValueExpr;
-    import FunctionExpr = api.query.expr.FunctionExpr;
-    import DynamicConstraintExpr = api.query.expr.DynamicConstraintExpr;
-    import LogicalExpr = api.query.expr.LogicalExpr;
-    import LogicalOperator = api.query.expr.LogicalOperator;
+export class PathMatchExpression extends FulltextSearchExpression {
 
-    export class PathMatchExpression extends FulltextSearchExpression {
-
-        static createWithPath(searchString: string, queryFields: QueryFields, path: string): api.query.expr.Expression {
+        static createWithPath(searchString: string, queryFields: QueryFields, path: string): Expression {
 
             var expression = FulltextSearchExpression.create(searchString, queryFields);
 
@@ -43,10 +46,8 @@ module api.query {
             return this;
         }
 
-        build(): api.query.expr.Expression {
+        build(): Expression {
             return PathMatchExpression.createWithPath(this.searchString, this.queryFields, this.path);
         }
     }
-
-}
 

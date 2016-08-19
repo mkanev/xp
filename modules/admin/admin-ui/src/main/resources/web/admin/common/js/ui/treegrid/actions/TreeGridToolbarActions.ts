@@ -1,14 +1,17 @@
-module api.ui.treegrid.actions {
+import {Action} from "../../Action";
+import {TreeGrid} from "../TreeGrid";
+import {Equitable} from "../../../Equitable";
+import {BrowseItem} from "../../../app/browse/BrowseItem";
+import {ClearSelectionAction} from "./ClearSelectionAction";
+import {SelectAllAction} from "./SelectAllAction";
+import {TreeGridActions} from "./TreeGridActions";
 
-    import Action = api.ui.Action;
-    import TreeGrid = api.ui.treegrid.TreeGrid;
+export class TreeGridToolbarActions<M extends Equitable> implements TreeGridActions<M> {
 
-    export class TreeGridToolbarActions<M extends api.Equitable> implements TreeGridActions<M> {
-
-        public SELECT_ALL: api.ui.Action;
+        public SELECT_ALL: Action;
         public CLEAR_SELECTION: ClearSelectionAction<M>;
 
-        private actions: api.ui.Action[] = [];
+        private actions: Action[] = [];
 
         constructor(grid: TreeGrid<any>) {
             this.SELECT_ALL = new SelectAllAction(grid);
@@ -16,14 +19,13 @@ module api.ui.treegrid.actions {
             this.actions.push(this.SELECT_ALL, this.CLEAR_SELECTION);
         }
 
-        getAllActions(): api.ui.Action[] {
+        getAllActions(): Action[] {
             return this.actions;
         }
 
-        updateActionsEnabledState(browseItems: api.app.browse.BrowseItem<M>[]): wemQ.Promise<api.app.browse.BrowseItem<M>[]> {
-            var deferred = wemQ.defer<api.app.browse.BrowseItem<M>[]>();
+        updateActionsEnabledState(browseItems: BrowseItem<M>[]): wemQ.Promise<BrowseItem<M>[]> {
+            var deferred = wemQ.defer<BrowseItem<M>[]>();
             deferred.resolve(browseItems);
             return deferred.promise;
         }
     }
-}

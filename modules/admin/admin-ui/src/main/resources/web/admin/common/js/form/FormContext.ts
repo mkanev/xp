@@ -1,9 +1,9 @@
-module api.form {
+import {PropertyPath} from "../data/PropertyPath";
+import {PropertyArray} from "../data/PropertyArray";
+import {InputTypeViewContext} from "./inputtype/InputTypeViewContext";
+import {Input} from "./Input";
 
-    import PropertyPath = api.data.PropertyPath;
-    import PropertyArray = api.data.PropertyArray;
-
-    export class FormContext {
+export class FormContext {
 
         private showEmptyFormItemSetOccurrences: boolean;
 
@@ -24,9 +24,9 @@ module api.form {
         }
 
         createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
-                                   input: Input): api.form.inputtype.InputTypeViewContext {
+                                   input: Input): InputTypeViewContext {
 
-            return <api.form.inputtype.InputTypeViewContext> {
+            return <InputTypeViewContext> {
                 formContext: this,
                 input: input,
                 inputConfig: inputTypeConfig,
@@ -48,4 +48,3 @@ module api.form {
             return new FormContext(this);
         }
     }
-}

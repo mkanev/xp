@@ -1,6 +1,6 @@
-module api.ui.button {
+import {Button} from "./Button";
 
-    export class TogglerButton extends api.ui.button.Button {
+export class TogglerButton extends Button {
 
         private activeListeners: {(isActive: boolean): void}[] = [];
 
@@ -53,4 +53,3 @@ module api.ui.button {
             });
         }
     }
-}

@@ -1,8 +1,8 @@
-module api.app.wizard {
+import {ValidationRecording} from "../../form/ValidationRecording";
+import {Panel} from "../../ui/panel/Panel";
+import {WizardStepValidityChangedEvent} from "./WizardStepValidityChangedEvent";
 
-    import ValidationRecording = api.form.ValidationRecording;
-
-    export class WizardStepForm extends api.ui.panel.Panel {
+export class WizardStepForm extends Panel {
 
         private validityChangedListeners: {(event: WizardStepValidityChangedEvent): void}[] = [];
 
@@ -90,4 +90,3 @@ module api.app.wizard {
         }
 
     }
-}

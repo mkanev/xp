@@ -1,6 +1,6 @@
-module api.form {
 
-    export class AdditionalValidationRecord {
+
+export class AdditionalValidationRecord {
 
         private message: string;
         private overwriteDefault: boolean = false;
@@ -56,4 +56,3 @@ module api.form {
         }
     }
 
-}

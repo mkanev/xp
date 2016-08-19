@@ -1,6 +1,6 @@
-module api.content.page {
+import {PageMode} from "./PageMode";
 
-    export class PageModeChangedEvent {
+export class PageModeChangedEvent {
 
         private previousMode: PageMode;
 
@@ -19,4 +19,3 @@ module api.content.page {
             return this.newMode;
         }
     }
-}

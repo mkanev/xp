@@ -1,6 +1,6 @@
-module api.notify {
+import {NotifyManager} from "./NotifyManager";
 
-    export function showSuccess(message: string, autoHide: boolean = true): string {
+export function showSuccess(message: string, autoHide: boolean = true): string {
         return NotifyManager.get().showSuccess(message, autoHide);
     }
 
@@ -16,4 +16,3 @@ module api.notify {
         return NotifyManager.get().showWarning(message, autoHide);
     }
 
-}

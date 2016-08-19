@@ -1,6 +1,6 @@
-module api.util.loader.event {
+import {LoaderEvent} from "./LoaderEvent";
 
-    export class LoadedDataEvent<V> extends LoaderEvent {
+export class LoadedDataEvent<V> extends LoaderEvent {
 
         private data: V[];
 
@@ -20,4 +20,3 @@ module api.util.loader.event {
             return this.postLoad;
         }
     }
-}

@@ -1,4 +1,21 @@
-import "../../../api.ts";
+import {WizardActions} from "../../../../../../common/js/app/wizard/WizardActions";
+import {Content} from "../../../../../../common/js/content/Content";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {SaveAction} from "../../../../../../common/js/app/wizard/SaveAction";
+import {CloseAction} from "../../../../../../common/js/app/wizard/CloseAction";
+import {SaveAndCloseAction} from "../../../../../../common/js/app/wizard/SaveAndCloseAction";
+import {IsAuthenticatedRequest} from "../../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {LoginResult} from "../../../../../../common/js/security/auth/LoginResult";
+import {PermissionHelper} from "../../../../../../common/js/security/acl/PermissionHelper";
+import {Permission} from "../../../../../../common/js/security/acl/Permission";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../../common/js/content/CompareStatus";
+import {GetContentByPathRequest} from "../../../../../../common/js/content/resource/GetContentByPathRequest";
+import {GetContentPermissionsByIdRequest} from "../../../../../../common/js/content/resource/GetContentPermissionsByIdRequest";
+import {AccessControlList} from "../../../../../../common/js/security/acl/AccessControlList";
+import {GetContentRootPermissionsRequest} from "../../../../../../common/js/content/resource/GetContentRootPermissionsRequest";
+
 import {ContentWizardPanel} from "../ContentWizardPanel";
 import {DuplicateContentAction} from "./DuplicateContentAction";
 import {DeleteContentAction} from "./DeleteContentAction";
@@ -10,48 +27,48 @@ import {ShowLiveEditAction} from "./ShowLiveEditAction";
 import {ShowFormAction} from "./ShowFormAction";
 import {ShowSplitEditAction} from "./ShowSplitEditAction";
 
-export class ContentWizardActions extends api.app.wizard.WizardActions<api.content.Content> {
+export class ContentWizardActions extends WizardActions<Content> {
 
-    private save: api.ui.Action;
+    private save: Action;
 
-    private close: api.ui.Action;
+    private close: Action;
 
-    private saveAndClose: api.ui.Action;
+    private saveAndClose: Action;
 
-    private delete: api.ui.Action;
+    private delete: Action;
 
-    private duplicate: api.ui.Action;
+    private duplicate: Action;
 
-    private publish: api.ui.Action;
+    private publish: Action;
     
-    private publishTree: api.ui.Action;
+    private publishTree: Action;
 
-    private unpublish: api.ui.Action;
+    private unpublish: Action;
 
-    private preview: api.ui.Action;
+    private preview: Action;
 
-    private showLiveEditAction: api.ui.Action;
+    private showLiveEditAction: Action;
 
-    private showFormAction: api.ui.Action;
+    private showFormAction: Action;
 
-    private showSplitEditAction: api.ui.Action;
+    private showSplitEditAction: Action;
 
     private deleteOnlyMode: boolean = false;
 
     constructor(wizardPanel: ContentWizardPanel) {
         super(
-            new api.app.wizard.SaveAction(wizardPanel, "Save draft"),
+            new SaveAction(wizardPanel, "Save draft"),
             new DeleteContentAction(wizardPanel),
             new DuplicateContentAction(wizardPanel),
             new PreviewAction(wizardPanel),
             new PublishAction(wizardPanel),
             new PublishTreeAction(wizardPanel),
             new UnpublishAction(wizardPanel),
-            new api.app.wizard.CloseAction(wizardPanel),
+            new CloseAction(wizardPanel),
             new ShowLiveEditAction(wizardPanel),
             new ShowFormAction(wizardPanel),
             new ShowSplitEditAction(wizardPanel),
-            new api.app.wizard.SaveAndCloseAction(wizardPanel)
+            new SaveAndCloseAction(wizardPanel)
         );
 
         this.save = this.getActions()[0];
@@ -73,14 +90,14 @@ export class ContentWizardActions extends api.app.wizard.WizardActions<api.conte
         this.delete.setEnabled(true)
     }
 
-    enableActionsForExisting(existing: api.content.Content) {
+    enableActionsForExisting(existing: Content) {
         this.save.setEnabled(existing.isEditable());
         this.delete.setEnabled(existing.isDeletable());
 
         this.enableActionsForExistingByPermissions(existing);
     }
 
-    setDeleteOnlyMode(content: api.content.Content, valueOn: boolean = true) {
+    setDeleteOnlyMode(content: Content, valueOn: boolean = true) {
         if (this.deleteOnlyMode == valueOn) {
             return;
         }
@@ -99,22 +116,22 @@ export class ContentWizardActions extends api.app.wizard.WizardActions<api.conte
         }
     }
 
-    private enableDeleteIfAllowed(content: api.content.Content) {
-        new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
-            var hasDeletePermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.DELETE,
+    private enableDeleteIfAllowed(content: Content) {
+        new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
+            var hasDeletePermission = PermissionHelper.hasPermission(Permission.DELETE,
                 loginResult, content.getPermissions());
             this.delete.setEnabled(hasDeletePermission);
         });
     }
 
-    private enableActionsForExistingByPermissions(existing: api.content.Content) {
-        new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
+    private enableActionsForExistingByPermissions(existing: Content) {
+        new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
 
-            var hasModifyPermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.MODIFY,
+            var hasModifyPermission = PermissionHelper.hasPermission(Permission.MODIFY,
                 loginResult, existing.getPermissions());
-            var hasDeletePermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.DELETE,
+            var hasDeletePermission = PermissionHelper.hasPermission(Permission.DELETE,
                 loginResult, existing.getPermissions());
-            var hasPublishPermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.PUBLISH,
+            var hasPublishPermission = PermissionHelper.hasPermission(Permission.PUBLISH,
                 loginResult, existing.getPermissions());
 
             if (!hasModifyPermission) {
@@ -129,24 +146,24 @@ export class ContentWizardActions extends api.app.wizard.WizardActions<api.conte
                 this.publishTree.setEnabled(false);
             } else {
                 // check if already published to show unpublish button
-                api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByContent(existing)
-                    .then((contentAndCompare: api.content.ContentSummaryAndCompareStatus) => {
+                ContentSummaryAndCompareStatusFetcher.fetchByContent(existing)
+                    .then((contentAndCompare: ContentSummaryAndCompareStatus) => {
 
                         var status = contentAndCompare.getCompareStatus();
-                        var isPublished = status !== api.content.CompareStatus.NEW &&
-                                          status != api.content.CompareStatus.UNKNOWN;
+                        var isPublished = status !== CompareStatus.NEW &&
+                                          status != CompareStatus.UNKNOWN;
 
                         this.unpublish.setVisible(isPublished);
                     });
             }
 
             if (existing.hasParent()) {
-                new api.content.resource.GetContentByPathRequest(existing.getPath().getParentPath()).sendAndParse().then(
-                    (parent: api.content.Content) => {
-                        new api.content.resource.GetContentPermissionsByIdRequest(parent.getContentId()).sendAndParse().then(
-                            (accessControlList: api.security.acl.AccessControlList) => {
-                                var hasParentCreatePermission = api.security.acl.PermissionHelper.hasPermission(
-                                    api.security.acl.Permission.CREATE,
+                new GetContentByPathRequest(existing.getPath().getParentPath()).sendAndParse().then(
+                    (parent: Content) => {
+                        new GetContentPermissionsByIdRequest(parent.getContentId()).sendAndParse().then(
+                            (accessControlList: AccessControlList) => {
+                                var hasParentCreatePermission = PermissionHelper.hasPermission(
+                                    Permission.CREATE,
                                     loginResult,
                                     accessControlList);
 
@@ -156,9 +173,9 @@ export class ContentWizardActions extends api.app.wizard.WizardActions<api.conte
                             })
                     })
             } else {
-                new api.content.resource.GetContentRootPermissionsRequest().sendAndParse().then(
-                    (accessControlList: api.security.acl.AccessControlList) => {
-                        var hasParentCreatePermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.CREATE,
+                new GetContentRootPermissionsRequest().sendAndParse().then(
+                    (accessControlList: AccessControlList) => {
+                        var hasParentCreatePermission = PermissionHelper.hasPermission(Permission.CREATE,
                             loginResult,
                             accessControlList);
 
@@ -171,47 +188,47 @@ export class ContentWizardActions extends api.app.wizard.WizardActions<api.conte
         })
     }
 
-    getDeleteAction(): api.ui.Action {
+    getDeleteAction(): Action {
         return this.delete;
     }
 
-    getSaveAction(): api.ui.Action {
+    getSaveAction(): Action {
         return this.save;
     }
 
-    getDuplicateAction(): api.ui.Action {
+    getDuplicateAction(): Action {
         return this.duplicate;
     }
 
-    getCloseAction(): api.ui.Action {
+    getCloseAction(): Action {
         return this.close;
     }
 
-    getPublishAction(): api.ui.Action {
+    getPublishAction(): Action {
         return this.publish;
     }
 
-    getPublishTreeAction(): api.ui.Action {
+    getPublishTreeAction(): Action {
         return this.publishTree;
     }
 
-    getUnpublishAction(): api.ui.Action {
+    getUnpublishAction(): Action {
         return this.unpublish;
     }
 
-    getPreviewAction(): api.ui.Action {
+    getPreviewAction(): Action {
         return this.preview;
     }
 
-    getShowLiveEditAction(): api.ui.Action {
+    getShowLiveEditAction(): Action {
         return this.showLiveEditAction;
     }
 
-    getShowFormAction(): api.ui.Action {
+    getShowFormAction(): Action {
         return this.showFormAction;
     }
 
-    getShowSplitEditAction(): api.ui.Action {
+    getShowSplitEditAction(): Action {
         return this.showSplitEditAction;
     }
 }

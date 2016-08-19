@@ -1,8 +1,7 @@
-module api.content.json {
+import {AccessControlEntryJson} from "../../security/acl/AccessControlEntryJson";
 
-    export interface PermissionsJson {
+export interface PermissionsJson {
 
-        permissions: api.security.acl.AccessControlEntryJson[];
+        permissions: AccessControlEntryJson[];
 
     }
-}

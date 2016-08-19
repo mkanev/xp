@@ -1,6 +1,19 @@
-module api.data {
+import {ValueType} from "./ValueType";
+import {ValueTypeBinaryReference} from "./ValueTypeBinaryReference";
+import {ValueTypeBoolean} from "./ValueTypeBoolean";
+import {ValueTypeDateTime} from "./ValueTypeDateTime";
+import {ValueTypeDouble} from "./ValueTypeDouble";
+import {ValueTypeGeoPoint} from "./ValueTypeGeoPoint";
+import {ValueTypeLocalDate} from "./ValueTypeLocalDate";
+import {ValueTypeLocalDateTime} from "./ValueTypeLocalDateTime";
+import {ValueTypeLocalTime} from "./ValueTypeLocalTime";
+import {ValueTypeLong} from "./ValueTypeLong";
+import {ValueTypePropertySet} from "./ValueTypePropertySet";
+import {ValueTypeReference} from "./ValueTypeReference";
+import {ValueTypeString} from "./ValueTypeString";
+import {ValueTypeXml} from "./ValueTypeXml";
 
-    /*
+/*
      * Types need to be named as in ValueTypes.java
      */
     export class ValueTypes {
@@ -57,4 +70,3 @@ module api.data {
             throw("Unknown ValueType: " + name);
         }
     }
-}

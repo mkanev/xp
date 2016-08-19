@@ -1,8 +1,7 @@
-module api.security {
+import {DeleteUserStoreResultJson} from "./DeleteUserStoreResultJson";
 
-    export interface DeleteUserStoreResultsJson {
+export interface DeleteUserStoreResultsJson {
 
         results: DeleteUserStoreResultJson[];
 
     }
-}

@@ -1,9 +1,8 @@
-module api.liveedit.text {
+import {LayoutItemType} from "../layout/LayoutItemType";
+import {PageItemType} from "../PageItemType";
+import {ItemViewPlaceholder} from "../ItemViewPlaceholder";
 
-    import LayoutItemType = api.liveedit.layout.LayoutItemType;
-    import PageItemType = api.liveedit.PageItemType;
-
-    export class TextPlaceholder extends ItemViewPlaceholder {
+export class TextPlaceholder extends ItemViewPlaceholder {
 
         constructor() {
             super();
@@ -11,4 +10,3 @@ module api.liveedit.text {
         }
 
     }
-}

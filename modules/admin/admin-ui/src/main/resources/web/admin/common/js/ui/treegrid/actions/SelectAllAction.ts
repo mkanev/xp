@@ -1,8 +1,7 @@
-module api.ui.treegrid.actions {
+import {Action} from "../../Action";
+import {TreeGrid} from "../TreeGrid";
 
-    import Action = api.ui.Action;
-
-    export class SelectAllAction<DATA> extends Action {
+export class SelectAllAction<DATA> extends Action {
 
         private treeGrid: TreeGrid<DATA>;
 
@@ -33,4 +32,3 @@ module api.ui.treegrid.actions {
             return allCount - this.treeGrid.getEmptyNodesCount();
         }
     }
-}

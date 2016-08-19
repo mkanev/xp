@@ -1,17 +1,17 @@
-module api.ui.form {
+import {FormInputEl} from "../../dom/FormInputEl";
+import {StringHelper} from "../../util/StringHelper";
 
-    export class Validators {
+export class Validators {
 
-        public static required(input: api.dom.FormInputEl): string {
+        public static required(input: FormInputEl): string {
             var value = input.getValue();
-            return api.util.StringHelper.isBlank(value) ? "This field is required" : undefined;
+            return StringHelper.isBlank(value) ? "This field is required" : undefined;
         }
 
-        public static validEmail(input: api.dom.FormInputEl): string {
+        public static validEmail(input: FormInputEl): string {
             var regexEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
             var value = input.getValue();
             return !regexEmail.test(value) ? "Invalid email address" : undefined;
         }
     }
 
-}

@@ -1,13 +1,16 @@
-module api.security {
+import {Equitable} from "../Equitable";
+import {assert} from "../util/Assert";
+import {StringHelper} from "../util/StringHelper";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class UserStoreKey implements api.Equitable {
+export class UserStoreKey implements Equitable {
 
         public static SYSTEM: UserStoreKey = new UserStoreKey('system');
 
         private id: string;
 
         constructor(id: string) {
-            api.util.assert(!api.util.StringHelper.isBlank(id), "UserStoreKey id cannot be null or empty");
+            assert(!StringHelper.isBlank(id), "UserStoreKey id cannot be null or empty");
             this.id = id;
         }
 
@@ -27,8 +30,8 @@ module api.security {
             return new UserStoreKey(value);
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserStoreKey)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, UserStoreKey)) {
                 return false;
             }
 
@@ -36,4 +39,3 @@ module api.security {
             return this.id === other.id;
         }
     }
-}

@@ -1,6 +1,6 @@
-module api.ui.treegrid {
 
-    export class ContextMenuShownEvent {
+
+export class ContextMenuShownEvent {
 
         private x: number;
         private y: number;
@@ -18,4 +18,3 @@ module api.ui.treegrid {
             return this.y;
         }
     }
-}

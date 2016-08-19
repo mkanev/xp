@@ -1,13 +1,15 @@
-module api.ui.button {
+import {ButtonEl} from "../../dom/ButtonEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {BrowserHelper} from "../../BrowserHelper";
 
-    export class Button extends api.dom.ButtonEl {
+export class Button extends ButtonEl {
 
-        private labelEl: api.dom.SpanEl;
+        private labelEl: SpanEl;
 
         constructor(label?: string) {
             super("button");
 
-            this.labelEl = new api.dom.SpanEl();
+            this.labelEl = new SpanEl();
             if (label) {
                 this.labelEl.getEl().setInnerHtml(label, false);
             }
@@ -33,7 +35,7 @@ module api.ui.button {
         }
 
         setTitle(title: string, forceAction: boolean = true) {
-            if (!api.BrowserHelper.isIOS()) {
+            if (!BrowserHelper.isIOS()) {
                 if (title) {
                     this.getEl().setAttribute('title', title);
                     if (forceAction) {
@@ -49,4 +51,3 @@ module api.ui.button {
             }
         }
     }
-}

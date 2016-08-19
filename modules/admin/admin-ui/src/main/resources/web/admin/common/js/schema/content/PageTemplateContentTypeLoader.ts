@@ -1,11 +1,17 @@
-module api.schema.content {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {ContentTypeSummaryListJson} from "./ContentTypeSummaryListJson";
+import {ContentId} from "../../content/ContentId";
+import {GetNearestSiteRequest} from "../../content/resource/GetNearestSiteRequest";
+import {Site} from "../../content/site/Site";
+import {ContentTypeName} from "./ContentTypeName";
+import {ContentTypeSummary} from "./ContentTypeSummary";
+import {GetAllContentTypesRequest} from "./GetAllContentTypesRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
+export class PageTemplateContentTypeLoader extends BaseLoader<ContentTypeSummaryListJson, ContentTypeSummary> {
 
-    export class PageTemplateContentTypeLoader extends api.util.loader.BaseLoader<api.schema.content.ContentTypeSummaryListJson, ContentTypeSummary> {
-
-        private contentId: api.content.ContentId;
-        constructor(contentId: api.content.ContentId) {
+        private contentId: ContentId;
+        constructor(contentId: ContentId) {
             super(new GetAllContentTypesRequest());
             this.contentId = contentId;
         }
@@ -16,8 +22,8 @@ module api.schema.content {
 
         sendRequest(): wemQ.Promise<ContentTypeSummary[]> {
             return new GetAllContentTypesRequest().sendAndParse().then((contentTypeArray: ContentTypeSummary[]) => {
-                return new api.content.resource.GetNearestSiteRequest(this.contentId).sendAndParse().then(
-                    (parentSite: api.content.site.Site) => {
+                return new GetNearestSiteRequest(this.contentId).sendAndParse().then(
+                    (parentSite: Site) => {
                     var typesAllowedEverywhere: {[key:string]: ContentTypeName} = {};
                     [ContentTypeName.UNSTRUCTURED, ContentTypeName.FOLDER, ContentTypeName.SITE,
                         ContentTypeName.SHORTCUT].forEach((contentTypeName: ContentTypeName) => {
@@ -54,4 +60,3 @@ module api.schema.content {
         }
     }
 
-}

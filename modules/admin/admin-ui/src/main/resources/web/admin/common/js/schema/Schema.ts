@@ -1,6 +1,10 @@
-module api.schema {
+import {BaseItem} from "../item/BaseItem";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {SchemaJson} from "./SchemaJson";
+import {BaseItemBuilder} from "../item/BaseItem";
 
-    export class Schema extends api.item.BaseItem {
+export class Schema extends BaseItem {
 
         private name: string;
 
@@ -34,9 +38,9 @@ module api.schema {
             return this.iconUrl;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Schema)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Schema)) {
                 return false;
             }
 
@@ -61,12 +65,12 @@ module api.schema {
             return true;
         }
 
-        static fromJson(json: api.schema.SchemaJson): Schema {
+        static fromJson(json: SchemaJson): Schema {
             return new SchemaBuilder().fromSchemaJson(json).build();
         }
     }
 
-    export class SchemaBuilder extends api.item.BaseItemBuilder {
+    export class SchemaBuilder extends BaseItemBuilder {
 
         name: string;
 
@@ -86,7 +90,7 @@ module api.schema {
             }
         }
 
-        fromSchemaJson(json: api.schema.SchemaJson): SchemaBuilder {
+        fromSchemaJson(json: SchemaJson): SchemaBuilder {
             super.fromBaseItemJson(json, "name");
 
             this.name = json.name;
@@ -107,4 +111,3 @@ module api.schema {
     }
 
 
-}

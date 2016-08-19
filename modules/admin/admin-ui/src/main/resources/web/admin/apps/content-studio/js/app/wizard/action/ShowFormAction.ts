@@ -1,8 +1,9 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+
 import {ShowContentFormEvent} from "../ShowContentFormEvent";
 import {ContentWizardPanel} from "../ContentWizardPanel";
 
-export class ShowFormAction extends api.ui.Action {
+export class ShowFormAction extends Action {
 
     constructor(wizard: ContentWizardPanel) {
         super("Form");

@@ -1,10 +1,28 @@
-module api.data {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {assert} from "../util/Assert";
+import {ArrayHelper} from "../util/ArrayHelper";
+import {Property} from "./Property";
+import {PropertyAddedEvent} from "./PropertyAddedEvent";
+import {PropertyArrayJson} from "./PropertyArrayJson";
+import {PropertyIndexChangedEvent} from "./PropertyIndexChangedEvent";
+import {PropertyPath} from "./PropertyPath";
+import {PropertyPathElement} from "./PropertyPath";
+import {PropertyRemovedEvent} from "./PropertyRemovedEvent";
+import {PropertySet} from "./PropertySet";
+import {PropertyTree} from "./PropertyTree";
+import {PropertyValueChangedEvent} from "./PropertyValueChangedEvent";
+import {PropertyValueJson} from "./PropertyValueJson";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
+import {ValueTypeConverter} from "./ValueTypeConverter";
+import {ValueTypes} from "./ValueTypes";
 
-    /**
+/**
      * A PropertyArray manages an array of properties having the same: [[parent]], [[type]] and [[name]].
      * @see [[Property]]
      */
-    export class PropertyArray implements api.Equitable {
+    export class PropertyArray implements Equitable {
 
         public static debug: boolean = false;
 
@@ -65,7 +83,7 @@ module api.data {
             var result = false;
 
             this.forEach((property: Property) => {
-                if (api.ObjectHelper.equals(property.getValue(), value)) {
+                if (ObjectHelper.equals(property.getValue(), value)) {
                     result = true;
                 }
             });
@@ -129,11 +147,11 @@ module api.data {
          * Application protected. Not to be used outside module.
          */
         addProperty(property: Property) {
-            api.util.assert(property.getName() == this.name,
+            assert(property.getName() == this.name,
                 "Expected name of added Property to be [" + this.name + "], got: " + property.getName());
-            api.util.assert(property.getType().equals(this.getType()),
+            assert(property.getType().equals(this.getType()),
                 "Expected type of added Property to be [" + this.type.toString() + "], got: " + property.getType().toString());
-            api.util.assert(property.getIndex() == this.array.length,
+            assert(property.getIndex() == this.array.length,
                 "Expected index of added Property to be [" + this.array.length + "], got: " + property.getIndex());
 
             this.array.push(property);
@@ -201,7 +219,7 @@ module api.data {
 
         move(index: number, destinationIndex: number) {
             var toBeMoved = this.array[index];
-            api.util.ArrayHelper.moveElement(index, destinationIndex, this.array);
+            ArrayHelper.moveElement(index, destinationIndex, this.array);
             toBeMoved.setIndex(destinationIndex);
 
             this.forEach((property: Property, index: number) => {
@@ -267,21 +285,21 @@ module api.data {
 
         public equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertyArray)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PropertyArray)) {
                 return false;
             }
 
             var other = <PropertyArray>o;
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.type, other.type)) {
+            if (!ObjectHelper.equals(this.type, other.type)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.arrayEquals(this.array, other.array)) {
+            if (!ObjectHelper.arrayEquals(this.array, other.array)) {
                 return false;
             }
 
@@ -552,4 +570,3 @@ module api.data {
             return new PropertyArray(this);
         }
     }
-}

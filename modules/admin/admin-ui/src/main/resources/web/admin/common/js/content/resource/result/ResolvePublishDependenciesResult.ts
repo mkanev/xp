@@ -1,9 +1,8 @@
-module api.content.resource.result {
+import {ContentPublishItemJson} from "../../json/ContentPublishItemJson";
+import {ResolvePublishContentResultJson} from "../../json/ResolvePublishContentResultJson";
+import {ContentId} from "../../ContentId";
 
-    import ContentPublishItemJson = api.content.json.ContentPublishItemJson;
-    import ResolvePublishContentResultJson = api.content.json.ResolvePublishContentResultJson;
-
-    export class ResolvePublishDependenciesResult {
+export class ResolvePublishDependenciesResult {
 
         dependentContents: ContentId[];
         requestedContents: ContentId[];
@@ -37,4 +36,3 @@ module api.content.resource.result {
             return new ResolvePublishDependenciesResult(dependants, requested, containsRemovable);
         }
     }
-}

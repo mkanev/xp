@@ -1,8 +1,6 @@
-import "../../api.ts";
-
-import TreeNode = api.ui.treegrid.TreeNode;
-import ContentPath = api.content.ContentPath;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {ContentPath} from "../../../../../common/js/content/ContentPath";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
 
 export class TreeNodesOfContentPath {
 

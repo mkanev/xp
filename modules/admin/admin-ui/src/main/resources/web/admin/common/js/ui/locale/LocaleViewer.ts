@@ -1,10 +1,11 @@
-module api.ui.locale {
+import {Locale} from "../../locale/Locale";
+import {Viewer} from "../Viewer";
+import {NamesView} from "../../app/NamesView";
+import {StringHelper} from "../../util/StringHelper";
 
-    import Locale = api.locale.Locale;
+export class LocaleViewer extends Viewer<Locale> {
 
-    export class LocaleViewer extends api.ui.Viewer<Locale> {
-
-        private namesView: api.app.NamesView;
+        private namesView: NamesView;
 
         private removeClickedListeners: {(event: MouseEvent):void}[] = [];
 
@@ -12,12 +13,12 @@ module api.ui.locale {
 
         constructor() {
             super();
-            this.namesView = new api.app.NamesView();
+            this.namesView = new NamesView();
             this.appendChild(this.namesView);
         }
 
         setObject(locale: Locale) {
-            this.namesView.setMainName(api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getTag()));
+            this.namesView.setMainName(StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getTag()));
 
             return super.setObject(locale);
         }
@@ -42,4 +43,3 @@ module api.ui.locale {
             })
         }
     }
-}

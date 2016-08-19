@@ -1,25 +1,32 @@
-module api.content.page.region {
+import {ContentJson} from "../../json/ContentJson";
+import {Content} from "../../Content";
+import {ContentId} from "../../ContentId";
+import {PropertyTree} from "../../../data/PropertyTree";
+import {Component} from "./Component";
+import {Path} from "../../../rest/Path";
+import {JsonResponse} from "../../../rest/JsonResponse";
+import {FragmentResourceRequest} from "./FragmentResourceRequest";
 
-    export class CreateFragmentRequest extends FragmentResourceRequest<api.content.json.ContentJson, api.content.Content> {
+export class CreateFragmentRequest extends FragmentResourceRequest<ContentJson, Content> {
 
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
 
-        private config: api.data.PropertyTree;
+        private config: PropertyTree;
 
-        private component: api.content.page.region.Component;
+        private component: Component;
 
-        constructor(contentId: api.content.ContentId) {
+        constructor(contentId: ContentId) {
             super();
             super.setMethod("POST");
             this.contentId = contentId;
         }
 
-        setConfig(config: api.data.PropertyTree): CreateFragmentRequest {
+        setConfig(config: PropertyTree): CreateFragmentRequest {
             this.config = config;
             return this;
         }
 
-        setComponent(value: api.content.page.region.Component): CreateFragmentRequest {
+        setComponent(value: Component): CreateFragmentRequest {
             this.component = value;
             return this;
         }
@@ -32,15 +39,14 @@ module api.content.page.region {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "create");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "create");
         }
 
-        sendAndParse(): wemQ.Promise<api.content.Content> {
+        sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return response.isBlank() ? null : this.fromJsonToContent(response.getResult());
             });
         }
     }
-}

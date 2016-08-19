@@ -1,6 +1,8 @@
-module api.ui.uploader {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {FineUploaderFile} from "./UploaderEl";
 
-    export class UploadItem<MODEL extends api.Equitable> implements api.Equitable {
+export class UploadItem<MODEL extends Equitable> implements Equitable {
 
         private file: FineUploaderFile;
         private model: MODEL;
@@ -73,26 +75,26 @@ module api.ui.uploader {
             return this;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UploadItem)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, UploadItem)) {
                 return false;
             }
 
             var other = <UploadItem<MODEL>>o;
 
-            if (!api.ObjectHelper.equals(this.model, other.model)) {
+            if (!ObjectHelper.equals(this.model, other.model)) {
                 return false;
             }
 
             if (this.file && other.file) {
 
-                if (!api.ObjectHelper.stringEquals(this.file.id, other.file.id) ||
-                    !api.ObjectHelper.stringEquals(this.file.name, other.file.name) ||
-                    !api.ObjectHelper.numberEquals(this.file.percent, other.file.percent) ||
-                    //!api.ObjectHelper.stringEquals(this.file.type, other.file.type) ||
-                    !api.ObjectHelper.numberEquals(this.file.size, other.file.size) ||
-                    //!api.ObjectHelper.numberEquals(this.file.origSize, other.file.origSize) ||
+                if (!ObjectHelper.stringEquals(this.file.id, other.file.id) ||
+                    !ObjectHelper.stringEquals(this.file.name, other.file.name) ||
+                    !ObjectHelper.numberEquals(this.file.percent, other.file.percent) ||
+                    //!ObjectHelper.stringEquals(this.file.type, other.file.type) ||
+                    !ObjectHelper.numberEquals(this.file.size, other.file.size) ||
+                    //!ObjectHelper.numberEquals(this.file.origSize, other.file.origSize) ||
                     this.file.status != this.file.status) {
                     return false;
                 }
@@ -164,4 +166,3 @@ module api.ui.uploader {
         }
 
     }
-}

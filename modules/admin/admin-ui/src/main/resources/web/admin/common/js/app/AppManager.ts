@@ -1,7 +1,7 @@
-module api.app {
 
-    export class AppManager {
-        private static _instance: api.app.AppManager = null;
+
+export class AppManager {
+        private static _instance: AppManager = null;
 
         private connectionLostListeners: {():void}[] = [];
 
@@ -10,7 +10,7 @@ module api.app {
         private showLauncherListeners: {():void}[] = [];
 
         constructor() {
-            api.app.AppManager._instance = this;
+            AppManager._instance = this;
 
         }
 
@@ -46,20 +46,19 @@ module api.app {
             });
         }
 
-        static instance(): api.app.AppManager {
-            if (api.app.AppManager._instance) {
-                return api.app.AppManager._instance;
+        static instance(): AppManager {
+            if (AppManager._instance) {
+                return AppManager._instance;
             } else if (window !== window.parent) {
                 // look for instance in parent frame
-                var apiAppModule = (<any> window.parent).api.app;
+                var apiAppModule = (<any> window.parent).app;
                 if (apiAppModule && apiAppModule.AppManager) {
-                    var parentAppManager = <api.app.AppManager> apiAppModule.AppManager._instance;
+                    var parentAppManager = <AppManager> apiAppModule.AppManager._instance;
                     if (parentAppManager) {
-                        api.app.AppManager._instance = parentAppManager;
+                        AppManager._instance = parentAppManager;
                     }
                 }
             }
-            return api.app.AppManager._instance;
+            return AppManager._instance;
         }
     }
-}

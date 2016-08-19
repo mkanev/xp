@@ -1,40 +1,55 @@
-module api.app.browse {
+import {ResponsiveManager} from "../../ui/responsive/ResponsiveManager";
+import {ResponsiveRanges} from "../../ui/responsive/ResponsiveRanges";
+import {ResponsiveItem} from "../../ui/responsive/ResponsiveItem";
+import {TreeNode} from "../../ui/treegrid/TreeNode";
+import {Equitable} from "../../Equitable";
+import {Toolbar} from "../../ui/toolbar/Toolbar";
+import {TreeGrid} from "../../ui/treegrid/TreeGrid";
+import {BrowseFilterPanel} from "./filter/BrowseFilterPanel";
+import {Panel} from "../../ui/panel/Panel";
+import {ActionContainer} from "../../ui/ActionContainer";
+import {SplitPanel} from "../../ui/panel/SplitPanel";
+import {Action} from "../../ui/Action";
+import {ActionButton} from "../../ui/button/ActionButton";
+import {BrowseItem} from "./BrowseItem";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {SplitPanelBuilder} from "../../ui/panel/SplitPanel";
+import {SplitPanelUnit} from "../../ui/panel/SplitPanel";
+import {SplitPanelAlignment} from "../../ui/panel/SplitPanel";
+import {ToggleFilterPanelAction} from "./action/ToggleFilterPanelAction";
+import {BrowseItemPanel} from "./BrowseItemPanel";
+import {ItemDeselectedEvent} from "./ItemDeselectedEvent";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-    import TreeNode = api.ui.treegrid.TreeNode;
+export interface BrowsePanelParams<M extends Equitable> {
 
-    export interface BrowsePanelParams<M extends api.Equitable> {
+        browseToolbar: Toolbar;
 
-        browseToolbar: api.ui.toolbar.Toolbar;
-
-        treeGrid?: api.ui.treegrid.TreeGrid<Object>;
+        treeGrid?: TreeGrid<Object>;
 
         browseItemPanel: BrowseItemPanel<M>;
 
-        filterPanel?: api.app.browse.filter.BrowseFilterPanel;
+        filterPanel?: BrowseFilterPanel;
 
         hasDetailsPanel?: boolean;
     }
 
-    export class BrowsePanel<M extends api.Equitable> extends api.ui.panel.Panel implements api.ui.ActionContainer {
+    export class BrowsePanel<M extends Equitable> extends Panel implements ActionContainer {
 
         private static SPLIT_PANEL_ALIGNMENT_TRESHOLD: number = 720;
 
-        private browseToolbar: api.ui.toolbar.Toolbar;
+        private browseToolbar: Toolbar;
 
-        private treeGrid: api.ui.treegrid.TreeGrid<Object>;
+        private treeGrid: TreeGrid<Object>;
 
-        private gridAndToolbarPanel: api.ui.panel.Panel;
+        private gridAndToolbarPanel: Panel;
 
         private browseItemPanel: BrowseItemPanel<M>;
 
-        private gridAndItemsSplitPanel: api.ui.panel.SplitPanel;
+        private gridAndItemsSplitPanel: SplitPanel;
 
-        private filterPanel: api.app.browse.filter.BrowseFilterPanel;
+        private filterPanel: BrowseFilterPanel;
 
-        private filterAndGridSplitPanel: api.ui.panel.SplitPanel;
+        private filterAndGridSplitPanel: SplitPanel;
 
         private filterPanelForcedShown: boolean = false;
 
@@ -44,9 +59,9 @@ module api.app.browse {
 
         private filterPanelIsHiddenByDefault: boolean = true;
 
-        private toggleFilterPanelAction: api.ui.Action;
+        private toggleFilterPanelAction: Action;
 
-        private toggleFilterPanelButton: api.ui.button.ActionButton;
+        private toggleFilterPanelButton: ActionButton;
 
         constructor(params: BrowsePanelParams<M>) {
             super();
@@ -71,13 +86,13 @@ module api.app.browse {
             });
 
             this.treeGrid.onSelectionChanged((currentSelection: TreeNode<Object>[], fullSelection: TreeNode<Object>[]) => {
-                let browseItems: api.app.browse.BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
+                let browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
                 let changes = this.browseItemPanel.setItems(browseItems);
                 this.treeGrid.getContextMenu().getActions()
                     .updateActionsEnabledState(this.browseItemPanel.getItems(), changes)
                     .then(() => {
                         this.browseItemPanel.updateDisplayedPanel();
-                    }).catch(api.DefaultErrorHandler.handle);
+                    }).catch(DefaultErrorHandler.handle);
             });
 
             ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
@@ -100,17 +115,17 @@ module api.app.browse {
 
         doRender(): wemQ.Promise<boolean> {
             return super.doRender().then((rendered) => {
-                this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
+                this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
                     .setAlignmentTreshold(BrowsePanel.SPLIT_PANEL_ALIGNMENT_TRESHOLD)
                     .build();
 
-                this.gridAndItemsSplitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
+                this.gridAndItemsSplitPanel.setFirstPanelSize(38, SplitPanelUnit.PERCENT);
 
                 this.browseToolbar.addClass("browse-toolbar");
                 this.gridAndItemsSplitPanel.addClass("content-grid-and-browse-split-panel");
 
                 if (this.filterPanel) {
-                    this.gridAndToolbarPanel = new api.ui.panel.Panel();
+                    this.gridAndToolbarPanel = new Panel();
                     this.gridAndToolbarPanel.appendChildren<any>(this.browseToolbar, this.gridAndItemsSplitPanel);
 
                     this.filterAndGridSplitPanel = this.setupFilterPanel();
@@ -125,11 +140,11 @@ module api.app.browse {
             });
         }
 
-        getFilterAndGridSplitPanel(): api.ui.panel.Panel {
+        getFilterAndGridSplitPanel(): Panel {
             return this.filterAndGridSplitPanel;
         }
 
-        getTreeGrid(): api.ui.treegrid.TreeGrid<Object> {
+        getTreeGrid(): TreeGrid<Object> {
             return this.treeGrid;
         }
 
@@ -137,7 +152,7 @@ module api.app.browse {
             return this.browseItemPanel;
         }
 
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return this.browseToolbar.getActions();
         }
 
@@ -199,9 +214,9 @@ module api.app.browse {
         }
 
         private setupFilterPanel() {
-            var splitPanel = new api.ui.panel.SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
-                .setFirstPanelSize(215, api.ui.panel.SplitPanelUnit.PIXEL)
-                .setAlignment(api.ui.panel.SplitPanelAlignment.VERTICAL)
+            var splitPanel = new SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
+                .setFirstPanelSize(215, SplitPanelUnit.PIXEL)
+                .setAlignment(SplitPanelAlignment.VERTICAL)
                 .setAnimationDelay(100)     // filter panel animation time
                 .build();
 
@@ -213,8 +228,8 @@ module api.app.browse {
         }
 
         private addToggleFilterPanelButtonInToolbar() {
-            this.toggleFilterPanelAction = new api.app.browse.action.ToggleFilterPanelAction(this);
-            var existingActions: api.ui.Action[] = this.browseToolbar.getActions();
+            this.toggleFilterPanelAction = new ToggleFilterPanelAction(this);
+            var existingActions: Action[] = this.browseToolbar.getActions();
             this.browseToolbar.removeActions();
             this.toggleFilterPanelButton = this.browseToolbar.addAction(this.toggleFilterPanelAction);
             this.browseToolbar.addActions(existingActions);
@@ -254,4 +269,3 @@ module api.app.browse {
         }
 
     }
-}

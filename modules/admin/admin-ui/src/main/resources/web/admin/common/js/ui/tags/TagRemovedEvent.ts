@@ -1,6 +1,6 @@
-module api.ui.tags {
 
-    export class TagRemovedEvent {
+
+export class TagRemovedEvent {
 
         private value: string;
 
@@ -20,4 +20,3 @@ module api.ui.tags {
         }
 
     }
-}

@@ -1,24 +1,28 @@
-module api.content.page.region {
+import {Application} from "../../../application/Application";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {ApplicationCaches} from "../../../application/ApplicationCaches";
+import {ApplicationBasedCache} from "../../../application/ApplicationBasedCache";
+import {DescriptorKey} from "../DescriptorKey";
+import {WindowDOM} from "../../../dom/WindowDOM";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {assertNotNull} from "../../../util/Assert";
+import {Cache} from "../../../cache/Cache";
+import {GetPartDescriptorsByApplicationRequest} from "./GetPartDescriptorsByApplicationRequest";
+import {PartDescriptor} from "./PartDescriptor";
 
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationCaches = api.application.ApplicationCaches;
-    import ApplicationBasedCache = api.application.ApplicationBasedCache;
-    import DescriptorKey = api.content.page.DescriptorKey;
-
-    export class PartDescriptorCache extends ApplicationBasedCache<PartDescriptorApplicationCache,PartDescriptor,DescriptorKey> {
+export class PartDescriptorCache extends ApplicationBasedCache<PartDescriptorApplicationCache,PartDescriptor,DescriptorKey> {
 
         private static instance: PartDescriptorCache;
 
         static get(): PartDescriptorCache {
 
-            var w = api.dom.WindowDOM.get();
+            var w = WindowDOM.get();
             var topWindow: any = w.getTopParent() == null ? w.asWindow() : w.getTopParent().asWindow();
 
-            if (!topWindow.api.content.page.region.PartDescriptorCache.instance) {
-                topWindow.api.content.page.region.PartDescriptorCache.instance = new PartDescriptorCache();
+            if (!topWindow.PartDescriptorCache.instance) {
+                topWindow.PartDescriptorCache.instance = new PartDescriptorCache();
             }
-            return topWindow.api.content.page.region.PartDescriptorCache.instance;
+            return topWindow.PartDescriptorCache.instance;
         }
 
         constructor() {
@@ -30,12 +34,12 @@ module api.content.page.region {
 
         loadByApplication(applicationKey: ApplicationKey) {
             new GetPartDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
         }
 
         put(descriptor: PartDescriptor) {
-            api.util.assertNotNull(descriptor, "a PartDescriptor must be given");
+            assertNotNull(descriptor, "a PartDescriptor must be given");
 
             super.put(descriptor, descriptor.getKey().getApplicationKey());
         }
@@ -49,7 +53,7 @@ module api.content.page.region {
         }
     }
 
-    export class PartDescriptorApplicationCache extends api.cache.Cache<PartDescriptor, DescriptorKey> {
+    export class PartDescriptorApplicationCache extends Cache<PartDescriptor, DescriptorKey> {
 
         copy(object: PartDescriptor): PartDescriptor {
             return object.clone();
@@ -63,4 +67,3 @@ module api.content.page.region {
             return key.toString();
         }
     }
-}

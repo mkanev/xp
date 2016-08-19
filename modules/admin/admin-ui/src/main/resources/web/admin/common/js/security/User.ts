@@ -1,6 +1,12 @@
-module api.security {
+import {assert} from "../util/Assert";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {UserJson} from "./UserJson";
+import {Principal} from "./Principal";
+import {PrincipalBuilder} from "./Principal";
+import {PrincipalKey} from "./PrincipalKey";
 
-    export class User extends Principal {
+export class User extends Principal {
 
         private email: string;
 
@@ -12,7 +18,7 @@ module api.security {
 
         constructor(builder: UserBuilder) {
             super(builder);
-            api.util.assert(builder.key.isUser(), 'Expected PrincipalKey of type User');
+            assert(builder.key.isUser(), 'Expected PrincipalKey of type User');
             this.email = builder.email || "";
             this.login = builder.login || "";
             this.loginDisabled = builder.loginDisabled || false;
@@ -39,8 +45,8 @@ module api.security {
             this.memberships = memberships;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, User)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, User)) {
                 return false;
             }
 
@@ -51,7 +57,7 @@ module api.security {
                    this.email === other.getEmail() &&
                    this.login === other.getLogin() &&
 //                   this.password === other.getPassword() &&
-                   api.ObjectHelper.arrayEquals(this.memberships, other.getMemberships());
+                   ObjectHelper.arrayEquals(this.memberships, other.getMemberships());
         }
 
         clone(): User {
@@ -66,7 +72,7 @@ module api.security {
             return new UserBuilder();
         }
 
-        static fromJson(json: api.security.UserJson): User {
+        static fromJson(json: UserJson): User {
             return new UserBuilder().fromJson(json).build();
         }
 
@@ -97,7 +103,7 @@ module api.security {
             }
         }
 
-        fromJson(json: api.security.UserJson): UserBuilder {
+        fromJson(json: UserJson): UserBuilder {
             super.fromJson(json);
 
             this.email = json.email;
@@ -135,4 +141,3 @@ module api.security {
         }
     }
 
-}

@@ -1,14 +1,20 @@
-module api.content.form.inputtype.double {
+import {BaseInputTypeNotManagingAdd} from "../support/BaseInputTypeNotManagingAdd";
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Element} from "../../../dom/Element";
+import {TextInput} from "../../../ui/text/TextInput";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {StringHelper} from "../../../util/StringHelper";
+import {NumberHelper} from "../../../util/NumberHelper";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
+export class Double extends BaseInputTypeNotManagingAdd<number> {
 
-    export class Double extends BaseInputTypeNotManagingAdd<number> {
-
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
+        constructor(config: InputTypeViewContext) {
             super(config);
         }
 
@@ -20,15 +26,15 @@ module api.content.form.inputtype.double {
             return super.newInitialValue() || ValueTypes.DOUBLE.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
             if (!ValueTypes.DOUBLE.equals(property.getType())) {
                 property.convertValueType(ValueTypes.DOUBLE);
             }
 
-            var inputEl = api.ui.text.TextInput.middle(undefined, this.getPropertyValue(property));
+            var inputEl = TextInput.middle(undefined, this.getPropertyValue(property));
             inputEl.setName(this.getInput().getName() + "-" + property.getIndex());
 
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+            inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var isValid = this.isValid(event.getNewValue()),
                     value = isValid ? ValueTypes.DOUBLE.newValue(event.getNewValue()) : this.newInitialValue();
 
@@ -39,8 +45,8 @@ module api.content.form.inputtype.double {
             return inputEl;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly?: boolean) {
-            var input = <api.ui.text.TextInput> occurrence;
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly?: boolean) {
+            var input = <TextInput> occurrence;
 
             if (!unchangedOnly || !input.isDirty()) {
                 input.setValue(this.getPropertyValue(property));
@@ -54,8 +60,8 @@ module api.content.form.inputtype.double {
             return value.isNull() || !value.getType().equals(ValueTypes.DOUBLE);
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
-            var value = <api.ui.text.TextInput>inputElement;
+        hasInputElementValidUserInput(inputElement: Element) {
+            var value = <TextInput>inputElement;
 
             return this.isValid(value.getValue());
         }
@@ -63,11 +69,11 @@ module api.content.form.inputtype.double {
         private isValid(value: string): boolean {
             var validUserInput = true;
 
-            if (api.util.StringHelper.isEmpty(value)) {
+            if (StringHelper.isEmpty(value)) {
                 validUserInput = true;
             } else {
 
-                if (api.util.NumberHelper.isNumber(+value)) {
+                if (NumberHelper.isNumber(+value)) {
                     validUserInput = true;
                 } else {
                     validUserInput = false;
@@ -79,5 +85,4 @@ module api.content.form.inputtype.double {
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("Double", Double));
-}
+    InputTypeManager.register(new Class("Double", Double));

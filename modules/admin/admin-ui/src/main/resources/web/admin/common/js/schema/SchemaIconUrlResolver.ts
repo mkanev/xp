@@ -1,14 +1,15 @@
-module api.schema {
+import {IconUrlResolver} from "../icon/IconUrlResolver";
+import {Path} from "../rest/Path";
+import {Schema} from "./Schema";
 
-    export class SchemaIconUrlResolver extends api.icon.IconUrlResolver {
+export class SchemaIconUrlResolver extends IconUrlResolver {
 
         resolve(schema: Schema) {
 
             return schema.getIconUrl();
         }
 
-        public static getResourcePath(): api.rest.Path {
-            return api.rest.Path.fromString("schema/icon");
+        public static getResourcePath(): Path {
+            return Path.fromString("schema/icon");
         }
     }
-}

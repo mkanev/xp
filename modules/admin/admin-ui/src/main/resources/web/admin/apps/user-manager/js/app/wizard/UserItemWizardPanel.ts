@@ -1,24 +1,28 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {PrincipalNamedEvent} from "../../../../../common/js/security/PrincipalNamedEvent";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {FormIcon} from "../../../../../common/js/app/wizard/FormIcon";
+import {WizardHeaderWithDisplayNameAndName} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardHeaderWithDisplayNameAndNameBuilder} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
+import {WizardActions} from "../../../../../common/js/app/wizard/WizardActions";
+import {Equitable} from "../../../../../common/js/Equitable";
+import {WizardPanel} from "../../../../../common/js/app/wizard/WizardPanel";
+import {ImgEl} from "../../../../../common/js/dom/ImgEl";
+import {ElementShownEvent} from "../../../../../common/js/dom/ElementShownEvent";
+import {showError} from "../../../../../common/js/notify/MessageBus";
+import {Action} from "../../../../../common/js/ui/Action";
+
 import {UserItemWizardActions} from "./action/UserItemWizardActions";
 import {UserItemWizardPanelParams} from "./UserItemWizardPanelParams";
 
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalType = api.security.PrincipalType;
-import PrincipalNamedEvent = api.security.PrincipalNamedEvent;
-import UserStoreKey = api.security.UserStoreKey;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import FormIcon = api.app.wizard.FormIcon;
-import WizardHeaderWithDisplayNameAndName = api.app.wizard.WizardHeaderWithDisplayNameAndName;
-import WizardHeaderWithDisplayNameAndNameBuilder = api.app.wizard.WizardHeaderWithDisplayNameAndNameBuilder;
-import WizardStep = api.app.wizard.WizardStep;
-import Toolbar = api.ui.toolbar.Toolbar;
-import WizardActions = api.app.wizard.WizardActions;
-
-export class UserItemWizardPanel<USER_ITEM_TYPE extends api.Equitable> extends api.app.wizard.WizardPanel<USER_ITEM_TYPE> {
+export class UserItemWizardPanel<USER_ITEM_TYPE extends Equitable> extends WizardPanel<USER_ITEM_TYPE> {
 
     wizardActions: UserItemWizardActions<USER_ITEM_TYPE>;
 
@@ -50,7 +54,7 @@ export class UserItemWizardPanel<USER_ITEM_TYPE extends api.Equitable> extends a
     }
 
     protected createFormIcon(): FormIcon {
-        var iconUrl = api.dom.ImgEl.PLACEHOLDER;
+        var iconUrl = ImgEl.PLACEHOLDER;
         var formIcon = new FormIcon(iconUrl, "icon");
         formIcon.addClass("icon icon-xlarge");
         return formIcon;
@@ -74,7 +78,7 @@ export class UserItemWizardPanel<USER_ITEM_TYPE extends api.Equitable> extends a
             this.updateHash();
             this.onRemoved((event) => ResponsiveManager.unAvailableSizeChanged(this));
 
-            this.onShown((event: api.dom.ElementShownEvent) => {
+            this.onShown((event: ElementShownEvent) => {
                 this.updateHash();
                 responsiveItem.update();
             });
@@ -90,7 +94,7 @@ export class UserItemWizardPanel<USER_ITEM_TYPE extends api.Equitable> extends a
     saveChanges(): wemQ.Promise<USER_ITEM_TYPE> {
         if (this.isRendered() && !this.getWizardHeader().getName()) {
             var deferred = wemQ.defer<USER_ITEM_TYPE>();
-            api.notify.showError("Name can not be empty");
+            showError("Name can not be empty");
             deferred.reject(new Error("Name can not be empty"));
             return deferred.promise;
         } else {
@@ -123,7 +127,7 @@ export class UserItemWizardPanel<USER_ITEM_TYPE extends api.Equitable> extends a
         throw new Error("Must be implemented by inheritors");
     }
 
-    getCloseAction(): api.ui.Action {
+    getCloseAction(): Action {
         return this.wizardActions.getCloseAction();
     }
 

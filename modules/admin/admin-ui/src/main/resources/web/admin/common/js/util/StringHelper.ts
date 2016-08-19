@@ -1,6 +1,6 @@
-module api.util {
 
-    export class StringHelper {
+
+export class StringHelper {
 
         static EMPTY_STRING = "";
 
@@ -119,4 +119,3 @@ module api.util {
 
     }
 
-}

@@ -1,6 +1,7 @@
-module api.security {
+import {DeletePrincipalResultJson} from "./DeletePrincipalResultJson";
+import {PrincipalKey} from "./PrincipalKey";
 
-    export class DeletePrincipalResult {
+export class DeletePrincipalResult {
 
         private principalKey: PrincipalKey;
         private deleted: boolean;
@@ -21,7 +22,7 @@ module api.security {
             return this.reason;
         }
 
-        static fromJson(json: api.security.DeletePrincipalResultJson): DeletePrincipalResult {
+        static fromJson(json: DeletePrincipalResultJson): DeletePrincipalResult {
             var result = new DeletePrincipalResult();
             result.principalKey = PrincipalKey.fromString(json.principalKey);
             result.deleted = json.deleted;
@@ -30,4 +31,3 @@ module api.security {
         }
     }
 
-}

@@ -1,6 +1,7 @@
-module api.notify {
+import {Type} from "./Message";
+import {Message} from "./Message";
 
-    export class NotifyOpts {
+export class NotifyOpts {
         message: string;
         type: string;
         listeners: {():void}[];
@@ -65,4 +66,3 @@ module api.notify {
             return opts;
         }
     }
-}

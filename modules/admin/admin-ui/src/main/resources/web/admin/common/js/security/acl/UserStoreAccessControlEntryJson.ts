@@ -1,10 +1,9 @@
-module api.security.acl {
+import {PrincipalJson} from "../PrincipalJson";
 
-    export interface UserStoreAccessControlEntryJson {
+export interface UserStoreAccessControlEntryJson {
 
         access: string;
 
         principal: PrincipalJson;
 
     }
-}

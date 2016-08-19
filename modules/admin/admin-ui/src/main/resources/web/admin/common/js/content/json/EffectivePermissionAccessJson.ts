@@ -1,9 +1,8 @@
-module api.content.json {
+import {EffectivePermissionMemberJson} from "./EffectivePermissionMemberJson";
 
-    export interface EffectivePermissionAccessJson {
+export interface EffectivePermissionAccessJson {
 
         count: number;
 
         users: EffectivePermissionMemberJson[];
     }
-}

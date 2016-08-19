@@ -1,10 +1,13 @@
-module api.dom {
+import {ValueChangedEvent} from "../ValueChangedEvent";
+import {StringHelper} from "../util/StringHelper";
+import {ClassHelper} from "../ClassHelper";
+import {FormItemEl} from "./FormItemEl";
 
-    export class FormInputEl extends FormItemEl {
+export class FormInputEl extends FormItemEl {
 
         private dirtyChangedListeners: {(dirty: boolean):void}[] = [];
 
-        private valueChangedListeners: {(event: api.ValueChangedEvent):void}[] = [];
+        private valueChangedListeners: {(event: ValueChangedEvent):void}[] = [];
 
         private originalValue: string;
 
@@ -26,7 +29,7 @@ module api.dom {
             // Descendant class might override my methods
             // therefore set value on added to make sure it's ready
             this.onAdded((event) => {
-                if (!api.util.StringHelper.isBlank(originalValue)) {
+                if (!StringHelper.isBlank(originalValue)) {
                     if (FormInputEl.debug) {
                         console.debug(this.toString() + '.onAdded: setting original value = "' + originalValue + '"');
                     }
@@ -67,7 +70,7 @@ module api.dom {
          * @param silent
          * @param userInput indicates that dirty flag should be updated,
          * otherwise original value will be updated if not dirty
-         * @returns {api.dom.FormInputEl}
+         * @returns {FormInputEl}
          */
         setValue(value: string, silent?: boolean, userInput?: boolean): FormInputEl {
             if (FormInputEl.debug) {
@@ -120,7 +123,7 @@ module api.dom {
         }
 
         toString(): string {
-            return api.ClassHelper.getClassName(this) + '[' + this.getId() + ']';
+            return ClassHelper.getClassName(this) + '[' + this.getId() + ']';
         }
 
         private setDirty(dirty: boolean, silent?: boolean) {
@@ -155,7 +158,7 @@ module api.dom {
                     console.debug(this.toString() + ' value changed from "' + this.oldValue + '" to "' + value + '"');
                 }
                 if (!silent) {
-                    this.notifyValueChanged(new api.ValueChangedEvent(this.oldValue, value));
+                    this.notifyValueChanged(new ValueChangedEvent(this.oldValue, value));
                 }
                 this.oldValue = "" + value;
             } else {
@@ -197,20 +200,19 @@ module api.dom {
             })
         }
 
-        onValueChanged(listener: (event: api.ValueChangedEvent) => void) {
+        onValueChanged(listener: (event: ValueChangedEvent) => void) {
             this.valueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.ValueChangedEvent) => void) {
+        unValueChanged(listener: (event: ValueChangedEvent) => void) {
             this.valueChangedListeners = this.valueChangedListeners.filter((curr) => {
                 return listener !== curr;
             })
         }
 
-        private notifyValueChanged(event: api.ValueChangedEvent) {
+        private notifyValueChanged(event: ValueChangedEvent) {
             this.valueChangedListeners.forEach((listener) => {
                 listener(event);
             })
         }
     }
-}

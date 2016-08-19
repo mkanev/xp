@@ -1,6 +1,6 @@
-module api.ui.button {
+import {ButtonEl} from "../../dom/ButtonEl";
 
-    export class DropdownHandle extends api.dom.ButtonEl {
+export class DropdownHandle extends ButtonEl {
 
         constructor() {
             super("dropdown-handle");
@@ -25,4 +25,3 @@ module api.ui.button {
             this.removeClass('down')
         }
     }
-}

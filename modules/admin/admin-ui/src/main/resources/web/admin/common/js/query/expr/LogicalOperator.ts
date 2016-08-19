@@ -1,7 +1,6 @@
-module api.query.expr {
 
-    export enum LogicalOperator {
+
+export enum LogicalOperator {
         AND,
         OR
     }
-}

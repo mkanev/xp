@@ -1,6 +1,7 @@
-module api.form.json {
+import {FormItemJson} from "./FormItemJson";
+import {OccurrencesJson} from "./OccurrencesJson";
 
-    export interface InputJson extends FormItemJson {
+export interface InputJson extends FormItemJson {
 
         customText: string;
 
@@ -28,4 +29,3 @@ module api.form.json {
         };
 
     }
-}

@@ -1,14 +1,14 @@
-module api.content.page.region {
+import {DropdownConfig} from "../../ui/selector/dropdown/DropdownInput";
+import {Option} from "../../ui/selector/Option";
+import {DescriptorKey} from "./DescriptorKey";
+import {LoadedDataEvent} from "../../util/loader/event/LoadedDataEvent";
+import {RichDropdown} from "../../ui/selector/dropdown/RichDropdown";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {Descriptor} from "./Descriptor";
 
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-    import Option = api.ui.selector.Option;
-    import DescriptorKey = api.content.page.DescriptorKey;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import RichDropdown = api.ui.selector.dropdown.RichDropdown;
+export class DescriptorBasedDropdown<DESCRIPTOR extends Descriptor> extends RichDropdown<DESCRIPTOR> {
 
-    export class DescriptorBasedDropdown<DESCRIPTOR extends Descriptor> extends RichDropdown<DESCRIPTOR> {
-
-        constructor(name: string, loader: api.util.loader.BaseLoader<any, DESCRIPTOR>, dropdownConfig: DropdownConfig<DESCRIPTOR>) {
+        constructor(name: string, loader: BaseLoader<any, DESCRIPTOR>, dropdownConfig: DropdownConfig<DESCRIPTOR>) {
             super(name, loader, dropdownConfig);
         }
 
@@ -48,4 +48,3 @@ module api.content.page.region {
             return null;
         }
     }
-}

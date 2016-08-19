@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentType} from "./ComponentType";
+import {ImageComponentBuilder} from "./ImageComponent";
 
-    export class ImageComponentType extends ComponentType {
+export class ImageComponentType extends ComponentType {
 
         private static INSTANCE = new ImageComponentType();
 
@@ -17,4 +18,3 @@ module api.content.page.region {
         }
     }
 
-}

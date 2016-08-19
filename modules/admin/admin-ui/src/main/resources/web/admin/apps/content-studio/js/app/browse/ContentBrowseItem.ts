@@ -1,12 +1,13 @@
-import "../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {AccessControlList} from "../../../../../common/js/security/acl/AccessControlList";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {Equitable} from "../../../../../common/js/Equitable";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import AccessControlList = api.security.acl.AccessControlList;
-import ViewItem = api.app.view.ViewItem;
+export class ContentBrowseItem extends BrowseItem<ContentSummaryAndCompareStatus> {
 
-export class ContentBrowseItem extends api.app.browse.BrowseItem<api.content.ContentSummaryAndCompareStatus> {
-
-    private accessControlList: api.security.acl.AccessControlList;
+    private accessControlList: AccessControlList;
 
     constructor(model: ContentSummaryAndCompareStatus) {
         super(model);
@@ -21,12 +22,12 @@ export class ContentBrowseItem extends api.app.browse.BrowseItem<api.content.Con
         this.accessControlList = accessControlList;
     }
 
-    equals(o: api.Equitable): boolean {
-        if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentBrowseItem)) {
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentBrowseItem)) {
             return false;
         }
         let other = <ContentBrowseItem> o;
         return super.equals(o) &&
-               api.ObjectHelper.equals(this.accessControlList, other.getAccessControlList());
+               ObjectHelper.equals(this.accessControlList, other.getAccessControlList());
     }
 }

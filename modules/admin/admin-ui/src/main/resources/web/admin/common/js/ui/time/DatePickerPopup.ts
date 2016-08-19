@@ -1,6 +1,14 @@
-module api.ui.time {
+import {DivEl} from "../../dom/DivEl";
+import {AEl} from "../../dom/AEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {H2El} from "../../dom/H2El";
+import {H5El} from "../../dom/H5El";
+import {CalendarBuilder} from "./Calendar";
+import {Calendar} from "./Calendar";
+import {MonthsOfYear} from "./MonthsOfYear";
+import {SelectedDateChangedEvent} from "./SelectedDateChangedEvent";
 
-    export class DatePickerPopupBuilder {
+export class DatePickerPopupBuilder {
 
         calendar: Calendar;
 
@@ -19,23 +27,23 @@ module api.ui.time {
 
     }
 
-    export class DatePickerPopup extends api.dom.DivEl {
+    export class DatePickerPopup extends DivEl {
 
-        private prevYear: api.dom.AEl;
-        private year: api.dom.SpanEl;
-        private nextYear: api.dom.AEl;
-        private prevMonth: api.dom.AEl;
-        private month: api.dom.SpanEl;
-        private nextMonth: api.dom.AEl;
+        private prevYear: AEl;
+        private year: SpanEl;
+        private nextYear: AEl;
+        private prevMonth: AEl;
+        private month: SpanEl;
+        private nextMonth: AEl;
         private calendar: Calendar;
 
         constructor(builder: DatePickerPopupBuilder) {
             super('date-picker-dialog');
 
-            var yearContainer = new api.dom.H2El('year-container');
+            var yearContainer = new H2El('year-container');
             this.appendChild(yearContainer);
 
-            this.prevYear = new api.dom.AEl('prev');
+            this.prevYear = new AEl('prev');
             this.prevYear.onClicked((e: MouseEvent) => {
                 this.calendar.previousYear();
                 e.stopPropagation();
@@ -44,10 +52,10 @@ module api.ui.time {
             });
             yearContainer.appendChild(this.prevYear);
 
-            this.year = new api.dom.SpanEl();
+            this.year = new SpanEl();
             yearContainer.appendChild(this.year);
 
-            this.nextYear = new api.dom.AEl('next');
+            this.nextYear = new AEl('next');
             this.nextYear.onClicked((e: MouseEvent) => {
                 this.calendar.nextYear();
                 e.stopPropagation();
@@ -56,10 +64,10 @@ module api.ui.time {
             });
             yearContainer.appendChild(this.nextYear);
 
-            var monthContainer = new api.dom.H5El('month-container');
+            var monthContainer = new H5El('month-container');
             this.appendChild(monthContainer);
 
-            this.prevMonth = new api.dom.AEl('prev');
+            this.prevMonth = new AEl('prev');
             this.prevMonth.onClicked((e: MouseEvent) => {
                 this.calendar.previousMonth();
                 e.stopPropagation();
@@ -68,10 +76,10 @@ module api.ui.time {
             });
             monthContainer.appendChild(this.prevMonth);
 
-            this.month = new api.dom.SpanEl();
+            this.month = new SpanEl();
             monthContainer.appendChild(this.month);
 
-            this.nextMonth = new api.dom.AEl('next');
+            this.nextMonth = new AEl('next');
             this.nextMonth.onClicked((e: MouseEvent) => {
                 this.calendar.nextMonth();
                 e.stopPropagation();
@@ -109,4 +117,3 @@ module api.ui.time {
         }
     }
 
-}

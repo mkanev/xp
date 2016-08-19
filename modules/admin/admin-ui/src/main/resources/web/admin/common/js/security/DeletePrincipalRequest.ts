@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {DeletePrincipalResult} from "./DeletePrincipalResult";
+import {DeletePrincipalResultsJson} from "./DeletePrincipalResultsJson";
+import {PrincipalKey} from "./PrincipalKey";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
 
-    export class DeletePrincipalRequest extends SecurityResourceRequest<DeletePrincipalResultsJson, DeletePrincipalResult[]> {
+export class DeletePrincipalRequest extends SecurityResourceRequest<DeletePrincipalResultsJson, DeletePrincipalResult[]> {
 
         private keys: PrincipalKey[];
 
@@ -20,16 +25,15 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals', 'delete');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals', 'delete');
         }
 
         sendAndParse(): wemQ.Promise<DeletePrincipalResult[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<DeletePrincipalResultsJson>) => {
+            return this.send().then((response: JsonResponse<DeletePrincipalResultsJson>) => {
                 return response.getResult().results.map((resultJson) => DeletePrincipalResult.fromJson(resultJson));
             });
         }
 
     }
-}

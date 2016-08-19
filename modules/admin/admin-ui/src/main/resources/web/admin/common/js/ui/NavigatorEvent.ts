@@ -1,6 +1,6 @@
-module api.ui {
+import {NavigationItem} from "./NavigationItem";
 
-    export class NavigatorEvent {
+export class NavigatorEvent {
 
         private tab: NavigationItem;
 
@@ -13,4 +13,3 @@ module api.ui {
             return this.tab;
         }
     }
-}

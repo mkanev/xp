@@ -1,6 +1,6 @@
-module api.content.page {
+import {FormJson} from "../../form/json/FormJson";
 
-    export interface DescriptorJson{
+export interface DescriptorJson{
 
         key:string;
 
@@ -10,6 +10,5 @@ module api.content.page {
 
         controller:string;
 
-        config: api.form.json.FormJson;
+        config: FormJson;
     }
-}

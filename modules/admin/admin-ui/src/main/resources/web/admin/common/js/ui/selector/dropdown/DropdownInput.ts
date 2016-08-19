@@ -1,13 +1,25 @@
-module api.ui.selector.dropdown {
+import {Option} from "../Option";
+import {OptionSelectedEvent} from "../OptionSelectedEvent";
+import {OptionFilterInputValueChangedEvent} from "../OptionFilterInputValueChangedEvent";
+import {DropdownHandle} from "../../button/DropdownHandle";
+import {Viewer} from "../../Viewer";
+import {DefaultOptionDisplayValueViewer} from "../DefaultOptionDisplayValueViewer";
+import {FormInputEl} from "../../../dom/FormInputEl";
+import {ImgEl} from "../../../dom/ImgEl";
+import {DropdownExpandedEvent} from "../DropdownExpandedEvent";
+import {StyleHelper} from "../../../StyleHelper";
+import {ElementRenderedEvent} from "../../../dom/ElementRenderedEvent";
+import {StringHelper} from "../../../util/StringHelper";
+import {FormEl} from "../../../dom/FormEl";
+import {AppHelper} from "../../../util/AppHelper";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {DropdownGridRowSelectedEvent} from "../DropdownGridRowSelectedEvent";
+import {DropdownListConfig} from "../DropdownList";
+import {DropdownList} from "../DropdownList";
+import {DropdownOptionFilterInput} from "./DropdownOptionFilterInput";
+import {SelectedOptionView} from "./SelectedOptionView";
 
-    import Option = api.ui.selector.Option;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-    import OptionFilterInputValueChangedEvent = api.ui.selector.OptionFilterInputValueChangedEvent;
-    import DropdownHandle = api.ui.button.DropdownHandle;
-    import Viewer = api.ui.Viewer;
-    import DefaultOptionDisplayValueViewer = api.ui.selector.DefaultOptionDisplayValueViewer;
-
-    export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
+export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
 
         iconUrl?: string;
 
@@ -28,9 +40,9 @@ module api.ui.selector.dropdown {
         noOptionsText?: string;
     }
 
-    export class DropdownInput<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
+    export class DropdownInput<OPTION_DISPLAY_VALUE> extends FormInputEl {
 
-        private icon: api.dom.ImgEl;
+        private icon: ImgEl;
 
         private typeAhead: boolean = true;
 
@@ -48,7 +60,7 @@ module api.ui.selector.dropdown {
 
         private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>):void}[] = [];
 
-        private expandedListeners: {(event: api.ui.selector.DropdownExpandedEvent): void}[] = [];
+        private expandedListeners: {(event: DropdownExpandedEvent): void}[] = [];
 
         private noOptionsText: string;
 
@@ -59,13 +71,13 @@ module api.ui.selector.dropdown {
         private active: boolean = false;
 
         constructor(name: string, config: DropdownConfig<OPTION_DISPLAY_VALUE>) {
-            super("div", "dropdown", api.StyleHelper.COMMON_PREFIX, config.value);
+            super("div", "dropdown", StyleHelper.COMMON_PREFIX, config.value);
             this.getEl().setAttribute("name", name);
 
             this.optionDisplayValueViewer = config.optionDisplayValueViewer || new DefaultOptionDisplayValueViewer();
 
             if (config.iconUrl) {
-                this.icon = new api.dom.ImgEl(config.iconUrl, "input-icon");
+                this.icon = new ImgEl(config.iconUrl, "input-icon");
                 this.appendChild(this.icon);
             }
 
@@ -113,7 +125,7 @@ module api.ui.selector.dropdown {
 
             this.setupListeners();
 
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
+            this.onRendered((event: ElementRenderedEvent) => {
 
                 this.doUpdateDropdownTopPositionAndWidth();
             });
@@ -136,7 +148,7 @@ module api.ui.selector.dropdown {
 
         private defaultFilter(option: Option<OPTION_DISPLAY_VALUE>, args: any) {
 
-            if (!args.searchString || api.util.StringHelper.isEmpty(args.searchString)) {
+            if (!args.searchString || StringHelper.isEmpty(args.searchString)) {
                 return true;
             }
 
@@ -260,7 +272,7 @@ module api.ui.selector.dropdown {
             var option = this.getOptionByRow(index);
             if (option != null) {
                 this.selectOption(option, silent, keyCode);
-                api.dom.FormEl.moveFocusToNextFocusable(this.input);
+                FormEl.moveFocusToNextFocusable(this.input);
             }
         }
 
@@ -295,7 +307,7 @@ module api.ui.selector.dropdown {
 
         setInputIconUrl(iconUrl: string) {
             if (!this.icon) {
-                this.icon = new api.dom.ImgEl();
+                this.icon = new ImgEl();
                 this.icon.addClass("input-icon");
                 this.icon.insertBeforeEl(this.input);
             }
@@ -304,7 +316,7 @@ module api.ui.selector.dropdown {
         }
 
         private setupListeners() {
-            api.util.AppHelper.focusInOut(this, () => {
+            AppHelper.focusInOut(this, () => {
                 this.hideDropdown();
                 this.active = false;
             });
@@ -319,7 +331,7 @@ module api.ui.selector.dropdown {
                 this.giveFocus();
             });
 
-            this.input.onValueChanged((event: api.ValueChangedEvent) => {
+            this.input.onValueChanged((event: ValueChangedEvent) => {
 
                 this.notifyOptionFilterInputValueChanged(event.getOldValue(), event.getNewValue());
 
@@ -406,16 +418,15 @@ module api.ui.selector.dropdown {
             });
         }
 
-        onExpanded(listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) {
+        onExpanded(listener: (event: DropdownExpandedEvent)=>void) {
             this.expandedListeners.push(listener);
         }
 
         private notifyExpanded() {
-            var event = new api.ui.selector.DropdownExpandedEvent(this.dropdownList.getDropdownGrid().getElement(), true);
-            this.expandedListeners.forEach((listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) => {
+            var event = new DropdownExpandedEvent(this.dropdownList.getDropdownGrid().getElement(), true);
+            this.expandedListeners.forEach((listener: (event: DropdownExpandedEvent)=>void) => {
                 listener(event);
             });
         }
     }
 
-}

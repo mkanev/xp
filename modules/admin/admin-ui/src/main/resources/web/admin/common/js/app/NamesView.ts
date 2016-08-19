@@ -1,10 +1,13 @@
-module api.app {
+import {DivEl} from "../dom/DivEl";
+import {H6El} from "../dom/H6El";
+import {PEl} from "../dom/PEl";
+import {Element} from "../dom/Element";
 
-    export class NamesView extends api.dom.DivEl {
+export class NamesView extends DivEl {
 
-        private mainNameEl: api.dom.H6El;
+        private mainNameEl: H6El;
 
-        private subNameEl: api.dom.PEl;
+        private subNameEl: PEl;
 
         private addTitleAttribute: boolean;
 
@@ -13,10 +16,10 @@ module api.app {
 
             this.addTitleAttribute = addTitleAttribute
 
-            this.mainNameEl = new api.dom.H6El("main-name");
+            this.mainNameEl = new H6El("main-name");
             this.appendChild(this.mainNameEl);
 
-            this.subNameEl = new api.dom.PEl("sub-name");
+            this.subNameEl = new PEl("sub-name");
             this.appendChild(this.subNameEl);
         }
 
@@ -36,12 +39,11 @@ module api.app {
             return this;
         }
 
-        setSubNameElements(elements: api.dom.Element[]): NamesView {
-            elements.forEach((element: api.dom.Element) => {
+        setSubNameElements(elements: Element[]): NamesView {
+            elements.forEach((element: Element) => {
                 this.subNameEl.appendChild(element);
             });
 
             return this;
         }
     }
-}

@@ -1,4 +1,8 @@
-import "../../../../api.ts";
+import {Panel} from "../../../../../../../common/js/ui/panel/Panel";
+import {DataView} from "../../../../../../../common/js/ui/grid/DataView";
+import {PEl} from "../../../../../../../common/js/dom/PEl";
+import {UriHelper} from "../../../../../../../common/js/util/UriHelper";
+
 import {LiveEditPageProxy} from "../LiveEditPageProxy";
 import {EmulatorGrid} from "./EmulatorGrid";
 
@@ -7,9 +11,9 @@ export interface EmulatorPanelConfig {
     liveEditPage: LiveEditPageProxy;
 }
 
-export class EmulatorPanel extends api.ui.panel.Panel {
+export class EmulatorPanel extends Panel {
 
-    private dataView: api.ui.grid.DataView<any>;
+    private dataView: DataView<any>;
     private grid: EmulatorGrid;
 
     private liveEditPage: LiveEditPageProxy;
@@ -19,11 +23,11 @@ export class EmulatorPanel extends api.ui.panel.Panel {
 
         this.liveEditPage = config.liveEditPage;
 
-        var text = new api.dom.PEl();
+        var text = new PEl();
         text.getEl().setInnerHtml("Emulate different client's physical sizes");
         this.appendChild(text);
 
-        this.dataView = new api.ui.grid.DataView<any>();
+        this.dataView = new DataView<any>();
         this.grid = new EmulatorGrid(this.dataView);
         this.appendChild(this.grid);
 
@@ -52,7 +56,7 @@ export class EmulatorPanel extends api.ui.panel.Panel {
 
     private getData(): void {
         wemjq.ajax({
-            url: api.util.UriHelper.getAdminUri("apps/content-studio/js/data/context-window/devices.json"),
+            url: UriHelper.getAdminUri("apps/content-studio/js/data/context-window/devices.json"),
             success: (data: any, textStatus: string, jqXHR: JQueryXHR) => {
                 this.dataView.setItems(EmulatorGrid.toSlickData(data));
                 this.grid.setActiveCell(0, 0); // select first option

@@ -1,10 +1,9 @@
-module api.query.aggregation {
 
-    export interface RangeJson {
+
+export interface RangeJson {
 
         key?: string;
 
     }
 
 
-}

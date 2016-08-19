@@ -1,11 +1,13 @@
-import "../../../api.ts";
+import {MarketApplication} from "../../../../../../common/js/application/MarketApplication";
+import {NamesAndIconViewSize} from "../../../../../../common/js/app/NamesAndIconViewSize";
+import {Viewer} from "../../../../../../common/js/ui/Viewer";
+import {NamesAndIconView} from "../../../../../../common/js/app/NamesAndIconView";
+import {AEl} from "../../../../../../common/js/dom/AEl";
+import {NamesAndIconViewBuilder} from "../../../../../../common/js/app/NamesAndIconView";
 
-import MarketApplication = api.application.MarketApplication;
-import NamesAndIconViewSize = api.app.NamesAndIconViewSize;
+export class MarketAppViewer extends Viewer<MarketApplication> {
 
-export class MarketAppViewer extends api.ui.Viewer<MarketApplication> {
-
-    private namesAndIconView: api.app.NamesAndIconView;
+    private namesAndIconView: NamesAndIconView;
 
     private relativePath: boolean;
 
@@ -27,7 +29,7 @@ export class MarketAppViewer extends api.ui.Viewer<MarketApplication> {
     }
 
     resolveDisplayName(object: MarketApplication): string {
-        var appLink = new api.dom.AEl().setUrl(object.getUrl(), "_blank").setHtml(object.getDisplayName(), false);
+        var appLink = new AEl().setUrl(object.getUrl(), "_blank").setHtml(object.getDisplayName(), false);
         return appLink.toString();
     }
 
@@ -55,7 +57,7 @@ export class MarketAppViewer extends api.ui.Viewer<MarketApplication> {
         }
 
         if (!this.namesAndIconView) {
-            this.namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(this.size).build();
+            this.namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
             this.appendChild(this.namesAndIconView);
         }
 

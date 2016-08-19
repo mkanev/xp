@@ -1,6 +1,6 @@
-module api.security.acl {
+import {PrincipalJson} from "../PrincipalJson";
 
-    export interface AccessControlEntryJson {
+export interface AccessControlEntryJson {
 
         principal: PrincipalJson;
 
@@ -11,4 +11,3 @@ module api.security.acl {
         // inherited?: boolean;
 
     }
-}

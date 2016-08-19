@@ -1,6 +1,7 @@
-module api.query.expr {
+import {ConstraintExpr} from "./ConstraintExpr";
+import {Expression} from "./Expression";
 
-    export class NotExpr implements ConstraintExpr {
+export class NotExpr implements ConstraintExpr {
         private expr: Expression;
 
         constructor(expr: ConstraintExpr) {
@@ -15,4 +16,3 @@ module api.query.expr {
             return "NOT (" + this.expr.toString() + ")";
         }
     }
-}

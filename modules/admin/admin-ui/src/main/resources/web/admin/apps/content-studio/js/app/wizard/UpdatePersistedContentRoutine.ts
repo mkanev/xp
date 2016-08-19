@@ -1,24 +1,24 @@
-import "../../api.ts";
-
-import Content = api.content.Content;
-import Site = api.content.site.Site;
-import PageCUDRequest = api.content.page.PageCUDRequest;
-import CreatePageRequest = api.content.page.CreatePageRequest;
-import UpdatePageRequest = api.content.page.UpdatePageRequest;
-import DeletePageRequest = api.content.page.DeletePageRequest;
+import {Content} from "../../../../../common/js/content/Content";
+import {Site} from "../../../../../common/js/content/site/Site";
+import {PageCUDRequest} from "../../../../../common/js/content/page/PageCUDRequest";
+import {CreatePageRequest} from "../../../../../common/js/content/page/CreatePageRequest";
+import {UpdatePageRequest} from "../../../../../common/js/content/page/UpdatePageRequest";
+import {DeletePageRequest} from "../../../../../common/js/content/page/DeletePageRequest";
+import {Flow} from "../../../../../common/js/util/Flow";
+import {UpdateContentRequest} from "../../../../../common/js/content/resource/UpdateContentRequest";
 
 export class UpdatePersistedContentRoutineContext {
 
     content: Content = null;
 }
 
-export class UpdatePersistedContentRoutine extends api.util.Flow<Content,UpdatePersistedContentRoutineContext> {
+export class UpdatePersistedContentRoutine extends Flow<Content,UpdatePersistedContentRoutineContext> {
 
     private persistedContent: Content;
 
     private viewedContent: Content;
 
-    private updateContentRequestProducer: {(content: Content, viewedContent: Content): api.content.resource.UpdateContentRequest; };
+    private updateContentRequestProducer: {(content: Content, viewedContent: Content): UpdateContentRequest; };
 
     private doneHandledContent = false;
 
@@ -31,7 +31,7 @@ export class UpdatePersistedContentRoutine extends api.util.Flow<Content,UpdateP
     }
 
     public setUpdateContentRequestProducer(producer: {(content: Content,
-                                                       viewedContent: Content): api.content.resource.UpdateContentRequest; }): UpdatePersistedContentRoutine {
+                                                       viewedContent: Content): UpdateContentRequest; }): UpdatePersistedContentRoutine {
         this.updateContentRequestProducer = producer;
         return this;
     }

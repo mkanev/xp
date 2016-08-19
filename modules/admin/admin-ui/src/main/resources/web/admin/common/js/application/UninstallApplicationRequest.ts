@@ -1,6 +1,9 @@
-module api.application {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {ApplicationKey} from "./ApplicationKey";
+import {ApplicationResourceRequest} from "./ApplicationResourceRequest";
 
-    export class UninstallApplicationRequest extends ApplicationResourceRequest<void, void> {
+export class UninstallApplicationRequest extends ApplicationResourceRequest<void, void> {
 
         private applicationKeys: ApplicationKey[];
 
@@ -10,8 +13,8 @@ module api.application {
             this.applicationKeys = applicationKeys;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "uninstall");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "uninstall");
         }
 
         getParams(): Object {
@@ -21,9 +24,8 @@ module api.application {
         }
 
         sendAndParse(): wemQ.Promise<void> {
-            return this.send().then((response: api.rest.JsonResponse<void>) => {
+            return this.send().then((response: JsonResponse<void>) => {
 
             });
         }
     }
-}

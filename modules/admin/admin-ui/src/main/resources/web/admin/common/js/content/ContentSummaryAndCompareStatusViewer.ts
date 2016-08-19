@@ -1,6 +1,10 @@
-module api.content {
+import {NamesAndIconViewer} from "../ui/NamesAndIconViewer";
+import {ContentUnnamed} from "./ContentUnnamed";
+import {ContentIconUrlResolver} from "./util/ContentIconUrlResolver";
+import {ContentPath} from "./ContentPath";
+import {ContentSummaryAndCompareStatus} from "./ContentSummaryAndCompareStatus";
 
-    export class ContentSummaryAndCompareStatusViewer extends api.ui.NamesAndIconViewer<ContentSummaryAndCompareStatus> {
+export class ContentSummaryAndCompareStatusViewer extends NamesAndIconViewer<ContentSummaryAndCompareStatus> {
 
         constructor() {
             super("content-summary-and-compare-status-viewer");
@@ -37,11 +41,11 @@ module api.content {
 
                 if (relativePath) {
                     return !contentName.isUnnamed() ? contentName.toString() :
-                           api.content.ContentUnnamed.prettifyUnnamed();
+                           ContentUnnamed.prettifyUnnamed();
                 } else {
                     return !contentName.isUnnamed() ? contentSummary.getPath().toString() :
                                                       ContentPath.fromParent(contentSummary.getPath().getParentPath(),
-                                                          api.content.ContentUnnamed.prettifyUnnamed()).toString();
+                                                          ContentUnnamed.prettifyUnnamed()).toString();
                 }
             } else if (uploadItem) {
                 return uploadItem.getName();
@@ -61,7 +65,6 @@ module api.content {
 
         resolveIconUrl(object: ContentSummaryAndCompareStatus): string {
             var contentSummary = object.getContentSummary();
-            return !!contentSummary ? new api.content.util.ContentIconUrlResolver().setContent(contentSummary).resolve() : "";
+            return !!contentSummary ? new ContentIconUrlResolver().setContent(contentSummary).resolve() : "";
         }
     }
-}

@@ -1,16 +1,18 @@
-import "../../api.ts";
+import {AsideEl} from "../../../../../common/js/dom/AsideEl";
+import {H1El} from "../../../../../common/js/dom/H1El";
+
 import {RecentItemsList} from "./RecentItemsList";
 
-export class RecentItemsBlock extends api.dom.AsideEl {
+export class RecentItemsBlock extends AsideEl {
 
     private recentItemsList: RecentItemsList;
 
-    private title: api.dom.H1El;
+    private title: H1El;
 
     constructor(title = "Recently Used") {
         super("column");
 
-        this.title = new api.dom.H1El();
+        this.title = new H1El();
         this.title.setHtml(title);
 
         this.recentItemsList = new RecentItemsList();

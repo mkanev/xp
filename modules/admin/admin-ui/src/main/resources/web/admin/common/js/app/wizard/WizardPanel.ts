@@ -1,17 +1,44 @@
-module api.app.wizard {
+import {Toolbar} from "../../ui/toolbar/Toolbar";
+import {ResponsiveManager} from "../../ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../ui/responsive/ResponsiveItem";
+import {Panel} from "../../ui/panel/Panel";
+import {Equitable} from "../../Equitable";
+import {AppBarTabId} from "../bar/AppBarTabId";
+import {Closeable} from "../../ui/Closeable";
+import {ActionContainer} from "../../ui/ActionContainer";
+import {Element} from "../../dom/Element";
+import {LoadMask} from "../../ui/mask/LoadMask";
+import {SplitPanel} from "../../ui/panel/SplitPanel";
+import {DivEl} from "../../dom/DivEl";
+import {ActivatedEvent} from "../../ui/ActivatedEvent";
+import {ElementRenderedEvent} from "../../dom/ElementRenderedEvent";
+import {ElementShownEvent} from "../../dom/ElementShownEvent";
+import {ElementHiddenEvent} from "../../dom/ElementHiddenEvent";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {SplitPanelUnit} from "../../ui/panel/SplitPanel";
+import {Action} from "../../ui/Action";
+import {SplitPanelBuilder} from "../../ui/panel/SplitPanel";
+import {SplitPanelAlignment} from "../../ui/panel/SplitPanel";
+import {ValidityChangedEvent} from "../../ValidityChangedEvent";
+import {MinimizeWizardPanelEvent} from "./MinimizeWizardPanelEvent";
+import {SaveBeforeCloseDialog} from "./SaveBeforeCloseDialog";
+import {WizardActions} from "./WizardActions";
+import {WizardClosedEvent} from "./WizardClosedEvent";
+import {WizardHeader} from "./WizardHeader";
+import {WizardStep} from "./WizardStep";
+import {WizardStepForm} from "./WizardStepForm";
+import {WizardStepNavigator} from "./WizardStepNavigator";
+import {WizardStepNavigatorAndToolbar} from "./WizardStepNavigatorAndToolbar";
+import {WizardStepsPanel} from "./WizardStepsPanel";
+import {WizardValidityManager} from "./WizardValidityManager";
 
-    import Toolbar = api.ui.toolbar.Toolbar;
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-    import Panel = api.ui.panel.Panel;
-
-    /*
+/*
      Only data should be passed to constructor
      views are to be created on render
      */
-    export interface WizardPanelParams<EQUITABLE extends api.Equitable> {
+    export interface WizardPanelParams<EQUITABLE extends Equitable> {
 
-        tabId: api.app.bar.AppBarTabId;
+        tabId: AppBarTabId;
 
         persistedItem: EQUITABLE;
 
@@ -19,7 +46,7 @@ module api.app.wizard {
 
     }
 
-    export class WizardPanel<EQUITABLE extends api.Equitable> extends api.ui.panel.Panel implements api.ui.Closeable, api.ui.ActionContainer {
+    export class WizardPanel<EQUITABLE extends Equitable> extends Panel implements Closeable, ActionContainer {
 
         protected params: WizardPanelParams<EQUITABLE>;
 
@@ -39,11 +66,11 @@ module api.app.wizard {
 
         protected stepToolbar: Toolbar;
 
-        protected formIcon: api.dom.Element;
+        protected formIcon: Element;
 
-        protected formMask: api.ui.mask.LoadMask;
+        protected formMask: LoadMask;
 
-        protected liveMask: api.ui.mask.LoadMask;
+        protected liveMask: LoadMask;
 
         // TODO: @alb - Value is set to 'changed' by default to see SaveChangesBeforeCloseDialog behavior.
         private isChanged: boolean = true;
@@ -62,19 +89,19 @@ module api.app.wizard {
 
         private stepNavigatorAndToolbarContainer: WizardStepNavigatorAndToolbar;
 
-        private splitPanel: api.ui.panel.SplitPanel;
+        private splitPanel: SplitPanel;
 
         private splitPanelThreshold: number = 960;
 
-        private stepNavigatorPlaceholder: api.dom.DivEl;
+        private stepNavigatorPlaceholder: DivEl;
 
         private validityManager: WizardValidityManager;
 
-        private minimizeEditButton: api.dom.DivEl;
+        private minimizeEditButton: DivEl;
 
         private minimized: boolean = false;
 
-        private toggleMinimizeListener: (event: api.ui.ActivatedEvent) => void;
+        private toggleMinimizeListener: (event: ActivatedEvent) => void;
 
         private scrollPosition: number = 0;
 
@@ -96,13 +123,13 @@ module api.app.wizard {
             // call loadData even if persistedItem is set to load additional data
             this.loadData();
 
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
+            this.onRendered((event: ElementRenderedEvent) => {
                 if (WizardPanel.debug) {
                     console.debug("WizardPanel: rendered", event);
                 }
             });
 
-            this.onShown((event: api.dom.ElementShownEvent) => {
+            this.onShown((event: ElementShownEvent) => {
                 if (WizardPanel.debug) {
                     console.debug("WizardPanel: shown", event);
                 }
@@ -114,7 +141,7 @@ module api.app.wizard {
                 }
             });
 
-            this.onHidden((event: api.dom.ElementHiddenEvent) => {
+            this.onHidden((event: ElementHiddenEvent) => {
                 if (WizardPanel.debug) {
                     console.debug("WizardPanel: hidden", event);
                 }
@@ -143,7 +170,7 @@ module api.app.wizard {
                 }
                 this.notifyDataLoaded(item);
             }, (reason) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             });
         }
 
@@ -199,7 +226,7 @@ module api.app.wizard {
                                 .then(() => deferred.resolve(rendered))
                                 .catch(reason => {
                                     deferred.reject(reason);
-                                    api.DefaultErrorHandler.handle(reason);
+                                    DefaultErrorHandler.handle(reason);
                                 }).done();
                         });
                     };
@@ -269,11 +296,11 @@ module api.app.wizard {
             return this.wizardHeader;
         }
 
-        protected createFormIcon(): api.dom.Element {
+        protected createFormIcon(): Element {
             return null;
         }
 
-        public getFormIcon(): api.dom.Element {
+        public getFormIcon(): Element {
             return this.formIcon;
         }
 
@@ -296,14 +323,14 @@ module api.app.wizard {
 
             this.updateToolbarActions();
 
-            this.formPanel = new api.ui.panel.Panel("form-panel rendering");
+            this.formPanel = new Panel("form-panel rendering");
             this.formPanel.onScroll(() => this.updateStickyToolbar());
 
             this.formPanel.onAdded((event) => {
                 if (WizardPanel.debug) {
                     console.debug("WizardPanel: formPanel.onAdded");
                 }
-                this.formMask = new api.ui.mask.LoadMask(this.formPanel);
+                this.formMask = new LoadMask(this.formPanel);
                 this.formMask.show();
             });
 
@@ -343,7 +370,7 @@ module api.app.wizard {
                 this.appendChild(this.mainToolbar);
             }
 
-            var headerAndNavigatorContainer = new api.dom.DivEl("header-and-navigator-container");
+            var headerAndNavigatorContainer = new DivEl("header-and-navigator-container");
 
             this.formIcon = this.createFormIcon();
             if (this.formIcon) {
@@ -369,7 +396,7 @@ module api.app.wizard {
             headerAndNavigatorContainer.appendChild(this.stepNavigatorAndToolbarContainer);
 
             this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);
-            this.stepNavigatorAndToolbarContainer.onShown((event: api.dom.ElementShownEvent) => {
+            this.stepNavigatorAndToolbarContainer.onShown((event: ElementShownEvent) => {
                 // set scroll offset equal to the height of the step navigator to switch steps at the bottom of it when sticky
                 this.stepsPanel.setScrollOffset(event.getElement().getEl().getHeight());
             });
@@ -389,11 +416,11 @@ module api.app.wizard {
             if (this.livePanel) {
                 this.livePanel.addClass('rendering');
 
-                this.toggleMinimizeListener = (event: api.ui.ActivatedEvent) => {
+                this.toggleMinimizeListener = (event: ActivatedEvent) => {
                     this.toggleMinimize(event.getIndex());
                 };
-                this.minimizeEditButton = new api.dom.DivEl("minimize-edit icon icon-arrow-right");
-                api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this.formPanel, updateMinimizeButtonPosition);
+                this.minimizeEditButton = new DivEl("minimize-edit icon icon-arrow-right");
+                ResponsiveManager.onAvailableSizeChanged(this.formPanel, updateMinimizeButtonPosition);
 
                 this.minimizeEditButton.onClicked(this.toggleMinimize.bind(this, -1));
 
@@ -403,7 +430,7 @@ module api.app.wizard {
                     if (WizardPanel.debug) {
                         console.debug("WizardPanel: livePanel.onAdded");
                     }
-                    this.liveMask = new api.ui.mask.LoadMask(this.livePanel);
+                    this.liveMask = new LoadMask(this.livePanel);
                     this.liveMask.show();
                 });
 
@@ -469,7 +496,7 @@ module api.app.wizard {
                 mainToolbar.removeClass("scroll-shadow");
                 var stepNavigatorEl = this.stepNavigatorAndToolbarContainer.getEl().addClass("scroll-stick");
                 if (!this.stepNavigatorPlaceholder) {
-                    this.stepNavigatorPlaceholder = new api.dom.DivEl('toolbar-placeholder');
+                    this.stepNavigatorPlaceholder = new DivEl('toolbar-placeholder');
                     this.stepNavigatorPlaceholder.insertAfterEl(this.stepNavigatorAndToolbarContainer);
                     this.stepNavigatorPlaceholder.getEl().setWidthPx(stepNavigatorEl.getWidth()).setHeightPx(stepNavigatorEl.getHeight());
                 }
@@ -520,7 +547,7 @@ module api.app.wizard {
                 this.stepNavigator.setScrollEnabled(false);
 
                 this.scrollPosition = scroll;
-                this.splitPanel.savePanelSizesAndDistribute(40, 0, api.ui.panel.SplitPanelUnit.PIXEL);
+                this.splitPanel.savePanelSizesAndDistribute(40, 0, SplitPanelUnit.PIXEL);
                 this.splitPanel.hideSplitter();
                 this.minimizeEditButton.getEl().setLeftPx(this.stepsPanel.getEl().getWidth());
 
@@ -558,11 +585,11 @@ module api.app.wizard {
             this.lastFocusedElement = null;
         }
 
-        getTabId(): api.app.bar.AppBarTabId {
+        getTabId(): AppBarTabId {
             return this.params.tabId;
         }
 
-        setTabId(tabId: api.app.bar.AppBarTabId) {
+        setTabId(tabId: AppBarTabId) {
             this.params.tabId = tabId;
         }
 
@@ -570,7 +597,7 @@ module api.app.wizard {
             return null; // TODO:
         }
 
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return this.params.actions.getActions();
         }
 
@@ -719,7 +746,7 @@ module api.app.wizard {
             });
         }
 
-        getSplitPanel(): api.ui.panel.SplitPanel {
+        getSplitPanel(): SplitPanel {
             return this.splitPanel;
         }
 
@@ -731,13 +758,13 @@ module api.app.wizard {
             this.minimizeEditButton.hide();
         }
 
-        private createSplitPanel(firstPanel: api.ui.panel.Panel, secondPanel: api.ui.panel.Panel): api.ui.panel.SplitPanel {
-            var splitPanel = new api.ui.panel.SplitPanelBuilder(firstPanel, secondPanel)
-                .setFirstPanelMinSize(280, api.ui.panel.SplitPanelUnit.PIXEL)
-                .setAlignment(api.ui.panel.SplitPanelAlignment.VERTICAL);
+        private createSplitPanel(firstPanel: Panel, secondPanel: Panel): SplitPanel {
+            var splitPanel = new SplitPanelBuilder(firstPanel, secondPanel)
+                .setFirstPanelMinSize(280, SplitPanelUnit.PIXEL)
+                .setAlignment(SplitPanelAlignment.VERTICAL);
 
             if (wemjq(window).width() > this.splitPanelThreshold) {
-                splitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
+                splitPanel.setFirstPanelSize(38, SplitPanelUnit.PERCENT);
             }
 
             return splitPanel.build();
@@ -765,4 +792,3 @@ module api.app.wizard {
             return this.validityManager.isAllValid();
         }
     }
-}

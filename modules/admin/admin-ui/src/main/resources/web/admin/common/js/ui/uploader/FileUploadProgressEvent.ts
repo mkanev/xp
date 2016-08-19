@@ -1,6 +1,7 @@
-module api.ui.uploader {
+import {Equitable} from "../../Equitable";
+import {UploadItem} from "./UploadItem";
 
-    export class FileUploadProgressEvent<MODEL extends api.Equitable> {
+export class FileUploadProgressEvent<MODEL extends Equitable> {
 
         private uploadItem: UploadItem<MODEL>;
 
@@ -13,4 +14,3 @@ module api.ui.uploader {
         }
 
     }
-}

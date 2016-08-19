@@ -1,9 +1,8 @@
-module api.app.wizard {
 
-    export interface DisplayNameGenerator {
+
+export interface DisplayNameGenerator {
 
         hasScript(): boolean;
 
         execute(): string;
     }
-}

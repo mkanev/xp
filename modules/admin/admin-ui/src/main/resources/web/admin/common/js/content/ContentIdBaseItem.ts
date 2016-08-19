@@ -1,8 +1,10 @@
-module api.content {
+import {ContentIdBaseItemJson} from "./json/ContentIdBaseItemJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentId} from "./ContentId";
+import {ContentSummary} from "./ContentSummary";
 
-    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
-
-    export class ContentIdBaseItem implements api.Equitable {
+export class ContentIdBaseItem implements Equitable {
 
         private contentId: ContentId;
 
@@ -14,15 +16,15 @@ module api.content {
             return this.contentId;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
                 return false;
             }
 
             var other = <ContentIdBaseItem>o;
 
-            if (!api.ObjectHelper.equals(this.contentId, other.contentId)) {
+            if (!ObjectHelper.equals(this.contentId, other.contentId)) {
                 return false;
             }
 
@@ -61,4 +63,3 @@ module api.content {
             return new ContentIdBaseItem(this);
         }
     }
-}

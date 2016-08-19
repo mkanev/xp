@@ -1,23 +1,24 @@
-module api.liveedit.image {
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {ImageComponent} from "../../content/page/region/ImageComponent";
+import {ItemViewIconClassResolver} from "../ItemViewIconClassResolver";
 
-    export class ImageComponentViewer extends api.ui.NamesAndIconViewer<api.content.page.region.ImageComponent> {
+export class ImageComponentViewer extends NamesAndIconViewer<ImageComponent> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: api.content.page.region.ImageComponent): string {
+        resolveDisplayName(object: ImageComponent): string {
             return !!object.getName() ? object.getName().toString() : "";
         }
 
-        resolveSubName(object: api.content.page.region.ImageComponent, relativePath: boolean = false): string {
+        resolveSubName(object: ImageComponent, relativePath: boolean = false): string {
             return object.getPath().toString();
         }
 
-        resolveIconClass(object: api.content.page.region.ImageComponent): string {
-            return api.liveedit.ItemViewIconClassResolver.resolveByType("image");
+        resolveIconClass(object: ImageComponent): string {
+            return ItemViewIconClassResolver.resolveByType("image");
         }
 
     }
 
-}

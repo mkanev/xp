@@ -1,6 +1,9 @@
-module api.event {
+import {Event} from "./Event";
+import {ClassHelper} from "../ClassHelper";
+import {EventJson} from "./EventJson";
+import {NodeServerChange} from "./NodeServerChange";
 
-    export interface NodeEventJson extends EventJson {
+export interface NodeEventJson extends EventJson {
         data: NodeEventDataJson;
     }
 
@@ -28,7 +31,7 @@ module api.event {
             return this.change;
         }
 
-        static is(eventJson: api.event.NodeEventJson): boolean {
+        static is(eventJson: NodeEventJson): boolean {
             throw new Error("must be implemented in inheritors");
         }
 
@@ -37,15 +40,14 @@ module api.event {
         }
 
         static on(handler: (event: NodeServerEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: NodeServerEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
         static fromJson(nodeEventJson: NodeEventJson): NodeServerEvent {
             throw new Error("must be implemented in inheritors");
         }
     }
-}

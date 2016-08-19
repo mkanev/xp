@@ -1,17 +1,24 @@
-module api.content.site.inputtype.siteconfigurator {
+import {PropertyTree} from "../../../../data/PropertyTree";
+import {PropertySet} from "../../../../data/PropertySet";
+import {Option} from "../../../../ui/selector/Option";
+import {FormView} from "../../../../form/FormView";
+import {FormContextBuilder} from "../../../../form/FormContext";
+import {Application} from "../../../../application/Application";
+import {ApplicationKey} from "../../../../application/ApplicationKey";
+import {SiteConfig} from "../../../site/SiteConfig";
+import {LoadedDataEvent} from "../../../../util/loader/event/LoadedDataEvent";
+import {ContentFormContext} from "../../ContentFormContext";
+import {BaseSelectedOptionView} from "../../../../ui/selector/combobox/BaseSelectedOptionView";
+import {FormValidityChangedEvent} from "../../../../form/FormValidityChangedEvent";
+import {DivEl} from "../../../../dom/DivEl";
+import {NamesAndIconView} from "../../../../app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../app/NamesAndIconViewSize";
+import {AEl} from "../../../../dom/AEl";
+import {AuthApplicationComboBox} from "./AuthApplicationComboBox";
+import {SiteConfiguratorDialog} from "../../../site/inputtype/siteconfigurator/SiteConfiguratorDialog";
 
-    import PropertyTree = api.data.PropertyTree;
-    import PropertySet = api.data.PropertySet;
-    import Option = api.ui.selector.Option;
-    import FormView = api.form.FormView;
-    import FormContextBuilder = api.form.FormContextBuilder;
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-    import SiteConfig = api.content.site.SiteConfig;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import ContentFormContext = api.content.form.ContentFormContext;
-
-    export class AuthApplicationSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<Application> {
+export class AuthApplicationSelectedOptionView extends BaseSelectedOptionView<Application> {
 
         private application: Application;
 
@@ -25,11 +32,11 @@ module api.content.site.inputtype.siteconfigurator {
 
         private formContext: ContentFormContext;
 
-        private formValidityChangedHandler: {(event: api.form.FormValidityChangedEvent): void};
+        private formValidityChangedHandler: {(event: FormValidityChangedEvent): void};
 
         private readOnly: boolean;
 
-        constructor(option: Option<Application>, siteConfig: SiteConfig, formContext: api.content.form.ContentFormContext,
+        constructor(option: Option<Application>, siteConfig: SiteConfig, formContext: ContentFormContext,
                     readOnly: boolean = false) {
             this.editClickedListeners = [];
             this.siteConfigFormDisplayedListeners = [];
@@ -44,16 +51,16 @@ module api.content.site.inputtype.siteconfigurator {
 
         doRender(): wemQ.Promise<boolean> {
 
-            var header = new api.dom.DivEl('header');
+            var header = new DivEl('header');
 
-            var namesAndIconView = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(
-                api.app.NamesAndIconViewSize.large)).setMainName(this.application.getDisplayName()).setSubName(
+            var namesAndIconView = new NamesAndIconView(new NamesAndIconViewBuilder().setSize(
+                NamesAndIconViewSize.large)).setMainName(this.application.getDisplayName()).setSubName(
                 this.application.getName() + "-" + this.application.getVersion()).setIconClass("icon-xlarge icon-puzzle");
 
             header.appendChild(namesAndIconView);
 
             if (!this.readOnly) {
-                var removeButton = new api.dom.AEl("remove-button icon-close");
+                var removeButton = new AEl("remove-button icon-close");
                 removeButton.onClicked((event: MouseEvent) => {
                     this.notifyRemoveClicked();
                     event.stopPropagation();
@@ -64,7 +71,7 @@ module api.content.site.inputtype.siteconfigurator {
             }
             this.appendChild(header);
 
-            this.formValidityChangedHandler = (event: api.form.FormValidityChangedEvent) => {
+            this.formValidityChangedHandler = (event: FormValidityChangedEvent) => {
                 this.toggleClass("invalid", !event.isValid())
             };
 
@@ -82,8 +89,8 @@ module api.content.site.inputtype.siteconfigurator {
             this.siteConfig = siteConfig;
         }
 
-        private createEditButton(): api.dom.AEl {
-            var editButton = new api.dom.AEl('edit-button');
+        private createEditButton(): AEl {
+            var editButton = new AEl('edit-button');
 
             editButton.onClicked((event: MouseEvent) => {
                 this.notifyEditClicked(event);
@@ -225,4 +232,3 @@ module api.content.site.inputtype.siteconfigurator {
             this.siteConfigFormDisplayedListeners.forEach((listener) => listener(applicationKey));
         }
     }
-}

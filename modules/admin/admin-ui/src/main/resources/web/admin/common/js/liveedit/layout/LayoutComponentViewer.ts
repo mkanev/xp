@@ -1,22 +1,23 @@
-module api.liveedit.layout {
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {LayoutComponent} from "../../content/page/region/LayoutComponent";
+import {ItemViewIconClassResolver} from "../ItemViewIconClassResolver";
 
-    export class LayoutComponentViewer extends api.ui.NamesAndIconViewer<api.content.page.region.LayoutComponent> {
+export class LayoutComponentViewer extends NamesAndIconViewer<LayoutComponent> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: api.content.page.region.LayoutComponent): string {
+        resolveDisplayName(object: LayoutComponent): string {
             return !!object.getName() ? object.getName().toString() : "";
         }
 
-        resolveSubName(object: api.content.page.region.LayoutComponent, relativePath: boolean = false): string {
+        resolveSubName(object: LayoutComponent, relativePath: boolean = false): string {
             return object.getPath().toString();
         }
 
-        resolveIconClass(object: api.content.page.region.LayoutComponent): string {
-            return api.liveedit.ItemViewIconClassResolver.resolveByType("layout");
+        resolveIconClass(object: LayoutComponent): string {
+            return ItemViewIconClassResolver.resolveByType("layout");
         }
     }
 
-}

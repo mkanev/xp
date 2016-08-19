@@ -1,22 +1,24 @@
-import "../../api.ts";
+import {GridColumn} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridOptionsBuilder} from "../../../../../common/js/ui/grid/GridOptions";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {ItemView} from "../../../../../common/js/liveedit/ItemView";
+import {PageView} from "../../../../../common/js/liveedit/PageView";
+import {PageItemType} from "../../../../../common/js/liveedit/PageItemType";
+import {RegionItemType} from "../../../../../common/js/liveedit/RegionItemType";
+import {RegionView} from "../../../../../common/js/liveedit/RegionView";
+import {LayoutItemType} from "../../../../../common/js/liveedit/layout/LayoutItemType";
+import {LayoutComponentView} from "../../../../../common/js/liveedit/layout/LayoutComponentView";
+import {Content} from "../../../../../common/js/content/Content";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Element} from "../../../../../common/js/dom/Element";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {ItemViewId} from "../../../../../common/js/liveedit/ItemViewId";
+import {SpanEl} from "../../../../../common/js/dom/SpanEl";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
 
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
-
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-
-import ItemView = api.liveedit.ItemView;
-import PageView = api.liveedit.PageView;
-import PageItemType = api.liveedit.PageItemType;
-import RegionItemType = api.liveedit.RegionItemType;
-import RegionView = api.liveedit.RegionView;
-import LayoutItemType = api.liveedit.layout.LayoutItemType;
-import LayoutComponentView = api.liveedit.layout.LayoutComponentView;
-import Content = api.content.Content;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import {PageComponentsItemViewer} from "./PageComponentsItemViewer";
 import {PageComponentsGridDragHandler} from "./PageComponentsGridDragHandler";
 
@@ -50,7 +52,7 @@ export class PageComponentsTreeGrid extends TreeGrid<ItemView> {
         this.gridDragHandler = new PageComponentsGridDragHandler(this);
     }
 
-    queryScrollable(): api.dom.Element {
+    queryScrollable(): Element {
         return this;
     }
 
@@ -67,7 +69,7 @@ export class PageComponentsTreeGrid extends TreeGrid<ItemView> {
 
             viewer.setObject(data);
             node.setViewer("name", viewer);
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(data, RegionView) || api.ObjectHelper.iFrameSafeInstanceOf(data, PageView))) {
+            if (!(ObjectHelper.iFrameSafeInstanceOf(data, RegionView) || ObjectHelper.iFrameSafeInstanceOf(data, PageView))) {
                 viewer.addClass("draggable");
             }
         }
@@ -84,7 +86,7 @@ export class PageComponentsTreeGrid extends TreeGrid<ItemView> {
 
     fetch(node: TreeNode<ItemView>, dataId?: string): Q.Promise<ItemView> {
         var deferred = wemQ.defer<ItemView>();
-        var itemViewId = dataId ? new api.liveedit.ItemViewId(parseInt(dataId)) : node.getData().getItemId();
+        var itemViewId = dataId ? new ItemViewId(parseInt(dataId)) : node.getData().getItemId();
         deferred.resolve(this.pageView.getItemViewById(itemViewId));
         return deferred.promise;
     }
@@ -128,9 +130,9 @@ export class PageComponentsTreeGrid extends TreeGrid<ItemView> {
     }
 
     private menuFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<ContentSummaryAndCompareStatus>) {
-        var wrapper = new api.dom.SpanEl();
+        var wrapper = new SpanEl();
 
-        var icon = new api.dom.DivEl("menu-icon");
+        var icon = new DivEl("menu-icon");
         wrapper.getEl().setInnerHtml(icon.toString(), false);
         return wrapper.toString();
     }

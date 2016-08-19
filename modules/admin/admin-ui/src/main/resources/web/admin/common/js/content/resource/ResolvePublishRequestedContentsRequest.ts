@@ -1,6 +1,9 @@
-module api.content.resource {
+import {ResolvePublishContentResultJson} from "../json/ResolvePublishContentResultJson";
+import {Path} from "../../rest/Path";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class ResolvePublishRequestedContentsRequest extends ContentResourceRequest<api.content.json.ResolvePublishContentResultJson, any> {
+export class ResolvePublishRequestedContentsRequest extends ContentResourceRequest<ResolvePublishContentResultJson, any> {
 
         private ids: ContentId[] = [];
 
@@ -22,8 +25,7 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "resolvePublishContent");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "resolvePublishContent");
         }
     }
-}

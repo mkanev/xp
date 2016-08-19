@@ -1,14 +1,25 @@
-module api.data {
+import {BinaryReference} from "../util/BinaryReference";
+import {Reference} from "../util/Reference";
+import {GeoPoint} from "../util/GeoPoint";
+import {LocalTime} from "../util/LocalTime";
+import {DateTime} from "../util/DateTime";
+import {LocalDateTime} from "../util/LocalDateTime";
+import {LocalDate} from "../util/LocalDate";
+import {Equitable} from "../Equitable";
+import {assertNotNull} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "../util/StringHelper";
+import {PropertyArray} from "./PropertyArray";
+import {PropertyIndexChangedEvent} from "./PropertyIndexChangedEvent";
+import {PropertyPath} from "./PropertyPath";
+import {PropertyPathElement} from "./PropertyPath";
+import {PropertySet} from "./PropertySet";
+import {PropertyValueChangedEvent} from "./PropertyValueChangedEvent";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
+import {ValueTypes} from "./ValueTypes";
 
-    import BinaryReference = api.util.BinaryReference;
-    import Reference = api.util.Reference;
-    import GeoPoint = api.util.GeoPoint;
-    import LocalTime = api.util.LocalTime;
-    import DateTime = api.util.DateTime;
-    import LocalDateTime = api.util.LocalDateTime;
-    import LocalDate = api.util.LocalDate;
-    
-    /**
+/**
      * A Property has a [[name]] and a [[value]],
      * but also:
      * *  an [[index]], since it's a part of an [[array]]
@@ -16,7 +27,7 @@ module api.data {
      *
      * A Property is mutable, both it's [[index]] and [[value]] can change.
      */
-    export class Property implements api.Equitable {
+    export class Property implements Equitable {
 
         public static debug: boolean = false;
 
@@ -35,10 +46,10 @@ module api.data {
         private propertyValueChangedListeners: {(event: PropertyValueChangedEvent):void}[] = [];
 
         constructor(builder: PropertyBuilder) {
-            api.util.assertNotNull(builder.array, "array of a Property cannot be null");
-            api.util.assertNotNull(builder.name, "name of a Property cannot be null");
-            api.util.assertNotNull(builder.index, "index of a Property cannot be null");
-            api.util.assertNotNull(builder.value, "value of a Property cannot be null");
+            assertNotNull(builder.array, "array of a Property cannot be null");
+            assertNotNull(builder.name, "name of a Property cannot be null");
+            assertNotNull(builder.index, "index of a Property cannot be null");
+            assertNotNull(builder.value, "value of a Property cannot be null");
 
             this.array = builder.array;
             this.parent = builder.array.getParent();
@@ -74,7 +85,7 @@ module api.data {
          * @param value
          */
         setValue(value: Value) {
-            api.util.assertNotNull(value, "value of a Property cannot be null");
+            assertNotNull(value, "value of a Property cannot be null");
             var oldValue = this.value;
             this.value = value;
 
@@ -204,23 +215,23 @@ module api.data {
             return this.value.getBinaryReference();
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Property)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Property)) {
                 return false;
             }
 
             var other = <Property>o;
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.numberEquals(this.index, other.index)) {
+            if (!ObjectHelper.numberEquals(this.index, other.index)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.value, other.value)) {
+            if (!ObjectHelper.equals(this.value, other.value)) {
                 return false;
             }
 
@@ -287,7 +298,7 @@ module api.data {
             if (name == null) {
                 throw new Error("Property name cannot be null");
             }
-            if (api.util.StringHelper.isBlank(name)) {
+            if (StringHelper.isBlank(name)) {
                 throw new Error("Property name cannot be blank");
             }
             if (name.indexOf(".") >= 0) {
@@ -337,4 +348,3 @@ module api.data {
             return new Property(this);
         }
     }
-}

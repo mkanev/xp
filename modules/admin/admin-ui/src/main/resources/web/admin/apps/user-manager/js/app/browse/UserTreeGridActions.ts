@@ -1,11 +1,10 @@
-import "../../api.ts";
+import {Action} from "../../../../../common/js/ui/Action";
+import {TreeGridActions} from "../../../../../common/js/ui/treegrid/actions/TreeGridActions";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {GetPrincipalsByUserStoreRequest} from "../../../../../common/js/security/GetPrincipalsByUserStoreRequest";
 
-import Action = api.ui.Action;
-import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-import BrowseItem = api.app.browse.BrowseItem;
-import PrincipalType = api.security.PrincipalType;
-import UserStore = api.security.UserStore;
-import GetPrincipalsByUserStoreRequest = api.security.GetPrincipalsByUserStoreRequest;
 import {UserTreeGridItem, UserTreeGridItemType} from "./UserTreeGridItem";
 import {SyncPrincipalAction} from "./action/SyncPrincipalAction";
 import {DeletePrincipalAction} from "./action/DeletePrincipalAction";
@@ -20,7 +19,7 @@ export class UserTreeGridActions implements TreeGridActions<UserTreeGridItem> {
     public DELETE: Action;
     public SYNC: Action;
 
-    private actions: api.ui.Action[] = [];
+    private actions: Action[] = [];
 
     constructor(grid: UserItemsTreeGrid) {
         this.NEW = new NewPrincipalAction(grid);
@@ -31,7 +30,7 @@ export class UserTreeGridActions implements TreeGridActions<UserTreeGridItem> {
         this.actions.push(this.NEW, this.EDIT, this.DELETE, this.SYNC);
     }
 
-    getAllActions(): api.ui.Action[] {
+    getAllActions(): Action[] {
         return this.actions;
     }
 

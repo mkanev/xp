@@ -1,6 +1,6 @@
-module api.ui.tags {
 
-    export interface TagSuggester {
+
+export interface TagSuggester {
 
         /**
          * Returns an array of suggestions based on given value.
@@ -8,4 +8,3 @@ module api.ui.tags {
         suggest(value: string) : wemQ.Promise<string[]>;
 
     }
-}

@@ -1,30 +1,35 @@
-module api.content.form.inputtype.upload {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {FileUploadStartedEvent} from "../../../../ui/uploader/FileUploadStartedEvent";
+import {Content} from "../../../Content";
+import {Attachment} from "../../../attachment/Attachment";
+import {UploaderEl} from "../../../../ui/uploader/UploaderEl";
+import {FileUploaderEl} from "../../../../ui/uploader/FileUploaderEl";
+import {AttachmentUploaderEl} from "../../../attachment/AttachmentUploaderEl";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {Input} from "../../../../form/Input";
+import {FileUploadedEvent} from "../../../../ui/uploader/FileUploadedEvent";
+import {showFeedback} from "../../../../notify/MessageBus";
+import {ContentRequiresSaveEvent} from "../../../event/ContentRequiresSaveEvent";
+import {MediaUploaderElOperation} from "../../../../ui/uploader/MediaUploaderEl";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
+import {FileUploader} from "./FileUploader";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-
-    import Content = api.content.Content;
-    import Attachment = api.content.attachment.Attachment;
-    import UploaderEl = api.ui.uploader.UploaderEl;
-    import FileUploaderEl = api.ui.uploader.FileUploaderEl;
-    import AttachmentUploaderEl = api.content.attachment.AttachmentUploaderEl;
-
-
-    export class AttachmentUploader extends FileUploader {
+export class AttachmentUploader extends FileUploader {
 
         private attachmentNames: string[] = [];
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
             super(config);
             this.addClass("attachment-uploader");
             this.config = config;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.STRING);
             }
@@ -39,20 +44,20 @@ module api.content.form.inputtype.upload {
                     this.uploaderWrapper.removeClass("empty");
                 });
 
-                this.uploaderEl.onFileUploaded((event: api.ui.uploader.FileUploadedEvent<Attachment>) => {
+                this.uploaderEl.onFileUploaded((event: FileUploadedEvent<Attachment>) => {
 
                     var attachment = <Attachment>event.getUploadItem().getModel();
 
                     this.setFileNameProperty(attachment.getName().toString());
                     this.attachmentNames = this.getFileNamesFromProperty(this.getPropertyArray());
 
-                    api.notify.showFeedback('\"' + attachment.getName().toString() + '\" uploaded');
+                    showFeedback('\"' + attachment.getName().toString() + '\" uploaded');
                 });
 
                 this.uploaderEl.onUploadCompleted(() => {
 
                     this.validate(false);
-                    new api.content.event.ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
+                    new ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
 
                 });
 
@@ -80,7 +85,7 @@ module api.content.form.inputtype.upload {
                 params: {
                     id: this.getContext().content.getContentId().toString()
                 },
-                operation: api.ui.uploader.MediaUploaderElOperation.update,
+                operation: MediaUploaderElOperation.update,
                 name: this.getContext().input.getName(),
                 showCancel: false,
                 allowMultiSelection: this.getInput().getOccurrences().getMaximum() != 1,
@@ -102,9 +107,8 @@ module api.content.form.inputtype.upload {
             this.getPropertyArray().remove(index);
             this.attachmentNames = this.getFileNamesFromProperty(this.getPropertyArray());
 
-            new api.content.event.ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
+            new ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
         }
 
     }
-    api.form.inputtype.InputTypeManager.register(new api.Class("AttachmentUploader", AttachmentUploader));
-}
+    InputTypeManager.register(new Class("AttachmentUploader", AttachmentUploader));

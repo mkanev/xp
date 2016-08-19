@@ -1,13 +1,13 @@
-module api.ui.security.acl {
+import {Permission} from "../../../security/acl/Permission";
+import {ContentId} from "../../../content/ContentId";
+import {Content} from "../../../content/Content";
+import {Principal} from "../../../security/Principal";
+import {PrincipalType} from "../../../security/PrincipalType";
+import {AccessControlEntry} from "../../../security/acl/AccessControlEntry";
+import {ListBox} from "../../selector/list/ListBox";
+import {UserAccessListItemView} from "./UserAccessListItemView";
 
-    import Permission = api.security.acl.Permission;
-    import ContentId = api.content.ContentId;
-    import Content = api.content.Content;
-    import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import AccessControlEntry = api.security.acl.AccessControlEntry;
-
-    export class UserAccessListView extends api.ui.selector.list.ListBox<AccessControlEntry> {
+export class UserAccessListView extends ListBox<AccessControlEntry> {
 
         private userAccessListItemViews: UserAccessListItemView[];
 
@@ -34,4 +34,3 @@ module api.ui.security.acl {
 
     }
 
-}

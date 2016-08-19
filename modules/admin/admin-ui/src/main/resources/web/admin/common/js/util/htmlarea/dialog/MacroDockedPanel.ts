@@ -1,20 +1,28 @@
-module api.util.htmlarea.dialog {
+import {MacroDescriptor} from "../../../macro/MacroDescriptor";
+import {MacroPreview} from "../../../macro/MacroPreview";
+import {FormView} from "../../../form/FormView";
+import {DockedPanel} from "../../../ui/panel/DockedPanel";
+import {Panel} from "../../../ui/panel/Panel";
+import {ContentFormContext} from "../../../content/form/ContentFormContext";
+import {Form} from "../../../form/Form";
+import {Input} from "../../../form/Input";
+import {FormItemSet} from "../../../form/FormItemSet";
+import {FieldSet} from "../../../form/FieldSet";
+import {FormItem} from "../../../form/FormItem";
+import {PropertySet} from "../../../data/PropertySet";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {LoadMask} from "../../../ui/mask/LoadMask";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {GetPreviewRequest} from "../../../macro/resource/GetPreviewRequest";
+import {PropertyTree} from "../../../data/PropertyTree";
+import {GetPreviewStringRequest} from "../../../macro/resource/GetPreviewStringRequest";
+import {DivEl} from "../../../dom/DivEl";
+import {Content} from "../../../content/Content";
+import {ResponsiveManager} from "../../../ui/responsive/ResponsiveManager";
+import {IFrameEl} from "../../../dom/IFrameEl";
+import {AppHelper} from "../../AppHelper";
 
-    import MacroDescriptor = api.macro.MacroDescriptor;
-    import MacroPreview = api.macro.MacroPreview;
-    import FormView = api.form.FormView;
-    import DockedPanel = api.ui.panel.DockedPanel;
-    import Panel = api.ui.panel.Panel;
-    import ContentFormContext = api.content.form.ContentFormContext;
-    import Form = api.form.Form;
-
-    import Input = api.form.Input;
-    import FormItemSet = api.form.FormItemSet;
-    import FieldSet = api.form.FieldSet;
-    import FormItem = api.form.FormItem;
-    import PropertySet = api.data.PropertySet;
-
-    export class MacroDockedPanel extends DockedPanel {
+export class MacroDockedPanel extends DockedPanel {
 
         private static CONFIGURATION_TAB_NAME: string = "Configuration";
         private static PREVIEW_TAB_NAME: string = "Preview";
@@ -24,25 +32,25 @@ module api.util.htmlarea.dialog {
         private configPanel: Panel;
         private previewPanel: Panel;
 
-        private content: api.content.ContentSummary;
+        private content: ContentSummary;
         private macroDescriptor: MacroDescriptor;
         private previewResolved: boolean = false;
         private macroPreview: MacroPreview;
         private data: PropertySet;
-        private macroLoadMask: api.ui.mask.LoadMask;
+        private macroLoadMask: LoadMask;
 
         private formValueChangedHandler: () => void;
 
         private panelRenderedListeners: {(): void}[] = [];
 
-        constructor(content: api.content.ContentSummary) {
+        constructor(content: ContentSummary) {
             super();
             this.content = content;
 
             this.addItem(MacroDockedPanel.CONFIGURATION_TAB_NAME, true, this.createConfigurationPanel());
             this.addItem(MacroDockedPanel.PREVIEW_TAB_NAME, true, this.createPreviewPanel());
 
-            this.macroLoadMask = new api.ui.mask.LoadMask(this.previewPanel);
+            this.macroLoadMask = new LoadMask(this.previewPanel);
             this.appendChild(this.macroLoadMask);
 
             this.handleConfigPanelShowEvent();
@@ -71,7 +79,7 @@ module api.util.htmlarea.dialog {
                             this.macroPreview = macroPreview;
                             this.renderPreview(macroPreview);
                         }).catch((reason: any) => {
-                            api.DefaultErrorHandler.handle(reason);
+                            DefaultErrorHandler.handle(reason);
                             this.renderPreviewWithMessage(MacroDockedPanel.PREVIEW_LOAD_ERROR_MESSAGE);
                         }).finally(() => {
                             this.macroLoadMask.hide();
@@ -94,8 +102,8 @@ module api.util.htmlarea.dialog {
         private fetchPreview(): wemQ.Promise<MacroPreview> {
             this.macroLoadMask.show();
 
-            return new api.macro.resource.GetPreviewRequest(
-                new api.data.PropertyTree(this.data),
+            return new GetPreviewRequest(
+                new PropertyTree(this.data),
                 this.macroDescriptor.getKey(),
                 this.content.getPath()).
                 sendAndParse();
@@ -104,7 +112,7 @@ module api.util.htmlarea.dialog {
         private fetchMacroString(): wemQ.Promise<string> {
             this.macroLoadMask.show();
 
-            return new api.macro.resource.GetPreviewStringRequest(new api.data.PropertyTree(this.data),
+            return new GetPreviewStringRequest(new PropertyTree(this.data),
                 this.macroDescriptor.getKey()).sendAndParse();
         }
 
@@ -127,7 +135,7 @@ module api.util.htmlarea.dialog {
 
         private renderPreviewWithMessage(message: string) {
             this.previewPanel.removeChildren();
-            var appendMe = new api.dom.DivEl("preview-message");
+            var appendMe = new DivEl("preview-message");
             appendMe.setHtml(message);
             this.previewPanel.appendChild(appendMe)
         }
@@ -136,7 +144,7 @@ module api.util.htmlarea.dialog {
             if (macroPreview.getPageContributions().hasAtLeastOneScript()) { // render in iframe if there are scripts to be included for preview rendering
                 this.previewPanel.appendChild(this.makePreviewFrame(macroPreview));
             } else {
-                var appendMe = new api.dom.DivEl("preview-content");
+                var appendMe = new DivEl("preview-content");
                 appendMe.setHtml(macroPreview.getHtml(), false);
                 this.previewPanel.appendChild(appendMe)
                 this.notifyPanelRendered();
@@ -179,9 +187,9 @@ module api.util.htmlarea.dialog {
             this.selectPanel(this.configPanel);
 
             if (!!macroDescriptor) {
-                var formView: FormView = new FormView(api.content.form.ContentFormContext.
+                var formView: FormView = new FormView(ContentFormContext.
                         create().
-                        setPersistedContent(<api.content.Content>this.content).
+                        setPersistedContent(<Content>this.content).
                         build(),
                     macroDescriptor.getForm(), this.data);
 
@@ -202,7 +210,7 @@ module api.util.htmlarea.dialog {
 
             formView.layout().then(() => {
                 this.configPanel.appendChild(formView);
-                api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                ResponsiveManager.fireResizeEvent();
             });
         }
 
@@ -223,13 +231,13 @@ module api.util.htmlarea.dialog {
         }
     }
 
-    export class MacroPreviewFrame extends api.dom.IFrameEl {
+    export class MacroPreviewFrame extends IFrameEl {
 
         private id: string = "macro-preview-frame-id";
 
         private macroPreview: MacroPreview;
 
-        private debouncedResizeHandler: () => void = api.util.AppHelper.debounce(() => {
+        private debouncedResizeHandler: () => void = AppHelper.debounce(() => {
             this.adjustFrameHeight();
         }, 500, false);
 
@@ -325,4 +333,3 @@ module api.util.htmlarea.dialog {
             })
         }
     }
-}

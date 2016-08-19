@@ -1,21 +1,22 @@
-module api.ui.selector.dropdown {
+import {DropdownHandle} from "../../button/DropdownHandle";
+import {DivEl} from "../../../dom/DivEl";
+import {Option} from "../Option";
+import {Viewer} from "../../Viewer";
 
-    import DropdownHandle = api.ui.button.DropdownHandle;
-
-    export class SelectedOptionView<T> extends api.dom.DivEl {
+export class SelectedOptionView<T> extends DivEl {
 
         private objectViewer:Viewer<T>;
 
-        private optionValueEl: api.dom.DivEl;
+        private optionValueEl: DivEl;
 
-        private option: api.ui.selector.Option<T>;
+        private option: Option<T>;
 
         private openDropdownListeners: {(): void;}[] = [];
 
         constructor(objectViewer: Viewer<T>, skipExpandOnClick: boolean = false) {
             super("selected-option");
             this.objectViewer = objectViewer;
-            this.optionValueEl = new api.dom.DivEl('option-value');
+            this.optionValueEl = new DivEl('option-value');
             this.appendChild(this.optionValueEl);
             this.optionValueEl.appendChild(this.objectViewer);
 
@@ -40,12 +41,12 @@ module api.ui.selector.dropdown {
             });
         }
 
-        setOption(option: api.ui.selector.Option<T>) {
+        setOption(option: Option<T>) {
             this.option = option;
             this.objectViewer.setObject(option.displayValue);
         }
 
-        getOption(): api.ui.selector.Option<T> {
+        getOption(): Option<T> {
             return this.option;
         }
 
@@ -69,4 +70,3 @@ module api.ui.selector.dropdown {
             });
         }
     }
-}

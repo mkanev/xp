@@ -1,6 +1,6 @@
-module api.data {
 
-    export enum PropertyEventType {
+
+export enum PropertyEventType {
 
         ADDED,
         INDEX_CHANGED,
@@ -8,4 +8,3 @@ module api.data {
         REMOVED,
 
     }
-}

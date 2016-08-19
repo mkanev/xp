@@ -1,14 +1,13 @@
-module api.content.resource {
+import {CompareExpr} from "../../query/expr/CompareExpr";
+import {FieldExpr} from "../../query/expr/FieldExpr";
+import {ValueExpr} from "../../query/expr/ValueExpr";
+import {LogicalExpr} from "../../query/expr/LogicalExpr";
+import {LogicalOperator} from "../../query/expr/LogicalOperator";
+import {QueryExpr} from "../../query/expr/QueryExpr";
+import {ConstraintExpr} from "../../query/expr/ConstraintExpr";
+import {ContentSummaryRequest} from "./ContentSummaryRequest";
 
-    import CompareExpr = api.query.expr.CompareExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import ValueExpr = api.query.expr.ValueExpr;
-    import LogicalExpr = api.query.expr.LogicalExpr;
-    import LogicalOperator = api.query.expr.LogicalOperator;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import ConstraintExpr = api.query.expr.ConstraintExpr;
-
-    export class FragmentContentSummaryRequest extends ContentSummaryRequest {
+export class FragmentContentSummaryRequest extends ContentSummaryRequest {
 
         private parentSitePath: string;
 
@@ -37,6 +36,3 @@ module api.content.resource {
 
     }
 
-}
-
-    

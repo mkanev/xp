@@ -1,9 +1,8 @@
-module api.content.json {
+import {CompareContentResultJson} from "./CompareContentResultJson";
 
-    export interface CompareContentResultsJson {
+export interface CompareContentResultsJson {
 
         compareContentResults: CompareContentResultJson[];
 
     }
 
-}

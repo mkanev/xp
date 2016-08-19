@@ -1,8 +1,9 @@
-module api.app.bar {
+import {TabMenuItemBuilder} from "../../ui/tab/TabMenuItem";
+import {TabMenuItem} from "../../ui/tab/TabMenuItem";
+import {Action} from "../../ui/Action";
+import {AppBarTabId} from "./AppBarTabId";
 
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-
-    export class AppBarTabMenuItem extends api.ui.tab.TabMenuItem {
+export class AppBarTabMenuItem extends TabMenuItem {
 
         private tabId: AppBarTabId;
 
@@ -31,7 +32,7 @@ module api.app.bar {
         }
     }
 
-    export class AppBarTabMenuItemBuilder extends api.ui.tab.TabMenuItemBuilder {
+    export class AppBarTabMenuItemBuilder extends TabMenuItemBuilder {
 
         tabId: AppBarTabId;
 
@@ -57,7 +58,7 @@ module api.app.bar {
             return this;
         }
 
-        setCloseAction(closeAction: api.ui.Action) : AppBarTabMenuItemBuilder {
+        setCloseAction(closeAction: Action) : AppBarTabMenuItemBuilder {
             super.setCloseAction(closeAction);
             return this;
         }
@@ -77,4 +78,3 @@ module api.app.bar {
         }
 
     }
-}

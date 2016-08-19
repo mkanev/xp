@@ -1,16 +1,23 @@
-module api.aggregation {
+import {DivEl} from "../dom/DivEl";
+import {AggregationGroupView} from "./AggregationGroupView";
+import {Aggregation} from "./Aggregation";
+import {Bucket} from "./Bucket";
+import {BucketViewSelectionChangedEvent} from "./BucketViewSelectionChangedEvent";
+import {ObjectHelper} from "../ObjectHelper";
+import {BucketAggregation} from "./BucketAggregation";
+import {BucketAggregationView} from "./BucketAggregationView";
 
-    export class AggregationView extends api.dom.DivEl {
+export class AggregationView extends DivEl {
 
-        private parentGroupView: api.aggregation.AggregationGroupView;
+        private parentGroupView: AggregationGroupView;
 
-        private aggregation: api.aggregation.Aggregation;
+        private aggregation: Aggregation;
 
         private bucketSelectionChangedListeners: Function[] = [];
 
         private displayNameMap: {[name:string]:string} = {};
 
-        constructor(aggregation: api.aggregation.Aggregation, parentGroupView: api.aggregation.AggregationGroupView) {
+        constructor(aggregation: Aggregation, parentGroupView: AggregationGroupView) {
             super('aggregation-view');
             this.aggregation = aggregation;
             this.parentGroupView = parentGroupView;
@@ -29,7 +36,7 @@ module api.aggregation {
             return this.displayNameMap[name.toLowerCase()];
         }
 
-        getAggregation(): api.aggregation.Aggregation {
+        getAggregation(): Aggregation {
             return this.aggregation;
         }
 
@@ -49,37 +56,37 @@ module api.aggregation {
             throw new Error("Must be implemented by inheritor");
         }
 
-        getSelectedValues(): api.aggregation.Bucket[] {
+        getSelectedValues(): Bucket[] {
             throw new Error("Must be implemented by inheritor");
         }
 
-        update(aggregation: api.aggregation.Aggregation) {
+        update(aggregation: Aggregation) {
             throw new Error("Must be implemented by inheritor");
         }
 
 
-        onBucketViewSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
+        onBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
             this.bucketSelectionChangedListeners.push(listener);
         }
 
-        unBucketViewSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
+        unBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
             this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners.filter(function (curr) {
                 return curr != listener;
             });
         }
 
-        notifyBucketViewSelectionChanged(event: api.aggregation.BucketViewSelectionChangedEvent) {
+        notifyBucketViewSelectionChanged(event: BucketViewSelectionChangedEvent) {
 
-            this.bucketSelectionChangedListeners.forEach((listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) => {
+            this.bucketSelectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
                 listener(event);
             });
         }
 
 
-        static createAggregationView(aggregation: api.aggregation.Aggregation,
-                                     parentGroupView: api.aggregation.AggregationGroupView): api.aggregation.AggregationView {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(aggregation, api.aggregation.BucketAggregation)) {
-                return new api.aggregation.BucketAggregationView(<api.aggregation.BucketAggregation>aggregation, parentGroupView);
+        static createAggregationView(aggregation: Aggregation,
+                                     parentGroupView: AggregationGroupView): AggregationView {
+            if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
+                return new BucketAggregationView(<BucketAggregation>aggregation, parentGroupView);
             }
             else {
                 throw Error("Creating AggregationView of this type of Aggregation is not supported: " + aggregation);
@@ -88,4 +95,3 @@ module api.aggregation {
     }
 
 
-}

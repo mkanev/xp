@@ -1,9 +1,12 @@
-module api.liveedit {
+import {DivEl} from "../dom/DivEl";
+import {StyleHelper} from "../StyleHelper";
+import {PEl} from "../dom/PEl";
+import {AEl} from "../dom/AEl";
 
-    export class ItemViewPlaceholder extends api.dom.DivEl {
+export class ItemViewPlaceholder extends DivEl {
 
         constructor() {
-            super("item-placeholder", api.StyleHelper.PAGE_EDITOR_PREFIX);
+            super("item-placeholder", StyleHelper.PAGE_EDITOR_PREFIX);
         }
 
         showRenderingError(url: string, errorMessage: string = "Error rendering component") {
@@ -11,10 +14,10 @@ module api.liveedit {
             this.removeChildren();
             this.addClass("rendering-error");
 
-            var errorTitle = new api.dom.PEl().
+            var errorTitle = new PEl().
                 setHtml(errorMessage);
 
-            var urlAnchor = new api.dom.AEl().
+            var urlAnchor = new AEl().
                 setUrl(url, "_blank").
                 setHtml("Show more...");
 
@@ -29,4 +32,3 @@ module api.liveedit {
 
         }
     }
-}

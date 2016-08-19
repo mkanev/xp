@@ -1,16 +1,20 @@
-module api.content.resource {
+import {OrderExpr} from "../../query/expr/OrderExpr";
+import {FieldOrderExpr} from "../../query/expr/FieldOrderExpr";
+import {OrderDirection} from "../../query/expr/OrderDirection";
+import {FieldExpr} from "../../query/expr/FieldExpr";
+import {Expression} from "../../query/expr/Expression";
+import {QueryField} from "../../query/QueryField";
+import {QueryExpr} from "../../query/expr/QueryExpr";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {ContentId} from "../ContentId";
+import {Expand} from "../../rest/Expand";
+import {PathMatchExpressionBuilder} from "../../query/PathMatchExpression";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentSummary} from "../ContentSummary";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import OrderExpr = api.query.expr.OrderExpr;
-    import FieldOrderExpr = api.query.expr.FieldOrderExpr;
-    import OrderDirection = api.query.expr.OrderDirection;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import Expression = api.query.expr.Expression;
-    import QueryField = api.query.QueryField;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentId = api.content.ContentId;
-
-    export class ContentSelectorQueryRequest extends ContentResourceRequest<json.ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
+export class ContentSelectorQueryRequest extends ContentResourceRequest<json.ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
 
         public static DEFAULT_SIZE = 15;
 
@@ -20,13 +24,13 @@ module api.content.resource {
 
         public static DEFAULT_ORDER: OrderExpr[] = [ContentSelectorQueryRequest.SCORE_DESC, ContentSelectorQueryRequest.MODIFIED_TIME_DESC];
 
-        private queryExpr: api.query.expr.QueryExpr;
+        private queryExpr: QueryExpr;
 
         private from: number = 0;
 
         private size: number = ContentSelectorQueryRequest.DEFAULT_SIZE;
 
-        private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
+        private expand: Expand = Expand.SUMMARY;
 
         private content: ContentSummary;
 
@@ -101,7 +105,7 @@ module api.content.resource {
         }
 
         private createSearchExpression(searchString): Expression {
-            return new api.query.PathMatchExpressionBuilder()
+            return new PathMatchExpressionBuilder()
                 .setSearchString(searchString)
                 .setPath(this.content ? this.content.getPath().toString() : "")
                 .addField(new QueryField(QueryField.DISPLAY_NAME, 5))
@@ -110,12 +114,12 @@ module api.content.resource {
                 .build();
         }
 
-        getQueryExpr(): api.query.expr.QueryExpr {
+        getQueryExpr(): QueryExpr {
             return this.queryExpr;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "selectorQuery");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "selectorQuery");
         }
 
         isPartiallyLoaded(): boolean {
@@ -149,7 +153,7 @@ module api.content.resource {
 
         sendAndParse(): wemQ.Promise<ContentSummary[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<json.ContentQueryResultJson<ContentSummaryJson>>) => {
+            return this.send().then((response: JsonResponse<json.ContentQueryResultJson<ContentSummaryJson>>) => {
 
                 var responseResult: json.ContentQueryResultJson<ContentSummaryJson> = response.getResult();
 
@@ -172,15 +176,14 @@ module api.content.resource {
 
         private expandAsString(): string {
             switch (this.expand) {
-            case api.rest.Expand.FULL:
+            case Expand.FULL:
                 return "full";
-            case api.rest.Expand.SUMMARY:
+            case Expand.SUMMARY:
                 return "summary";
-            case api.rest.Expand.NONE:
+            case Expand.NONE:
                 return "none";
             default:
                 return "summary";
             }
         }
     }
-}

@@ -1,10 +1,13 @@
-module api.ui.button {
+import {Element} from "../../dom/Element";
+import {Menu} from "../menu/Menu";
+import {MenuItem} from "../menu/MenuItem";
+import {DivEl} from "../../dom/DivEl";
+import {AppHelper} from "../../util/AppHelper";
+import {Action} from "../Action";
+import {ActionButton} from "./ActionButton";
+import {DropdownHandle} from "./DropdownHandle";
 
-    import Element = api.dom.Element;
-    import Menu = api.ui.menu.Menu;
-    import MenuItem = api.ui.menu.MenuItem;
-
-    export class MenuButton extends api.dom.DivEl {
+export class MenuButton extends DivEl {
 
         private dropdownHandle: DropdownHandle;
 
@@ -71,7 +74,7 @@ module api.ui.button {
 
             this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
-            api.util.AppHelper.focusInOut(this, hideMenu);
+            AppHelper.focusInOut(this, hideMenu);
         }
 
         private hideMenu(event: MouseEvent): void {
@@ -91,4 +94,3 @@ module api.ui.button {
             this.toggleClass('hidden-dropdown', hidden);
         }
     }
-}

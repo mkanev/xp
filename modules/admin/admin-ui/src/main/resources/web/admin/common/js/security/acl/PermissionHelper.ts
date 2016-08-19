@@ -1,9 +1,14 @@
-module api.security.acl {
+import {Permission} from "./Permission";
+import {LoginResult} from "../auth/LoginResult";
+import {PrincipalKey} from "../PrincipalKey";
+import {RoleKeys} from "../RoleKeys";
+import {AccessControlEntry} from "./AccessControlEntry";
+import {AccessControlList} from "./AccessControlList";
 
-    export class PermissionHelper {
+export class PermissionHelper {
 
-        static hasPermission(permission: api.security.acl.Permission,
-                             loginResult: api.security.auth.LoginResult,
+        static hasPermission(permission: Permission,
+                             loginResult: LoginResult,
                              accessControlList: AccessControlList): boolean {
             var result = false;
             var entries = accessControlList.getEntries();
@@ -11,8 +16,8 @@ module api.security.acl {
                 return item.isAllowed(permission);
             });
 
-            loginResult.getPrincipals().some((principalKey: api.security.PrincipalKey) => {
-                if (api.security.RoleKeys.ADMIN.equals(principalKey) ||
+            loginResult.getPrincipals().some((principalKey: PrincipalKey) => {
+                if (RoleKeys.ADMIN.equals(principalKey) ||
                     this.isPrincipalPresent(principalKey, accessEntriesWithGivenPermissions)) {
                     result = true;
                     return true;
@@ -21,7 +26,7 @@ module api.security.acl {
             return result;
         }
 
-        static isPrincipalPresent(principalKey: api.security.PrincipalKey,
+        static isPrincipalPresent(principalKey: PrincipalKey,
                                   accessEntriesToCheck: AccessControlEntry[]): boolean {
             var result = false;
             accessEntriesToCheck.some((entry: AccessControlEntry) => {
@@ -35,4 +40,3 @@ module api.security.acl {
         }
     }
 
-}

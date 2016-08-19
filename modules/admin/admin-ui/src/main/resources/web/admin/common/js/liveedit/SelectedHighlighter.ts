@@ -1,6 +1,8 @@
-module api.liveedit {
+import {HighlighterStyle} from "./ItemTypeConfig";
+import {HighlighterMode} from "./Highlighter";
+import {Highlighter} from "./Highlighter";
 
-    export class SelectedHighlighter extends Highlighter {
+export class SelectedHighlighter extends Highlighter {
 
         private static SELECT_INSTANCE: SelectedHighlighter;
 
@@ -16,7 +18,7 @@ module api.liveedit {
         }
 
 
-        protected preProcessStyle(style: api.liveedit.HighlighterStyle, isEmptyView: boolean): api.liveedit.HighlighterStyle {
+        protected preProcessStyle(style: HighlighterStyle, isEmptyView: boolean): HighlighterStyle {
             return {
                 stroke: 'rgba(11, 104, 249, 1)',
                 strokeDasharray: style.strokeDasharray,
@@ -24,4 +26,3 @@ module api.liveedit {
             };
         }
     }
-}

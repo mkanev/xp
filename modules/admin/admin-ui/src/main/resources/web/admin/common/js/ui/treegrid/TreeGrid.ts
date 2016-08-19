@@ -1,30 +1,38 @@
-module api.ui.treegrid {
+import {Item} from "../../item/Item";
+import {Element} from "../../dom/Element";
+import {ElementHelper} from "../../dom/ElementHelper";
+import {ValidationRecordingViewer} from "../../form/ValidationRecordingViewer";
+import {Grid} from "../grid/Grid";
+import {GridOptions} from "../grid/GridOptions";
+import {GridColumn} from "../grid/GridColumn";
+import {GridOptionsBuilder} from "../grid/GridOptions";
+import {DataView} from "../grid/DataView";
+import {KeyBinding} from "../KeyBinding";
+import {KeyBindings} from "../KeyBindings";
+import {TreeGridActions} from "./actions/TreeGridActions";
+import {TreeGridToolbarActions} from "./actions/TreeGridToolbarActions";
+import {Panel} from "../panel/Panel";
+import {SpanEl} from "../../dom/SpanEl";
+import {StringHelper} from "../../util/StringHelper";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {ContextMenuShownEvent} from "./ContextMenuShownEvent";
+import {DataChangedEvent} from "./DataChangedEvent";
+import {TreeGridBuilder} from "./TreeGridBuilder";
+import {TreeGridContextMenu} from "./TreeGridContextMenu";
+import {TreeGridItemClickedEvent} from "./TreeGridItemClickedEvent";
+import {TreeGridToolbar} from "./TreeGridToolbar";
+import {TreeNode} from "./TreeNode";
+import {TreeNodeBuilder} from "./TreeNodeBuilder";
+import {TreeRoot} from "./TreeRoot";
 
-    import Item = api.item.Item;
-
-    import Element = api.dom.Element;
-    import ElementHelper = api.dom.ElementHelper;
-    import ValidationRecordingViewer = api.form.ValidationRecordingViewer;
-
-    import Grid = api.ui.grid.Grid;
-    import GridOptions = api.ui.grid.GridOptions;
-    import GridColumn = api.ui.grid.GridColumn;
-    import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
-    import DataView = api.ui.grid.DataView;
-    import KeyBinding = api.ui.KeyBinding;
-    import KeyBindings = api.ui.KeyBindings;
-
-    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-    import TreeGridToolbarActions = api.ui.treegrid.actions.TreeGridToolbarActions;
-
-    /*
+/*
      * There are several methods that should be overridden:
      * 1. hasChildren(data: DATA)  -- Should be implemented if a grid has a tree structure and supports expand/collapse.
      * 2. fetch(data?: DATA) -- Should fetch full data with a valid hasChildren() value;
      * 3. fetchChildren(parentData?: DATA) -- Should fetch children of a parent data;
      * 4. fetchRoot() -- Fetches root nodes. by default return fetchChildren() with an empty parameter.
      */
-    export class TreeGrid<DATA> extends api.ui.panel.Panel {
+    export class TreeGrid<DATA> extends Panel {
 
         public static LEVEL_STEP_INDENT: number = 16;
 
@@ -62,7 +70,7 @@ module api.ui.treegrid {
 
         private loading: boolean = false;
 
-        private scrollable: api.dom.Element;
+        private scrollable: Element;
 
         private quietErrorHandling: boolean;
 
@@ -172,7 +180,7 @@ module api.ui.treegrid {
             });
 
             if (this.quietErrorHandling) {
-                this.appendChild(this.errorPanel = new api.form.ValidationRecordingViewer());
+                this.appendChild(this.errorPanel = new ValidationRecordingViewer());
                 this.errorPanel.hide();
             }
 
@@ -316,7 +324,7 @@ module api.ui.treegrid {
             if (columns.length > 0) {
                 var formatter = columns[0].getFormatter();
                 var toggleFormatter = (row: number, cell: number, value: any, columnDef: any, node: TreeNode<DATA>) => {
-                    var toggleSpan = new api.dom.SpanEl("toggle icon");
+                    var toggleSpan = new SpanEl("toggle icon");
                     if (this.hasChildren(node.getData())) {
                         var toggleClass = node.isExpanded() ? "collapse" : "expand";
                         toggleSpan.addClass(toggleClass);
@@ -435,7 +443,7 @@ module api.ui.treegrid {
             }
         }
 
-        queryScrollable(): api.dom.Element {
+        queryScrollable(): Element {
             var gridClasses = (" " + this.grid.getEl().getClass()).replace(/\s/g, ".");
             var viewport = Element.fromString(".tree-grid " + gridClasses + " .slick-viewport", false);
             return viewport;
@@ -633,7 +641,7 @@ module api.ui.treegrid {
         selectAll() {
             var rows = [];
             for (var i = 0; i < this.gridData.getLength(); i++) {
-                if (!api.util.StringHelper.isEmpty(this.gridData.getItem(i).getDataId())) {
+                if (!StringHelper.isEmpty(this.gridData.getItem(i).getDataId())) {
                     rows.push(i);
                 }
             }
@@ -710,7 +718,7 @@ module api.ui.treegrid {
                 this.errorPanel.show();
             }
             else {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }
         }
 
@@ -1187,4 +1195,3 @@ module api.ui.treegrid {
         sortNodeChildren(node: TreeNode<DATA>) {
         }
     }
-}

@@ -1,8 +1,6 @@
-module api.form.inputtype {
+import {Value} from "../../data/Value";
 
-    import Value = api.data.Value;
-
-    export class InputValueRemovedEvent {
+export class InputValueRemovedEvent {
 
         private arrayIndex: number;
 
@@ -14,4 +12,3 @@ module api.form.inputtype {
             return this.arrayIndex;
         }
     }
-}

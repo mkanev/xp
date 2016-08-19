@@ -1,6 +1,8 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertyEvent} from "./PropertyEvent";
+import {PropertyEventType} from "./PropertyEventType";
 
-    export class PropertyIndexChangedEvent extends PropertyEvent {
+export class PropertyIndexChangedEvent extends PropertyEvent {
 
         private previousIndex: number;
 
@@ -24,4 +26,3 @@ module api.data {
             return "[" + this.previousIndex + "] -> [" + this.newIndex + "]";
         }
     }
-}

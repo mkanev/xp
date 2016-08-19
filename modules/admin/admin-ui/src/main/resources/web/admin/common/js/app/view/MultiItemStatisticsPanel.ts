@@ -1,34 +1,39 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {TabMenu} from "../../ui/tab/TabMenu";
+import {NavigatedDeckPanel} from "../../ui/panel/NavigatedDeckPanel";
+import {TabMenuItem} from "../../ui/tab/TabMenuItem";
+import {Panel} from "../../ui/panel/Panel";
+import {ItemStatisticsPanel} from "./ItemStatisticsPanel";
 
-    export class MultiItemStatisticsPanel<M extends api.Equitable> extends ItemStatisticsPanel<M> {
+export class MultiItemStatisticsPanel<M extends Equitable> extends ItemStatisticsPanel<M> {
 
-        private tabMenu: api.ui.tab.TabMenu;
+        private tabMenu: TabMenu;
 
-        private deckPanel: api.ui.panel.NavigatedDeckPanel;
+        private deckPanel: NavigatedDeckPanel;
 
         constructor(className?: string) {
             super(className);
 
-            this.tabMenu = new api.ui.tab.TabMenu();
+            this.tabMenu = new TabMenu();
             this.tabMenu.hide();
             this.appendChild(this.tabMenu);
 
 
-            this.deckPanel = new api.ui.panel.NavigatedDeckPanel(this.tabMenu);
+            this.deckPanel = new NavigatedDeckPanel(this.tabMenu);
             this.deckPanel.setDoOffset(false);
             this.appendChild(this.deckPanel);
         }
 
 
-        getTabMenu(): api.ui.tab.TabMenu {
+        getTabMenu(): TabMenu {
             return this.tabMenu;
         }
 
-        getDeckPanel(): api.ui.panel.NavigatedDeckPanel {
+        getDeckPanel(): NavigatedDeckPanel {
             return this.deckPanel;
         }
 
-        addNavigablePanel(tab: api.ui.tab.TabMenuItem, panel: api.ui.panel.Panel, select?: boolean) {
+        addNavigablePanel(tab: TabMenuItem, panel: Panel, select?: boolean) {
             this.tabMenu.show();
             this.deckPanel.addNavigablePanel(tab, panel, select);
         }
@@ -37,4 +42,3 @@ module api.app.view {
             this.tabMenu.selectNavigationItem(index);
         }
     }
-}

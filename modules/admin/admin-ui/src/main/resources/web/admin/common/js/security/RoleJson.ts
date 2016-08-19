@@ -1,8 +1,7 @@
-module api.security {
+import {PrincipalJson} from "./PrincipalJson";
 
-    export interface RoleJson extends PrincipalJson {
+export interface RoleJson extends PrincipalJson {
 
         members?: string[];
 
     }
-}

@@ -1,8 +1,7 @@
-module api.security {
 
-    export enum IdProviderMode {
+
+export enum IdProviderMode {
         LOCAL,
         EXTERNAL,
         MIXED
     }
-}

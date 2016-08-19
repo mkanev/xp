@@ -1,12 +1,11 @@
-module api.ui.uploader {
+import {Button} from "../button/Button";
+import {CloseButton} from "../button/CloseButton";
+import {Element} from "../../dom/Element";
+import {SelectionItem} from "../../app/browse/SelectionItem";
+import {Equitable} from "../../Equitable";
+import {UploaderEl} from "./UploaderEl";
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-    import Element = api.dom.Element;
-    import SelectionItem = api.app.browse.SelectionItem;
-
-
-    export class FileUploaderEl<MODEL extends api.Equitable> extends UploaderEl<MODEL> {
+export class FileUploaderEl<MODEL extends Equitable> extends UploaderEl<MODEL> {
 
         protected contentId: string;
 
@@ -88,4 +87,3 @@ module api.ui.uploader {
         }
 
     }
-}

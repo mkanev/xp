@@ -1,6 +1,6 @@
-module api.content.attachment {
 
-    export interface AttachmentJson {
+
+export interface AttachmentJson {
 
         name:string;
 
@@ -10,4 +10,3 @@ module api.content.attachment {
 
         size:number;
     }
-}

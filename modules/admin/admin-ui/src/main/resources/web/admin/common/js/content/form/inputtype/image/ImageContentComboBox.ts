@@ -1,15 +1,15 @@
-module api.content.form.inputtype.image {
+import {ContentSummaryLoader} from "../../../resource/ContentSummaryLoader";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {Option} from "../../../../ui/selector/Option";
+import {RichComboBox} from "../../../../ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../../../../ui/selector/combobox/RichComboBox";
+import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
+import {ImageSelectorViewer} from "./ImageSelectorViewer";
+import {ImageSelectorSelectedOptionsView} from "./ImageSelectorSelectedOptionsView";
+import {BaseLoader} from "../../../../util/loader/BaseLoader";
+import {ContentSummary} from "../../../ContentSummary";
 
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
-    import RichComboBox = api.ui.selector.combobox.RichComboBox;
-    import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ImageSelectorDisplayValue = api.content.form.inputtype.image.ImageSelectorDisplayValue;
-    import ImageSelectorViewer = api.content.form.inputtype.image.ImageSelectorViewer;
-    import ImageSelectorSelectedOptionsView = api.content.form.inputtype.image.ImageSelectorSelectedOptionsView;
-
-    export class ImageContentComboBox extends RichComboBox<ImageSelectorDisplayValue> {
+export class ImageContentComboBox extends RichComboBox<ImageSelectorDisplayValue> {
 
         constructor(builder: ImageContentComboBoxBuilder) {
 
@@ -54,7 +54,7 @@ module api.content.form.inputtype.image {
 
         maximumOccurrences: number = 0;
 
-        loader: api.util.loader.BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>;
+        loader: BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>;
 
         minWidth: number;
 
@@ -81,7 +81,7 @@ module api.content.form.inputtype.image {
             return this;
         }
 
-        setLoader(loader: api.util.loader.BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>): ImageContentComboBoxBuilder {
+        setLoader(loader: BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>): ImageContentComboBoxBuilder {
             this.loader = loader;
             return this;
         }
@@ -111,4 +111,3 @@ module api.content.form.inputtype.image {
         }
 
     }
-}

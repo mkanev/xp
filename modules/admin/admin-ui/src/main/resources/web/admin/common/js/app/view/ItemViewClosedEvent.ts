@@ -1,6 +1,7 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {ItemViewPanel} from "./ItemViewPanel";
 
-    export class ItemViewClosedEvent<M extends api.Equitable> {
+export class ItemViewClosedEvent<M extends Equitable> {
 
         private view: ItemViewPanel<M>;
 
@@ -12,4 +13,3 @@ module api.app.view {
             return this.view;
         }
     }
-}

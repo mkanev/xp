@@ -1,8 +1,6 @@
-module api.content.site {
+import {ApplicationKey} from "../../application/ApplicationKey";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class ApplicationRemovedEvent {
+export class ApplicationRemovedEvent {
 
         private applicationKey: ApplicationKey;
 
@@ -14,4 +12,3 @@ module api.content.site {
             return this.applicationKey;
         }
     }
-}

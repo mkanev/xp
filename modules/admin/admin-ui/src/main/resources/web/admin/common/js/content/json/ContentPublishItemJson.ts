@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface ContentPublishItemJson {
+
+export interface ContentPublishItemJson {
 
         id: string;
 
@@ -18,4 +18,3 @@ module api.content.json {
 
         valid: boolean;
     }
-}

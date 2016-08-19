@@ -1,6 +1,7 @@
-module api.ui.treegrid {
+import {TreeNode} from "./TreeNode";
+import {TreeNodeBuilder} from "./TreeNodeBuilder";
 
-    export class TreeRoot<DATA> {
+export class TreeRoot<DATA> {
 
         private defaultRoot: TreeNode<DATA>;
 
@@ -155,4 +156,3 @@ module api.ui.treegrid {
             });
         }
     }
-}

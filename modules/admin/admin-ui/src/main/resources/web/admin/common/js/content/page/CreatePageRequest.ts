@@ -1,48 +1,59 @@
-module api.content.page {
+import {ContentJson} from "../json/ContentJson";
+import {Content} from "../Content";
+import {ContentId} from "../ContentId";
+import {DescriptorKey} from "./DescriptorKey";
+import {PageTemplateKey} from "./PageTemplateKey";
+import {PropertyTree} from "../../data/PropertyTree";
+import {Regions} from "./region/Regions";
+import {Component} from "./region/Component";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {PageCUDRequest} from "./PageCUDRequest";
+import {PageResourceRequest} from "./PageResourceRequest";
 
-    export class CreatePageRequest extends PageResourceRequest<api.content.json.ContentJson, api.content.Content> implements PageCUDRequest {
+export class CreatePageRequest extends PageResourceRequest<ContentJson, Content> implements PageCUDRequest {
 
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
 
-        private controller: api.content.page.DescriptorKey;
+        private controller: DescriptorKey;
 
-        private template: api.content.page.PageTemplateKey;
+        private template: PageTemplateKey;
 
-        private config: api.data.PropertyTree;
+        private config: PropertyTree;
 
-        private regions: api.content.page.region.Regions;
+        private regions: Regions;
 
-        private fragment: api.content.page.region.Component;
+        private fragment: Component;
 
         private customized: boolean;
 
-        constructor(contentId: api.content.ContentId) {
+        constructor(contentId: ContentId) {
             super();
             super.setMethod("POST");
             this.contentId = contentId;
         }
 
-        setController(controller: api.content.page.DescriptorKey): CreatePageRequest {
+        setController(controller: DescriptorKey): CreatePageRequest {
             this.controller = controller;
             return this;
         }
 
-        setPageTemplateKey(pageTemplateKey: api.content.page.PageTemplateKey): CreatePageRequest {
+        setPageTemplateKey(pageTemplateKey: PageTemplateKey): CreatePageRequest {
             this.template = pageTemplateKey;
             return this;
         }
 
-        setConfig(config: api.data.PropertyTree): CreatePageRequest {
+        setConfig(config: PropertyTree): CreatePageRequest {
             this.config = config;
             return this;
         }
 
-        setRegions(value: api.content.page.region.Regions): CreatePageRequest {
+        setRegions(value: Regions): CreatePageRequest {
             this.regions = value;
             return this;
         }
 
-        setFragment(value: api.content.page.region.Component): CreatePageRequest {
+        setFragment(value: Component): CreatePageRequest {
             this.fragment = value;
             return this;
         }
@@ -64,15 +75,14 @@ module api.content.page {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "create");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "create");
         }
 
-        sendAndParse(): wemQ.Promise<api.content.Content> {
+        sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return response.isBlank() ? null : this.fromJsonToContent(response.getResult());
             });
         }
     }
-}

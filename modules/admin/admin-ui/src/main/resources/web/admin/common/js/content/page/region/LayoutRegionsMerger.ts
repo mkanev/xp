@@ -1,6 +1,10 @@
-module api.content.page.region {
+import {Component} from "./Component";
+import {LayoutComponent} from "./LayoutComponent";
+import {Region} from "./Region";
+import {RegionDescriptor} from "./RegionDescriptor";
+import {Regions} from "./Regions";
 
-    export class LayoutRegionsMerger {
+export class LayoutRegionsMerger {
 
         private layoutComponentRegions: Region[];
         private targetRegionsByName: { [regionName: string]: Region; };
@@ -103,4 +107,3 @@ module api.content.page.region {
 
     }
 
-}

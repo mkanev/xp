@@ -1,6 +1,6 @@
-module api.ui.grid {
 
-    export class GridColumnBuilder<T extends Slick.SlickData> {
+
+export class GridColumnBuilder<T extends Slick.SlickData> {
 
         asyncPostRender: (cellNode:any, row:any, dataContext:any, colDef:any) => void;
 
@@ -361,4 +361,3 @@ module api.ui.grid {
             return this;
         }
     }
-}

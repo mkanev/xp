@@ -1,6 +1,9 @@
-module api.app.wizard {
+import {Action} from "../../ui/Action";
+import {CloseAction} from "./CloseAction";
+import {SaveAction} from "./SaveAction";
+import {WizardPanel} from "./WizardPanel";
 
-    export class SaveAndCloseAction extends api.ui.Action {
+export class SaveAndCloseAction extends Action {
 
         constructor(wizardPanel: WizardPanel<any>) {
             super("SaveAndClose", "mod+enter", true);
@@ -20,4 +23,3 @@ module api.app.wizard {
             });
         }
     }
-}

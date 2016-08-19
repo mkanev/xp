@@ -1,6 +1,8 @@
-module api.query.expr {
+import {FunctionExpr} from "./FunctionExpr";
+import {OrderDirection} from "./OrderDirection";
+import {OrderExpr} from "./OrderExpr";
 
-    export class DynamicOrderExpr extends OrderExpr {
+export class DynamicOrderExpr extends OrderExpr {
 
         private func: FunctionExpr;
 
@@ -17,4 +19,3 @@ module api.query.expr {
             return this.func.toString() + " " + super.directionAsString();
         }
     }
-}

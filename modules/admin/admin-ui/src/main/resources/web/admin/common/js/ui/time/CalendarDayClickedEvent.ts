@@ -1,6 +1,6 @@
-module api.ui.time {
+import {CalendarDay} from "./CalendarDay";
 
-    export class CalendarDayClickedEvent {
+export class CalendarDayClickedEvent {
 
         private calendarDay: CalendarDay;
 
@@ -14,4 +14,3 @@ module api.ui.time {
     }
 
 
-}

@@ -1,9 +1,14 @@
-module api.content.resource {
+import {BatchContentResult} from "./result/BatchContentResult";
+import {ContentResponse} from "./result/ContentResponse";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentMetadata} from "../ContentMetadata";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import BatchContentResult = api.content.resource.result.BatchContentResult;
-    import ContentResponse = api.content.resource.result.ContentResponse;
-    
-    export class BatchContentRequest extends ContentResourceRequest<BatchContentResult<api.content.json.ContentSummaryJson>, ContentResponse<ContentSummary>> {
+export class BatchContentRequest extends ContentResourceRequest<BatchContentResult<ContentSummaryJson>, ContentResponse<ContentSummary>> {
 
         private contentPaths: ContentPath[] = [];
 
@@ -34,13 +39,13 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "batch");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "batch");
         }
 
         sendAndParse(): wemQ.Promise<ContentResponse<ContentSummary>> {
 
-            return this.send().then((response: api.rest.JsonResponse<BatchContentResult<api.content.json.ContentSummaryJson>>) => {
+            return this.send().then((response: JsonResponse<BatchContentResult<ContentSummaryJson>>) => {
                 return new ContentResponse(
                     ContentSummary.fromJsonArray(response.getResult().contents),
                     new ContentMetadata(response.getResult().metadata["hits"], response.getResult().metadata["totalHits"])
@@ -48,4 +53,3 @@ module api.content.resource {
             });
         }
     }
-}

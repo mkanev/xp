@@ -1,15 +1,17 @@
-module api.data {
+import {LocalDateTime} from "../util/LocalDateTime";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    import LocalDateTime = api.util.LocalDateTime;
-
-    export class ValueTypeLocalDateTime extends ValueType {
+export class ValueTypeLocalDateTime extends ValueType {
 
         constructor() {
             super("LocalDateTime");
         }
 
         isValid(value: string): boolean {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(value, LocalDateTime)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(value, LocalDateTime)) {
                 return true;
             }
 
@@ -17,7 +19,7 @@ module api.data {
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             // 2010-01-01T10:55:00
@@ -48,7 +50,6 @@ module api.data {
         }
 
         valueEquals(a: LocalDateTime, b: LocalDateTime): boolean {
-            return api.ObjectHelper.equals(a, b);
+            return ObjectHelper.equals(a, b);
         }
     }
-}

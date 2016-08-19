@@ -1,21 +1,26 @@
-import "../../../../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ContentDependencyJson} from "../../../../../../../../common/js/content/json/ContentDependencyJson";
+import {ContentDependencyGroupJson} from "../../../../../../../../common/js/content/json/ContentDependencyGroupJson";
+import {ActionButton} from "../../../../../../../../common/js/ui/button/ActionButton";
+import {Action} from "../../../../../../../../common/js/ui/Action";
+import {DivEl} from "../../../../../../../../common/js/dom/DivEl";
+import {NamesAndIconView} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../../../../common/js/app/NamesAndIconViewSize";
+import {ResolveDependenciesRequest} from "../../../../../../../../common/js/content/resource/ResolveDependenciesRequest";
+import {JsonResponse} from "../../../../../../../../common/js/rest/JsonResponse";
+
 import {WidgetItemView} from "../../WidgetItemView";
 import {DependencyGroup, DependencyType} from "./DependencyGroup";
 import {ToggleSearchPanelWithDependenciesEvent} from "../../../../browse/ToggleSearchPanelWithDependenciesEvent";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import ContentDependencyJson = api.content.json.ContentDependencyJson;
-import ContentDependencyGroupJson = api.content.json.ContentDependencyGroupJson;
-import ActionButton = api.ui.button.ActionButton;
-import Action = api.ui.Action;
-
 export class DependenciesWidgetItemView extends WidgetItemView {
 
-    private mainContainer: api.dom.DivEl;
-    private nameAndIcon: api.app.NamesAndIconView;
+    private mainContainer: DivEl;
+    private nameAndIcon: NamesAndIconView;
 
-    private noInboundDependencies: api.dom.DivEl;
-    private noOutboundDependencies: api.dom.DivEl;
+    private noInboundDependencies: DivEl;
+    private noOutboundDependencies: DivEl;
 
     private item: ContentSummaryAndCompareStatus;
     private inboundDependencies: DependencyGroup[];
@@ -80,13 +85,13 @@ export class DependenciesWidgetItemView extends WidgetItemView {
     }
 
     private appendMainContainer() {
-        this.mainContainer = new api.dom.DivEl("main-container");
+        this.mainContainer = new DivEl("main-container");
         this.appendChild(this.mainContainer);
     }
 
     private appendContentNamesAndIcon(item: ContentSummaryAndCompareStatus) {
         this.nameAndIcon =
-            new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.medium))
+            new NamesAndIconView(new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.medium))
                 .setIconUrl(item.getIconUrl())
                 .setMainName(item.getDisplayName())
                 .setSubName(item.getPath().toString());
@@ -96,9 +101,9 @@ export class DependenciesWidgetItemView extends WidgetItemView {
         this.mainContainer.appendChild(this.nameAndIcon);
     }
 
-    private createDependenciesContainer(type: DependencyType, dependencies: DependencyGroup[]): api.dom.DivEl {
+    private createDependenciesContainer(type: DependencyType, dependencies: DependencyGroup[]): DivEl {
         var typeAsString = DependencyType[type].toLowerCase();
-        var div = new api.dom.DivEl("dependencies-container " + typeAsString);
+        var div = new DivEl("dependencies-container " + typeAsString);
         if (dependencies.length == 0) {
             this.addClass("no-"  + typeAsString);
             div.addClass("no-dependencies");
@@ -133,9 +138,9 @@ export class DependenciesWidgetItemView extends WidgetItemView {
         return sum;
     }
 
-    private appendDependencies(container: api.dom.DivEl, dependencies: DependencyGroup[]) {
+    private appendDependencies(container: DivEl, dependencies: DependencyGroup[]) {
         dependencies.forEach((dependencyGroup: DependencyGroup) => {
-            var dependencyGroupView = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small))
+            var dependencyGroupView = new NamesAndIconView(new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small))
                 .setIconUrl(dependencyGroup.getIconUrl())
                 .setMainName("(" + dependencyGroup.getItemCount().toString() + ")");
 
@@ -152,9 +157,9 @@ export class DependenciesWidgetItemView extends WidgetItemView {
      */
     private resolveDependencies(item: ContentSummaryAndCompareStatus): wemQ.Promise<any> {
 
-        var resolveDependenciesRequest = new api.content.resource.ResolveDependenciesRequest(item.getContentId());
+        var resolveDependenciesRequest = new ResolveDependenciesRequest(item.getContentId());
 
-        return resolveDependenciesRequest.send().then((jsonResponse: api.rest.JsonResponse<ContentDependencyJson>) => {
+        return resolveDependenciesRequest.send().then((jsonResponse: JsonResponse<ContentDependencyJson>) => {
             this.initResolvedDependenciesItems(jsonResponse.getResult());
             this.renderContent(item);
         });

@@ -1,9 +1,8 @@
-module api.content {
 
-    export enum Branch {
+
+export enum Branch {
         DRAFT,
         MASTER
     }
 
 
-}

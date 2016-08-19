@@ -1,6 +1,5 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
 
-import Action = api.ui.Action;
 import {UserItemsTreeGrid} from "../UserItemsTreeGrid";
 import {UserTreeGridItem} from "../UserTreeGridItem";
 import {UserTreeGridItemType} from "../UserTreeGridItem";

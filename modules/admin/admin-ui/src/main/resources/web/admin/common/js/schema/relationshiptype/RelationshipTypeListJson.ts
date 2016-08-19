@@ -1,6 +1,6 @@
-module api.schema.relationshiptype {
+import {RelationshipTypeJson} from "./RelationshipTypeJson";
 
-    export interface RelationshipTypeListJson {
+export interface RelationshipTypeListJson {
 
         total: number;
 
@@ -8,4 +8,3 @@ module api.schema.relationshiptype {
 
     }
 
-}

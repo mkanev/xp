@@ -1,6 +1,11 @@
-module api.security {
+import {BaseLoader} from "../util/loader/BaseLoader";
+import {FindPrincipalListRequest} from "./FindPrincipalListRequest";
+import {Principal} from "./Principal";
+import {PrincipalKey} from "./PrincipalKey";
+import {PrincipalType} from "./PrincipalType";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class PrincipalLoader extends api.util.loader.BaseLoader<any, any> {
+export class PrincipalLoader extends BaseLoader<any, any> {
 
         private findRequest: FindPrincipalListRequest;
         private skipPrincipalKeys: { [key:string]:PrincipalKey; };
@@ -45,4 +50,3 @@ module api.security {
 
     }
 
-}

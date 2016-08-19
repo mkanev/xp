@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface ContentDependencyGroupJson {
+
+export interface ContentDependencyGroupJson {
 
         count: number;
 
@@ -8,4 +8,3 @@ module api.content.json {
 
         type: string;
     }
-}

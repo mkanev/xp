@@ -1,17 +1,20 @@
-module api.security {
+import {Event} from "../event/Event";
+import {WizardPanel} from "../app/wizard/WizardPanel";
+import {ClassHelper} from "../ClassHelper";
+import {UserStore} from "./UserStore";
 
-    export class UserStoreNamedEvent extends api.event.Event {
+export class UserStoreNamedEvent extends Event {
 
-        private wizard: api.app.wizard.WizardPanel<UserStore>;
+        private wizard: WizardPanel<UserStore>;
         private userStore: UserStore;
 
-        constructor(wizard: api.app.wizard.WizardPanel<UserStore>, userStore: UserStore) {
+        constructor(wizard: WizardPanel<UserStore>, userStore: UserStore) {
             super();
             this.wizard = wizard;
             this.userStore = userStore;
         }
 
-        public getWizard(): api.app.wizard.WizardPanel<UserStore> {
+        public getWizard(): WizardPanel<UserStore> {
             return this.wizard;
         }
 
@@ -20,13 +23,12 @@ module api.security {
         }
 
         static on(handler: (event: UserStoreNamedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: UserStoreNamedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
     }
 
-}

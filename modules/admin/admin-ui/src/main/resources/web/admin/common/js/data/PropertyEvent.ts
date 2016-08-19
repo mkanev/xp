@@ -1,6 +1,8 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertyEventType} from "./PropertyEventType";
+import {PropertyPath} from "./PropertyPath";
 
-    export class PropertyEvent {
+export class PropertyEvent {
 
         private type: PropertyEventType;
 
@@ -27,4 +29,3 @@ module api.data {
             return this.getPath().toString();
         }
     }
-}

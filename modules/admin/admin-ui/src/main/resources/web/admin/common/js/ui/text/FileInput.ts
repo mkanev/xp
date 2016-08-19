@@ -1,25 +1,25 @@
-module api.ui.text {
+import {InputEl} from "../../dom/InputEl";
+import {Content} from "../../content/Content";
+import {FileUploadStartedEvent} from "../uploader/FileUploadStartedEvent";
+import {FileUploadProgressEvent} from "../uploader/FileUploadProgressEvent";
+import {FileUploadedEvent} from "../uploader/FileUploadedEvent";
+import {FileUploadCompleteEvent} from "../uploader/FileUploadCompleteEvent";
+import {FileUploadFailedEvent} from "../uploader/FileUploadFailedEvent";
+import {CompositeFormInputEl} from "../../dom/CompositeFormInputEl";
+import {MediaUploaderEl} from "../uploader/MediaUploaderEl";
+import {MediaUploaderElOperation} from "../uploader/MediaUploaderEl";
+import {UploadItem} from "../uploader/UploadItem";
 
-    import InputEl = api.dom.InputEl;
-
-    import Content = api.content.Content;
-
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-    import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
-    import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
-    import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
-    import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
-
-    export class FileInput extends api.dom.CompositeFormInputEl {
+export class FileInput extends CompositeFormInputEl {
 
         private textInput: InputEl;
-        private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
+        private mediaUploaderEl: MediaUploaderEl;
 
         constructor(className?: string, originalValue?: string) {
             this.textInput = new InputEl("text");
 
-            this.mediaUploaderEl = new api.ui.uploader.MediaUploaderEl({
-                operation: api.ui.uploader.MediaUploaderElOperation.create,
+            this.mediaUploaderEl = new MediaUploaderEl({
+                operation: MediaUploaderElOperation.create,
                 name: 'file-input-uploader',
                 allowDrop: true,
                 showResult: false,
@@ -29,8 +29,8 @@ module api.ui.text {
                 value: originalValue
             });
 
-            this.mediaUploaderEl.onUploadStarted((event: api.ui.uploader.FileUploadStartedEvent<api.content.Content>) => {
-                var names = event.getUploadItems().map((uploadItem: api.ui.uploader.UploadItem<api.content.Content>) => {
+            this.mediaUploaderEl.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
+                var names = event.getUploadItems().map((uploadItem: UploadItem<Content>) => {
                     return uploadItem.getName();
                 });
                 this.textInput.setValue(names.join(', '));
@@ -81,7 +81,7 @@ module api.ui.text {
             this.mediaUploaderEl.getEl().setAttribute("disabled", "true");
         }
 
-        getUploader(): api.ui.uploader.MediaUploaderEl {
+        getUploader(): MediaUploaderEl {
             return this.mediaUploaderEl;
         }
 
@@ -134,4 +134,3 @@ module api.ui.text {
         }
 
     }
-}

@@ -1,6 +1,8 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ContentId} from "../content/ContentId";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class Reference implements api.Equitable {
+export class Reference implements Equitable {
 
         private referenceId: string;
 
@@ -8,7 +10,7 @@ module api.util {
             this.referenceId = value;
         }
 
-        static from(value: api.content.ContentId): Reference {
+        static from(value: ContentId): Reference {
             return new Reference(value.toString());
         }
 
@@ -18,13 +20,13 @@ module api.util {
 
         equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Reference)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Reference)) {
                 return false;
             }
 
             var other = <Reference>o;
 
-            if (!api.ObjectHelper.stringEquals(this.referenceId, other.referenceId)) {
+            if (!ObjectHelper.stringEquals(this.referenceId, other.referenceId)) {
                 return false;
             }
 
@@ -35,4 +37,3 @@ module api.util {
             return this.referenceId;
         }
     }
-}

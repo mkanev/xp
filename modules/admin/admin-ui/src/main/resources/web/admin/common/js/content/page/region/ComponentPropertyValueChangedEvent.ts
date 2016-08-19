@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentChangedEvent} from "./ComponentChangedEvent";
+import {ComponentPath} from "./ComponentPath";
 
-    export class ComponentPropertyValueChangedEvent extends ComponentChangedEvent {
+export class ComponentPropertyValueChangedEvent extends ComponentChangedEvent {
 
         private propertyName: string;
 
@@ -14,4 +15,3 @@ module api.content.page.region {
         }
 
     }
-}

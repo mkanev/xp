@@ -1,6 +1,9 @@
-module api.rest {
+import {UriHelper} from "../util/UriHelper";
+import {JsonRequest} from "./JsonRequest";
+import {JsonResponse} from "./JsonResponse";
+import {Path} from "./Path";
 
-    export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE> {
+export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE> {
 
         private restPath: Path;
 
@@ -11,7 +14,7 @@ module api.rest {
         private timeoutMillis: number;
 
         constructor() {
-            this.restPath = Path.fromString(api.util.UriHelper.getRestUri(""));
+            this.restPath = Path.fromString(UriHelper.getRestUri(""));
         }
 
         setMethod(value: string) {
@@ -59,4 +62,3 @@ module api.rest {
             throw new Error("sendAndParse method was not implemented");
         }
     }
-}

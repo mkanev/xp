@@ -1,6 +1,10 @@
-module api.security.acl {
+import {Equitable} from "../../Equitable";
+import {UserStoreAccessControlEntryJson} from "./UserStoreAccessControlEntryJson";
+import {UserStoreAccessControlEntry} from "./UserStoreAccessControlEntry";
+import {ObjectHelper} from "../../ObjectHelper";
+import {PrincipalKey} from "../PrincipalKey";
 
-    export class UserStoreAccessControlList implements api.Equitable {
+export class UserStoreAccessControlList implements Equitable {
 
         private entries: {[key: string]: UserStoreAccessControlEntry};
 
@@ -43,9 +47,9 @@ module api.security.acl {
             delete this.entries[principalKey.toString()];
         }
 
-        toJson(): api.security.acl.UserStoreAccessControlEntryJson[] {
-            var acl: api.security.acl.UserStoreAccessControlEntryJson[] = [];
-            this.getEntries().forEach((entry: api.security.acl.UserStoreAccessControlEntry) => {
+        toJson(): UserStoreAccessControlEntryJson[] {
+            var acl: UserStoreAccessControlEntryJson[] = [];
+            this.getEntries().forEach((entry: UserStoreAccessControlEntry) => {
                 var entryJson = entry.toJson();
                 acl.push(entryJson);
             });
@@ -56,19 +60,19 @@ module api.security.acl {
             return '[' + this.getEntries().map((ace) => ace.toString()).join(', ') + ']';
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserStoreAccessControlList)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, UserStoreAccessControlList)) {
                 return false;
             }
 
             var other = <UserStoreAccessControlList>o;
-            return api.ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
+            return ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
         }
 
-        static fromJson(json: api.security.acl.UserStoreAccessControlEntryJson[]): UserStoreAccessControlList {
+        static fromJson(json: UserStoreAccessControlEntryJson[]): UserStoreAccessControlList {
             var acl = new UserStoreAccessControlList();
-            json.forEach((entryJson: api.security.acl.UserStoreAccessControlEntryJson) => {
+            json.forEach((entryJson: UserStoreAccessControlEntryJson) => {
                 var entry = UserStoreAccessControlEntry.fromJson(entryJson);
                 acl.add(entry);
             });
@@ -86,4 +90,3 @@ module api.security.acl {
             return result;
         }
     }
-}

@@ -1,6 +1,9 @@
-module api.query.expr {
+import {CompareOperator} from "./CompareOperator";
+import {ConstraintExpr} from "./ConstraintExpr";
+import {FieldExpr} from "./FieldExpr";
+import {ValueExpr} from "./ValueExpr";
 
-    export class CompareExpr implements ConstraintExpr {
+export class CompareExpr implements ConstraintExpr {
 
         private field: FieldExpr;
 
@@ -129,4 +132,3 @@ module api.query.expr {
             return this.operator == CompareOperator.IN || this.operator == CompareOperator.NOT_IN;
         }
     }
-}

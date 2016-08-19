@@ -1,6 +1,6 @@
-module api.aggregation {
+import {BucketWrapperJson} from "./BucketWrapperJson";
+import {BucketAggregation} from "./BucketAggregation";
 
-    export interface AggregationTypeWrapperJson {
-        BucketAggregation?:api.aggregation.BucketWrapperJson;
+export interface AggregationTypeWrapperJson {
+        BucketAggregation?:BucketWrapperJson;
     }
-}

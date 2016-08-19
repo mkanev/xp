@@ -1,9 +1,16 @@
-module api.content.event {
+import {ContentPath} from "../ContentPath";
+import {NodeServerChangeType} from "../../event/NodeServerChange";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ContentSummaryAndCompareStatusFetcher} from "../resource/ContentSummaryAndCompareStatusFetcher";
+import {ContentUpdatedEvent} from "./ContentUpdatedEvent";
+import {Class} from "../../Class";
+import {ContentSummaryAndCompareStatus} from "../ContentSummaryAndCompareStatus";
+import {BatchContentServerEvent} from "./BatchContentServerEvent";
+import {ContentDeletedEvent} from "./ContentDeletedEvent";
+import {ContentServerChangeItem} from "./ContentServerChange";
+import {ContentServerChange} from "./ContentServerChange";
 
-    import ContentPath = api.content.ContentPath;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-
-    /**
+/**
      * Class that listens to server events and fires UI events
      */
     export class ContentServerEventsHandler {
@@ -75,17 +82,17 @@ module api.content.event {
                 }, []);
 
                 var deletedItems = changeItems.filter(d => d.getBranch() == 'draft'),
-                    unpublishedItems = changeItems.filter(d => deletedItems.every(deleted => !api.ObjectHelper.equals(deleted.contentId,
+                    unpublishedItems = changeItems.filter(d => deletedItems.every(deleted => !ObjectHelper.equals(deleted.contentId,
                         d.contentId)));
 
                 this.handleContentDeleted(deletedItems);
-                api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByPaths(unpublishedItems.map(item => item.getPath()))
+                ContentSummaryAndCompareStatusFetcher.fetchByPaths(unpublishedItems.map(item => item.getPath()))
                     .then((summaries) => {
                         this.handleContentUnpublished(summaries);
                     });
 
             } else {
-                api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByPaths(this.extractContentPaths(changes, useNewPaths))
+                ContentSummaryAndCompareStatusFetcher.fetchByPaths(this.extractContentPaths(changes, useNewPaths))
                     .then((summaries) => {
                         if (ContentServerEventsHandler.debug) {
                             console.debug("ContentServerEventsHandler: fetched summaries", summaries);
@@ -160,7 +167,7 @@ module api.content.event {
             }
             // TODO: refactor update event to contain multiple contents ?
             data.forEach((el) => {
-                new api.content.event.ContentUpdatedEvent(el.getContentSummary()).fire()
+                new ContentUpdatedEvent(el.getContentSummary()).fire()
             });
 
             this.notifyContentUpdated(data);
@@ -413,4 +420,3 @@ module api.content.event {
         }
 
     }
-}

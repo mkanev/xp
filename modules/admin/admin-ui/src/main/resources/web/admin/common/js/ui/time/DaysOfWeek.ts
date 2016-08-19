@@ -1,6 +1,6 @@
-module api.ui.time {
+import {DayOfWeek} from "./DayOfWeek";
 
-    export class DaysOfWeek {
+export class DaysOfWeek {
 
         public static MONDAY: DayOfWeek = new DayOfWeek(1, "M", "Mon", "Monday");
 
@@ -30,4 +30,3 @@ module api.ui.time {
             return match;
         }
     }
-}

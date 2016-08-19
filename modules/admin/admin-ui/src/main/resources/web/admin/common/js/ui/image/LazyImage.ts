@@ -1,15 +1,16 @@
-module api.ui.image {
+import {DivEl} from "../../dom/DivEl";
+import {ImgEl} from "../../dom/ImgEl";
 
-    export class LazyImage extends api.dom.DivEl {
+export class LazyImage extends DivEl {
 
-        private phantomImage: api.dom.ImgEl;
+        private phantomImage: ImgEl;
 
         constructor(src?: string) {
             super("lazy-image");
 
             this.addClass("empty");
 
-            this.phantomImage = new api.dom.ImgEl(null, "phantom-image");
+            this.phantomImage = new ImgEl(null, "phantom-image");
 
             this.phantomImage.onLoaded(() => {
                 this.getEl().setBackgroundImage("url(" + this.phantomImage.getSrc() + ")");
@@ -27,4 +28,3 @@ module api.ui.image {
             this.phantomImage.setSrc(src);
         }
     }
-}

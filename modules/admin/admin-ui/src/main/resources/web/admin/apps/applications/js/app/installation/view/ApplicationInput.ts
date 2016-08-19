@@ -1,24 +1,29 @@
-import "../../../api.ts";
+import {ApplicationUploaderEl} from "../../../../../../common/js/application/ApplicationUploaderEl";
+import {InputEl} from "../../../../../../common/js/dom/InputEl";
+import {FileUploadStartedEvent} from "../../../../../../common/js/ui/uploader/FileUploadStartedEvent";
+import {FileUploadCompleteEvent} from "../../../../../../common/js/ui/uploader/FileUploadCompleteEvent";
+import {FileUploadFailedEvent} from "../../../../../../common/js/ui/uploader/FileUploadFailedEvent";
+import {ApplicationInstallResult} from "../../../../../../common/js/application/ApplicationInstallResult";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {Application} from "../../../../../../common/js/application/Application";
+import {CompositeFormInputEl} from "../../../../../../common/js/dom/CompositeFormInputEl";
+import {LoadMask} from "../../../../../../common/js/ui/mask/LoadMask";
+import {ValidationRecordingViewer} from "../../../../../../common/js/form/ValidationRecordingViewer";
+import {UploadItem} from "../../../../../../common/js/ui/uploader/UploadItem";
+import {StringHelper} from "../../../../../../common/js/util/StringHelper";
+import {InstallUrlApplicationRequest} from "../../../../../../common/js/application/InstallUrlApplicationRequest";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
 
-import ApplicationUploaderEl = api.application.ApplicationUploaderEl;
-import InputEl = api.dom.InputEl;
-import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
-import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
-import ApplicationInstallResult = api.application.ApplicationInstallResult;
-import Action = api.ui.Action;
-import Application = api.application.Application;
-
-export class ApplicationInput extends api.dom.CompositeFormInputEl {
+export class ApplicationInput extends CompositeFormInputEl {
 
     private textInput: InputEl;
     private applicationUploaderEl: ApplicationUploaderEl;
     private lastTimeKeyPressedTimer;
     private LAST_KEY_PRESS_TIMEOUT: number;
-    private mask: api.ui.mask.LoadMask;
+    private mask: LoadMask;
     private cancelAction: Action;
 
-    private errorPanel: api.form.ValidationRecordingViewer;
+    private errorPanel: ValidationRecordingViewer;
 
     private static APPLICATION_ADDRESS_MASK: string = "^(http|https)://\\S+";
 
@@ -41,14 +46,14 @@ export class ApplicationInput extends api.dom.CompositeFormInputEl {
         this.LAST_KEY_PRESS_TIMEOUT = 1500;
         this.cancelAction = cancelAction;
 
-        this.applicationUploaderEl.onUploadStarted((event: api.ui.uploader.FileUploadStartedEvent<Application>) => {
-            var names = event.getUploadItems().map((uploadItem: api.ui.uploader.UploadItem<Application>) => {
+        this.applicationUploaderEl.onUploadStarted((event: FileUploadStartedEvent<Application>) => {
+            var names = event.getUploadItems().map((uploadItem: UploadItem<Application>) => {
                 return uploadItem.getName();
             });
             this.textInput.setValue(names.join(', '));
         });
 
-        this.errorPanel = new api.form.ValidationRecordingViewer();
+        this.errorPanel = new ValidationRecordingViewer();
         this.appendChild(this.errorPanel);
         this.errorPanel.hide();
 
@@ -82,16 +87,16 @@ export class ApplicationInput extends api.dom.CompositeFormInputEl {
 
     private initMask() {
         if (!this.mask) {
-            this.mask = new api.ui.mask.LoadMask(this);
+            this.mask = new LoadMask(this);
             this.getParentElement().appendChild(this.mask);
         }
     }
 
     private startInstall() {
-        if (!api.util.StringHelper.isEmpty(this.textInput.getValue())) {
+        if (!StringHelper.isEmpty(this.textInput.getValue())) {
 
             let url = this.textInput.getValue();
-            if (api.util.StringHelper.testRegex(ApplicationInput.APPLICATION_ADDRESS_MASK, url)) {
+            if (StringHelper.testRegex(ApplicationInput.APPLICATION_ADDRESS_MASK, url)) {
                 this.initMask();
                 this.mask.show();
 
@@ -103,7 +108,7 @@ export class ApplicationInput extends api.dom.CompositeFormInputEl {
 
     private installWithUrl(url: string) {
         this.mask.show();
-        new api.application.InstallUrlApplicationRequest(url).sendAndParse().then((result: api.application.ApplicationInstallResult)=> {
+        new InstallUrlApplicationRequest(url).sendAndParse().then((result: ApplicationInstallResult)=> {
 
             let failure = result.getFailure();
 
@@ -116,7 +121,7 @@ export class ApplicationInput extends api.dom.CompositeFormInputEl {
 
         }).catch((reason: any) => {
             this.mask.hide();
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         });
     }
 

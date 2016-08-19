@@ -1,8 +1,12 @@
-module api.schema.relationshiptype {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {RelationshipType} from "./RelationshipType";
+import {RelationshipTypeJson} from "./RelationshipTypeJson";
+import {RelationshipTypeListJson} from "./RelationshipTypeListJson";
+import {RelationshipTypeResourceRequest} from "./RelationshipTypeResourceRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetRelationshipTypesByApplicationRequest extends RelationshipTypeResourceRequest<RelationshipTypeListJson, RelationshipType[]> {
+export class GetRelationshipTypesByApplicationRequest extends RelationshipTypeResourceRequest<RelationshipTypeListJson, RelationshipType[]> {
 
         private applicationKey: ApplicationKey;
 
@@ -18,15 +22,14 @@ module api.schema.relationshiptype {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "byApplication");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "byApplication");
         }
 
         sendAndParse(): wemQ.Promise<RelationshipType[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<RelationshipTypeListJson>) => {
+            return this.send().then((response: JsonResponse<RelationshipTypeListJson>) => {
                 return response.getResult().relationshipTypes.map((json: RelationshipTypeJson) => this.fromJsonToReleationshipType(json));
             });
         }
     }
-}

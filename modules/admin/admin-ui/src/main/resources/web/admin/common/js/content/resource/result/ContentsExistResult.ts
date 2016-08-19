@@ -1,10 +1,10 @@
-module api.content.resource.result {
+import {ContentsExistJson} from "../../json/ContentsExistJson";
 
-    export class ContentsExistResult {
+export class ContentsExistResult {
 
         private contentsExistMap: Object = {}
 
-        constructor(json: api.content.json.ContentsExistJson) {
+        constructor(json: ContentsExistJson) {
             json.contentsExistJson.forEach(item => {
                 this.contentsExistMap[item.contentId] = item.exists;
             });
@@ -14,4 +14,3 @@ module api.content.resource.result {
             return this.contentsExistMap.hasOwnProperty(id) && this.contentsExistMap[id];
         }
     }
-}

@@ -1,7 +1,11 @@
-module api.application {
+import {ApplicationJson} from "./json/ApplicationJson";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {Application} from "./Application";
+import {ApplicationKey} from "./ApplicationKey";
+import {ApplicationResourceRequest} from "./ApplicationResourceRequest";
 
-    import ApplicationJson = api.application.json.ApplicationJson;
-    export class AuthApplicationRequest extends ApplicationResourceRequest<ApplicationJson, Application> {
+export class AuthApplicationRequest extends ApplicationResourceRequest<ApplicationJson, Application> {
 
         private applicationKey: ApplicationKey;
 
@@ -18,14 +22,13 @@ module api.application {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "getIdProvider");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "getIdProvider");
         }
 
         sendAndParse(): wemQ.Promise<Application> {
-            return this.send().then((response: api.rest.JsonResponse<ApplicationJson>) => {
+            return this.send().then((response: JsonResponse<ApplicationJson>) => {
                 return response.getResult() ? Application.fromJson(response.getResult()) : null;
             });
         }
     }
-}

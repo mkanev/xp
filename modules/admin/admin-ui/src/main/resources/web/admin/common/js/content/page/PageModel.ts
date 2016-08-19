@@ -1,14 +1,26 @@
-module api.content.page {
+import {PropertyTree} from "../../data/PropertyTree";
+import {Regions} from "./region/Regions";
+import {LiveEditModel} from "../../liveedit/LiveEditModel";
+import {Component} from "./region/Component";
+import {PropertyChangedEvent} from "../../PropertyChangedEvent";
+import {ComponentPropertyChangedEvent} from "./region/ComponentPropertyChangedEvent";
+import {PageMode} from "./PageMode";
+import {ObjectHelper} from "../../ObjectHelper";
+import {Content} from "../Content";
+import {Page} from "./Page";
+import {PageBuilder} from "./Page";
+import {PageDescriptor} from "./PageDescriptor";
+import {PageModeChangedEvent} from "./PageModeChangedEvent";
+import {PageTemplate} from "./PageTemplate";
+import {PageTemplateKey} from "./PageTemplateKey";
 
-    import PropertyTree = api.data.PropertyTree;
-
-    export class SetController {
+export class SetController {
 
         eventSource: any;
 
         descriptor: PageDescriptor;
 
-        regions: api.content.page.region.Regions;
+        regions: Regions;
 
         config: PropertyTree;
 
@@ -21,7 +33,7 @@ module api.content.page {
             return this;
         }
 
-        setRegions(value: api.content.page.region.Regions): SetController {
+        setRegions(value: Regions): SetController {
             this.regions = value;
             return this;
         }
@@ -40,7 +52,7 @@ module api.content.page {
 
         descriptor: PageDescriptor;
 
-        regions: api.content.page.region.Regions;
+        regions: Regions;
 
         config: PropertyTree;
 
@@ -54,7 +66,7 @@ module api.content.page {
             return this;
         }
 
-        setRegions(value: api.content.page.region.Regions): SetTemplate {
+        setRegions(value: Regions): SetTemplate {
             this.regions = value;
             return this;
         }
@@ -76,7 +88,7 @@ module api.content.page {
 
         public static PROPERTY_CONFIG = 'config';
 
-        private liveEditModel: api.liveedit.LiveEditModel;
+        private liveEditModel: LiveEditModel;
 
         private defaultTemplate: PageTemplate;
 
@@ -92,17 +104,17 @@ module api.content.page {
 
         private templateDescriptor: PageDescriptor;
 
-        private regions: api.content.page.region.Regions;
+        private regions: Regions;
 
-        private fragment: api.content.page.region.Component;
+        private fragment: Component;
 
         private config: PropertyTree;
 
         private pageModeChangedListeners: {(event: PageModeChangedEvent):void}[] = [];
 
-        private propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];
+        private propertyChangedListeners: {(event: PropertyChangedEvent):void}[] = [];
 
-        private componentPropertyChangedListeners: {(event: api.content.page.region.ComponentPropertyChangedEvent):void}[] = [];
+        private componentPropertyChangedListeners: {(event: ComponentPropertyChangedEvent):void}[] = [];
 
         private resetListeners: {():void}[] = [];
 
@@ -116,8 +128,8 @@ module api.content.page {
 
         private customized;
 
-        constructor(liveEditModel: api.liveedit.LiveEditModel, defaultTemplate: PageTemplate, defaultTemplateDescriptor: PageDescriptor,
-                    pageMode: api.content.page.PageMode) {
+        constructor(liveEditModel: LiveEditModel, defaultTemplate: PageTemplate, defaultTemplateDescriptor: PageDescriptor,
+                    pageMode: PageMode) {
             this.liveEditModel = liveEditModel;
             this.defaultTemplate = defaultTemplate;
             this.defaultTemplateDescriptor = defaultTemplateDescriptor;
@@ -147,7 +159,7 @@ module api.content.page {
                     this.initializePageFromDefault(this);
                 }
 
-                this.componentPropertyChangedListeners.forEach((listener: (event: api.content.page.region.ComponentPropertyChangedEvent)=>void) => {
+                this.componentPropertyChangedListeners.forEach((listener: (event: ComponentPropertyChangedEvent)=>void) => {
                     listener(event);
                 });
             }
@@ -185,7 +197,7 @@ module api.content.page {
                 var setController = new SetController(eventSource).
                     setDescriptor(null).
                     setConfig(new PropertyTree()).
-                    setRegions(api.content.page.region.Regions.create().build());
+                    setRegions(Regions.create().build());
                 this.setController(setController);
             }
             else {
@@ -208,7 +220,7 @@ module api.content.page {
         setController(setController: SetController): PageModel {
             var oldControllerKey = this.controller ? this.controller.getKey() : null;
             var newControllerKey = setController.descriptor ? setController.descriptor.getKey() : null;
-            var controllerChanged = !api.ObjectHelper.equals(oldControllerKey, newControllerKey);
+            var controllerChanged = !ObjectHelper.equals(oldControllerKey, newControllerKey);
 
             this.setControllerData(setController);
 
@@ -270,7 +282,7 @@ module api.content.page {
 
             var regions = this.defaultTemplate.hasRegions() ?
                           this.defaultTemplate.getRegions().clone() :
-                          api.content.page.region.Regions.create().build();
+                          Regions.create().build();
 
             var setTemplate = new SetTemplate(eventSource).
                 setTemplate(null, this.defaultTemplateDescriptor).
@@ -284,7 +296,7 @@ module api.content.page {
         setTemplate(setTemplate: SetTemplate, ignoreRegionChanges: boolean = false): PageModel {
             var oldTemplateKey = this.template ? this.template.getKey() : null;
             var newTemplateKey = setTemplate.template ? setTemplate.template.getKey() : null;
-            var templateOrModeChanged = !api.ObjectHelper.equals(oldTemplateKey, newTemplateKey) || this.hasController();
+            var templateOrModeChanged = !ObjectHelper.equals(oldTemplateKey, newTemplateKey) || this.hasController();
 
             if (setTemplate.template) {
                 this.setMode(PageMode.FORCED_TEMPLATE);
@@ -333,7 +345,7 @@ module api.content.page {
             }
         }
 
-        setRegions(value: api.content.page.region.Regions, eventOrigin?: any, ignoreRegionChanges = false): PageModel {
+        setRegions(value: Regions, eventOrigin?: any, ignoreRegionChanges = false): PageModel {
             var oldValue = this.regions;
             if (oldValue) {
                 this.unregisterRegionsListeners(oldValue);
@@ -488,7 +500,7 @@ module api.content.page {
             return this.template;
         }
 
-        getRegions(): api.content.page.region.Regions {
+        getRegions(): Regions {
             return this.regions;
         }
 
@@ -512,21 +524,21 @@ module api.content.page {
                    this.liveEditModel.getContent().getPage().getTemplate();
         }
 
-        private registerRegionsListeners(regions: api.content.page.region.Regions) {
+        private registerRegionsListeners(regions: Regions) {
             regions.onComponentPropertyChanged(this.componentPropertyChangedEventHandler);
             regions.onChanged(this.regionsChangedEventHandler);
         }
 
-        private unregisterRegionsListeners(regions: api.content.page.region.Regions) {
+        private unregisterRegionsListeners(regions: Regions) {
             regions.unComponentPropertyChanged(this.componentPropertyChangedEventHandler);
             regions.unChanged(this.regionsChangedEventHandler);
         }
 
-        private registerFragmentListeners(fragment: api.content.page.region.Component) {
+        private registerFragmentListeners(fragment: Component) {
             fragment.onPropertyChanged(this.componentPropertyChangedEventHandler);
         }
 
-        private unregisterFragmentListeners(fragment: api.content.page.region.Component) {
+        private unregisterFragmentListeners(fragment: Component) {
             fragment.unPropertyChanged(this.componentPropertyChangedEventHandler);
         }
 
@@ -548,30 +560,30 @@ module api.content.page {
             })
         }
 
-        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        onPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
             this.propertyChangedListeners.push(listener);
         }
 
-        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
-            this.propertyChangedListeners = this.propertyChangedListeners.filter((curr: (event: api.PropertyChangedEvent)=>void) => {
+        unPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
+            this.propertyChangedListeners = this.propertyChangedListeners.filter((curr: (event: PropertyChangedEvent)=>void) => {
                 return listener != curr;
             });
         }
 
         private notifyPropertyChanged(property: string, oldValue: any, newValue: any, origin: any) {
-            var event = new api.PropertyChangedEvent(property, oldValue, newValue, origin);
-            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent)=>void) => {
+            var event = new PropertyChangedEvent(property, oldValue, newValue, origin);
+            this.propertyChangedListeners.forEach((listener: (event: PropertyChangedEvent)=>void) => {
                 listener(event);
             })
         }
 
-        onComponentPropertyChangedEvent(listener: (event: api.content.page.region.ComponentPropertyChangedEvent)=>void) {
+        onComponentPropertyChangedEvent(listener: (event: ComponentPropertyChangedEvent)=>void) {
             this.componentPropertyChangedListeners.push(listener);
         }
 
-        unComponentPropertyChangedEvent(listener: (event: api.content.page.region.ComponentPropertyChangedEvent)=>void) {
+        unComponentPropertyChangedEvent(listener: (event: ComponentPropertyChangedEvent)=>void) {
             this.componentPropertyChangedListeners =
-                this.componentPropertyChangedListeners.filter((curr: (event: api.content.page.region.ComponentPropertyChangedEvent)=>void) => {
+                this.componentPropertyChangedListeners.filter((curr: (event: ComponentPropertyChangedEvent)=>void) => {
                     return listener != curr;
                 });
         }
@@ -593,4 +605,3 @@ module api.content.page {
         }
 
     }
-}

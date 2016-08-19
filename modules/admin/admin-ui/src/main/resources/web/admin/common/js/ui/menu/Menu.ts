@@ -1,12 +1,14 @@
-module api.ui.menu {
+import {UlEl} from "../../dom/UlEl";
+import {Action} from "../Action";
+import {MenuItem} from "./MenuItem";
 
-    export class Menu extends api.dom.UlEl {
+export class Menu extends UlEl {
 
         private menuItems: MenuItem[] = [];
         private hideOnItemClick = true;
         private itemClickListeners: {(item: MenuItem):void}[] = [];
 
-        constructor(actions: api.ui.Action[] = []) {
+        constructor(actions: Action[] = []) {
             super("menu");
 
             actions.forEach((action) => this.addAction(action));
@@ -22,20 +24,20 @@ module api.ui.menu {
             return this.hideOnItemClick;
         }
 
-        addAction(action: api.ui.Action): Menu {
+        addAction(action: Action): Menu {
             var menuItem = this.createMenuItem(action);
             this.appendChild(menuItem);
             return this;
         }
 
-        addActions(actions: api.ui.Action[]): Menu {
+        addActions(actions: Action[]): Menu {
             actions.forEach((action) => {
                 this.addAction(action);
             });
             return this;
         }
 
-        removeAction(action: api.ui.Action): Menu {
+        removeAction(action: Action): Menu {
             var menuItem = this.getMenuItem(action);
             if (menuItem) {
                 this.removeMenuItem(menuItem);
@@ -44,14 +46,14 @@ module api.ui.menu {
             return this;
         }
 
-        removeActions(actions: api.ui.Action[]): Menu {
-            actions.forEach((action: api.ui.Action) => {
+        removeActions(actions: Action[]): Menu {
+            actions.forEach((action: Action) => {
                 this.removeAction(action);
             });
             return this;
         }
 
-        setActions(actions: api.ui.Action[]): Menu {
+        setActions(actions: Action[]): Menu {
             this.menuItems.length = 0;
             this.removeChildren();
             this.addActions(actions);
@@ -79,7 +81,7 @@ module api.ui.menu {
             });
         }
 
-        private createMenuItem(action: api.ui.Action): MenuItem {
+        private createMenuItem(action: Action): MenuItem {
             var menuItem = new MenuItem(action);
             menuItem.onClicked((event: MouseEvent) => {
                 this.notifyItemClicked(menuItem);
@@ -99,7 +101,7 @@ module api.ui.menu {
             })
         }
 
-        private getMenuItem(action: api.ui.Action): MenuItem {
+        private getMenuItem(action: Action): MenuItem {
             for (var i = 0; i < this.menuItems.length; i++) {
                 var menuItem = this.menuItems[i];
                 if (menuItem.getAction() == action) {
@@ -110,4 +112,3 @@ module api.ui.menu {
         }
     }
 
-}

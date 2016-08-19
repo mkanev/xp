@@ -1,18 +1,23 @@
-module api.content.page.region {
+import {ResourceRequest} from "../../../rest/ResourceRequest";
+import {Path} from "../../../rest/Path";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorBuilder} from "./LayoutDescriptor";
+import {LayoutDescriptorCache} from "./LayoutDescriptorCache";
+import {LayoutDescriptorJson} from "./LayoutDescriptorJson";
 
-    export class LayoutDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class LayoutDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         cache: LayoutDescriptorCache;
 
         constructor() {
             super();
             this.cache = LayoutDescriptorCache.get();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "content", "page", "layout", "descriptor");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "content", "page", "layout", "descriptor");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
@@ -23,4 +28,3 @@ module api.content.page.region {
             return  descriptor;
         }
     }
-}

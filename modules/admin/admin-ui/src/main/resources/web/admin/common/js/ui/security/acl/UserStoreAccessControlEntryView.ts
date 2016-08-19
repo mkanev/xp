@@ -1,19 +1,21 @@
-module api.ui.security.acl {
+import {Principal} from "../../../security/Principal";
+import {PrincipalType} from "../../../security/PrincipalType";
+import {PrincipalKey} from "../../../security/PrincipalKey";
+import {Permission} from "../../../security/acl/Permission";
+import {UserStoreAccessControlEntry} from "../../../security/acl/UserStoreAccessControlEntry";
+import {UserStoreAccess} from "../../../security/acl/UserStoreAccess";
+import {PrincipalViewer} from "../PrincipalViewer";
+import {AEl} from "../../../dom/AEl";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {UserStoreAccessSelector} from "./UserStoreAccessSelector";
 
-    import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import PrincipalKey = api.security.PrincipalKey;
-    import Permission = api.security.acl.Permission;
-    import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
-    import UserStoreAccess = api.security.acl.UserStoreAccess;
-
-    export class UserStoreAccessControlEntryView extends api.ui.security.PrincipalViewer {
+export class UserStoreAccessControlEntryView extends PrincipalViewer {
 
         private ace: UserStoreAccessControlEntry;
 
         private accessSelector: UserStoreAccessSelector;
 
-        private removeButton: api.dom.AEl;
+        private removeButton: AEl;
         private valueChangedListeners: {(item: UserStoreAccessControlEntry): void}[] = [];
         private editable: boolean = true;
 
@@ -105,7 +107,7 @@ module api.ui.security.acl {
             this.accessSelector.setValue(this.ace.getAccess(), true);
 
             if (!this.removeButton) {
-                this.removeButton = new api.dom.AEl("icon-close");
+                this.removeButton = new AEl("icon-close");
                 this.removeButton.onClicked((event: MouseEvent) => {
                     if (this.editable) {
                         this.notifyRemoveClicked(event);
@@ -119,4 +121,3 @@ module api.ui.security.acl {
         }
     }
 
-}

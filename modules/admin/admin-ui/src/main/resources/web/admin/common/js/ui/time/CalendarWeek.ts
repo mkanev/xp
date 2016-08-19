@@ -1,6 +1,7 @@
-module api.ui.time {
+import {UlEl} from "../../dom/UlEl";
+import {CalendarDay} from "./CalendarDay";
 
-    export class CalendarWeekBuilder {
+export class CalendarWeekBuilder {
 
         calendarDays: CalendarDay[] = [];
 
@@ -14,7 +15,7 @@ module api.ui.time {
         }
     }
 
-    export class CalendarWeek extends api.dom.UlEl {
+    export class CalendarWeek extends UlEl {
 
         private calendarDays: CalendarDay[];
 
@@ -41,4 +42,3 @@ module api.ui.time {
         }
 
     }
-}

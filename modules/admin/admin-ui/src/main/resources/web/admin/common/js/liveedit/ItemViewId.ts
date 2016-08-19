@@ -1,7 +1,8 @@
-module api.liveedit {
+import {Equitable} from "../Equitable";
+import {assert} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
 
-
-    export class ItemViewId implements api.Equitable {
+export class ItemViewId implements Equitable {
 
         static DATA_ATTRIBUTE = "live-edit-id";
 
@@ -10,20 +11,20 @@ module api.liveedit {
         private refString: string;
 
         constructor(value: number) {
-            api.util.assert(value >= 1, "An ItemViewId must be 1 or larger");
+            assert(value >= 1, "An ItemViewId must be 1 or larger");
             this.value = value;
             this.refString = "" + value;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ItemViewId)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ItemViewId)) {
                 return false;
             }
 
             var other = <ItemViewId>o;
 
-            if (!api.ObjectHelper.numberEquals(this.value, other.value)) {
+            if (!ObjectHelper.numberEquals(this.value, other.value)) {
                 return false;
             }
 
@@ -42,4 +43,3 @@ module api.liveedit {
             return new ItemViewId(+s);
         }
     }
-}

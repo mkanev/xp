@@ -1,6 +1,8 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {ComponentPath} from "./ComponentPath";
 
-    export class RegionPath implements api.Equitable {
+export class RegionPath implements Equitable {
 
         private static DIVIDER = "/";
 
@@ -39,15 +41,15 @@ module api.content.page.region {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, RegionPath)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, RegionPath)) {
                 return false;
             }
 
             var other = <RegionPath>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
@@ -69,4 +71,3 @@ module api.content.page.region {
             return new RegionPath(parentPath, regionName);
         }
     }
-}

@@ -1,8 +1,7 @@
-module api.security {
+import {SyncUserStoreResultJson} from "./SyncUserStoreResultJson";
 
-    export interface SyncUserStoreResultsJson {
+export interface SyncUserStoreResultsJson {
 
         results: SyncUserStoreResultJson[];
 
     }
-}

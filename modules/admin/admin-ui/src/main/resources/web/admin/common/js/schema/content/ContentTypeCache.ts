@@ -1,9 +1,13 @@
-module api.schema.content {
+import {ApplicationEvent} from "../../application/ApplicationEvent";
+import {ApplicationEventType} from "../../application/ApplicationEvent";
+import {Cache} from "../../cache/Cache";
+import {ClassHelper} from "../../ClassHelper";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ContentType} from "./ContentType";
+import {ContentTypeBuilder} from "./ContentType";
+import {ContentTypeName} from "./ContentTypeName";
 
-    import ApplicationEvent = api.application.ApplicationEvent;
-    import ApplicationEventType = api.application.ApplicationEventType;
-
-    export class ContentTypeCache extends api.cache.Cache<ContentType,ContentTypeName> {
+export class ContentTypeCache extends Cache<ContentType,ContentTypeName> {
 
         private static instance: ContentTypeCache;
 
@@ -13,7 +17,7 @@ module api.schema.content {
                 if (ApplicationEventType.STARTED == event.getEventType()
                     || ApplicationEventType.STOPPED == event.getEventType()
                     || ApplicationEventType.UPDATED == event.getEventType()) {
-                    console.log(api.ClassHelper.getClassName(this) + " received ApplicationEvent - removing cached content types... " +
+                    console.log(ClassHelper.getClassName(this) + " received ApplicationEvent - removing cached content types... " +
                                 event.getApplicationKey().toString());
                     this.getCachedByApplicationKey(event.getApplicationKey()).forEach((contentType: ContentType) => {
                         this.deleteByKey(this.getKeyFromObject(contentType));
@@ -35,7 +39,7 @@ module api.schema.content {
             return key.toString();
         }
 
-        private getCachedByApplicationKey(applicationKey: api.application.ApplicationKey): ContentType[] {
+        private getCachedByApplicationKey(applicationKey: ApplicationKey): ContentType[] {
             var result: ContentType[] = [];
             this.getAll().forEach((contentType: ContentType) => {
                 if(applicationKey.equals(this.getKeyFromObject(contentType).getApplicationKey())) {
@@ -52,4 +56,3 @@ module api.schema.content {
             return ContentTypeCache.instance;
         }
     }
-}

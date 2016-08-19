@@ -1,12 +1,21 @@
-module api.application {
+import {RichComboBox} from "../ui/selector/combobox/RichComboBox";
+import {Application} from "./Application";
+import {RichComboBoxBuilder} from "../ui/selector/combobox/RichComboBox";
+import {ApplicationLoader} from "./ApplicationLoader";
+import {BaseSelectedOptionsView} from "../ui/selector/combobox/BaseSelectedOptionsView";
+import {Option} from "../ui/selector/Option";
+import {SelectedOption} from "../ui/selector/combobox/SelectedOption";
+import {RichSelectedOptionView} from "../ui/selector/combobox/RichSelectedOptionView";
+import {UriHelper} from "../util/UriHelper";
+import {ApplicationViewer} from "./ApplicationViewer";
 
-    export class ApplicationComboBox extends api.ui.selector.combobox.RichComboBox<api.application.Application> {
+export class ApplicationComboBox extends RichComboBox<Application> {
         constructor(maximumOccurrences?: number) {
-            var builder = new api.ui.selector.combobox.RichComboBoxBuilder<api.application.Application>();
+            var builder = new RichComboBoxBuilder<Application>();
             builder.
                 setMaximumOccurrences(maximumOccurrences || 0).
                 setComboBoxName("applicationSelector").
-                setLoader(new api.application.ApplicationLoader()).
+                setLoader(new ApplicationLoader()).
                 setSelectedOptionsView(new ApplicationSelectedOptionsView()).
                 setOptionDisplayValueViewer(new ApplicationViewer()).
                 setDelayedInputValueChangedHandling(500);
@@ -14,32 +23,31 @@ module api.application {
         }
     }
 
-    export class ApplicationSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<api.application.Application> {
+    export class ApplicationSelectedOptionsView extends BaseSelectedOptionsView<Application> {
 
-        createSelectedOption(option: api.ui.selector.Option<api.application.Application>): api.ui.selector.combobox.SelectedOption<api.application.Application> {
+        createSelectedOption(option: Option<Application>): SelectedOption<Application> {
             var optionView = new ApplicationSelectedOptionView(option);
-            return new api.ui.selector.combobox.SelectedOption<api.application.Application>(optionView, this.count());
+            return new SelectedOption<Application>(optionView, this.count());
         }
     }
 
-    export class ApplicationSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<api.application.Application> {
+    export class ApplicationSelectedOptionView extends RichSelectedOptionView<Application> {
 
 
-        constructor(option: api.ui.selector.Option<api.application.Application>) {
+        constructor(option: Option<Application>) {
             super(option);
         }
 
-        resolveIconUrl(content: api.application.Application): string {
-            return api.util.UriHelper.getAdminUri("common/images/icons/icoMoon/128x128/puzzle.png");
+        resolveIconUrl(content: Application): string {
+            return UriHelper.getAdminUri("common/images/icons/icoMoon/128x128/puzzle.png");
         }
 
-        resolveTitle(content: api.application.Application): string {
+        resolveTitle(content: Application): string {
             return content.getDisplayName().toString();
         }
 
-        resolveSubTitle(content: api.application.Application): string {
+        resolveSubTitle(content: Application): string {
             return content.getApplicationKey().toString();
         }
 
     }
-}

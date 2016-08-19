@@ -1,6 +1,9 @@
-module api.data {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ClassHelper} from "../ClassHelper";
+import {Value} from "./Value";
 
-    export class ValueType implements api.Equitable {
+export class ValueType implements Equitable {
 
         private name: string;
 
@@ -40,15 +43,15 @@ module api.data {
             return new Value(null, this);
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ValueType)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ValueType)) {
                 return false;
             }
 
             var other = <ValueType>o;
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
@@ -56,7 +59,7 @@ module api.data {
         }
 
         valueEquals(a: any, b: any): boolean {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         /**
@@ -80,4 +83,3 @@ module api.data {
         }
 
     }
-}

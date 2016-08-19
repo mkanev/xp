@@ -1,8 +1,9 @@
-module api.content.resource {
+import {ContentDependencyJson} from "../json/ContentDependencyJson";
+import {Path} from "../../rest/Path";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ContentDependencyJson = api.content.json.ContentDependencyJson;
-
-    export class ResolveDependenciesRequest extends ContentResourceRequest<ContentDependencyJson, any> {
+export class ResolveDependenciesRequest extends ContentResourceRequest<ContentDependencyJson, any> {
 
         private id: ContentId;
 
@@ -18,8 +19,7 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "getDependencies");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "getDependencies");
         }
     }
-}

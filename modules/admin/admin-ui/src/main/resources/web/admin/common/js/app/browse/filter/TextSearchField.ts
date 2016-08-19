@@ -1,6 +1,6 @@
-module api.app.browse.filter {
+import {InputEl} from "../../../dom/InputEl";
 
-    export class TextSearchField extends api.dom.InputEl {
+export class TextSearchField extends InputEl {
 
         private timerId: number;
 
@@ -38,4 +38,3 @@ module api.app.browse.filter {
             //we handle onKeyDown event instead of onInput as onInput does not fire for 'enter' and 'tab' keys
         }
     }
-}

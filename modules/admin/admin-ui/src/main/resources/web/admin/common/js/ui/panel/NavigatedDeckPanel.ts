@@ -1,11 +1,15 @@
-module api.ui.panel {
+import {Navigator} from "../Navigator";
+import {NavigationItem} from "../NavigationItem";
+import {NavigatorEvent} from "../NavigatorEvent";
+import {DeckPanel} from "./DeckPanel";
+import {Panel} from "./Panel";
 
-    /**
+/**
      * A DeckPanel with NavigationItem-s.
      */
     export class NavigatedDeckPanel extends DeckPanel {
 
-        private navigator: api.ui.Navigator;
+        private navigator: Navigator;
 
         constructor(navigator: Navigator, className?: string) {
             super(className);
@@ -41,14 +45,13 @@ module api.ui.panel {
         removeNavigablePanel(panel: Panel, checkCanRemovePanel: boolean = true): number {
             var index = this.removePanel(panel, checkCanRemovePanel);
             if (index > -1) {
-                var navigationItem: api.ui.NavigationItem = this.navigator.getNavigationItem(index);
+                var navigationItem: NavigationItem = this.navigator.getNavigationItem(index);
                 this.navigator.removeNavigationItem(navigationItem);
             }
             return index;
         }
 
-        getNavigator(): api.ui.Navigator {
+        getNavigator(): Navigator {
             return this.navigator;
         }
     }
-}

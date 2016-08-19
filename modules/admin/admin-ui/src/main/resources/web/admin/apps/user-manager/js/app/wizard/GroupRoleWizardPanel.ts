@@ -1,13 +1,11 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+
 import {PrincipalDescriptionWizardStepForm} from "./PrincipalDescriptionWizardStepForm";
 import {PrincipalWizardPanel} from "./PrincipalWizardPanel";
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
 import {PrincipalMembersWizardStepForm} from "./PrincipalMembersWizardStepForm";
-
-import Principal = api.security.Principal;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import WizardStep = api.app.wizard.WizardStep;
 
 export class GroupRoleWizardPanel extends PrincipalWizardPanel {
 

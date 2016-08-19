@@ -1,18 +1,17 @@
-import "../../api.ts";
+import {Role} from "../../../../../common/js/security/Role";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {PrincipalLoader} from "../../../../../common/js/security/PrincipalLoader";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {PrincipalComboBox} from "../../../../../common/js/ui/security/PrincipalComboBox";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Form} from "../../../../../common/js/ui/form/Form";
 
-import Role = api.security.Role;
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalType = api.security.PrincipalType;
-import PrincipalLoader = api.security.PrincipalLoader;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-
-import PrincipalComboBox = api.ui.security.PrincipalComboBox;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-
-export class PrincipalMembersWizardStepForm extends api.app.wizard.WizardStepForm {
+export class PrincipalMembersWizardStepForm extends WizardStepForm {
 
     private principals: PrincipalComboBox;
 
@@ -38,10 +37,10 @@ export class PrincipalMembersWizardStepForm extends api.app.wizard.WizardStepFor
 
         var principalsFormItem = new FormItemBuilder(this.principals).setLabel('Members').build();
 
-        var fieldSet = new api.ui.form.Fieldset();
+        var fieldSet = new Fieldset();
         fieldSet.add(principalsFormItem);
 
-        var form = new api.ui.form.Form().add(fieldSet);
+        var form = new Form().add(fieldSet);
 
         form.onFocus((event) => {
             this.notifyFocused(event);

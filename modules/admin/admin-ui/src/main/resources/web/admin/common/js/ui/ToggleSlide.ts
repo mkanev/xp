@@ -1,28 +1,32 @@
-module api.ui {
+import {Action} from "./Action";
+import {DivEl} from "../dom/DivEl";
+import {Element} from "../dom/Element";
+import {Animation} from "../util/Animation";
+import {Body} from "../dom/Body";
 
-    export interface ToggleSlideActions {
+export interface ToggleSlideActions {
 
-        turnOnAction: api.ui.Action;
-        turnOffAction: api.ui.Action;
+        turnOnAction: Action;
+        turnOffAction: Action;
 
     }
 
-    export class ToggleSlide extends api.dom.DivEl {
+    export class ToggleSlide extends DivEl {
 
         private actions: ToggleSlideActions;
 
         private isOn: boolean;
         private enabled: boolean = true;
 
-        private slider: api.dom.Element;
-        private holder: api.dom.Element;
-        private onLabel: api.dom.Element;
-        private offLabel: api.dom.Element;
+        private slider: Element;
+        private holder: Element;
+        private onLabel: Element;
+        private offLabel: Element;
 
         private animationDuration: number = 300;
         private sliderOffset: number;
-        private slideLeft: api.util.Animation;
-        private slideRight: api.util.Animation;
+        private slideLeft: Animation;
+        private slideRight: Animation;
 
         private disabledClass: string = "disabled";
 
@@ -30,7 +34,7 @@ module api.ui {
             super('toggle-slide');
 
             this.actions = actions;
-            actions.turnOnAction.onPropertyChanged((action: api.ui.Action)=> {
+            actions.turnOnAction.onPropertyChanged((action: Action)=> {
                 this.setEnabled(action.isEnabled());
                 this.setVisible(action.isVisible());
             });
@@ -109,10 +113,10 @@ module api.ui {
         }
 
         private createMarkup() {
-            this.slider = new api.dom.DivEl('slider');
-            this.holder = new api.dom.DivEl('holder');
-            this.onLabel = new api.dom.DivEl('on');
-            this.offLabel = new api.dom.DivEl('off');
+            this.slider = new DivEl('slider');
+            this.holder = new DivEl('holder');
+            this.onLabel = new DivEl('on');
+            this.offLabel = new DivEl('off');
 
             this.appendChild(this.slider);
             this.appendChild(this.holder);
@@ -132,7 +136,7 @@ module api.ui {
             // To have labels width calculated by browser they should be rendered into dom.
             // Therefore append ToggleSlide to body.
             // It will be removed from here when it is inserted in another place.
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
 
             var labelWidth = Math.max(onLabelEl.getWidth(), offLabelEl.getWidth());
 
@@ -148,16 +152,15 @@ module api.ui {
         }
 
         private setupAnimation() {
-            this.slideLeft = new api.util.Animation(this.animationDuration);
+            this.slideLeft = new Animation(this.animationDuration);
             this.slideLeft.onStep((progress) => {
                 this.slider.getEl().setLeft(this.sliderOffset * (1 - progress) + 'px');
             });
 
-            this.slideRight = new api.util.Animation(this.animationDuration);
+            this.slideRight = new Animation(this.animationDuration);
             this.slideRight.onStep((progress) => {
                 this.slider.getEl().setLeft(this.sliderOffset * progress + 'px');
             });
         }
 
     }
-}

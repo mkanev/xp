@@ -1,16 +1,23 @@
-import "../../api.ts";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {ContentTypeName} from "../../../../../common/js/schema/content/ContentTypeName";
+import {Content} from "../../../../../common/js/content/Content";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {Site} from "../../../../../common/js/content/site/Site";
+import {ContentType} from "../../../../../common/js/schema/content/ContentType";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {GetContentByIdRequest} from "../../../../../common/js/content/resource/GetContentByIdRequest";
+import {GetContentTypeByNameRequest} from "../../../../../common/js/schema/content/GetContentTypeByNameRequest";
+import {Exception} from "../../../../../common/js/Exception";
+import {ExceptionType} from "../../../../../common/js/Exception";
+import {GetNearestSiteRequest} from "../../../../../common/js/content/resource/GetNearestSiteRequest";
+import {GetContentByPathRequest} from "../../../../../common/js/content/resource/GetContentByPathRequest";
+
 import {DefaultModels} from "./page/DefaultModels";
 import {DefaultModelsFactory, DefaultModelsFactoryConfig} from "./page/DefaultModelsFactory";
 import {ContentWizardPanelParams} from "./ContentWizardPanelParams";
-
-import ContentId = api.content.ContentId;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import Content = api.content.Content;
-import ContentSummary = api.content.ContentSummary;
-import Site = api.content.site.Site;
-import ContentType = api.schema.content.ContentType;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
 
 export class ContentWizardDataLoader {
 
@@ -76,7 +83,7 @@ export class ContentWizardDataLoader {
 
             let parentPromise = this.loadParentContent(params, false);
             let typePromise = this.loadContentType(this.content.getType());
-            let statusPromise = api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByContent(this.content);
+            let statusPromise = ContentSummaryAndCompareStatusFetcher.fetchByContent(this.content);
 
             return wemQ.all([parentPromise, typePromise, statusPromise]).spread((parentContent, contentType, compareStatus) => {
                 this.parentContent = parentContent;
@@ -93,27 +100,27 @@ export class ContentWizardDataLoader {
     }
 
     private loadContent(summary: ContentSummary): wemQ.Promise<Content> {
-        if (api.ObjectHelper.iFrameSafeInstanceOf(summary, Content)) {
+        if (ObjectHelper.iFrameSafeInstanceOf(summary, Content)) {
             return wemQ(<Content> summary);
         } else {
-            return new api.content.resource.GetContentByIdRequest(summary.getContentId()).sendAndParse();
+            return new GetContentByIdRequest(summary.getContentId()).sendAndParse();
         }
     }
 
     private loadContentType(name: ContentTypeName): wemQ.Promise<ContentType> {
         var deferred = wemQ.defer<ContentType>();
-        new api.schema.content.GetContentTypeByNameRequest(name).sendAndParse().then((contentType) => {
+        new GetContentTypeByNameRequest(name).sendAndParse().then((contentType) => {
             deferred.resolve(contentType);
         }).catch((reason) => {
-            deferred.reject(new api.Exception("Content cannot be opened. Required content type '" + name.toString() +
+            deferred.reject(new Exception("Content cannot be opened. Required content type '" + name.toString() +
                                               "' not found.",
-                api.ExceptionType.WARNING));
+                ExceptionType.WARNING));
         }).done();
         return deferred.promise;
     }
 
     private loadSite(contentId: ContentId): wemQ.Promise<Site> {
-        return contentId ? new api.content.resource.GetNearestSiteRequest(contentId).sendAndParse() : wemQ<Site>(null);
+        return contentId ? new GetNearestSiteRequest(contentId).sendAndParse() : wemQ<Site>(null);
     }
 
     private loadDefaultModels(site: Site, contentType: ContentTypeName): wemQ.Promise<DefaultModels> {
@@ -145,7 +152,7 @@ export class ContentWizardDataLoader {
             return wemQ<Content>(null);
         }
 
-        return new api.content.resource.GetContentByPathRequest(this.content.getPath().getParentPath()).sendAndParse();
+        return new GetContentByPathRequest(this.content.getPath().getParentPath()).sendAndParse();
     }
 
 }

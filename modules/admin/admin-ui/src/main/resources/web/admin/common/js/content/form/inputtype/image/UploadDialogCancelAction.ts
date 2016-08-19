@@ -1,10 +1,9 @@
-module api.content.form.inputtype.image {
+import {Action} from "../../../../ui/Action";
 
-    export class UploadDialogCancelAction extends api.ui.Action {
+export class UploadDialogCancelAction extends Action {
 
         constructor() {
             super("Cancel", "esc");
         }
     }
 
-}

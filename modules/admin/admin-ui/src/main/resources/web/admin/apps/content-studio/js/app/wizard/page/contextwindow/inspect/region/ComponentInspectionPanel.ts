@@ -1,10 +1,9 @@
-import "../../../../../../api.ts";
+import {Component} from "../../../../../../../../../common/js/content/page/region/Component";
+import {ComponentName} from "../../../../../../../../../common/js/content/page/region/ComponentName";
+import {ComponentView} from "../../../../../../../../../common/js/liveedit/ComponentView";
+import {ContentFormContext} from "../../../../../../../../../common/js/content/form/ContentFormContext";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
 
-import Component = api.content.page.region.Component;
-import ComponentName = api.content.page.region.ComponentName;
-import ComponentView = api.liveedit.ComponentView;
-import ContentFormContext = api.content.form.ContentFormContext;
-import LiveEditModel = api.liveedit.LiveEditModel;
 import {BaseInspectionPanel} from "../BaseInspectionPanel";
 
 export interface ComponentInspectionPanelConfig {

@@ -1,6 +1,6 @@
-module api.liveedit {
+import {ItemViewId} from "./ItemViewId";
 
-    export class ItemViewIdProducer {
+export class ItemViewIdProducer {
 
         private itemViewCounter: number = 0;
 
@@ -9,4 +9,3 @@ module api.liveedit {
             return new ItemViewId(++this.itemViewCounter);
         }
     }
-}

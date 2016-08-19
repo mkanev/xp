@@ -1,6 +1,7 @@
-module api.content.attachment {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class AttachmentName implements api.Equitable {
+export class AttachmentName implements Equitable {
 
         private fileName: string;
 
@@ -8,14 +9,14 @@ module api.content.attachment {
             this.fileName = fileName;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, AttachmentName)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, AttachmentName)) {
                 return false;
             }
 
             var other = <AttachmentName>o;
 
-            if (!api.ObjectHelper.stringEquals(this.fileName, other.fileName)) {
+            if (!ObjectHelper.stringEquals(this.fileName, other.fileName)) {
                 return false;
             }
 
@@ -26,4 +27,3 @@ module api.content.attachment {
             return this.fileName;
         }
     }
-}

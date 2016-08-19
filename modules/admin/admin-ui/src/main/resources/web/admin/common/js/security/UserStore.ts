@@ -1,12 +1,22 @@
-module api.security {
+import {Equitable} from "../Equitable";
+import {UserStoreAccessControlList} from "./acl/UserStoreAccessControlList";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {ObjectHelper} from "../ObjectHelper";
+import {UserStoreJson} from "./UserStoreJson";
+import {AuthConfig} from "./AuthConfig";
+import {GetPrincipalsByUserStoreRequest} from "./GetPrincipalsByUserStoreRequest";
+import {IdProviderMode} from "./IdProviderMode";
+import {Principal} from "./Principal";
+import {PrincipalType} from "./PrincipalType";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class UserStore implements api.Equitable {
+export class UserStore implements Equitable {
         private displayName: string;
         private key: UserStoreKey;
         private description: string;
         private authConfig: AuthConfig;
         private idProviderMode: IdProviderMode;
-        private permissions: api.security.acl.UserStoreAccessControlList;
+        private permissions: UserStoreAccessControlList;
 
         constructor(builder: UserStoreBuilder) {
             this.displayName = builder.displayName;
@@ -14,7 +24,7 @@ module api.security {
             this.description = builder.description;
             this.authConfig = builder.authConfig;
             this.idProviderMode = builder.idProviderMode;
-            this.permissions = builder.permissions || new api.security.acl.UserStoreAccessControlList();
+            this.permissions = builder.permissions || new UserStoreAccessControlList();
         }
 
         getDisplayName(): string {
@@ -37,7 +47,7 @@ module api.security {
             return this.idProviderMode;
         }
 
-        getPermissions(): api.security.acl.UserStoreAccessControlList {
+        getPermissions(): UserStoreAccessControlList {
             return this.permissions;
         }
 
@@ -52,7 +62,7 @@ module api.security {
                         deferred.resolve(true);
                     }
                 }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason);
+                    DefaultErrorHandler.handle(reason);
                     deferred.resolve(false);
                 }).done();
             ;
@@ -63,8 +73,8 @@ module api.security {
             return !!key ? UserStore.create().setKey(key.toString()).build().isDeletable() : null;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserStore)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, UserStore)) {
                 return false;
             }
 
@@ -92,7 +102,7 @@ module api.security {
             return new UserStoreBuilder();
         }
 
-        static fromJson(json: api.security.UserStoreJson): UserStore {
+        static fromJson(json: UserStoreJson): UserStore {
             return new UserStoreBuilder().fromJson(json).build();
         }
     }
@@ -103,18 +113,18 @@ module api.security {
         description: string;
         authConfig: AuthConfig;
         idProviderMode: IdProviderMode;
-        permissions: api.security.acl.UserStoreAccessControlList;
+        permissions: UserStoreAccessControlList;
 
         constructor() {
         }
 
-        fromJson(json: api.security.UserStoreJson): UserStoreBuilder {
+        fromJson(json: UserStoreJson): UserStoreBuilder {
             this.key = new UserStoreKey(json.key);
             this.displayName = json.displayName;
             this.description = json.description;
             this.authConfig = json.authConfig ? AuthConfig.fromJson(json.authConfig) : null;
             this.idProviderMode = json.idProviderMode ? IdProviderMode[json.idProviderMode] : null;
-            this.permissions = json.permissions ? api.security.acl.UserStoreAccessControlList.fromJson(json.permissions) : null;
+            this.permissions = json.permissions ? UserStoreAccessControlList.fromJson(json.permissions) : null;
             return this;
         }
 
@@ -143,7 +153,7 @@ module api.security {
             return this;
         }
 
-        setPermissions(permissions: api.security.acl.UserStoreAccessControlList): UserStoreBuilder {
+        setPermissions(permissions: UserStoreAccessControlList): UserStoreBuilder {
             this.permissions = permissions;
             return this;
         }
@@ -152,4 +162,3 @@ module api.security {
             return new UserStore(this);
         }
     }
-}

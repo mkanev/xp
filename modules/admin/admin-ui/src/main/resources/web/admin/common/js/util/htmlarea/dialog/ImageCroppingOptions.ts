@@ -1,8 +1,7 @@
-module api.util.htmlarea.dialog {
+import {Option} from "../../../ui/selector/Option";
+import {ImageCroppingOption} from "./ImageCroppingOption";
 
-    import Option = api.ui.selector.Option;
-
-    export class ImageCroppingOptions {
+export class ImageCroppingOptions {
 
         static SQUARE: ImageCroppingOption = new ImageCroppingOption("square", 1, 1);
 
@@ -65,4 +64,3 @@ module api.util.htmlarea.dialog {
         }
 
     }
-}

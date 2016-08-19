@@ -1,10 +1,15 @@
-module api.content.page {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {PageDescriptor} from "./PageDescriptor";
+import {PageDescriptorResourceRequest} from "./PageDescriptorResourceRequest";
+import {PageDescriptorsJson} from "./PageDescriptorsJson";
 
-    export class GetPageDescriptorsByApplicationRequest extends PageDescriptorResourceRequest<PageDescriptorsJson, PageDescriptor[]> {
+export class GetPageDescriptorsByApplicationRequest extends PageDescriptorResourceRequest<PageDescriptorsJson, PageDescriptor[]> {
 
-        private applicationKey: api.application.ApplicationKey;
+        private applicationKey: ApplicationKey;
 
-        constructor(applicationKey: api.application.ApplicationKey) {
+        constructor(applicationKey: ApplicationKey) {
             super();
             super.setMethod("GET");
             this.applicationKey = applicationKey;
@@ -16,8 +21,8 @@ module api.content.page {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "list", "by_application");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "list", "by_application");
         }
 
         sendAndParse(): wemQ.Promise<PageDescriptor[]> {
@@ -27,10 +32,9 @@ module api.content.page {
                 return wemQ(cached);
             }
             else {
-                return this.send().then((response: api.rest.JsonResponse<PageDescriptorsJson>) => {
+                return this.send().then((response: JsonResponse<PageDescriptorsJson>) => {
                     return this.fromJsonToPageDescriptors(response.getResult());
                 });
             }
         }
     }
-}

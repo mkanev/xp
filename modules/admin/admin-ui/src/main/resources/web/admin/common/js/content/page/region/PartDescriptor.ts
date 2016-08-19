@@ -1,13 +1,19 @@
-module api.content.page.region {
+import {Descriptor} from "../Descriptor";
+import {Cloneable} from "../../../Cloneable";
+import {DescriptorBuilder} from "../Descriptor";
+import {DescriptorKey} from "../DescriptorKey";
+import {DescriptorName} from "../DescriptorName";
+import {Form} from "../../../form/Form";
+import {PartDescriptorJson} from "./PartDescriptorJson";
 
-    export class PartDescriptor extends api.content.page.Descriptor implements api.Cloneable {
+export class PartDescriptor extends Descriptor implements Cloneable {
 
         public clone(): PartDescriptor {
             return new PartDescriptorBuilder(this).build();
         }
     }
 
-    export class PartDescriptorBuilder extends api.content.page.DescriptorBuilder {
+    export class PartDescriptorBuilder extends DescriptorBuilder {
 
         constructor(source?: PartDescriptor) {
             super(source);
@@ -15,19 +21,19 @@ module api.content.page.region {
 
         public fromJson(json: PartDescriptorJson): PartDescriptorBuilder {
 
-            this.setKey(api.content.page.DescriptorKey.fromString(json.key));
-            this.setName(new api.content.page.DescriptorName(json.name));
+            this.setKey(DescriptorKey.fromString(json.key));
+            this.setName(new DescriptorName(json.name));
             this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
+            this.setConfig(json.config != null ? Form.fromJson(json.config) : null);
             return this;
         }
 
-        public setKey(value: api.content.page.DescriptorKey): PartDescriptorBuilder {
+        public setKey(value: DescriptorKey): PartDescriptorBuilder {
             this.key = value;
             return this;
         }
 
-        public setName(value: api.content.page.DescriptorName): PartDescriptorBuilder {
+        public setName(value: DescriptorName): PartDescriptorBuilder {
             this.name = value;
             return this;
         }
@@ -37,7 +43,7 @@ module api.content.page.region {
             return this;
         }
 
-        public setConfig(value: api.form.Form): PartDescriptorBuilder {
+        public setConfig(value: Form): PartDescriptorBuilder {
             this.config = value;
             return this;
         }
@@ -46,4 +52,3 @@ module api.content.page.region {
             return new PartDescriptor(this);
         }
     }
-}

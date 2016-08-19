@@ -1,6 +1,7 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class OpenEditPermissionsDialogEvent extends api.event.Event {
+export class OpenEditPermissionsDialogEvent extends Event {
         private content: any;
 
         constructor(content: any) {
@@ -13,11 +14,10 @@ module api.content.event {
         }
 
         static on(handler: (event: OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

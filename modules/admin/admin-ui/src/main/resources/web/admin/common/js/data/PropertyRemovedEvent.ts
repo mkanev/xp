@@ -1,6 +1,8 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertyEvent} from "./PropertyEvent";
+import {PropertyEventType} from "./PropertyEventType";
 
-    export class PropertyRemovedEvent extends PropertyEvent {
+export class PropertyRemovedEvent extends PropertyEvent {
 
         constructor(property: Property) {
             super(PropertyEventType.REMOVED, property);
@@ -11,4 +13,3 @@ module api.data {
             return "" + this.getPath().toString() + " = " + (value.getObject() ? value.getObject().toString() : null);
         }
     }
-}

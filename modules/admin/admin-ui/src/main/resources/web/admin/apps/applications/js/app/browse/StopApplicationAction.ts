@@ -1,10 +1,10 @@
-import "../../api.ts";
+import {Application} from "../../../../../common/js/application/Application";
+import {Action} from "../../../../../common/js/ui/Action";
+
 import {ApplicationTreeGrid} from "./ApplicationTreeGrid";
 import {StopApplicationEvent} from "./StopApplicationEvent";
 
-import Application = api.application.Application;
-
-export class StopApplicationAction extends api.ui.Action {
+export class StopApplicationAction extends Action {
 
     constructor(applicationTreeGrid: ApplicationTreeGrid) {
         super("Stop");

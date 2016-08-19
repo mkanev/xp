@@ -1,6 +1,7 @@
-module api.ui {
+import {KeyBinding} from "./KeyBinding";
+import {Mnemonic} from "./Mnemonic";
 
-    export class Action {
+export class Action {
 
         private label: string;
 
@@ -255,7 +256,7 @@ module api.ui {
             return bindings;
         }
 
-        static getKeyBindings(actions: api.ui.Action[]): KeyBinding[] {
+        static getKeyBindings(actions: Action[]): KeyBinding[] {
 
             var bindings: KeyBinding[] = [];
             actions.forEach((action: Action) => {
@@ -267,4 +268,3 @@ module api.ui {
             return bindings;
         }
     }
-}

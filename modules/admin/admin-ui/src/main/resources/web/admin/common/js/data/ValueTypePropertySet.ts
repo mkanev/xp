@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {PropertyArrayJson} from "./PropertyArrayJson";
+import {PropertySet} from "./PropertySet";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypePropertySet extends ValueType {
+export class ValueTypePropertySet extends ValueType {
 
         constructor() {
             super("PropertySet");
@@ -10,7 +14,7 @@ module api.data {
             if (!(typeof value === 'object')) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, PropertySet)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, PropertySet)) {
                 return false;
             }
             return true;
@@ -41,7 +45,6 @@ module api.data {
         }
 
         valueEquals(a: PropertySet, b: PropertySet): boolean {
-            return api.ObjectHelper.equals(a, b);
+            return ObjectHelper.equals(a, b);
         }
     }
-}

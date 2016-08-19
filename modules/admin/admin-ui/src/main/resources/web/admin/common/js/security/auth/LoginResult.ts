@@ -1,22 +1,24 @@
-module api.security.auth {
+import {User} from "../User";
+import {PrincipalKey} from "../PrincipalKey";
+import {LoginResultJson} from "./LoginResultJson";
 
-    export class LoginResult {
+export class LoginResult {
 
         private authenticated: boolean;
 
-        private user: api.security.User;
+        private user: User;
 
-        private principals: api.security.PrincipalKey[];
+        private principals: PrincipalKey[];
 
         private message: string;
 
         constructor(json: LoginResultJson) {
             this.authenticated = json.authenticated;
             if (json.user) {
-                this.user = api.security.User.fromJson(json.user);
+                this.user = User.fromJson(json.user);
             }
             this.principals = json.principals ?
-                              json.principals.map((principal) => api.security.PrincipalKey.fromString(principal)) : [];
+                              json.principals.map((principal) => PrincipalKey.fromString(principal)) : [];
             this.message = json.message;
         }
 
@@ -24,11 +26,11 @@ module api.security.auth {
             return this.authenticated;
         }
 
-        getUser(): api.security.User {
+        getUser(): User {
             return this.user;
         }
 
-        getPrincipals(): api.security.PrincipalKey[] {
+        getPrincipals(): PrincipalKey[] {
             return this.principals;
         }
 
@@ -36,4 +38,3 @@ module api.security.auth {
             return this.message;
         }
     }
-}

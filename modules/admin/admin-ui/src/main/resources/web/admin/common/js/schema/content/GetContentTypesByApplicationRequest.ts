@@ -1,8 +1,12 @@
-module api.schema.content {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentTypeResourceRequest} from "./ContentTypeResourceRequest";
+import {ContentTypeSummary} from "./ContentTypeSummary";
+import {ContentTypeSummaryJson} from "./ContentTypeSummaryJson";
+import {ContentTypeSummaryListJson} from "./ContentTypeSummaryListJson";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetContentTypesByApplicationRequest extends ContentTypeResourceRequest<ContentTypeSummaryListJson, ContentTypeSummary[]> {
+export class GetContentTypesByApplicationRequest extends ContentTypeResourceRequest<ContentTypeSummaryListJson, ContentTypeSummary[]> {
 
         private applicationKey: ApplicationKey;
 
@@ -12,8 +16,8 @@ module api.schema.content {
             this.applicationKey = applicationKey;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "byApplication");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "byApplication");
         }
 
         getParams(): Object {
@@ -24,7 +28,7 @@ module api.schema.content {
 
         sendAndParse(): wemQ.Promise<ContentTypeSummary[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<ContentTypeSummaryListJson>) => {
+            return this.send().then((response: JsonResponse<ContentTypeSummaryListJson>) => {
                 return response.getResult().contentTypes.map((contentTypeJson: ContentTypeSummaryJson) => {
                     return this.fromJsonToContentTypeSummary(contentTypeJson);
                 });
@@ -33,4 +37,3 @@ module api.schema.content {
 
     }
 
-}

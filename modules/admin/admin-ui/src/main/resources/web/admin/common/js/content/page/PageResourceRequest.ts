@@ -1,20 +1,22 @@
-module api.content.page {
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {ContentJson} from "../json/ContentJson";
+import {Content} from "../Content";
 
-    export class PageResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class PageResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         constructor() {
             super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "content", "page");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "content", "page");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
-        fromJsonToContent(json: api.content.json.ContentJson): api.content.Content {
-            return api.content.Content.fromJson(json);
+        fromJsonToContent(json: ContentJson): Content {
+            return Content.fromJson(json);
         }
     }
-}

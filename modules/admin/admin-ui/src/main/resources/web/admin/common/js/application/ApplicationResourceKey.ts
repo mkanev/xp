@@ -1,6 +1,7 @@
-module api.application {
+import {ApplicationKey} from "./ApplicationKey";
+import {ResourcePath} from "./ResourcePath";
 
-    export class ApplicationResourceKey {
+export class ApplicationResourceKey {
 
         private static SEPARATOR = ":";
 
@@ -41,4 +42,3 @@ module api.application {
         }
 
     }
-}

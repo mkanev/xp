@@ -1,14 +1,17 @@
-module api.app.wizard {
+import {TextInput} from "../../ui/text/TextInput";
+import {AutosizeTextInput} from "../../ui/text/AutosizeTextInput";
+import {ValueChangedEvent} from "../../ValueChangedEvent";
+import {WizardHeader} from "./WizardHeader";
 
-    export class WizardHeaderWithName extends WizardHeader {
+export class WizardHeaderWithName extends WizardHeader {
 
-        private nameEl: api.ui.text.TextInput;
+        private nameEl: TextInput;
 
         constructor() {
             super();
 
-            this.nameEl = api.ui.text.AutosizeTextInput.large().setForbiddenCharsRe(/[^_a-z0-9\-]+/ig);
-            this.nameEl.setName('name').onValueChanged((event: api.ValueChangedEvent) => {
+            this.nameEl = AutosizeTextInput.large().setForbiddenCharsRe(/[^_a-z0-9\-]+/ig);
+            this.nameEl.setName('name').onValueChanged((event: ValueChangedEvent) => {
                 this.notifyPropertyChanged("name", event.getOldValue(), event.getNewValue());
             });
             this.appendChild(this.nameEl);
@@ -27,4 +30,3 @@ module api.app.wizard {
             return this.nameEl.giveFocus();
         }
     }
-}

@@ -1,7 +1,15 @@
-module api.form {
+import {InputJson} from "./json/InputJson";
+import {Value} from "../data/Value";
+import {ValueTypes} from "../data/ValueTypes";
+import {InputTypeManager} from "./inputtype/InputTypeManager";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {FormItemTypeWrapperJson} from "./json/FormItemTypeWrapperJson";
+import {FormItem} from "./FormItem";
+import {InputTypeName} from "./InputTypeName";
+import {Occurrences} from "./Occurrences";
 
-    import InputJson = api.form.json.InputJson;
-    export class InputBuilder {
+export class InputBuilder {
 
         name: string;
 
@@ -25,7 +33,7 @@ module api.form {
 
         maximizeUIInputWidth: boolean;
 
-        defaultValue: api.data.Value;
+        defaultValue: Value;
 
         setName(value: string): InputBuilder {
             this.name = value;
@@ -95,7 +103,7 @@ module api.form {
             this.inputTypeConfig = json.config;
             this.maximizeUIInputWidth = json.maximizeUIInputWidth;
             if (json.defaultValue) {
-                var type = api.data.ValueTypes.fromName(json.defaultValue.type);
+                var type = ValueTypes.fromName(json.defaultValue.type);
                 this.defaultValue = type.fromJsonValue(json.defaultValue.value);
             }
             return this;
@@ -111,10 +119,10 @@ module api.form {
      * An input is a [[FormItem]] which the user can give input to.
      *
      * An input must be of certain type which using a [[InputTypeName]].
-     * All input types must be registered in [[api.form.inputtype.InputTypeManager]] to be used.
+     * All input types must be registered in [[InputTypeManager]] to be used.
      *
      */
-    export class Input extends FormItem implements api.Equitable {
+    export class Input extends FormItem implements Equitable {
 
         private inputType: InputTypeName;
 
@@ -136,7 +144,7 @@ module api.form {
 
         private maximizeUIInputWidth: boolean;
 
-        private defaultValue: api.data.Value;
+        private defaultValue: Value;
 
         constructor(builder: InputBuilder) {
             super(builder.name);
@@ -153,7 +161,7 @@ module api.form {
             this.defaultValue = builder.defaultValue;
         }
 
-        static fromJson(json: api.form.json.InputJson): Input {
+        static fromJson(json: InputJson): Input {
             var builder = new InputBuilder();
             builder.fromJson(json);
             return builder.build();
@@ -199,13 +207,13 @@ module api.form {
             return this.inputTypeConfig;
         }
 
-        getDefaultValue(): api.data.Value {
+        getDefaultValue(): Value {
             return this.defaultValue;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Input)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Input)) {
                 return false;
             }
 
@@ -215,49 +223,49 @@ module api.form {
 
             var other = <Input>o;
 
-            if (!api.ObjectHelper.equals(this.inputType, other.inputType)) {
+            if (!ObjectHelper.equals(this.inputType, other.inputType)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.label, other.label)) {
+            if (!ObjectHelper.stringEquals(this.label, other.label)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
+            if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.occurrences, other.occurrences)) {
+            if (!ObjectHelper.equals(this.occurrences, other.occurrences)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.booleanEquals(this.indexed, other.indexed)) {
+            if (!ObjectHelper.booleanEquals(this.indexed, other.indexed)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.customText, other.customText)) {
+            if (!ObjectHelper.stringEquals(this.customText, other.customText)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.validationRegex, other.validationRegex)) {
+            if (!ObjectHelper.stringEquals(this.validationRegex, other.validationRegex)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.helpText, other.helpText)) {
+            if (!ObjectHelper.stringEquals(this.helpText, other.helpText)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.anyEquals(this.inputTypeConfig, other.inputTypeConfig)) {
+            if (!ObjectHelper.anyEquals(this.inputTypeConfig, other.inputTypeConfig)) {
                 return false;
             }
 
             return true;
         }
 
-        public toInputJson(): api.form.json.FormItemTypeWrapperJson {
+        public toInputJson(): FormItemTypeWrapperJson {
 
-            return <api.form.json.FormItemTypeWrapperJson>{
-                Input: <api.form.json.InputJson>{
+            return <FormItemTypeWrapperJson>{
+                Input: <InputJson>{
                     name: this.getName(),
                     customText: this.getCustomText(),
                     helpText: this.getHelpText(),
@@ -273,4 +281,3 @@ module api.form {
             };
         }
     }
-}

@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentChangedEvent} from "./ComponentChangedEvent";
+import {ComponentPath} from "./ComponentPath";
 
-    export class ComponentResetEvent extends ComponentChangedEvent {
+export class ComponentResetEvent extends ComponentChangedEvent {
 
         constructor(componentPath: ComponentPath) {
             super(componentPath);
@@ -8,4 +9,3 @@ module api.content.page.region {
         }
 
     }
-}

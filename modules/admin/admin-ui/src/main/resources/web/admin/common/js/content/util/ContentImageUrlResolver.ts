@@ -1,6 +1,8 @@
-module api.content.util {
+import {IconUrlResolver} from "../../icon/IconUrlResolver";
+import {UriHelper} from "../../util/UriHelper";
+import {ContentId} from "../ContentId";
 
-    export class ContentImageUrlResolver extends api.icon.IconUrlResolver {
+export class ContentImageUrlResolver extends IconUrlResolver {
 
         private contentId: ContentId;
 
@@ -63,7 +65,6 @@ module api.content.util {
                 url = this.appendParam("scale", this.scale, url);
             }
 
-            return api.util.UriHelper.getRestUri(url);
+            return UriHelper.getRestUri(url);
         }
     }
-}

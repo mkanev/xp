@@ -1,13 +1,15 @@
-module api.app.bar {
+import {ResponsiveManager} from "../../ui/responsive/ResponsiveManager";
+import {ResponsiveRanges} from "../../ui/responsive/ResponsiveRanges";
+import {ResponsiveItem} from "../../ui/responsive/ResponsiveItem";
+import {TabMenuItem} from "../../ui/tab/TabMenuItem";
+import {HideTabMenuEvent} from "../../ui/tab/HideTabMenuEvent";
+import {TabMenu} from "../../ui/tab/TabMenu";
+import {UlEl} from "../../dom/UlEl";
+import {AppBarTabId} from "./AppBarTabId";
+import {AppBarTabMenuButton} from "./AppBarTabMenuButton";
+import {AppBarTabMenuItem} from "./AppBarTabMenuItem";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-
-    import TabMenuItem = api.ui.tab.TabMenuItem;
-    import HideTabMenuEvent = api.ui.tab.HideTabMenuEvent;
-
-    export class AppBarTabMenu extends api.ui.tab.TabMenu {
+export class AppBarTabMenu extends TabMenu {
 
         static TAB_WIDTH: number = 190;
 
@@ -15,7 +17,7 @@ module api.app.bar {
 
         private appBarTabMenuButton: AppBarTabMenuButton;
 
-        private barEl: api.dom.UlEl;
+        private barEl: UlEl;
 
         private buttonLabelChangedListeners: {():void}[] = [];
 
@@ -23,7 +25,7 @@ module api.app.bar {
 
         constructor() {
             super("appbar-tab-menu");
-            this.barEl = new api.dom.UlEl("bar");
+            this.barEl = new UlEl("bar");
             this.prependChild(this.barEl);
 
             this.onRendered(() => {
@@ -133,7 +135,7 @@ module api.app.bar {
         }
 
         getNavigationItemById(tabId: AppBarTabId): AppBarTabMenuItem {
-            var items: api.ui.tab.TabMenuItem[] = this.getNavigationItems();
+            var items: TabMenuItem[] = this.getNavigationItems();
             var item;
             for (var i = 0; i < items.length; i++) {
                 item = <AppBarTabMenuItem>items[i];
@@ -145,7 +147,7 @@ module api.app.bar {
         }
 
         getNavigationItemByIdValue(tabIdValue: string): AppBarTabMenuItem {
-            var items: api.ui.tab.TabMenuItem[] = this.getNavigationItems();
+            var items: TabMenuItem[] = this.getNavigationItems();
             var item;
             for (var i = 0; i < items.length; i++) {
                 item = <AppBarTabMenuItem>items[i];
@@ -210,4 +212,3 @@ module api.app.bar {
             });
         }
     }
-}

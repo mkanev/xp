@@ -1,15 +1,21 @@
-module api.application {
+import {ValueTypes} from "../data/ValueTypes";
+import {UploaderEl} from "../ui/uploader/UploaderEl";
+import {UploaderElConfig} from "../ui/uploader/UploaderEl";
+import {UriHelper} from "../util/UriHelper";
+import {ApplicationInstallResultJson} from "./json/ApplicationInstallResultJson";
+import {Element} from "../dom/Element";
+import {AEl} from "../dom/AEl";
+import {Application} from "./Application";
+import {ApplicationInstallResult} from "./ApplicationInstallResult";
 
-    import ValueTypes = api.data.ValueTypes;
-
-    export class ApplicationUploaderEl extends api.ui.uploader.UploaderEl<Application> {
+export class ApplicationUploaderEl extends UploaderEl<Application> {
 
         private failure: string;
 
-        constructor(config: api.ui.uploader.UploaderElConfig) {
+        constructor(config: UploaderElConfig) {
 
             if (config.url == undefined) {
-                config.url = api.util.UriHelper.getRestUri("application/install");
+                config.url = UriHelper.getRestUri("application/install");
             }
 
             if (config.allowTypes == undefined) {
@@ -22,7 +28,7 @@ module api.application {
         }
 
 
-        createModel(serverResponse: api.application.json.ApplicationInstallResultJson): Application {
+        createModel(serverResponse: ApplicationInstallResultJson): Application {
             if (serverResponse) {
 
                 let result = ApplicationInstallResult.fromJson(serverResponse);
@@ -44,12 +50,11 @@ module api.application {
             return item.getId();
         }
 
-        createResultItem(value: string): api.dom.Element {
-            return new api.dom.AEl().setUrl(api.util.UriHelper.getRestUri('application/' + value), "_blank");
+        createResultItem(value: string): Element {
+            return new AEl().setUrl(UriHelper.getRestUri('application/' + value), "_blank");
         }
 
         protected getErrorMessage(fileString: string): string {
             return "The application could not be installed";
         }
     }
-}

@@ -1,10 +1,10 @@
-module api.ui.text {
+import {InputEl} from "../../dom/InputEl";
+import {StringHelper} from "../../util/StringHelper";
+import {CheckEmailAvailabilityRequest} from "../../security/CheckEmailAvailabilityRequest";
+import {CompositeFormInputEl} from "../../dom/CompositeFormInputEl";
+import {UserStoreKey} from "../../security/UserStoreKey";
 
-    import InputEl = api.dom.InputEl;
-    import StringHelper = api.util.StringHelper;
-    import CheckEmailAvailabilityRequest = api.security.CheckEmailAvailabilityRequest;
-
-    export class EmailInput extends api.dom.CompositeFormInputEl {
+export class EmailInput extends CompositeFormInputEl {
 
         private input: InputEl;
 
@@ -14,7 +14,7 @@ module api.ui.text {
 
         private checkTimeout: number;
 
-        private userStoreKey: api.security.UserStoreKey;
+        private userStoreKey: UserStoreKey;
 
         private focusListeners: {(event: FocusEvent):void}[];
 
@@ -66,7 +66,7 @@ module api.ui.text {
             return this;
         }
 
-        setUserStoreKey(userStoreKey: api.security.UserStoreKey): EmailInput {
+        setUserStoreKey(userStoreKey: UserStoreKey): EmailInput {
             this.userStoreKey = userStoreKey;
             return this;
         }
@@ -150,4 +150,3 @@ module api.ui.text {
             })
         }
     }
-}

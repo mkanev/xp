@@ -1,8 +1,11 @@
-module api.ui.form {
+import {FormEl} from "../../dom/FormEl";
+import {Fieldset} from "./Fieldset";
+import {ValidityChangedEvent} from "../../ValidityChangedEvent";
+import {ValidationResult} from "./ValidationResult";
 
-    export class Form extends api.dom.FormEl {
+export class Form extends FormEl {
 
-        private fieldsets: api.ui.form.Fieldset[] = [];
+        private fieldsets: Fieldset[] = [];
 
         private focusListeners: {(event: FocusEvent):void}[] = [];
 
@@ -37,14 +40,14 @@ module api.ui.form {
 
         validate(markInvalid?: boolean): ValidationResult {
             var validationResult: ValidationResult = new ValidationResult();
-            this.fieldsets.forEach((fieldset: api.ui.form.Fieldset) => {
+            this.fieldsets.forEach((fieldset: Fieldset) => {
                 fieldset.validate(validationResult, markInvalid);
             });
             return validationResult;
         }
 
         setFormData(data: any) {
-            this.fieldsets.forEach((fieldset: api.ui.form.Fieldset) => {
+            this.fieldsets.forEach((fieldset: Fieldset) => {
                 fieldset.setFieldsetData(data);
             });
         }
@@ -52,7 +55,7 @@ module api.ui.form {
         getFormData(): any {
             var data = {};
             var fieldsetData;
-            this.fieldsets.forEach((fieldset: api.ui.form.Fieldset) => {
+            this.fieldsets.forEach((fieldset: Fieldset) => {
                 fieldsetData = fieldset.getFieldsetData();
                 for (var property in fieldsetData) {
                     if (fieldsetData.hasOwnProperty(property)) {
@@ -111,4 +114,3 @@ module api.ui.form {
             });
         }
     }
-}

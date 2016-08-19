@@ -1,23 +1,32 @@
-import "../../api.ts";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Element} from "../../../../../common/js/dom/Element";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ChildOrder} from "../../../../../common/js/content/order/ChildOrder";
+import {TabMenuItemBuilder} from "../../../../../common/js/ui/tab/TabMenuItem";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Body} from "../../../../../common/js/dom/Body";
+import {TabMenu} from "../../../../../common/js/ui/tab/TabMenu";
+import {H6El} from "../../../../../common/js/dom/H6El";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {Content} from "../../../../../common/js/content/Content";
+import {OrderContentRequest} from "../../../../../common/js/content/resource/OrderContentRequest";
+import {OrderChildMovements} from "../../../../../common/js/content/order/OrderChildMovements";
+import {OrderChildContentRequest} from "../../../../../common/js/content/resource/OrderChildContentRequest";
+
 import {SaveSortedContentAction} from "./action/SaveSortedContentAction";
 import {SortContentTreeGrid} from "./SortContentTreeGrid";
 import {SortContentTabMenu} from "./SortContentTabMenu";
 import {ContentGridDragHandler} from "./ContentGridDragHandler";
 import {OpenSortDialogEvent} from "./OpenSortDialogEvent";
 
-import TreeNode = api.ui.treegrid.TreeNode;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import Element = api.dom.Element;
-import ContentSummary = api.content.ContentSummary;
-import ChildOrder = api.content.order.ChildOrder;
-import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-import DialogButton = api.ui.dialog.DialogButton;
-
-export class SortContentDialog extends api.ui.dialog.ModalDialog {
+export class SortContentDialog extends ModalDialog {
 
     private sortAction: SaveSortedContentAction;
 
-    private parentContent: api.content.ContentSummaryAndCompareStatus;
+    private parentContent: ContentSummaryAndCompareStatus;
 
     private contentGrid: SortContentTreeGrid;
 
@@ -35,7 +44,7 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
 
     constructor() {
         super({
-            title: new api.ui.dialog.ModalDialogHeader("Sort items")
+            title: new ModalDialogHeader("Sort items")
         });
 
         this.initTabMenu();
@@ -71,7 +80,7 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
     }
 
     show() {
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
         super.show();
     }
 
@@ -107,7 +116,7 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
     }
 
     private initTabMenu() {
-        var menu = new api.ui.tab.TabMenu();
+        var menu = new TabMenu();
         var tabMenuItem = (<TabMenuItemBuilder>new TabMenuItemBuilder().setLabel("(sorting type)")).build();
         tabMenuItem.setActive(true);
         menu.addNavigationItem(tabMenuItem);
@@ -137,7 +146,7 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
     }
 
     private populateContentPanel() {
-        var header = new api.dom.H6El();
+        var header = new H6El();
         header.setHtml("Sort content by selecting default sort above, or drag and drop for manual sorting");
         this.appendChildToContentPanel(header);
         this.appendChildToContentPanel(this.contentGrid);
@@ -180,8 +189,8 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
             if (!newOrder.isManual()) {
                 this.curChildOrder = newOrder;
                 this.contentGrid.setChildOrder(this.curChildOrder);
-                /*api.content.resource.ContentSummaryAndCompareStatusFetcher.fetch(this.parentContent.getContentId()).
-                 done((response: api.content.ContentSummaryAndCompareStatus) => {
+                /*ContentSummaryAndCompareStatusFetcher.fetch(this.parentContent.getContentId()).
+                 done((response: ContentSummaryAndCompareStatus) => {
                  this.contentGrid.reload(response);
                  });*/
                 this.contentGrid.reload(this.parentContent);
@@ -211,15 +220,15 @@ export class SortContentDialog extends api.ui.dialog.ModalDialog {
         this.saveButton.removeClass("spinner");
     }
 
-    private setContentChildOrder(order: ChildOrder, silent: boolean = false): wemQ.Promise<api.content.Content> {
-        return new api.content.resource.OrderContentRequest().setSilent(silent).setContentId(
+    private setContentChildOrder(order: ChildOrder, silent: boolean = false): wemQ.Promise<Content> {
+        return new OrderContentRequest().setSilent(silent).setContentId(
             this.parentContent.getContentId()).setChildOrder(
             order).sendAndParse();
     }
 
-    private setManualReorder(order: ChildOrder, movements: api.content.order.OrderChildMovements,
-                             silent: boolean = false): wemQ.Promise<api.content.Content> {
-        return new api.content.resource.OrderChildContentRequest().setSilent(silent).setManualOrder(true).setContentId(
+    private setManualReorder(order: ChildOrder, movements: OrderChildMovements,
+                             silent: boolean = false): wemQ.Promise<Content> {
+        return new OrderChildContentRequest().setSilent(silent).setManualOrder(true).setContentId(
             this.parentContent.getContentId()).setChildOrder(order).setContentMovements(movements).sendAndParse();
     }
 

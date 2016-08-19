@@ -1,6 +1,12 @@
-module api.content.resource {
+import {ContentIdBaseItemJson} from "../json/ContentIdBaseItemJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {CompareStatus} from "../CompareStatus";
+import {ContentId} from "../ContentId";
+import {ContentPath} from "../ContentPath";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class GetDescendantsOfContentsRequest extends ContentResourceRequest<api.content.json.ContentIdBaseItemJson[], ContentId[]> {
+export class GetDescendantsOfContentsRequest extends ContentResourceRequest<ContentIdBaseItemJson[], ContentId[]> {
 
         private contentPaths: ContentPath[] = [];
 
@@ -41,15 +47,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "getDescendantsOfContents");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "getDescendantsOfContents");
         }
 
         sendAndParse(): wemQ.Promise<ContentId[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentIdBaseItemJson[]>) => {
+            return this.send().then((response: JsonResponse<ContentIdBaseItemJson[]>) => {
                 return response.getResult().map((item => new ContentId(item.id)))
             });
         }
     }
-}

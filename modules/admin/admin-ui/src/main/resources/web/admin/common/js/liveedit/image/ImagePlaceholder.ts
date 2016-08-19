@@ -1,19 +1,27 @@
-module api.liveedit.image {
+import {PageItemType} from "../PageItemType";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ImageComponent} from "../../content/page/region/ImageComponent";
+import {SelectedOptionEvent} from "../../ui/selector/combobox/SelectedOptionEvent";
+import {ItemViewPlaceholder} from "../ItemViewPlaceholder";
+import {ContentComboBox} from "../../content/ContentComboBox";
+import {DivEl} from "../../dom/DivEl";
+import {ImageUploaderEl} from "../../content/image/ImageUploaderEl";
+import {ContentSummaryLoader} from "../../content/resource/ContentSummaryLoader";
+import {ContentSummary} from "../../content/ContentSummary";
+import {MediaUploaderElOperation} from "../../ui/uploader/MediaUploaderEl";
+import {FileUploadedEvent} from "../../ui/uploader/FileUploadedEvent";
+import {Content} from "../../content/Content";
+import {ImageComponentView} from "./ImageComponentView";
 
-    import PageItemType = api.liveedit.PageItemType;
-    import ContentTypeName = api.schema.content.ContentTypeName;
-    import ImageComponent = api.content.page.region.ImageComponent;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-
-    export class ImagePlaceholder extends api.liveedit.ItemViewPlaceholder {
+export class ImagePlaceholder extends ItemViewPlaceholder {
 
         private imageComponentView: ImageComponentView;
 
-        private comboBox: api.content.ContentComboBox;
+        private comboBox: ContentComboBox;
 
-        private comboboxWrapper: api.dom.DivEl;
+        private comboboxWrapper: DivEl;
 
-        private imageUploader: api.content.image.ImageUploaderEl;
+        private imageUploader: ImageUploaderEl;
 
         constructor(imageView: ImageComponentView) {
             super();
@@ -26,18 +34,18 @@ module api.liveedit.image {
         }
 
         private initImageCombobox(imageView: ImageComponentView) {
-            var loader = new api.content.resource.ContentSummaryLoader();
+            var loader = new ContentSummaryLoader();
             loader.setContentPath(imageView.getLiveEditModel().getContent().getPath());
             loader.setAllowedContentTypeNames([ContentTypeName.IMAGE, ContentTypeName.MEDIA_VECTOR]);
 
-            this.comboBox = api.content.ContentComboBox.create().
+            this.comboBox = ContentComboBox.create().
                 setMaximumOccurrences(1).
                 setLoader(loader).
                 setMinWidth(270).
                 build();
 
             this.comboBox.getComboBox().getInput().setPlaceholder("Type to search or drop image here...");
-            this.comboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+            this.comboBox.onOptionSelected((event: SelectedOptionEvent<ContentSummary>) => {
 
                 var component: ImageComponent = this.imageComponentView.getComponent();
                 var imageContent = event.getSelectedOption().getOption().displayValue;
@@ -49,11 +57,11 @@ module api.liveedit.image {
         }
 
         private initImageUploader(imageView: ImageComponentView) {
-            this.imageUploader = new api.content.image.ImageUploaderEl({
+            this.imageUploader = new ImageUploaderEl({
                 params: {
                     parent: imageView.getLiveEditModel().getContent().getContentId().toString()
                 },
-                operation: api.ui.uploader.MediaUploaderElOperation.create,
+                operation: MediaUploaderElOperation.create,
                 name: 'image-selector-placeholder-upload',
                 showCancel: false,
                 showResult: false,
@@ -64,7 +72,7 @@ module api.liveedit.image {
 
             this.imageUploader.getUploadButton().onClicked(() => this.comboboxWrapper.show());
 
-            this.imageUploader.onFileUploaded((event: api.ui.uploader.FileUploadedEvent<api.content.Content>) => {
+            this.imageUploader.onFileUploaded((event: FileUploadedEvent<Content>) => {
                 var createdImage = event.getUploadItem().getModel();
 
                 var component: ImageComponent = this.imageComponentView.getComponent();
@@ -75,7 +83,7 @@ module api.liveedit.image {
         }
 
         private initImageComboboxWrapper() {
-            this.comboboxWrapper = new api.dom.DivEl('rich-combobox-wrapper');
+            this.comboboxWrapper = new DivEl('rich-combobox-wrapper');
             this.comboboxWrapper.appendChild(this.comboBox);
             this.comboboxWrapper.appendChild(<any>this.imageUploader);
             this.appendChild(this.comboboxWrapper);
@@ -90,4 +98,3 @@ module api.liveedit.image {
             this.comboboxWrapper.hide();
         }
     }
-}

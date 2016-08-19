@@ -1,12 +1,19 @@
-module api.security {
+import {UserStoreAccessControlList} from "./acl/UserStoreAccessControlList";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {AuthConfig} from "./AuthConfig";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStore} from "./UserStore";
+import {UserStoreJson} from "./UserStoreJson";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class CreateUserStoreRequest extends SecurityResourceRequest<UserStoreJson, UserStore> {
+export class CreateUserStoreRequest extends SecurityResourceRequest<UserStoreJson, UserStore> {
 
         private userStoreKey: UserStoreKey;
         private displayName: string;
         private description: string;
         private authConfig: AuthConfig;
-        private permissions: api.security.acl.UserStoreAccessControlList;
+        private permissions: UserStoreAccessControlList;
 
         constructor() {
             super();
@@ -43,17 +50,17 @@ module api.security {
             return this;
         }
 
-        setPermissions(permissions: api.security.acl.UserStoreAccessControlList): CreateUserStoreRequest {
+        setPermissions(permissions: UserStoreAccessControlList): CreateUserStoreRequest {
             this.permissions = permissions;
             return this;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'userstore/create');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'userstore/create');
         }
 
         sendAndParse(): wemQ.Promise<UserStore> {
-            return this.send().then((response: api.rest.JsonResponse<UserStoreJson>) => {
+            return this.send().then((response: JsonResponse<UserStoreJson>) => {
                 return this.fromJsonToUserStore(response.getResult());
             });
         }
@@ -62,4 +69,3 @@ module api.security {
             return UserStore.fromJson(json);
         }
     }
-}

@@ -1,9 +1,11 @@
-module api.content.order {
+import {OrderExprJson} from "../json/OrderExprJson";
+import {OrderExprWrapperJson} from "../json/OrderExprWrapperJson";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {DynamicOrderExpr} from "./DynamicOrderExpr";
+import {FieldOrderExpr} from "./FieldOrderExpr";
 
-    import OrderExprJson =  api.content.json.OrderExprJson;
-    import OrderExprWrapperJson = api.content.json.OrderExprWrapperJson;
-
-    export class OrderExpr implements api.Equitable {
+export class OrderExpr implements Equitable {
 
         private direction: string;
 
@@ -26,17 +28,17 @@ module api.content.order {
         static toArrayJson(expressions: OrderExpr[]): OrderExprWrapperJson[] {
             var wrappers: OrderExprWrapperJson[] = [];
             expressions.forEach((expr: OrderExpr) => {
-                if (api.ObjectHelper.iFrameSafeInstanceOf(expr, FieldOrderExpr)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(expr, FieldOrderExpr)) {
                     wrappers.push(<OrderExprWrapperJson>{"FieldOrderExpr": expr.toJson()});
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(expr, DynamicOrderExpr)) {
+                } else if (ObjectHelper.iFrameSafeInstanceOf(expr, DynamicOrderExpr)) {
                     wrappers.push(<OrderExprWrapperJson>{"DynamicOrderExpr": expr.toJson()});
                 }
             });
             return wrappers;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, OrderExpr)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, OrderExpr)) {
                 return false;
             }
             var other = <OrderExpr>o;
@@ -66,4 +68,3 @@ module api.content.order {
             return new OrderExpr(this);
         }
     }
-}

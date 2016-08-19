@@ -1,8 +1,15 @@
-module api.liveedit {
+import {StringHelper} from "../util/StringHelper";
+import {Equitable} from "../Equitable";
+import {ComponentType} from "../content/page/region/ComponentType";
+import {assert} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
+import {Element} from "../dom/Element";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {ItemTypeConfigJson} from "./ItemTypeConfig";
+import {ItemTypeConfig} from "./ItemTypeConfig";
+import {ItemView} from "./ItemView";
 
-    import StringHelper = api.util.StringHelper;
-
-    export class ItemType implements api.Equitable {
+export class ItemType implements Equitable {
 
         static ATTRIBUTE_TYPE = "portal-component-type";
         static ATTRIBUTE_REGION_NAME = "portal-region";
@@ -32,24 +39,24 @@ module api.liveedit {
             return false
         }
 
-        toComponentType(): api.content.page.region.ComponentType {
-            api.util.assert(this.isComponentType(), "Not support when ItemType is not a ComponentType");
-            return api.content.page.region.ComponentType.byShortName(this.shortName);
+        toComponentType(): ComponentType {
+            assert(this.isComponentType(), "Not support when ItemType is not a ComponentType");
+            return ComponentType.byShortName(this.shortName);
         }
 
         createView(config: CreateItemViewConfig<ItemView,any>): ItemView {
             throw new Error("Must be implemented by inheritors");
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ItemType)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ItemType)) {
                 return false;
             }
 
             var other = <ItemType>o;
 
-            if (!api.ObjectHelper.stringEquals(this.shortName, other.shortName)) {
+            if (!ObjectHelper.stringEquals(this.shortName, other.shortName)) {
                 return false;
             }
 
@@ -82,8 +89,7 @@ module api.liveedit {
             return ItemType.byShortName(typeAsString);
         }
 
-        static fromElement(element: api.dom.Element): ItemType {
+        static fromElement(element: Element): ItemType {
             return ItemType.fromHTMLElement(element.getHTMLElement());
         }
     }
-}

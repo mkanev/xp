@@ -1,14 +1,22 @@
-module api.form.inputtype.support {
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Input} from "../../Input";
+import {DivEl} from "../../../dom/DivEl";
+import {Element} from "../../../dom/Element";
+import {TextInput} from "../../../ui/text/TextInput";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {StringHelper} from "../../../util/StringHelper";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
+import {BaseInputTypeNotManagingAdd} from "./BaseInputTypeNotManagingAdd";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
+export class NoInputTypeFoundView extends BaseInputTypeNotManagingAdd<string> {
 
-    export class NoInputTypeFoundView extends BaseInputTypeNotManagingAdd<string> {
-
-        constructor(context: api.form.inputtype.InputTypeViewContext) {
+        constructor(context: InputTypeViewContext) {
             super(context);
         }
 
@@ -20,22 +28,22 @@ module api.form.inputtype.support {
             return super.newInitialValue() || ValueTypes.STRING.newValue("");
         }
 
-        layout(input: api.form.Input, property?: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, property?: PropertyArray): wemQ.Promise<void> {
 
-            var divEl = new api.dom.DivEl();
+            var divEl = new DivEl();
             divEl.getEl().setInnerHtml("Warning: no input type found: " + input.getInputType().toString());
 
             return super.layout(input, property);
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
 
-            var inputEl = api.ui.text.TextInput.middle();
+            var inputEl = TextInput.middle();
             inputEl.setName(this.getInput().getName());
             if (property != null) {
                 inputEl.setValue(property.getString());
             }
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+            inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var value = ValueTypes.STRING.newValue(event.getNewValue());
                 this.notifyOccurrenceValueChanged(inputEl, value);
             });
@@ -43,8 +51,8 @@ module api.form.inputtype.support {
             return inputEl;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var input = <api.ui.text.TextInput> occurrence;
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
+            var input = <TextInput> occurrence;
 
             if (!unchangedOnly || !input.isDirty()) {
                 input.setValue(property.getString());
@@ -53,15 +61,14 @@ module api.form.inputtype.support {
 
         valueBreaksRequiredContract(value: Value): boolean {
             return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-                   api.util.StringHelper.isBlank(value.getString());
+                   StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+        hasInputElementValidUserInput(inputElement: Element) {
 
             // TODO
             return true;
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("NoInputTypeFound", NoInputTypeFoundView));
-}
+    InputTypeManager.register(new Class("NoInputTypeFound", NoInputTypeFoundView));

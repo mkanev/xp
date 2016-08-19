@@ -1,20 +1,22 @@
-module api.schema.relationshiptype {
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {RelationshipTypeJson} from "./RelationshipTypeJson";
+import {RelationshipType} from "./RelationshipType";
 
-    export class RelationshipTypeResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class RelationshipTypeResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourceUrl: api.rest.Path;
+        private resourceUrl: Path;
 
         constructor() {
             super();
-            this.resourceUrl = api.rest.Path.fromParent(super.getRestPath(), "schema/relationship");
+            this.resourceUrl = Path.fromParent(super.getRestPath(), "schema/relationship");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourceUrl;
         }
 
-        fromJsonToReleationshipType(json: api.schema.relationshiptype.RelationshipTypeJson): RelationshipType {
+        fromJsonToReleationshipType(json: RelationshipTypeJson): RelationshipType {
             return RelationshipType.fromJson(json);
         }
     }
-}

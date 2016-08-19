@@ -1,6 +1,7 @@
-module api.system {
+import {PrincipalKey} from "../security/PrincipalKey";
+import {StatusJson} from "./StatusJson";
 
-    export class StatusResult {
+export class StatusResult {
 
         private installation: string;
 
@@ -8,7 +9,7 @@ module api.system {
 
         private authenticated: boolean;
 
-        private principals: api.security.PrincipalKey[];
+        private principals: PrincipalKey[];
 
         constructor(json: StatusJson) {
             this.version = json.version;
@@ -16,7 +17,7 @@ module api.system {
             if (json.context) {
                 this.authenticated = json.context.authenticated;
                 this.principals = json.context.principals ?
-                                  json.context.principals.map((principal) => api.security.PrincipalKey.fromString(principal)) : [];
+                                  json.context.principals.map((principal) => PrincipalKey.fromString(principal)) : [];
             } else {
                 this.authenticated = false;
                 this.principals = []
@@ -36,8 +37,7 @@ module api.system {
             return this.version;
         }
 
-        getPrincipals(): api.security.PrincipalKey[] {
+        getPrincipals(): PrincipalKey[] {
             return this.principals;
         }
     }
-}

@@ -1,6 +1,11 @@
-module api.security.auth {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {AuthResourceRequest} from "./AuthResourceRequest";
+import {LoginCredentials} from "./LoginCredentials";
+import {LoginResult} from "./LoginResult";
+import {LoginResultJson} from "./LoginResultJson";
 
-    export class LoginRequest extends AuthResourceRequest<LoginResultJson, LoginResult> {
+export class LoginRequest extends AuthResourceRequest<LoginResultJson, LoginResult> {
 
         private loginCredentials: LoginCredentials;
 
@@ -18,16 +23,15 @@ module api.security.auth {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'login');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'login');
         }
 
         sendAndParse(): wemQ.Promise<LoginResult> {
 
-            return this.send().then((response: api.rest.JsonResponse<LoginResultJson>) => {
+            return this.send().then((response: JsonResponse<LoginResultJson>) => {
                 return new LoginResult(response.getResult());
             });
         }
 
     }
-}

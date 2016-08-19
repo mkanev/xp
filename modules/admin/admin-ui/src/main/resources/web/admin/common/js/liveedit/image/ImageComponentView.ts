@@ -1,11 +1,14 @@
-module api.liveedit.image {
+import {ComponentView} from "../ComponentView";
+import {ContentView} from "../ContentView";
+import {RegionView} from "../RegionView";
+import {ImageComponent} from "../../content/page/region/ImageComponent";
+import {Element} from "../../dom/Element";
+import {ComponentViewBuilder} from "../ComponentView";
+import {ImageComponentViewer} from "./ImageComponentViewer";
+import {ImageItemType} from "./ImageItemType";
+import {ImagePlaceholder} from "./ImagePlaceholder";
 
-    import ComponentView = api.liveedit.ComponentView;
-    import ContentView = api.liveedit.ContentView;
-    import RegionView = api.liveedit.RegionView;
-    import ImageComponent = api.content.page.region.ImageComponent;
-
-    export class ImageComponentViewBuilder extends ComponentViewBuilder<ImageComponent> {
+export class ImageComponentViewBuilder extends ComponentViewBuilder<ImageComponent> {
 
         constructor() {
             super();
@@ -15,7 +18,7 @@ module api.liveedit.image {
 
     export class ImageComponentView extends ComponentView<ImageComponent> {
 
-        private image: api.dom.Element;
+        private image: Element;
         private imageComponent: ImageComponent;
 
         constructor(builder: ImageComponentViewBuilder) {
@@ -57,4 +60,3 @@ module api.liveedit.image {
         }
 
     }
-}

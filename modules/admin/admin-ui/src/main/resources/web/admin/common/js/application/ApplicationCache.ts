@@ -1,6 +1,11 @@
-module api.application {
+import {Cache} from "../cache/Cache";
+import {Application} from "./Application";
+import {ApplicationBuilder} from "./Application";
+import {ApplicationEventType} from "./ApplicationEvent";
+import {ApplicationEvent} from "./ApplicationEvent";
+import {ApplicationKey} from "./ApplicationKey";
 
-    export class ApplicationCache extends api.cache.Cache<Application, ApplicationKey> {
+export class ApplicationCache extends Cache<Application, ApplicationKey> {
 
         private static instance: ApplicationCache;
 
@@ -34,4 +39,3 @@ module api.application {
             return ApplicationCache.instance;
         }
     }
-}

@@ -1,8 +1,13 @@
-module api.content {
+import {UploadItem} from "../ui/uploader/UploadItem";
+import {Equitable} from "../Equitable";
+import {ContentTypeName} from "../schema/content/ContentTypeName";
+import {ObjectHelper} from "../ObjectHelper";
+import {CompareStatus} from "./CompareStatus";
+import {ContentId} from "./ContentId";
+import {ContentPath} from "./ContentPath";
+import {ContentSummary} from "./ContentSummary";
 
-    import UploadItem = api.ui.uploader.UploadItem;
-
-    export class ContentSummaryAndCompareStatus implements api.Equitable {
+export class ContentSummaryAndCompareStatus implements Equitable {
 
         private uploadItem: UploadItem<ContentSummary>;
 
@@ -73,7 +78,7 @@ module api.content {
             return this.contentSummary ? this.contentSummary.getPath() : null;
         }
 
-        getType(): api.schema.content.ContentTypeName {
+        getType(): ContentTypeName {
             return this.contentSummary ? this.contentSummary.getType() : null;
         }
 
@@ -89,19 +94,19 @@ module api.content {
             return !!this.contentSummary ? this.contentSummary.hasChildren() : false;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentSummaryAndCompareStatus)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummaryAndCompareStatus)) {
                 return false;
             }
 
             var other = <ContentSummaryAndCompareStatus>o;
 
-            if (!api.ObjectHelper.equals(this.uploadItem, other.uploadItem)) {
+            if (!ObjectHelper.equals(this.uploadItem, other.uploadItem)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.contentSummary, other.contentSummary)) {
+            if (!ObjectHelper.equals(this.contentSummary, other.contentSummary)) {
                 return false;
             }
 
@@ -112,4 +117,3 @@ module api.content {
             return true;
         }
     }
-}

@@ -1,8 +1,17 @@
-module api.content.page.region {
+import {PropertyTree} from "../../../data/PropertyTree";
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {DescriptorKey} from "../DescriptorKey";
+import {ComponentName} from "./ComponentName";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {DescriptorBasedComponent} from "./DescriptorBasedComponent";
+import {DescriptorBasedComponentBuilder} from "./DescriptorBasedComponent";
+import {PartComponentJson} from "./PartComponentJson";
+import {PartComponentType} from "./PartComponentType";
+import {Region} from "./Region";
 
-    import PropertyTree = api.data.PropertyTree;
-
-    export class PartComponent extends DescriptorBasedComponent implements api.Equitable, api.Cloneable {
+export class PartComponent extends DescriptorBasedComponent implements Equitable, Cloneable {
 
         constructor(builder: PartComponentBuilder) {
             super(builder);
@@ -20,9 +29,9 @@ module api.content.page.region {
             return !this.hasDescriptor();
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PartComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PartComponent)) {
                 return false;
             }
 
@@ -46,7 +55,7 @@ module api.content.page.region {
         public fromJson(json: PartComponentJson, region: Region): PartComponentBuilder {
 
             if (json.descriptor) {
-                this.setDescriptor(api.content.page.DescriptorKey.fromString(json.descriptor));
+                this.setDescriptor(DescriptorKey.fromString(json.descriptor));
             }
             this.setName(json.name ? new ComponentName(json.name) : null);
             if (json.config) {
@@ -60,4 +69,3 @@ module api.content.page.region {
             return new PartComponent(this);
         }
     }
-}

@@ -1,8 +1,8 @@
-module api.form {
+import {PropertyPath} from "../data/PropertyPath";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    import PropertyPath = api.data.PropertyPath;
-
-    export class ValidationRecordingPath implements api.Equitable {
+export class ValidationRecordingPath implements Equitable {
 
         private parentDataSet: PropertyPath;
 
@@ -59,13 +59,13 @@ module api.form {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ValidationRecordingPath)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ValidationRecordingPath)) {
                 return false;
             }
             var other = <ValidationRecordingPath>o;
 
-            return api.ObjectHelper.stringEquals(this.refString, other.refString);
+            return ObjectHelper.stringEquals(this.refString, other.refString);
         }
 
         contains(other: ValidationRecordingPath): boolean {
@@ -82,4 +82,3 @@ module api.form {
         }
 
     }
-}

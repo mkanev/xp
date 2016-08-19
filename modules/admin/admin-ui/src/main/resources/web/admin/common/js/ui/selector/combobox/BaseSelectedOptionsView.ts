@@ -1,9 +1,16 @@
-module api.ui.selector.combobox {
+import {Value} from "../../../data/Value";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {DivEl} from "../../../dom/DivEl";
+import {Element} from "../../../dom/Element";
+import {Option} from "../Option";
+import {assertNotNull} from "../../../util/Assert";
+import {ArrayHelper} from "../../../util/ArrayHelper";
+import {BaseSelectedOptionView} from "./BaseSelectedOptionView";
+import {SelectedOption} from "./SelectedOption";
+import {SelectedOptionEvent} from "./SelectedOptionEvent";
+import {SelectedOptionsView} from "./SelectedOptionsView";
 
-    import Value = api.data.Value;
-    import ValueTypes = api.data.ValueTypes;
-
-    export class BaseSelectedOptionsView<T> extends api.dom.DivEl implements SelectedOptionsView<T> {
+export class BaseSelectedOptionsView<T> extends DivEl implements SelectedOptionsView<T> {
 
         private list: SelectedOption<T>[] = [];
 
@@ -57,14 +64,14 @@ module api.ui.selector.combobox {
         protected handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
             this.beforeDragStartedHeight = this.getEl().getHeight();
 
-            var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
         }
 
         protected handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
                 var draggedToIndex = draggedElement.getSiblingIndex();
                 this.handleMovedOccurrence(this.draggingIndex, draggedToIndex);
             }
@@ -95,11 +102,11 @@ module api.ui.selector.combobox {
             return this.maximumOccurrences;
         }
 
-        createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
+        createSelectedOption(option: Option<T>): SelectedOption<T> {
             return new SelectedOption<T>(new BaseSelectedOptionView(option), this.count());
         }
 
-        addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number): boolean {
+        addOption(option: Option<T>, silent: boolean = false, keyCode: number): boolean {
 
             if (this.isSelected(option) || this.maximumOccurrencesReached()) {
                 return false;
@@ -120,11 +127,11 @@ module api.ui.selector.combobox {
             return true;
         }
 
-        removeOption(optionToRemove: api.ui.selector.Option<T>, silent: boolean = false) {
-            api.util.assertNotNull(optionToRemove, "optionToRemove cannot be null");
+        removeOption(optionToRemove: Option<T>, silent: boolean = false) {
+            assertNotNull(optionToRemove, "optionToRemove cannot be null");
 
             var selectedOption = this.getByOption(optionToRemove);
-            api.util.assertNotNull(selectedOption, "Did not find any selected option to remove from option: " + optionToRemove.value);
+            assertNotNull(selectedOption, "Did not find any selected option to remove from option: " + optionToRemove.value);
 
             selectedOption.getOptionView().remove();
 
@@ -156,7 +163,7 @@ module api.ui.selector.combobox {
             return this.list[index];
         }
 
-        getByOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
+        getByOption(option: Option<T>): SelectedOption<T> {
             return this.getById(option.value);
         }
 
@@ -166,7 +173,7 @@ module api.ui.selector.combobox {
             })[0];
         }
 
-        isSelected(option: api.ui.selector.Option<T>): boolean {
+        isSelected(option: Option<T>): boolean {
             return this.getByOption(option) != null;
         }
 
@@ -179,8 +186,8 @@ module api.ui.selector.combobox {
 
         moveOccurrence(fromIndex: number, toIndex: number) {
 
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.list);
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.getChildren());
+            ArrayHelper.moveElement(fromIndex, toIndex, this.list);
+            ArrayHelper.moveElement(fromIndex, toIndex, this.getChildren());
 
             this.list.forEach((selectedOption: SelectedOption<T>, index: number) => selectedOption.setIndex(index));
         }
@@ -242,4 +249,3 @@ module api.ui.selector.combobox {
             });
         }
     }
-}

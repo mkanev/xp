@@ -1,14 +1,21 @@
-module api.content.site {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ApplicationEvent} from "../../application/ApplicationEvent";
+import {ApplicationEventType} from "../../application/ApplicationEvent";
+import {Site} from "./Site";
+import {PropertyChangedEvent} from "../../PropertyChangedEvent";
+import {PropertyAddedEvent} from "../../data/PropertyAddedEvent";
+import {PropertyRemovedEvent} from "../../data/PropertyRemovedEvent";
+import {Property} from "../../data/Property";
+import {SiteConfig} from "./SiteConfig";
+import {ContentId} from "../ContentId";
+import {ApplicationAddedEvent} from "./ApplicationAddedEvent";
+import {ApplicationRemovedEvent} from "./ApplicationRemovedEvent";
 
-    import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationEvent = api.application.ApplicationEvent;
-    import ApplicationEventType = api.application.ApplicationEventType;
-
-    export class SiteModel {
+export class SiteModel {
 
         public static PROPERTY_NAME_SITE_CONFIGS = "siteConfigs";
 
-        private site: api.content.site.Site;
+        private site: Site;
 
         private siteConfigs: SiteConfig[];
 
@@ -16,11 +23,11 @@ module api.content.site {
 
         private applicationRemovedListeners: {(event: ApplicationRemovedEvent):void}[] = [];
 
-        private propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];
+        private propertyChangedListeners: {(event: PropertyChangedEvent):void}[] = [];
 
-        private applicationPropertyAddedListener: (event: api.data.PropertyAddedEvent) => void;
+        private applicationPropertyAddedListener: (event: PropertyAddedEvent) => void;
 
-        private applicationPropertyRemovedListener: (event: api.data.PropertyRemovedEvent) => void;
+        private applicationPropertyRemovedListener: (event: PropertyRemovedEvent) => void;
 
         private applicationGlobalEventsListener: (event: ApplicationEvent) => void;
 
@@ -32,11 +39,11 @@ module api.content.site {
         }
 
         private initApplicationPropertyListeners() {
-            this.applicationPropertyAddedListener = (event: api.data.PropertyAddedEvent) => {
-                var property: api.data.Property = event.getProperty();
+            this.applicationPropertyAddedListener = (event: PropertyAddedEvent) => {
+                var property: Property = event.getProperty();
                 // TODO:? property.getPath().startsWith(PropertyPath.fromString(".siteConfig")) &&  property.getName( )=="config")
                 if (property.getPath().toString().indexOf(".siteConfig") == 0 && property.getName() == "config") {
-                    var siteConfig: SiteConfig = api.content.site.SiteConfig.create().fromData(property.getParent()).build();
+                    var siteConfig: SiteConfig = SiteConfig.create().fromData(property.getParent()).build();
                     if (!this.siteConfigs) {
                         this.siteConfigs = [];
                     }
@@ -45,8 +52,8 @@ module api.content.site {
                 }
             };
 
-            this.applicationPropertyRemovedListener = (event: api.data.PropertyRemovedEvent) => {
-                var property: api.data.Property = event.getProperty();
+            this.applicationPropertyRemovedListener = (event: PropertyRemovedEvent) => {
+                var property: Property = event.getProperty();
                 if (property.getName() == "siteConfig") {
                     var applicationKey = ApplicationKey.fromString(property.getPropertySet().getString("applicationKey"));
                     this.siteConfigs = this.siteConfigs.filter((siteConfig: SiteConfig) =>
@@ -87,7 +94,7 @@ module api.content.site {
             return this.site;
         }
 
-        getSiteId(): api.content.ContentId {
+        getSiteId(): ContentId {
             return this.site.getContentId();
         }
 
@@ -95,20 +102,20 @@ module api.content.site {
             return this.siteConfigs.map((sc: SiteConfig) => sc.getApplicationKey());
         }
 
-        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        onPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
             this.propertyChangedListeners.push(listener);
         }
 
-        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        unPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
             this.propertyChangedListeners =
-                this.propertyChangedListeners.filter((curr: (event: api.PropertyChangedEvent)=>void) => {
+                this.propertyChangedListeners.filter((curr: (event: PropertyChangedEvent)=>void) => {
                     return listener != curr;
                 });
         }
 
         private notifyPropertyChanged(property: string, oldValue: any, newValue: any, source: any) {
-            var event = new api.PropertyChangedEvent(property, oldValue, newValue, source);
-            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent)=>void) => {
+            var event = new PropertyChangedEvent(property, oldValue, newValue, source);
+            this.propertyChangedListeners.forEach((listener: (event: PropertyChangedEvent)=>void) => {
                 listener(event);
             })
         }
@@ -166,4 +173,3 @@ module api.content.site {
             })
         }
     }
-}

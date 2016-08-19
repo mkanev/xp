@@ -1,6 +1,8 @@
-module api.util {
+import {Element} from "../dom/Element";
+import {Body} from "../dom/Body";
+import {WindowDOM} from "../dom/WindowDOM";
 
-    export class AppHelper {
+export class AppHelper {
 
         // Returns a function, that, as long as it continues to be invoked, will not
         // be triggered. The function will be called after it stops being called for
@@ -25,10 +27,10 @@ module api.util {
             };
         }
 
-        static preventDragRedirect(message: String = "", element?: api.dom.Element) {
-            element = element || api.dom.Body.get();
+        static preventDragRedirect(message: String = "", element?: Element) {
+            element = element || Body.get();
 
-            var window = api.dom.WindowDOM.get();
+            var window = WindowDOM.get();
             var timeout = null;
 
             var beforeUnloadHandler = (event) => {
@@ -51,11 +53,11 @@ module api.util {
             });
         }
 
-        static dispatchCustomEvent(name: string, element: api.dom.Element) {
+        static dispatchCustomEvent(name: string, element: Element) {
             wemjq(element.getHTMLElement()).trigger(name);
         }
 
-        static focusInOut(element: api.dom.Element, onFocusOut: () => void, wait: number = 50, preventMouseDown: boolean = true) {
+        static focusInOut(element: Element, onFocusOut: () => void, wait: number = 50, preventMouseDown: boolean = true) {
             let target,
                 focusOutTimeout = 0;
 
@@ -79,4 +81,3 @@ module api.util {
         }
     }
 
-}

@@ -1,9 +1,8 @@
-module api.content.json {
 
-    export interface ReorderChildContentJson {
+
+export interface ReorderChildContentJson {
 
         contentId: string;
 
         moveBefore: string;
     }
-}

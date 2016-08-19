@@ -1,6 +1,9 @@
-module api.security {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {Principal} from "./Principal";
+import {UserStore} from "./UserStore";
 
-    export class UserItemCreatedEvent extends api.event.Event {
+export class UserItemCreatedEvent extends Event {
 
         private principal: Principal;
         private userStore: UserStore;
@@ -26,12 +29,11 @@ module api.security {
         }
 
         static on(handler: (event: UserItemCreatedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: UserItemCreatedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
 
-}

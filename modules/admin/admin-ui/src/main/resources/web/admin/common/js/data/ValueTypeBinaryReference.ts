@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {BinaryReference} from "../util/BinaryReference";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeBinaryReference extends ValueType {
+export class ValueTypeBinaryReference extends ValueType {
 
         constructor() {
             super("BinaryReference");
@@ -10,14 +14,14 @@ module api.data {
             if (!(typeof value === 'object')) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.BinaryReference)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, BinaryReference)) {
                 return false;
             }
             return true;
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             return true;
@@ -25,7 +29,7 @@ module api.data {
 
         newValue(value: string): Value {
             if (this.isConvertible(value)) {
-                return new Value(new api.util.BinaryReference(value), this);
+                return new Value(new BinaryReference(value), this);
             }
             else {
                 return this.newNullValue();
@@ -45,8 +49,7 @@ module api.data {
             return value.isNull() ? null : value.getBinaryReference().toString();
         }
 
-        valueEquals(a: api.util.BinaryReference, b: api.util.BinaryReference): boolean {
-            return api.ObjectHelper.equals(a, b);
+        valueEquals(a: BinaryReference, b: BinaryReference): boolean {
+            return ObjectHelper.equals(a, b);
         }
     }
-}

@@ -1,17 +1,20 @@
-import "../../api.ts";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {FileUploadCompleteEvent} from "../../../../../common/js/ui/uploader/FileUploadCompleteEvent";
+import {FileUploadStartedEvent} from "../../../../../common/js/ui/uploader/FileUploadStartedEvent";
+import {FileUploadFailedEvent} from "../../../../../common/js/ui/uploader/FileUploadFailedEvent";
+import {ApplicationUploaderEl} from "../../../../../common/js/application/ApplicationUploaderEl";
+import {Application} from "../../../../../common/js/application/Application";
+import {DockedPanel} from "../../../../../common/js/ui/panel/DockedPanel";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {DropzoneContainer} from "../../../../../common/js/ui/uploader/UploaderEl";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Body} from "../../../../../common/js/dom/Body";
+import {ApplicationUploadStartedEvent} from "../../../../../common/js/application/ApplicationUploadStartedEvent";
+
 import {MarketAppPanel} from "./view/MarketAppPanel";
 import {UploadAppPanel} from "./view/UploadAppPanel";
 
-import ApplicationKey = api.application.ApplicationKey;
-import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
-import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
-import ApplicationUploaderEl = api.application.ApplicationUploaderEl;
-import Application = api.application.Application;
-
-import DockedPanel = api.ui.panel.DockedPanel;
-
-export class InstallAppDialog extends api.ui.dialog.ModalDialog {
+export class InstallAppDialog extends ModalDialog {
 
     private dockedPanel: DockedPanel;
 
@@ -19,23 +22,23 @@ export class InstallAppDialog extends api.ui.dialog.ModalDialog {
 
     private marketAppPanel: MarketAppPanel;
 
-    private dropzoneContainer: api.ui.uploader.DropzoneContainer;
+    private dropzoneContainer: DropzoneContainer;
 
     private onMarketLoaded;
 
     constructor() {
         super({
-            title: new api.ui.dialog.ModalDialogHeader("Install Application")
+            title: new ModalDialogHeader("Install Application")
         });
 
         this.addClass("install-application-dialog hidden");
 
         this.onMarketLoaded = this.centerMyself.bind(this);
 
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
     }
 
-    updateInstallApplications(installApplications: api.application.Application[]) {
+    updateInstallApplications(installApplications: Application[]) {
         this.marketAppPanel.updateInstallApplications(installApplications);
     }
 
@@ -57,7 +60,7 @@ export class InstallAppDialog extends api.ui.dialog.ModalDialog {
 
                     this.initUploaderListeners(this.uploadAppPanel);
 
-                    this.dropzoneContainer = new api.ui.uploader.DropzoneContainer(true);
+                    this.dropzoneContainer = new DropzoneContainer(true);
                     this.dropzoneContainer.hide();
                     this.appendChild(this.dropzoneContainer);
 
@@ -121,7 +124,7 @@ export class InstallAppDialog extends api.ui.dialog.ModalDialog {
         this.uploadAppPanel.getApplicationInput().onUploadCompleted(uploadCompletedHandler);
 
         let uploadStartedHandler = (event: FileUploadStartedEvent<Application>) => {
-            new api.application.ApplicationUploadStartedEvent(event.getUploadItems()).fire();
+            new ApplicationUploadStartedEvent(event.getUploadItems()).fire();
         };
 
         this.uploadAppPanel.getApplicationInput().onUploadStarted(uploadStartedHandler);

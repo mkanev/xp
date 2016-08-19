@@ -1,17 +1,29 @@
-module api.util.htmlarea.dialog {
+import {FormItem} from "../../../ui/form/FormItem";
+import {Validators} from "../../../ui/form/Validators";
+import {Panel} from "../../../ui/panel/Panel";
+import {MacroDescriptor} from "../../../macro/MacroDescriptor";
+import {FormContext} from "../../../form/FormContext";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {SelectedOptionEvent} from "../../../ui/selector/combobox/SelectedOptionEvent";
+import {ModalDialogHeader} from "../../../ui/dialog/ModalDialog";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {AppHelper} from "../../AppHelper";
+import {MacrosLoader} from "../../../macro/resource/MacrosLoader";
+import {MacroComboBox} from "../../../macro/MacroComboBox";
+import {StringHelper} from "../../StringHelper";
+import {FormItemEl} from "../../../dom/FormItemEl";
+import {ResponsiveManager} from "../../../ui/responsive/ResponsiveManager";
+import {KeyHelper} from "../../../ui/KeyHelper";
+import {Action} from "../../../ui/Action";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {showError} from "../../../notify/MessageBus";
+import {HtmlModalDialog} from "./HtmlModalDialog";
+import {HtmlAreaMacro} from "./HtmlModalDialog";
+import {MacroDockedPanel} from "./MacroDockedPanel";
 
-    import FormItem = api.ui.form.FormItem;
-    import Validators = api.ui.form.Validators;
-    import Panel = api.ui.panel.Panel;
-    import MacroDescriptor = api.macro.MacroDescriptor;
-    import FormContext = api.form.FormContext;
-    import ApplicationKey = api.application.ApplicationKey
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import ModalDialogHeader = api.ui.dialog.ModalDialogHeader;
+export class MacroModalDialog extends HtmlModalDialog {
 
-    export class MacroModalDialog extends HtmlModalDialog {
-
-        private content: api.content.ContentSummary;
+        private content: ContentSummary;
 
         private applicationKeys: ApplicationKey[];
 
@@ -19,7 +31,7 @@ module api.util.htmlarea.dialog {
 
         private callback: Function;
 
-        constructor(config: HtmlAreaMacro, content: api.content.ContentSummary, applicationKeys: ApplicationKey[]) {
+        constructor(config: HtmlAreaMacro, content: ContentSummary, applicationKeys: ApplicationKey[]) {
             this.content = content;
             this.applicationKeys = applicationKeys;
             this.callback = config.callback;
@@ -34,7 +46,7 @@ module api.util.htmlarea.dialog {
         private makeMacroDockedPanel(): MacroDockedPanel {
             var macroDockedPanel = new MacroDockedPanel(this.content);
 
-            var debouncedPreviewRenderedHandler: () => void = api.util.AppHelper.debounce(() => {
+            var debouncedPreviewRenderedHandler: () => void = AppHelper.debounce(() => {
                 this.centerMyself();
             }, 400, false);
 
@@ -57,15 +69,15 @@ module api.util.htmlarea.dialog {
         }
 
         private createMacroSelector(id: string): FormItem {
-            var loader = new api.macro.resource.MacrosLoader(this.applicationKeys),
-                macroSelector = api.macro.MacroComboBox.create().setLoader(loader).setMaximumOccurrences(1).build(),
-                formItem = this.createFormItem(id, "Macro", Validators.required, api.util.StringHelper.EMPTY_STRING,
-                    <api.dom.FormItemEl>macroSelector),
+            var loader = new MacrosLoader(this.applicationKeys),
+                macroSelector = MacroComboBox.create().setLoader(loader).setMaximumOccurrences(1).build(),
+                formItem = this.createFormItem(id, "Macro", Validators.required, StringHelper.EMPTY_STRING,
+                    <FormItemEl>macroSelector),
                 macroSelectorComboBox = macroSelector.getComboBox();
 
             this.addClass("macro-selector");
 
-            macroSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<api.macro.MacroDescriptor>) => {
+            macroSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<MacroDescriptor>) => {
                 formItem.addClass("selected-item-preview");
                 this.addClass("shows-preview");
 
@@ -76,11 +88,11 @@ module api.util.htmlarea.dialog {
                 formItem.removeClass("selected-item-preview");
                 this.removeClass("shows-preview");
                 this.displayValidationErrors(false);
-                api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                ResponsiveManager.fireResizeEvent();
             });
 
             macroSelectorComboBox.onKeyDown((e: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isEscKey(e) && !macroSelectorComboBox.isDropdownShown()) {
+                if (KeyHelper.isEscKey(e) && !macroSelectorComboBox.isDropdownShown()) {
                     // Prevent modal dialog from closing on Esc key when dropdown is expanded
                     e.preventDefault();
                     e.stopPropagation();
@@ -91,7 +103,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected initializeActions() {
-            var submitAction = new api.ui.Action("Insert");
+            var submitAction = new Action("Insert");
             this.setSubmitAction(submitAction);
 
             this.addAction(submitAction.onExecuted(() => {
@@ -106,11 +118,11 @@ module api.util.htmlarea.dialog {
 
         private insertMacroIntoTextArea(): void {
             this.macroDockedPanel.getMacroPreviewString().then((macroString: string) => {
-                var macro = this.callback(api.util.StringHelper.escapeHtml(macroString));
+                var macro = this.callback(StringHelper.escapeHtml(macroString));
                 this.close();
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
-                api.notify.showError("Failed to generate macro.");
+                DefaultErrorHandler.handle(reason);
+                showError("Failed to generate macro.");
             });
         }
 
@@ -121,4 +133,3 @@ module api.util.htmlarea.dialog {
             return mainFormValid && configPanelValid;
         }
     }
-}

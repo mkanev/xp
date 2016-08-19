@@ -1,6 +1,6 @@
-module api.ui.time {
+import {MonthOfYear} from "./MonthOfYear";
 
-    export class MonthsOfYear {
+export class MonthsOfYear {
 
         public static JANUARY = new MonthOfYear(0, "J", "Jan", "January");
         public static FEBRUARY = new MonthOfYear(1, "F", "Feb", "February");
@@ -34,4 +34,3 @@ module api.ui.time {
             return MonthsOfYear.monthsByCode[code];
         }
     }
-}

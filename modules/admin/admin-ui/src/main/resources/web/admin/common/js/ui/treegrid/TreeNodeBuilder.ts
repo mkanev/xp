@@ -1,6 +1,6 @@
-module api.ui.treegrid {
+import {TreeNode} from "./TreeNode";
 
-    export class TreeNodeBuilder<NODE> {
+export class TreeNodeBuilder<NODE> {
 
         private dataId: string;
 
@@ -104,4 +104,3 @@ module api.ui.treegrid {
             return new TreeNode<NODE>(this);
         }
     }
-}

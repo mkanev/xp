@@ -1,9 +1,8 @@
-module api.content.resource.result {
+import {ContentMetadata} from "../../ContentMetadata";
 
-    export interface ListContentResult<T> {
+export interface ListContentResult<T> {
 
         contents: T[];
 
         metadata: ContentMetadata;
     }
-}

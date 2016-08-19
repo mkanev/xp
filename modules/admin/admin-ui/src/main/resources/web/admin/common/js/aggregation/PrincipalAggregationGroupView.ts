@@ -1,14 +1,16 @@
-module api.aggregation {
+import {LoadMask} from "../ui/mask/LoadMask";
+import {ElementRenderedEvent} from "../dom/ElementRenderedEvent";
+import {AggregationGroupView} from "./AggregationGroupView";
 
-    export class PrincipalAggregationGroupView extends AggregationGroupView {
+export class PrincipalAggregationGroupView extends AggregationGroupView {
 
         initialize() {
 
             var displayNameMap: string[] = [];
 
-            var mask: api.ui.mask.LoadMask = new api.ui.mask.LoadMask(this);
+            var mask: LoadMask = new LoadMask(this);
             this.appendChild(mask);
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
+            this.onRendered((event: ElementRenderedEvent) => {
                 mask.show();
             });
 
@@ -22,4 +24,3 @@ module api.aggregation {
 
     }
 
-}

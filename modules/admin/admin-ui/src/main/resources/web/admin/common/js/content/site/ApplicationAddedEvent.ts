@@ -1,5 +1,7 @@
-module api.content.site {
-    export class ApplicationAddedEvent {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {SiteConfig} from "./SiteConfig";
+
+export class ApplicationAddedEvent {
 
         private siteConfig: SiteConfig;
 
@@ -7,7 +9,7 @@ module api.content.site {
             this.siteConfig = siteConfig;
         }
 
-        getApplicationKey(): api.application.ApplicationKey {
+        getApplicationKey(): ApplicationKey {
             return this.siteConfig.getApplicationKey();
         }
 
@@ -15,4 +17,3 @@ module api.content.site {
             return this.siteConfig;
         }
     }
-}

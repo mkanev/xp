@@ -1,9 +1,11 @@
-module api.content {
+import {MixinName} from "../schema/mixin/MixinName";
+import {PropertyTree} from "../data/PropertyTree";
+import {Cloneable} from "../Cloneable";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ExtraDataJson} from "./json/ExtraDataJson";
 
-    import MixinName = api.schema.mixin.MixinName;
-    import PropertyTree = api.data.PropertyTree;
-
-    export class ExtraData implements api.Cloneable, api.Equitable {
+export class ExtraData implements Cloneable, Equitable {
 
         private name: MixinName;
 
@@ -26,36 +28,35 @@ module api.content {
             return new ExtraData(this.name, this.data.copy());
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ExtraData)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ExtraData)) {
                 return false;
             }
 
             var other = <ExtraData>o;
 
-            if (!api.ObjectHelper.equals(this.name, other.name)) {
+            if (!ObjectHelper.equals(this.name, other.name)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.data, other.data)) {
+            if (!ObjectHelper.equals(this.data, other.data)) {
                 return false;
             }
 
             return true;
         }
 
-        toJson(): api.content.json.ExtraDataJson {
+        toJson(): ExtraDataJson {
             return {
                 name: this.name.toString(),
                 data: this.data.toJson()
             };
         }
 
-        static fromJson(metadataJson: api.content.json.ExtraDataJson): ExtraData {
+        static fromJson(metadataJson: ExtraDataJson): ExtraData {
             return new ExtraData(new MixinName(metadataJson.name), PropertyTree.fromJson(metadataJson.data));
         }
 
         
     }
 
-}

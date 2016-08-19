@@ -1,6 +1,6 @@
-module api.util {
 
-    export class Flow<RESULT,CONTEXT> {
+
+export class Flow<RESULT,CONTEXT> {
 
         private thisOfProducer: any;
 
@@ -20,4 +20,3 @@ module api.util {
             throw new Error("Must be implemented by inheritor");
         }
     }
-}

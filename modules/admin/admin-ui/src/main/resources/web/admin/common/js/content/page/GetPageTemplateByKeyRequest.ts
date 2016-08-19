@@ -1,8 +1,12 @@
-module api.content.page {
+import {ContentJson} from "../json/ContentJson";
+import {assertNotNull} from "../../util/Assert";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {PageTemplate} from "./PageTemplate";
+import {PageTemplateKey} from "./PageTemplateKey";
+import {PageTemplateResourceRequest} from "./PageTemplateResourceRequest";
 
-    import ContentJson = api.content.json.ContentJson;
-
-    export class GetPageTemplateByKeyRequest extends PageTemplateResourceRequest<ContentJson, PageTemplate> {
+export class GetPageTemplateByKeyRequest extends PageTemplateResourceRequest<ContentJson, PageTemplate> {
 
         private pageTemplateKey: PageTemplateKey;
 
@@ -13,7 +17,7 @@ module api.content.page {
         }
 
         validate() {
-            api.util.assertNotNull(this.pageTemplateKey, "pageTemplateKey cannot be null");
+            assertNotNull(this.pageTemplateKey, "pageTemplateKey cannot be null");
         }
 
         getParams(): Object {
@@ -22,15 +26,14 @@ module api.content.page {
             };
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return super.getResourcePath();
         }
 
         sendAndParse(): wemQ.Promise<PageTemplate> {
 
-            return this.send().then((response: api.rest.JsonResponse<ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return this.fromJsonToContent(response.getResult());
             });
         }
     }
-}

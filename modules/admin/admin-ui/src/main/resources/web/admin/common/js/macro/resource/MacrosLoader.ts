@@ -1,10 +1,12 @@
-module api.macro.resource {
+import {ApplicationEvent} from "../../application/ApplicationEvent";
+import {ApplicationEventType} from "../../application/ApplicationEvent";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {MacroDescriptor} from "../MacroDescriptor";
+import {GetMacrosRequest} from "./GetMacrosRequest";
+import {MacrosJson} from "./MacrosJson";
 
-    import ApplicationEvent = api.application.ApplicationEvent;
-    import ApplicationEventType = api.application.ApplicationEventType;
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class MacrosLoader extends api.util.loader.BaseLoader<MacrosJson, MacroDescriptor> {
+export class MacrosLoader extends BaseLoader<MacrosJson, MacroDescriptor> {
 
         private getMacrosRequest: GetMacrosRequest;
 
@@ -62,4 +64,3 @@ module api.macro.resource {
     }
 
 
-}

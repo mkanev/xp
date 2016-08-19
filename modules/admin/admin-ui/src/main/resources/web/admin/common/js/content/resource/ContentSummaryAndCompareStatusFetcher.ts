@@ -1,14 +1,23 @@
-module api.content.resource {
+import {CompareContentRequest} from "./CompareContentRequest";
+import {BatchContentRequest} from "./BatchContentRequest";
+import {ContentResponse} from "./result/ContentResponse";
+import {CompareContentResults} from "./result/CompareContentResults";
+import {ChildOrder} from "../order/ChildOrder";
+import {Expand} from "../../rest/Expand";
+import {CompareContentResult} from "./result/CompareContentResult";
+import {Content} from "../Content";
+import {ContentId} from "../ContentId";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../ContentSummaryAndCompareStatus";
+import {GetContentByIdRequest} from "./GetContentByIdRequest";
+import {GetContentSummaryByIds} from "./GetContentSummaryByIds";
+import {ListContentByIdRequest} from "./ListContentByIdRequest";
 
-    import CompareContentRequest = api.content.resource.CompareContentRequest;
-    import BatchContentRequest = api.content.resource.BatchContentRequest;
-    import ContentResponse = api.content.resource.result.ContentResponse;
-    import CompareContentResults = api.content.resource.result.CompareContentResults;
-
-    export class ContentSummaryAndCompareStatusFetcher {
+export class ContentSummaryAndCompareStatusFetcher {
 
         static fetchChildren(parentContentId: ContentId, from: number = 0, size: number = -1,
-                             childOrder?: api.content.order.ChildOrder): wemQ.Promise<ContentResponse<ContentSummaryAndCompareStatus>> {
+                             childOrder?: ChildOrder): wemQ.Promise<ContentResponse<ContentSummaryAndCompareStatus>> {
 
             var deferred = wemQ.defer<ContentResponse<ContentSummaryAndCompareStatus>>();
 
@@ -104,7 +113,7 @@ module api.content.resource {
 
             var deferred = wemQ.defer<ContentResponse<ContentSummary>>();
 
-            new ListContentByIdRequest(parentContentId).setFrom(from).setSize(size).setExpand(api.rest.Expand.NONE).sendAndParse().then(
+            new ListContentByIdRequest(parentContentId).setFrom(from).setSize(size).setExpand(Expand.NONE).sendAndParse().then(
                 (response: ContentResponse<ContentSummary>)=> {
                     deferred.resolve(response);
                 });
@@ -116,7 +125,7 @@ module api.content.resource {
                                    compareResults: CompareContentResults): ContentSummaryAndCompareStatus[] {
             var list: ContentSummaryAndCompareStatus[] = [];
             contentSummaries.forEach((contentSummary: ContentSummary) => {
-                var compareResult: api.content.resource.result.CompareContentResult = compareResults.get(contentSummary.getId());
+                var compareResult: CompareContentResult = compareResults.get(contentSummary.getId());
                 var newEntry = ContentSummaryAndCompareStatus.fromContentAndCompareStatus(contentSummary, compareResult.getCompareStatus());
                 list.push(newEntry)
             });
@@ -124,4 +133,3 @@ module api.content.resource {
             return list;
         }
     }
-}

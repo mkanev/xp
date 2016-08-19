@@ -1,14 +1,23 @@
-module api.form {
+import {PropertyArray} from "../data/PropertyArray";
+import {Element} from "../dom/Element";
+import {Property} from "../data/Property";
+import {ArrayHelper} from "../util/ArrayHelper";
+import {FormItem} from "./FormItem";
+import {FormItemOccurrence} from "./FormItemOccurrence";
+import {FormItemOccurrenceView} from "./FormItemOccurrenceView";
+import {FormItemSetOccurrence} from "./FormItemSetOccurrence";
+import {OccurrenceAddedEvent} from "./OccurrenceAddedEvent";
+import {OccurrenceRemovedEvent} from "./OccurrenceRemovedEvent";
+import {OccurrenceRenderedEvent} from "./OccurrenceRenderedEvent";
+import {Occurrences} from "./Occurrences";
 
-    import PropertyArray = api.data.PropertyArray;
-
-    export interface FormItemOccurrencesConfig {
+export interface FormItemOccurrencesConfig {
 
         formItem: FormItem;
 
         propertyArray: PropertyArray;
 
-        occurrenceViewContainer: api.dom.Element;
+        occurrenceViewContainer: Element;
 
         allowedOccurrences?: Occurrences;
 
@@ -20,7 +29,7 @@ module api.form {
 
         private occurrenceViews: V[] = [];
 
-        private occurrenceViewContainer: api.dom.Element;
+        private occurrenceViewContainer: Element;
 
         private formItem: FormItem;
 
@@ -160,7 +169,7 @@ module api.form {
 
             var promises = [];
             // next update existing occurrences and add missing ones if there are not enough
-            this.propertyArray.forEach((property: api.data.Property, i: number) => {
+            this.propertyArray.forEach((property: Property, i: number) => {
                 var occurrenceView = this.occurrenceViews[i];
                 var occurrence = this.occurrences[i];
                 if (occurrenceView && occurrence) {
@@ -213,7 +222,7 @@ module api.form {
             var insertAtIndex = occurrence.getIndex();
             this.occurrences.splice(insertAtIndex, 0, occurrence);
 
-            var occurrenceViewBefore: api.dom.Element = this.getOccurrenceViewElementBefore(insertAtIndex);
+            var occurrenceViewBefore: Element = this.getOccurrenceViewElementBefore(insertAtIndex);
             if (insertAtIndex == countOccurrences || !occurrenceViewBefore) {
                 this.occurrenceViewContainer.appendChild(occurrenceView);
             } else {
@@ -325,14 +334,14 @@ module api.form {
         moveOccurrence(fromIndex: number, toIndex: number) {
 
             // move FormItemSetOccurrence
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.occurrences);
+            ArrayHelper.moveElement(fromIndex, toIndex, this.occurrences);
             // update FormItemSetOccurrence indexes
             this.occurrences.forEach((occurrence: FormItemOccurrence<V>, index: number) => {
                 occurrence.setIndex(index);
             });
 
             // move FormItemOccurrenceView
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.occurrenceViews);
+            ArrayHelper.moveElement(fromIndex, toIndex, this.occurrenceViews);
 
             this.propertyArray.move(fromIndex, toIndex)
 
@@ -350,4 +359,3 @@ module api.form {
             return this.occurrenceViews;
         }
     }
-}

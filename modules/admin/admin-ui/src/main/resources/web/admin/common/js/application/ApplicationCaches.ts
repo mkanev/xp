@@ -1,6 +1,7 @@
-module api.application {
+import {Cache} from "../cache/Cache";
+import {ApplicationKey} from "./ApplicationKey";
 
-    export class ApplicationCaches<CACHE extends api.cache.Cache<any,any>> {
+export class ApplicationCaches<CACHE extends Cache<any,any>> {
 
         private cacheByApplicationKey: {[s:string] : CACHE;} = {};
 
@@ -17,4 +18,3 @@ module api.application {
         }
     }
 
-}

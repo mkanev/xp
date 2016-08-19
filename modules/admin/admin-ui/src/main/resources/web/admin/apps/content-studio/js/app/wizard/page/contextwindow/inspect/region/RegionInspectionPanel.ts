@@ -1,20 +1,23 @@
-import "../../../../../../api.ts";
+import {Region} from "../../../../../../../../../common/js/content/page/region/Region";
+import {NamesAndIconView} from "../../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../../../../../common/js/app/NamesAndIconViewSize";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
 
-import Region = api.content.page.region.Region;
 import {BaseInspectionPanel} from "../BaseInspectionPanel";
 
 export class RegionInspectionPanel extends BaseInspectionPanel {
 
     private region: Region;
 
-    private namesAndIcon: api.app.NamesAndIconView;
+    private namesAndIcon: NamesAndIconView;
 
     constructor() {
         super();
 
         this.namesAndIcon =
-            new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.medium)).setIconClass(
-                api.liveedit.ItemViewIconClassResolver.resolveByType("region"));
+            new NamesAndIconView(new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.medium)).setIconClass(
+                ItemViewIconClassResolver.resolveByType("region"));
 
         this.appendChild(this.namesAndIcon);
     }

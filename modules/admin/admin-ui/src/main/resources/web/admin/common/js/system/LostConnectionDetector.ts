@@ -1,6 +1,7 @@
-module api.system {
+import {StatusRequest} from "./StatusRequest";
+import {StatusResult} from "./StatusResult";
 
-    export class LostConnectionDetector {
+export class LostConnectionDetector {
 
         private intervalId: number = -1;
         private pollIntervalMs: number;
@@ -99,4 +100,3 @@ module api.system {
             });
         }
     }
-}

@@ -1,6 +1,12 @@
-module api.schema.content {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentType} from "./ContentType";
+import {ContentTypeCache} from "./ContentTypeCache";
+import {ContentTypeJson} from "./ContentTypeJson";
+import {ContentTypeName} from "./ContentTypeName";
+import {ContentTypeResourceRequest} from "./ContentTypeResourceRequest";
 
-    export class GetContentTypeByNameRequest extends ContentTypeResourceRequest<ContentTypeJson, ContentType> {
+export class GetContentTypeByNameRequest extends ContentTypeResourceRequest<ContentTypeJson, ContentType> {
 
         private name: ContentTypeName;
 
@@ -19,7 +25,7 @@ module api.schema.content {
             };
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return super.getResourcePath();
         }
 
@@ -31,7 +37,7 @@ module api.schema.content {
                 return wemQ(contentType);
             }
             else {
-                return this.send().then((response: api.rest.JsonResponse<ContentTypeJson>) => {
+                return this.send().then((response: JsonResponse<ContentTypeJson>) => {
                     contentType = this.fromJsonToContentType(response.getResult());
                     contentTypeCache.put(contentType);
                     return  contentType;
@@ -39,4 +45,3 @@ module api.schema.content {
             }
         }
     }
-}

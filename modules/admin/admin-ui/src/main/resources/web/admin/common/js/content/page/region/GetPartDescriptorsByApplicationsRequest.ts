@@ -1,8 +1,10 @@
-module api.content.page.region {
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {Path} from "../../../rest/Path";
+import {GetPartDescriptorsByApplicationRequest} from "./GetPartDescriptorsByApplicationRequest";
+import {PartDescriptor} from "./PartDescriptor";
+import {PartDescriptorsResourceRequest} from "./PartDescriptorsResourceRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetPartDescriptorsByApplicationsRequest extends PartDescriptorsResourceRequest {
+export class GetPartDescriptorsByApplicationsRequest extends PartDescriptorsResourceRequest {
 
         private applicationKeys: ApplicationKey[];
 
@@ -19,7 +21,7 @@ module api.content.page.region {
             throw new Error("Unexpected call");
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             throw new Error("Unexpected call");
         }
 
@@ -36,4 +38,3 @@ module api.content.page.region {
             });
         }
     }
-}

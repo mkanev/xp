@@ -1,14 +1,24 @@
-module api.content {
+import {SelectedOption} from "../ui/selector/combobox/SelectedOption";
+import {Option} from "../ui/selector/Option";
+import {RichComboBox} from "../ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../ui/selector/combobox/RichComboBox";
+import {ContentSummaryLoader} from "./resource/ContentSummaryLoader";
+import {ContentQueryResultJson} from "./json/ContentQueryResultJson";
+import {ContentSummaryJson} from "./json/ContentSummaryJson";
+import {ContentSummaryViewer} from "./ContentSummaryViewer";
+import {BaseSelectedOptionsView} from "../ui/selector/combobox/BaseSelectedOptionsView";
+import {BaseSelectedOptionView} from "../ui/selector/combobox/BaseSelectedOptionView";
+import {AEl} from "../dom/AEl";
+import {H6El} from "../dom/H6El";
+import {Element} from "../dom/Element";
+import {RichSelectedOptionView} from "../ui/selector/combobox/RichSelectedOptionView";
+import {EditContentEvent} from "./event/EditContentEvent";
+import {BaseLoader} from "../util/loader/BaseLoader";
+import {ContentId} from "./ContentId";
+import {ContentSummary} from "./ContentSummary";
+import {ContentSummaryAndCompareStatus} from "./ContentSummaryAndCompareStatus";
 
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
-    import RichComboBox = api.ui.selector.combobox.RichComboBox;
-    import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-
-    export class ContentComboBox extends RichComboBox<ContentSummary> {
+export class ContentComboBox extends RichComboBox<ContentSummary> {
 
         constructor(builder: ContentComboBoxBuilder) {
 
@@ -17,7 +27,7 @@ module api.content {
             var richComboBoxBuilder = new RichComboBoxBuilder<ContentSummary>().setComboBoxName(
                 builder.name ? builder.name : 'contentSelector').setLoader(loader).setSelectedOptionsView(
                 new ContentSelectedOptionsView()).setMaximumOccurrences(builder.maximumOccurrences).setOptionDisplayValueViewer(
-                new api.content.ContentSummaryViewer()).setDelayedInputValueChangedHandling(750).setValue(
+                new ContentSummaryViewer()).setDelayedInputValueChangedHandling(750).setValue(
                 builder.value).setDisplayMissingSelectedOptions(builder.displayMissingSelectedOptions).setRemoveMissingSelectedOptions(
                 builder.removeMissingSelectedOptions).setMinWidth(builder.minWidth);
 
@@ -60,27 +70,27 @@ module api.content {
         }
     }
 
-    export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentSummary> {
+    export class ContentSelectedOptionsView extends BaseSelectedOptionsView<ContentSummary> {
 
-        createSelectedOption(option: api.ui.selector.Option<ContentSummary>): SelectedOption<ContentSummary> {
+        createSelectedOption(option: Option<ContentSummary>): SelectedOption<ContentSummary> {
             var optionView = !!option.displayValue ? new ContentSelectedOptionView(option) : new MissingContentSelectedOptionView(option);
             return new SelectedOption<ContentSummary>(optionView, this.count());
         }
     }
 
-    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentSummary> {
+    export class MissingContentSelectedOptionView extends BaseSelectedOptionView<ContentSummary> {
 
         private id: string;
 
-        constructor(option: api.ui.selector.Option<ContentSummary>) {
+        constructor(option: Option<ContentSummary>) {
             this.id = option.value;
             super(option);
         }
 
         doRender(): wemQ.Promise<boolean> {
 
-            var removeButtonEl = new api.dom.AEl("remove"),
-                message = new api.dom.H6El("missing-content");
+            var removeButtonEl = new AEl("remove"),
+                message = new H6El("missing-content");
 
             message.setHtml("No access to content with id=" + this.id);
 
@@ -92,15 +102,15 @@ module api.content {
                 return false;
             });
 
-            this.appendChildren<api.dom.Element>(removeButtonEl, message);
+            this.appendChildren<Element>(removeButtonEl, message);
 
             return wemQ(true);
         }
     }
 
-    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentSummary> {
+    export class ContentSelectedOptionView extends RichSelectedOptionView<ContentSummary> {
 
-        constructor(option: api.ui.selector.Option<ContentSummary>) {
+        constructor(option: Option<ContentSummary>) {
             super(option);
         }
 
@@ -116,11 +126,11 @@ module api.content {
             return content.getPath().toString();
         }
 
-        createActionButtons(content: ContentSummary): api.dom.Element[] {
-            let editButton = new api.dom.AEl("edit");
+        createActionButtons(content: ContentSummary): Element[] {
+            let editButton = new AEl("edit");
             editButton.onClicked((event: Event) => {
                 let model = [ContentSummaryAndCompareStatus.fromContentSummary(content)];
-                new api.content.event.EditContentEvent(model).fire();
+                new EditContentEvent(model).fire();
 
                 event.stopPropagation();
                 event.preventDefault();
@@ -138,7 +148,7 @@ module api.content {
 
         maximumOccurrences: number = 0;
 
-        loader: api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>;
+        loader: BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>;
 
         minWidth: number;
 
@@ -160,7 +170,7 @@ module api.content {
             return this;
         }
 
-        setLoader(loader: api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>): ContentComboBoxBuilder {
+        setLoader(loader: BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>): ContentComboBoxBuilder {
             this.loader = loader;
             return this;
         }
@@ -195,4 +205,3 @@ module api.content {
         }
 
     }
-}

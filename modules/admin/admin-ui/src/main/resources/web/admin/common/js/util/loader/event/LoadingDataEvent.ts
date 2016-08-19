@@ -1,6 +1,6 @@
-module api.util.loader.event {
+import {LoaderEvent} from "./LoaderEvent";
 
-    export class LoadingDataEvent extends LoaderEvent {
+export class LoadingDataEvent extends LoaderEvent {
 
         private postLoad: boolean;
 
@@ -13,4 +13,3 @@ module api.util.loader.event {
             return this.postLoad;
         }
     }
-}

@@ -1,22 +1,25 @@
-import "../../api.ts";
+import {User} from "../../../../../common/js/security/User";
+import {UserBuilder} from "../../../../../common/js/security/User";
+import {CreateUserRequest} from "../../../../../common/js/security/CreateUserRequest";
+import {UpdateUserRequest} from "../../../../../common/js/security/UpdateUserRequest";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {GetPrincipalByKeyRequest} from "../../../../../common/js/security/GetPrincipalByKeyRequest";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {UserItemCreatedEvent} from "../../../../../common/js/security/UserItemCreatedEvent";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {UserItemUpdatedEvent} from "../../../../../common/js/security/UserItemUpdatedEvent";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {showError} from "../../../../../common/js/notify/MessageBus";
+
 import {PrincipalWizardPanel} from "./PrincipalWizardPanel";
 import {UserEmailWizardStepForm} from "./UserEmailWizardStepForm";
 import {UserPasswordWizardStepForm} from "./UserPasswordWizardStepForm";
 import {UserMembershipsWizardStepForm} from "./UserMembershipsWizardStepForm";
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
-
-import User = api.security.User;
-import UserBuilder = api.security.UserBuilder;
-import CreateUserRequest = api.security.CreateUserRequest;
-import UpdateUserRequest = api.security.UpdateUserRequest;
-
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import UserStoreKey = api.security.UserStoreKey;
-import GetPrincipalByKeyRequest = api.security.GetPrincipalByKeyRequest;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import WizardStep = api.app.wizard.WizardStep;
 
 export class UserWizardPanel extends PrincipalWizardPanel {
 
@@ -99,9 +102,9 @@ export class UserWizardPanel extends PrincipalWizardPanel {
     persistNewItem(): wemQ.Promise<Principal> {
         return this.produceCreateUserRequest().sendAndParse().then((principal: Principal) => {
 
-            new api.security.UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
+            new UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
 
-            api.notify.showFeedback('User was created!');
+            showFeedback('User was created!');
             this.notifyPrincipalNamed(principal);
 
             return principal;
@@ -133,8 +136,8 @@ export class UserWizardPanel extends PrincipalWizardPanel {
                 this.notifyPrincipalNamed(principal);
             }
             this.userEmailWizardStepForm.layout(principal);
-            api.notify.showFeedback('User was updated!');
-            new api.security.UserItemUpdatedEvent(principal, this.getUserStore()).fire();
+            showFeedback('User was updated!');
+            new UserItemUpdatedEvent(principal, this.getUserStore()).fire();
 
             return principal;
         });
@@ -197,7 +200,7 @@ export class UserWizardPanel extends PrincipalWizardPanel {
                 return el.getKey()
             });
 
-        if (api.ObjectHelper.arrayEquals(viewedMembershipsKeys, persistedMembershipsKeys)) {
+        if (ObjectHelper.arrayEquals(viewedMembershipsKeys, persistedMembershipsKeys)) {
             viewedPrincipal.setMemberships(persistedPrincipal.getMemberships());
         }
 
@@ -231,20 +234,20 @@ export class UserWizardPanel extends PrincipalWizardPanel {
 
     private showEmailErrors() {
         var formEmail = this.userEmailWizardStepForm.getEmail();
-        if (api.util.StringHelper.isEmpty(formEmail)) {
-            api.notify.showError("E-mail can not be empty.");
+        if (StringHelper.isEmpty(formEmail)) {
+            showError("E-mail can not be empty.");
         } else if (!this.userEmailWizardStepForm.isValid()) {
-            api.notify.showError("E-mail is invalid.");
+            showError("E-mail is invalid.");
         }
 
     }
 
     private showPasswordErrors() {
         var password = this.userPasswordWizardStepForm.getPassword();
-        if (api.util.StringHelper.isEmpty(password)) {
-            api.notify.showError("Password can not be empty.");
+        if (StringHelper.isEmpty(password)) {
+            showError("Password can not be empty.");
         } else if (!this.userEmailWizardStepForm.isValid()) {
-            api.notify.showError("Password is invalid.");
+            showError("Password is invalid.");
         }
     }
 }

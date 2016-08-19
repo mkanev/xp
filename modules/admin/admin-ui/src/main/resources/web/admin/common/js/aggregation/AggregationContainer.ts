@@ -1,19 +1,23 @@
-module api.aggregation {
+import {DivEl} from "../dom/DivEl";
+import {AggregationGroupView} from "./AggregationGroupView";
+import {BucketViewSelectionChangedEvent} from "./BucketViewSelectionChangedEvent";
+import {Aggregation} from "./Aggregation";
+import {AggregationSelection} from "./AggregationSelection";
 
-    export class AggregationContainer extends api.dom.DivEl {
+export class AggregationContainer extends DivEl {
 
-        aggregationGroupViews: api.aggregation.AggregationGroupView[] = [];
+        aggregationGroupViews: AggregationGroupView[] = [];
 
-        private lastSelectedGroupView: api.aggregation.AggregationGroupView;
+        private lastSelectedGroupView: AggregationGroupView;
 
         constructor() {
             super();
         }
 
-        addAggregationGroupView(aggregationGroupView: api.aggregation.AggregationGroupView) {
+        addAggregationGroupView(aggregationGroupView: AggregationGroupView) {
             this.appendChild(aggregationGroupView);
 
-            aggregationGroupView.onBucketViewSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {
+            aggregationGroupView.onBucketViewSelectionChanged((event: BucketViewSelectionChangedEvent) => {
 
                 if (event.getNewValue()) {
                     this.lastSelectedGroupView = event.getBucketView().getParentAggregationView().getParentGroupView();
@@ -24,7 +28,7 @@ module api.aggregation {
         }
 
         deselectAll(supressEvent?: boolean) {
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
+            this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
                 aggregationGroupView.deselectGroup(supressEvent);
             });
 
@@ -33,7 +37,7 @@ module api.aggregation {
 
         hasSelectedBuckets(): boolean {
             var hasSelected: boolean = false;
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
+            this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
                 if (aggregationGroupView.hasSelections()) {
                     hasSelected = true;
                 }
@@ -41,11 +45,11 @@ module api.aggregation {
             return hasSelected;
         }
 
-        updateAggregations(aggregations: api.aggregation.Aggregation[], doUpdateAll?: boolean) {
+        updateAggregations(aggregations: Aggregation[], doUpdateAll?: boolean) {
 
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
+            this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
 
-                var matchingAggregations: api.aggregation.Aggregation[] = aggregations.filter((current: api.aggregation.Aggregation) => {
+                var matchingAggregations: Aggregation[] = aggregations.filter((current: Aggregation) => {
                     return aggregationGroupView.handlesAggregation(current);
                 });
 
@@ -55,14 +59,14 @@ module api.aggregation {
             });
         }
 
-        private isGroupUpdatable(aggregationGroupView: api.aggregation.AggregationGroupView) {
+        private isGroupUpdatable(aggregationGroupView: AggregationGroupView) {
             return aggregationGroupView != this.lastSelectedGroupView;
         }
 
-        getSelectedValuesByAggregationName(): api.aggregation.AggregationSelection[] {
-            var aggregationSelections: api.aggregation.AggregationSelection[] = [];
+        getSelectedValuesByAggregationName(): AggregationSelection[] {
+            var aggregationSelections: AggregationSelection[] = [];
 
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
+            this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
                 var selectedValuesByAggregationName = aggregationGroupView.getSelectedValuesByAggregationName();
                 aggregationSelections = aggregationSelections.concat(selectedValuesByAggregationName);
 
@@ -71,4 +75,3 @@ module api.aggregation {
             return aggregationSelections;
         }
     }
-}

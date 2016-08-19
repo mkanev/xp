@@ -1,4 +1,35 @@
-import "../../api.ts";
+import {GetAllContentTypesRequest} from "../../../../../common/js/schema/content/GetAllContentTypesRequest";
+import {GetContentTypeByNameRequest} from "../../../../../common/js/schema/content/GetContentTypeByNameRequest";
+import {GetNearestSiteRequest} from "../../../../../common/js/content/resource/GetNearestSiteRequest";
+import {ContentName} from "../../../../../common/js/content/ContentName";
+import {Content} from "../../../../../common/js/content/Content";
+import {ContentPath} from "../../../../../common/js/content/ContentPath";
+import {ContentTypeName} from "../../../../../common/js/schema/content/ContentTypeName";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {ContentType} from "../../../../../common/js/schema/content/ContentType";
+import {Site} from "../../../../../common/js/content/site/Site";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {FileUploadStartedEvent} from "../../../../../common/js/ui/uploader/FileUploadStartedEvent";
+import {UploadItem} from "../../../../../common/js/ui/uploader/UploadItem";
+import {ListContentByPathRequest} from "../../../../../common/js/content/resource/ListContentByPathRequest";
+import {LoadMask} from "../../../../../common/js/ui/mask/LoadMask";
+import {ContentResponse} from "../../../../../common/js/content/resource/result/ContentResponse";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {FileInput} from "../../../../../common/js/ui/text/FileInput";
+import {DropzoneContainer} from "../../../../../common/js/ui/uploader/UploaderEl";
+import {Body} from "../../../../../common/js/dom/Body";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {SectionEl} from "../../../../../common/js/dom/SectionEl";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {Element} from "../../../../../common/js/dom/Element";
+import {KeyBinding} from "../../../../../common/js/ui/KeyBinding";
+import {FormEl} from "../../../../../common/js/dom/FormEl";
+import {KeyBindings} from "../../../../../common/js/ui/KeyBindings";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {PEl} from "../../../../../common/js/dom/PEl";
+
 import {MostPopularItemsBlock} from "./MostPopularItemsBlock";
 import {RecentItemsBlock} from "./RecentItemsBlock";
 import {NewContentDialogItemSelectedEvent} from "./NewContentDialogItemSelectedEvent";
@@ -6,32 +37,15 @@ import {NewMediaUploadEvent} from "./NewMediaUploadEvent";
 import {NewContentEvent} from "./NewContentEvent";
 import {FilterableItemsList} from "./FilterableItemsList";
 
-import GetAllContentTypesRequest = api.schema.content.GetAllContentTypesRequest;
-import GetContentTypeByNameRequest = api.schema.content.GetContentTypeByNameRequest;
-import GetNearestSiteRequest = api.content.resource.GetNearestSiteRequest;
-import ContentName = api.content.ContentName;
-import Content = api.content.Content;
-import ContentPath = api.content.ContentPath;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-import ContentType = api.schema.content.ContentType;
-import Site = api.content.site.Site;
-import ApplicationKey = api.application.ApplicationKey;
-import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-import UploadItem = api.ui.uploader.UploadItem;
-import ListContentByPathRequest = api.content.resource.ListContentByPathRequest;
-import LoadMask = api.ui.mask.LoadMask;
-import ContentResponse = api.content.resource.result.ContentResponse;
-
-export class NewContentDialog extends api.ui.dialog.ModalDialog {
+export class NewContentDialog extends ModalDialog {
 
     private contentDialogTitle: NewContentDialogTitle;
 
-    private parentContent: api.content.Content;
+    private parentContent: Content;
 
-    private fileInput: api.ui.text.FileInput;
+    private fileInput: FileInput;
 
-    private dropzoneContainer: api.ui.uploader.DropzoneContainer;
+    private dropzoneContainer: DropzoneContainer;
 
     private allContentTypes: FilterableItemsList;
 
@@ -54,7 +68,7 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
 
         this.appendElementsToDialog();
 
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
     }
 
     private initElements() {
@@ -76,11 +90,11 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
 
 
     private initFileInput() {
-        this.dropzoneContainer = new api.ui.uploader.DropzoneContainer(true);
+        this.dropzoneContainer = new DropzoneContainer(true);
         this.dropzoneContainer.hide();
         this.appendChild(this.dropzoneContainer);
 
-        this.fileInput = new api.ui.text.FileInput('large', undefined).
+        this.fileInput = new FileInput('large', undefined).
             setPlaceholder("Search for content types").
             setUploaderParams({parent: ContentPath.ROOT.toString()});
 
@@ -93,7 +107,7 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
         this.fileInput.onUploadStarted(this.closeAndFireEventFromMediaUpload.bind(this));
 
         this.fileInput.onInput((event: Event) => {
-            if (api.util.StringHelper.isEmpty(this.fileInput.getValue())) {
+            if (StringHelper.isEmpty(this.fileInput.getValue())) {
                 this.mostPopularContentTypes.showIfNotEmpty();
             } else {
                 this.mostPopularContentTypes.hide();
@@ -144,28 +158,28 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
     }
 
     private appendElementsToDialog() {
-        var section = new api.dom.SectionEl().setClass("column");
+        var section = new SectionEl().setClass("column");
         this.appendChildToContentPanel(section);
 
         this.mostPopularContentTypes.hide();
 
-        var contentTypesListDiv = new api.dom.DivEl("content-types-content");
-        contentTypesListDiv.appendChildren(<api.dom.Element>this.mostPopularContentTypes,
-            <api.dom.Element>this.allContentTypes);
+        var contentTypesListDiv = new DivEl("content-types-content");
+        contentTypesListDiv.appendChildren(<Element>this.mostPopularContentTypes,
+            <Element>this.allContentTypes);
 
-        section.appendChildren(<api.dom.Element>this.fileInput, <api.dom.Element>contentTypesListDiv);
+        section.appendChildren(<Element>this.fileInput, <Element>contentTypesListDiv);
 
         this.appendChildToContentPanel(this.recentContentTypes);
 
         this.getContentPanel().getParentElement().appendChild(this.loadMask);
     }
 
-    setParentContent(parent: api.content.Content) {
+    setParentContent(parent: Content) {
         this.parentContent = parent;
         this.allContentTypes.setParentContent(parent);
 
         var params: {[key: string]: any} = {
-            parent: parent ? parent.getPath().toString() : api.content.ContentPath.ROOT.toString()
+            parent: parent ? parent.getPath().toString() : ContentPath.ROOT.toString()
         };
 
         this.fileInput.setUploaderParams(params)
@@ -174,16 +188,16 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
     open() {
         super.open();
         var keyBindings = [
-            new api.ui.KeyBinding('up', () => {
-                api.dom.FormEl.moveFocusToPrevFocusable(api.dom.Element.fromHtmlElement(<HTMLElement>document.activeElement),
+            new KeyBinding('up', () => {
+                FormEl.moveFocusToPrevFocusable(Element.fromHtmlElement(<HTMLElement>document.activeElement),
                     "input,li");
             }).setGlobal(true),
-            new api.ui.KeyBinding('down', () => {
-                api.dom.FormEl.moveFocusToNextFocusable(api.dom.Element.fromHtmlElement(<HTMLElement>document.activeElement),
+            new KeyBinding('down', () => {
+                FormEl.moveFocusToNextFocusable(Element.fromHtmlElement(<HTMLElement>document.activeElement),
                     "input,li");
             }).setGlobal(true)];
 
-        api.ui.KeyBindings.get().bindKeys(keyBindings);
+        KeyBindings.get().bindKeys(keyBindings);
     }
 
     show() {
@@ -216,7 +230,7 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
         this.loadMask.show();
 
         wemQ.all(this.sendRequestsToFetchContentData())
-            .spread((contentTypes: ContentTypeSummary[], directChilds: ContentResponse<api.content.ContentSummary>,
+            .spread((contentTypes: ContentTypeSummary[], directChilds: ContentResponse<ContentSummary>,
                      parentSite: Site) => {
 
                 this.allContentTypes.createItems(contentTypes, parentSite);
@@ -225,7 +239,7 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
 
             }).catch((reason: any) => {
 
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
 
         }).finally(() => {
             this.fileInput.enable();
@@ -276,19 +290,19 @@ export class NewContentDialog extends api.ui.dialog.ModalDialog {
     }
 }
 
-export class NewContentDialogTitle extends api.ui.dialog.ModalDialogHeader {
+export class NewContentDialogTitle extends ModalDialogHeader {
 
-    private pathEl: api.dom.PEl;
+    private pathEl: PEl;
 
     constructor(title: string, path: string) {
         super(title);
 
-        this.pathEl = new api.dom.PEl('path');
+        this.pathEl = new PEl('path');
         this.pathEl.setHtml(path);
         this.appendChild(this.pathEl);
     }
 
     setPath(path: string) {
-        this.pathEl.setHtml(path).setVisible(!api.util.StringHelper.isBlank(path));
+        this.pathEl.setHtml(path).setVisible(!StringHelper.isBlank(path));
     }
 }

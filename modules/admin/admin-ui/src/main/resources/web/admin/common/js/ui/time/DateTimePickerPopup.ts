@@ -1,8 +1,14 @@
-module api.ui.time {
+import {Timezone} from "../../util/Timezone";
+import {DivEl} from "../../dom/DivEl";
+import {Element} from "../../dom/Element";
+import {Calendar} from "./Calendar";
+import {DatePickerPopupBuilder} from "./DatePickerPopup";
+import {DatePickerPopup} from "./DatePickerPopup";
+import {SelectedDateChangedEvent} from "./SelectedDateChangedEvent";
+import {TimePickerPopupBuilder} from "./TimePickerPopup";
+import {TimePickerPopup} from "./TimePickerPopup";
 
-    import Timezone = api.util.Timezone;
-
-    export class DateTimePickerPopupBuilder {
+export class DateTimePickerPopupBuilder {
 
         hours: number;
 
@@ -66,7 +72,7 @@ module api.ui.time {
 
     }
 
-    export class DateTimePickerPopup extends api.dom.DivEl {
+    export class DateTimePickerPopup extends DivEl {
 
         private datePickerPopup: DatePickerPopup;
 
@@ -85,7 +91,7 @@ module api.ui.time {
                 setMinutes(builder.getMinutes()).
                 build();
 
-            this.appendChildren(<api.dom.Element>this.datePickerPopup, <api.dom.Element>this.timePickerPopup);
+            this.appendChildren(<Element>this.datePickerPopup, <Element>this.timePickerPopup);
         }
 
         getSelectedDate(): Date {
@@ -129,4 +135,3 @@ module api.ui.time {
             this.datePickerPopup.setSelectedDate(date, silent);
         }
     }
-}

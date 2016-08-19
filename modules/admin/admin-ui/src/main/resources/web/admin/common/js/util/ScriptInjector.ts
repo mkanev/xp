@@ -1,5 +1,6 @@
-module api.util {
-    export class ScriptInjector {
+
+
+export class ScriptInjector {
         static inject(url:string, callback:() => void) {
 
             var load = true;
@@ -32,4 +33,3 @@ module api.util {
             }
         }
     }
-}

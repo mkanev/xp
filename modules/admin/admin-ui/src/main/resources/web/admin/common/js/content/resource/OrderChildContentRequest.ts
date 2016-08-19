@@ -1,7 +1,11 @@
-module api.content.resource {
+import {ReorderChildContentsJson} from "../json/ReorderChildContentsJson";
+import {ChildOrder} from "../order/ChildOrder";
+import {OrderChildMovements} from "../order/OrderChildMovements";
+import {Path} from "../../rest/Path";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ReorderChildContentsJson = api.content.json.ReorderChildContentsJson;
-    export class OrderChildContentRequest extends ContentResourceRequest<any, any> {
+export class OrderChildContentRequest extends ContentResourceRequest<any, any> {
 
         private silent: boolean = false;
 
@@ -9,9 +13,9 @@ module api.content.resource {
 
         private contentId: ContentId;
 
-        private childOrder: api.content.order.ChildOrder;
+        private childOrder: ChildOrder;
 
-        private contentMovements: api.content.order.OrderChildMovements;
+        private contentMovements: OrderChildMovements;
 
         constructor() {
             super();
@@ -33,12 +37,12 @@ module api.content.resource {
             return this;
         }
 
-        setChildOrder(value: api.content.order.ChildOrder): OrderChildContentRequest {
+        setChildOrder(value: ChildOrder): OrderChildContentRequest {
             this.childOrder = value;
             return this;
         }
 
-        setContentMovements(value: api.content.order.OrderChildMovements): OrderChildContentRequest {
+        setContentMovements(value: OrderChildMovements): OrderChildContentRequest {
             this.contentMovements = value;
             return this;
         }
@@ -54,8 +58,8 @@ module api.content.resource {
         }
 
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "reorderChildren");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "reorderChildren");
         }
 
         sendAndParse(): wemQ.Promise<any> {
@@ -64,4 +68,3 @@ module api.content.resource {
         }
 
     }
-}

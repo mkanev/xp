@@ -1,13 +1,19 @@
-module api.content.page {
+import {LoadedDataEvent} from "../../util/loader/event/LoadedDataEvent";
+import {Option} from "../../ui/selector/Option";
+import {SiteModel} from "../site/SiteModel";
+import {LiveEditModel} from "../../liveedit/LiveEditModel";
+import {DescriptorBasedDropdown} from "./DescriptorBasedDropdown";
+import {ApplicationRemovedEvent} from "../site/ApplicationRemovedEvent";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {DescriptorByDisplayNameComparator} from "./DescriptorByDisplayNameComparator";
+import {OptionSelectedEvent} from "../../ui/selector/OptionSelectedEvent";
+import {PageDescriptor} from "./PageDescriptor";
+import {GetPageDescriptorsByApplicationsRequest} from "./GetPageDescriptorsByApplicationsRequest";
+import {PageDescriptorsJson} from "./PageDescriptorsJson";
+import {PageDescriptorViewer} from "./PageDescriptorViewer";
+import {SetController} from "./PageModel";
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import Option = api.ui.selector.Option;
-    import SiteModel = api.content.site.SiteModel;
-    import LiveEditModel = api.liveedit.LiveEditModel;
-    import DescriptorBasedDropdown = api.content.page.region.DescriptorBasedDropdown;
-    import ApplicationRemovedEvent = api.content.site.ApplicationRemovedEvent;
-
-    export class PageDescriptorDropdown extends DescriptorBasedDropdown<PageDescriptor> {
+export class PageDescriptorDropdown extends DescriptorBasedDropdown<PageDescriptor> {
 
         private loadedDataListeners: {(event: LoadedDataEvent<PageDescriptor>):void}[];
 
@@ -27,11 +33,11 @@ module api.content.page {
             this.initListeners();
         }
 
-        private createLoader(): api.util.loader.BaseLoader<PageDescriptorsJson, PageDescriptor> {
+        private createLoader(): BaseLoader<PageDescriptorsJson, PageDescriptor> {
             var request = new GetPageDescriptorsByApplicationsRequest(this.liveEditModel.getSiteModel().getApplicationKeys());
 
-            return new api.util.loader.BaseLoader<PageDescriptorsJson, PageDescriptor>(request).setComparator(
-                new api.content.page.DescriptorByDisplayNameComparator());
+            return new BaseLoader<PageDescriptorsJson, PageDescriptor>(request).setComparator(
+                new DescriptorByDisplayNameComparator());
         }
 
         handleLoadedData(event: LoadedDataEvent<PageDescriptor>) {
@@ -40,7 +46,7 @@ module api.content.page {
         }
 
         private initListeners() {
-            this.onOptionSelected((event: api.ui.selector.OptionSelectedEvent<api.content.page.PageDescriptor>) => {
+            this.onOptionSelected((event: OptionSelectedEvent<PageDescriptor>) => {
                 var pageDescriptor = event.getOption().displayValue;
                 var setController = new SetController(this).setDescriptor(pageDescriptor);
                 this.liveEditModel.getPageModel().setController(setController);
@@ -97,4 +103,3 @@ module api.content.page {
         }
 
     }
-}

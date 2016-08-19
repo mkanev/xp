@@ -1,19 +1,25 @@
-import "../../../../../api.ts";
-import {WidgetItemView} from "../../WidgetItemView";
+import {ContentSummary} from "../../../../../../../../common/js/content/ContentSummary";
+import {Attachments} from "../../../../../../../../common/js/content/attachment/Attachments";
+import {Attachment} from "../../../../../../../../common/js/content/attachment/Attachment";
+import {ContentId} from "../../../../../../../../common/js/content/ContentId";
+import {AttachmentName} from "../../../../../../../../common/js/content/attachment/AttachmentName";
+import {UlEl} from "../../../../../../../../common/js/dom/UlEl";
+import {SpanEl} from "../../../../../../../../common/js/dom/SpanEl";
+import {ObjectHelper} from "../../../../../../../../common/js/ObjectHelper";
+import {GetContentAttachmentsRequest} from "../../../../../../../../common/js/content/resource/GetContentAttachmentsRequest";
+import {LiEl} from "../../../../../../../../common/js/dom/LiEl";
+import {AEl} from "../../../../../../../../common/js/dom/AEl";
+import {UriHelper} from "../../../../../../../../common/js/util/UriHelper";
 
-import ContentSummary = api.content.ContentSummary;
-import Attachments = api.content.attachment.Attachments;
-import Attachment = api.content.attachment.Attachment;
-import ContentId = api.content.ContentId;
-import AttachmentName = api.content.attachment.AttachmentName;
+import {WidgetItemView} from "../../WidgetItemView";
 
 export class AttachmentsWidgetItemView extends WidgetItemView {
 
     private content: ContentSummary;
 
-    private list: api.dom.UlEl;
+    private list: UlEl;
 
-    private placeholder: api.dom.SpanEl;
+    private placeholder: SpanEl;
 
     public static debug = false;
 
@@ -25,7 +31,7 @@ export class AttachmentsWidgetItemView extends WidgetItemView {
         if (AttachmentsWidgetItemView.debug) {
             console.debug('AttachmentsWidgetItemView.setContent: ', content);
         }
-        if (!api.ObjectHelper.equals(content, this.content)) {
+        if (!ObjectHelper.equals(content, this.content)) {
             this.content = content;
             return this.layout();
         }
@@ -47,7 +53,7 @@ export class AttachmentsWidgetItemView extends WidgetItemView {
     }
 
     private layoutAttachments(): wemQ.Promise<Attachments> {
-        return new api.content.resource.GetContentAttachmentsRequest(this.content.getContentId()).sendAndParse().then(
+        return new GetContentAttachmentsRequest(this.content.getContentId()).sendAndParse().then(
             (attachments: Attachments) => {
 
                 if (this.hasChild(this.list)) {
@@ -59,11 +65,11 @@ export class AttachmentsWidgetItemView extends WidgetItemView {
                 }
 
                 if (attachments) {
-                    this.list = new api.dom.UlEl('attachment-list');
+                    this.list = new UlEl('attachment-list');
 
                     var contentId = this.content.getContentId();
                     attachments.forEach((attachment: Attachment) => {
-                        var attachmentContainer = new api.dom.LiEl('attachment-container');
+                        var attachmentContainer = new LiEl('attachment-container');
                         var link = this.createLinkEl(contentId, attachment.getName());
                         attachmentContainer.appendChild(link);
                         this.list.appendChild(attachmentContainer);
@@ -73,7 +79,7 @@ export class AttachmentsWidgetItemView extends WidgetItemView {
                     this.appendChild(this.list);
 
                 } else {
-                    this.placeholder = new api.dom.SpanEl('att-placeholder').setHtml('This item has no attachments');
+                    this.placeholder = new SpanEl('att-placeholder').setHtml('This item has no attachments');
                     this.appendChild(this.placeholder);
                 }
 
@@ -81,9 +87,9 @@ export class AttachmentsWidgetItemView extends WidgetItemView {
             });
     }
 
-    private createLinkEl(contentId: ContentId, attachmentName: AttachmentName): api.dom.AEl {
+    private createLinkEl(contentId: ContentId, attachmentName: AttachmentName): AEl {
         var url = `content/media/${contentId.toString()}/${attachmentName.toString()}`;
-        var link = new api.dom.AEl().setUrl(api.util.UriHelper.getRestUri(url), '_blank');
+        var link = new AEl().setUrl(UriHelper.getRestUri(url), '_blank');
         link.setHtml(attachmentName.toString());
         return link;
     }

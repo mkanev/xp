@@ -1,14 +1,15 @@
-module api.ui {
+import {Element} from "../dom/Element";
+import {NewElementBuilder} from "../dom/Element";
 
-    /**
+/**
      * An abstract class capable of viewing a given object.
      */
-    export class Viewer<OBJECT> extends api.dom.Element {
+    export class Viewer<OBJECT> extends Element {
 
         private object: OBJECT;
 
         constructor(className?: string) {
-            super(new api.dom.NewElementBuilder().
+            super(new NewElementBuilder().
                 setTagName("div").
                 setClassName('viewer ' + (className || '')).
                 setGenerateId(false));
@@ -52,4 +53,3 @@ module api.ui {
             return super.toString();
         }
     }
-}

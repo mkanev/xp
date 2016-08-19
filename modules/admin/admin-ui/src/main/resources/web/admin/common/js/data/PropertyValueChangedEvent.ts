@@ -1,6 +1,9 @@
-module api.data {
+import {Property} from "./Property";
+import {PropertyEvent} from "./PropertyEvent";
+import {PropertyEventType} from "./PropertyEventType";
+import {Value} from "./Value";
 
-    export class PropertyValueChangedEvent extends PropertyEvent {
+export class PropertyValueChangedEvent extends PropertyEvent {
 
         private previousValue: Value;
 
@@ -25,4 +28,3 @@ module api.data {
                    ( this.newValue ? this.newValue.getObject() : null) + "]";
         }
     }
-}

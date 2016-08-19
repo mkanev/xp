@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface PublishContentJson {
+
+export interface PublishContentJson {
 
         successes: number;
 
@@ -10,4 +10,3 @@ module api.content.json {
 
         contentName: string;
     }
-}

@@ -1,13 +1,12 @@
-import "../../../../../../api.ts";
+import {PropertyChangedEvent} from "../../../../../../../../../common/js/PropertyChangedEvent";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {PageModel} from "../../../../../../../../../common/js/content/page/PageModel";
+import {PageDescriptor} from "../../../../../../../../../common/js/content/page/PageDescriptor";
+import {DescriptorKey} from "../../../../../../../../../common/js/content/page/DescriptorKey";
+import {LoadedDataEvent} from "../../../../../../../../../common/js/util/loader/event/LoadedDataEvent";
+import {PageDescriptorDropdown} from "../../../../../../../../../common/js/content/page/PageDescriptorDropdown";
 
-import PropertyChangedEvent = api.PropertyChangedEvent;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import PageModel = api.content.page.PageModel;
-import PageDescriptor = api.content.page.PageDescriptor;
-import DescriptorKey = api.content.page.DescriptorKey;
-import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-
-export class PageControllerSelector extends api.content.page.PageDescriptorDropdown {
+export class PageControllerSelector extends PageDescriptorDropdown {
 
     private pageModel: PageModel;
 

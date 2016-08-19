@@ -1,15 +1,20 @@
-module api.content.page.region {
+import {RichComboBox} from "../../../ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../../../ui/selector/combobox/RichComboBox";
+import {ComboBoxConfig} from "../../../ui/selector/combobox/ComboBox";
+import {Option} from "../../../ui/selector/Option";
+import {SelectedOption} from "../../../ui/selector/combobox/SelectedOption";
+import {BaseSelectedOptionView} from "../../../ui/selector/combobox/BaseSelectedOptionView";
+import {BaseSelectedOptionsView} from "../../../ui/selector/combobox/BaseSelectedOptionsView";
+import {DescriptorKey} from "../DescriptorKey";
+import {NamesAndIconViewBuilder} from "../../../app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../app/NamesAndIconViewSize";
+import {AEl} from "../../../dom/AEl";
+import {Element} from "../../../dom/Element";
+import {PartDescriptor} from "./PartDescriptor";
+import {PartDescriptorLoader} from "./PartDescriptorLoader";
+import {PartDescriptorViewer} from "./PartDescriptorViewer";
 
-    import RichComboBox = api.ui.selector.combobox.RichComboBox;
-    import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
-    import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
-    import DescriptorKey = api.content.page.DescriptorKey;
-
-    export class PartDescriptorComboBox extends RichComboBox<PartDescriptor> {
+export class PartDescriptorComboBox extends RichComboBox<PartDescriptor> {
 
         constructor(loader: PartDescriptorLoader) {
             super(new RichComboBoxBuilder<PartDescriptor>().setIdentifierMethod("getKey").setOptionDisplayValueViewer(
@@ -63,12 +68,12 @@ module api.content.page.region {
 
         doRender(): wemQ.Promise<boolean> {
             
-            var namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
+            var namesAndIconView = new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small).build();
             namesAndIconView.setIconClass("icon-puzzle icon-medium")
                 .setMainName(this.descriptor.getDisplayName())
                 .setSubName(this.descriptor.getKey().toString());
 
-            var removeButtonEl = new api.dom.AEl("remove");
+            var removeButtonEl = new AEl("remove");
             removeButtonEl.onClicked((event: MouseEvent) => {
                 this.notifyRemoveClicked();
 
@@ -77,10 +82,9 @@ module api.content.page.region {
                 return false;
             });
 
-            this.appendChildren<api.dom.Element>(removeButtonEl, namesAndIconView);
+            this.appendChildren<Element>(removeButtonEl, namesAndIconView);
 
             return wemQ(true);
         }
 
     }
-}

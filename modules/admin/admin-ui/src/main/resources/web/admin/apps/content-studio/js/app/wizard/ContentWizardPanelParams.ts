@@ -1,34 +1,37 @@
-import "../../api.ts";
+import {AppBarTabId} from "../../../../../common/js/app/bar/AppBarTabId";
+import {ContentTypeName} from "../../../../../common/js/schema/content/ContentTypeName";
+import {Content} from "../../../../../common/js/content/Content";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
 
 export class ContentWizardPanelParams {
 
     createSite: boolean = false;
 
-    tabId: api.app.bar.AppBarTabId;
+    tabId: AppBarTabId;
 
-    contentTypeName: api.schema.content.ContentTypeName;
+    contentTypeName: ContentTypeName;
 
-    parentContent: api.content.Content;
+    parentContent: Content;
 
-    contentSummary: api.content.ContentSummary;
+    contentSummary: ContentSummary;
 
 
-    setTabId(value: api.app.bar.AppBarTabId): ContentWizardPanelParams {
+    setTabId(value: AppBarTabId): ContentWizardPanelParams {
         this.tabId = value;
         return this;
     }
 
-    setContentTypeName(value: api.schema.content.ContentTypeName): ContentWizardPanelParams {
+    setContentTypeName(value: ContentTypeName): ContentWizardPanelParams {
         this.contentTypeName = value;
         return this;
     }
 
-    setParentContent(value: api.content.Content): ContentWizardPanelParams {
+    setParentContent(value: Content): ContentWizardPanelParams {
         this.parentContent = value;
         return this;
     }
 
-    setContentSummary(value: api.content.ContentSummary): ContentWizardPanelParams {
+    setContentSummary(value: ContentSummary): ContentWizardPanelParams {
         this.contentSummary = value;
         return this;
     }

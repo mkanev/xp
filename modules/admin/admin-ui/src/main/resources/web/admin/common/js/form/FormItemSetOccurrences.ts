@@ -1,17 +1,26 @@
-module api.form {
+import {PropertySet} from "../data/PropertySet";
+import {Property} from "../data/Property";
+import {PropertyArray} from "../data/PropertyArray";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {Element} from "../dom/Element";
+import {FormContext} from "./FormContext";
+import {FormItemOccurrence} from "./FormItemOccurrence";
+import {FormItemOccurrencesConfig} from "./FormItemOccurrences";
+import {FormItemOccurrences} from "./FormItemOccurrences";
+import {FormItemSet} from "./FormItemSet";
+import {FormItemSetOccurrence} from "./FormItemSetOccurrence";
+import {FormItemSetOccurrenceViewConfig} from "./FormItemSetOccurrenceView";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {Occurrences} from "./Occurrences";
+import {RemoveButtonClickedEvent} from "./RemoveButtonClickedEvent";
 
-    import PropertySet = api.data.PropertySet;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-
-    export interface FormItemSetOccurrencesConfig {
+export interface FormItemSetOccurrencesConfig {
 
         context: FormContext;
 
-        occurrenceViewContainer: api.dom.Element;
+        occurrenceViewContainer: Element;
 
         formItemSet: FormItemSet;
 
@@ -140,4 +149,3 @@ module api.form {
             //this.propertyArray.move(index, destinationIndex);
         }
     }
-}

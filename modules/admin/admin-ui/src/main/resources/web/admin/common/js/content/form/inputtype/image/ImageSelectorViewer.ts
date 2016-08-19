@@ -1,6 +1,7 @@
-module api.content.form.inputtype.image {
+import {NamesAndIconViewer} from "../../../../ui/NamesAndIconViewer";
+import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
 
-    export class ImageSelectorViewer extends api.ui.NamesAndIconViewer<ImageSelectorDisplayValue> {
+export class ImageSelectorViewer extends NamesAndIconViewer<ImageSelectorDisplayValue> {
 
         constructor() {
             super();
@@ -22,4 +23,3 @@ module api.content.form.inputtype.image {
             return object.getImageUrl() + "?crop=false";
         }
     }
-}

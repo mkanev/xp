@@ -1,10 +1,17 @@
-module api.macro.resource {
+import {ContentPath} from "../../content/ContentPath";
+import {PropertyTree} from "../../data/PropertyTree";
+import {MacroKey} from "../MacroKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {MacroPreview} from "../MacroPreview";
+import {MacroPreviewJson} from "./MacroPreviewJson";
+import {PreviewRequest} from "./PreviewRequest";
 
-    export class GetPreviewRequest extends PreviewRequest<MacroPreviewJson, MacroPreview> {
+export class GetPreviewRequest extends PreviewRequest<MacroPreviewJson, MacroPreview> {
 
-        protected path: api.content.ContentPath;
+        protected path: ContentPath;
 
-        constructor(data: api.data.PropertyTree, macroKey: api.macro.MacroKey, path: api.content.ContentPath) {
+        constructor(data: PropertyTree, macroKey: MacroKey, path: ContentPath) {
             super(data, macroKey);
             this.path = path;
         }
@@ -17,14 +24,13 @@ module api.macro.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "preview");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "preview");
         }
 
         sendAndParse(): wemQ.Promise<MacroPreview> {
-            return this.send().then((response: api.rest.JsonResponse<MacroPreviewJson>) => {
+            return this.send().then((response: JsonResponse<MacroPreviewJson>) => {
                 return MacroPreview.create().fromJson(response.getResult()).build();
             });
         }
     }
-}

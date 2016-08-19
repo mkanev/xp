@@ -1,6 +1,16 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {StringHelper} from "../../../util/StringHelper";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {Component} from "./Component";
+import {ComponentBuilder} from "./Component";
+import {ComponentName} from "./ComponentName";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {Region} from "./Region";
+import {TextComponentJson} from "./TextComponentJson";
+import {TextComponentType} from "./TextComponentType";
 
-    export class TextComponent extends Component implements api.Equitable, api.Cloneable {
+export class TextComponent extends Component implements Equitable, Cloneable {
 
         private text: string;
 
@@ -18,7 +28,7 @@ module api.content.page.region {
         }
 
         setText(value?: string, silent?: boolean) {
-            this.text = api.util.StringHelper.isBlank(value) ? undefined : value;
+            this.text = StringHelper.isBlank(value) ? undefined : value;
 
             if (!silent) {
                 this.notifyPropertyChanged(TextComponent.PROPERTY_TEXT);
@@ -30,7 +40,7 @@ module api.content.page.region {
         }
 
         isEmpty(): boolean {
-            return api.util.StringHelper.isBlank(this.text);
+            return StringHelper.isBlank(this.text);
         }
 
         toJson(): ComponentTypeWrapperJson {
@@ -43,9 +53,9 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, TextComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, TextComponent)) {
                 return false;
             }
 
@@ -55,7 +65,7 @@ module api.content.page.region {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.text, other.text)) {
+            if (!ObjectHelper.stringEquals(this.text, other.text)) {
                 return false;
             }
 
@@ -103,4 +113,3 @@ module api.content.page.region {
             return new TextComponent(this);
         }
     }
-}

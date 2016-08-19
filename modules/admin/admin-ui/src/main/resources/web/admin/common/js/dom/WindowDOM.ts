@@ -1,8 +1,8 @@
-module api.dom {
+import {Element} from "./Element";
 
-    export class WindowDOM {
+export class WindowDOM {
 
-        private el: any; // Window clashes with api.dom.WindowDOM
+        private el: any; // Window clashes with WindowDOM
 
         private static instance: WindowDOM = new WindowDOM();
 
@@ -66,7 +66,7 @@ module api.dom {
             return wemjq(this.el).scrollTop();
         }
 
-        onResized(listener: (event: UIEvent) => void, element?: api.dom.Element) {
+        onResized(listener: (event: UIEvent) => void, element?: Element) {
             this.el.addEventListener("resize", listener);
 
             if (element) {
@@ -86,7 +86,7 @@ module api.dom {
             return wemjq(this.el).innerHeight();
         }
 
-        onScroll(listener: (event: UIEvent) => void, element?: api.dom.Element) {
+        onScroll(listener: (event: UIEvent) => void, element?: Element) {
             this.el.addEventListener('scroll', listener);
 
             if (element) {
@@ -114,4 +114,3 @@ module api.dom {
         }
     }
 
-}

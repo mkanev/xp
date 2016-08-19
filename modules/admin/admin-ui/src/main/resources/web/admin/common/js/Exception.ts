@@ -1,6 +1,6 @@
-module api {
 
-    export enum ExceptionType {
+
+export enum ExceptionType {
         INFO,
         ERROR,
         WARNING
@@ -26,4 +26,3 @@ module api {
         }
 
     }
-}

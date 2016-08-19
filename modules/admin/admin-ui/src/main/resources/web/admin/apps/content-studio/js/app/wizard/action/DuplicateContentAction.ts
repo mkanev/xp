@@ -1,15 +1,21 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {WizardPanel} from "../../../../../../common/js/app/wizard/WizardPanel";
+import {Content} from "../../../../../../common/js/content/Content";
+import {DuplicateContentRequest} from "../../../../../../common/js/content/resource/DuplicateContentRequest";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {EditContentEvent} from "../../../../../../common/js/content/event/EditContentEvent";
+import {showFeedback} from "../../../../../../common/js/notify/MessageBus";
 
-export class DuplicateContentAction extends api.ui.Action {
+export class DuplicateContentAction extends Action {
 
-    constructor(wizardPanel: api.app.wizard.WizardPanel<api.content.Content>) {
+    constructor(wizardPanel: WizardPanel<Content>) {
         super("Duplicate");
         this.onExecuted(() => {
             var source = wizardPanel.getPersistedItem();
-            new api.content.resource.DuplicateContentRequest(source.getContentId()).sendAndParse().then((content: api.content.Content) => {
-                var summaryAndStatus = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
-                new api.content.event.EditContentEvent([summaryAndStatus]).fire();
-                api.notify.showFeedback('\"' + source.getDisplayName() + '\" duplicated');
+            new DuplicateContentRequest(source.getContentId()).sendAndParse().then((content: Content) => {
+                var summaryAndStatus = ContentSummaryAndCompareStatus.fromContentSummary(content);
+                new EditContentEvent([summaryAndStatus]).fire();
+                showFeedback('\"' + source.getDisplayName() + '\" duplicated');
             })
         });
     }

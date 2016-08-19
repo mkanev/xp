@@ -1,12 +1,13 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-export class ShowNewContentGridEvent extends api.event.Event {
+export class ShowNewContentGridEvent extends Event {
 
     static on(handler: (event: ShowNewContentGridEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ShowNewContentGridEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

@@ -1,11 +1,9 @@
-module api.content.site.inputtype.siteconfigurator {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {ApplicationKey} from "../../../../application/ApplicationKey";
+import {SiteConfig} from "../../SiteConfig";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import ApplicationKey = api.application.ApplicationKey;
-    import SiteConfig = api.content.site.SiteConfig;
-
-    export class SiteConfigProvider {
+export class SiteConfigProvider {
 
         private propertyArray: PropertyArray;
 
@@ -106,4 +104,3 @@ module api.content.site.inputtype.siteconfigurator {
             });
         }
     }
-}

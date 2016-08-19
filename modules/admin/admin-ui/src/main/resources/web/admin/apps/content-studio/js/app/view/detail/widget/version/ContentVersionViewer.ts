@@ -1,12 +1,19 @@
-import "../../../../../api.ts";
+import {Viewer} from "../../../../../../../../common/js/ui/Viewer";
+import {ContentVersion} from "../../../../../../../../common/js/content/ContentVersion";
+import {NamesAndIconView} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../../../../common/js/app/NamesAndIconViewSize";
+import {SpanEl} from "../../../../../../../../common/js/dom/SpanEl";
+import {Element} from "../../../../../../../../common/js/dom/Element";
+import {BrEl} from "../../../../../../../../common/js/dom/BrEl";
 
-export class ContentVersionViewer extends api.ui.Viewer<api.content.ContentVersion> {
+export class ContentVersionViewer extends Viewer<ContentVersion> {
 
-    private namesAndIconView: api.app.NamesAndIconView;
+    private namesAndIconView: NamesAndIconView;
 
     constructor() {
         super();
-        this.namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
+        this.namesAndIconView = new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small).build();
         this.appendChild(this.namesAndIconView);
     }
 
@@ -53,37 +60,37 @@ export class ContentVersionViewer extends api.ui.Viewer<api.content.ContentVersi
         return "over " + ~~(timeDiff / yrInMs) + " years ago";
     }
 
-    private getModifierSpan(contentVersion: api.content.ContentVersion): api.dom.SpanEl {
-        var span = new api.dom.SpanEl("version-modifier");
+    private getModifierSpan(contentVersion: ContentVersion): SpanEl {
+        var span = new SpanEl("version-modifier");
 
         span.setHtml(this.getModifiedString(contentVersion.modified));
 
         return span;
     }
 
-    private getCommentSpan(contentVersion: api.content.ContentVersion): api.dom.SpanEl {
+    private getCommentSpan(contentVersion: ContentVersion): SpanEl {
         if (contentVersion.comment.length = 0) {
             return null;
         }
 
-        var span = new api.dom.SpanEl("version-comment");
+        var span = new SpanEl("version-comment");
         span.setHtml(contentVersion.comment);
         return span;
     }
 
-    private getSubNameElements(contentVersion: api.content.ContentVersion): api.dom.Element[] {
-        var elements: api.dom.Element[] = [this.getModifierSpan(contentVersion)]/*,
+    private getSubNameElements(contentVersion: ContentVersion): Element[] {
+        var elements: Element[] = [this.getModifierSpan(contentVersion)]/*,
          commentSpan = this.getCommentSpan(contentVersion)*/;
 
         /*          Uncomment to enable comments in version history
          if (commentSpan) {
-         elements.push(new api.dom.BrEl(), commentSpan);
+         elements.push(new BrEl(), commentSpan);
          }
          */
         return elements;
     }
 
-    setObject(contentVersion: api.content.ContentVersion, row?: number) {
+    setObject(contentVersion: ContentVersion, row?: number) {
 
         //TODO: use content version image and number instead of row
         this.namesAndIconView

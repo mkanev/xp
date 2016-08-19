@@ -1,11 +1,16 @@
-module api.form.inputtype.support {
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {PropertyValueChangedEvent} from "../../../data/PropertyValueChangedEvent";
+import {FormItemOccurrenceView} from "../../FormItemOccurrenceView";
+import {Element} from "../../../dom/Element";
+import {AEl} from "../../../dom/AEl";
+import {DivEl} from "../../../dom/DivEl";
+import {PropertyPath} from "../../../data/PropertyPath";
+import {BaseInputTypeNotManagingAdd} from "./BaseInputTypeNotManagingAdd";
+import {InputOccurrence} from "./InputOccurrence";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
-
-    export class InputOccurrenceView extends api.form.FormItemOccurrenceView {
+export class InputOccurrenceView extends FormItemOccurrenceView {
 
         private inputOccurrence: InputOccurrence;
 
@@ -13,11 +18,11 @@ module api.form.inputtype.support {
 
         private inputTypeView: BaseInputTypeNotManagingAdd<any>;
 
-        private inputElement: api.dom.Element;
+        private inputElement: Element;
 
-        private removeButtonEl: api.dom.AEl;
+        private removeButtonEl: AEl;
 
-        private dragControl: api.dom.DivEl;
+        private dragControl: DivEl;
 
         private requiredContractBroken: boolean;
 
@@ -34,7 +39,7 @@ module api.form.inputtype.support {
             this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : null);
 
             var ignorePropertyChange = false;
-            this.inputTypeView.onOccurrenceValueChanged((occurrence: api.dom.Element, value: api.data.Value) => {
+            this.inputTypeView.onOccurrenceValueChanged((occurrence: Element, value: Value) => {
                 // check if this is our occurrence because all views will receive occurrence value changed event
                 if (this.inputElement == occurrence) {
                     if (InputOccurrenceView.debug) {
@@ -68,10 +73,10 @@ module api.form.inputtype.support {
 
             this.inputOccurrence = inputOccurrence;
 
-            this.dragControl = new api.dom.DivEl("drag-control");
+            this.dragControl = new DivEl("drag-control");
             this.appendChild(this.dragControl);
 
-            this.removeButtonEl = new api.dom.AEl("remove-button");
+            this.removeButtonEl = new AEl("remove-button");
             this.appendChild(this.removeButtonEl);
             this.removeButtonEl.onClicked((event: MouseEvent) => {
                 this.notifyRemoveButtonClicked();
@@ -80,7 +85,7 @@ module api.form.inputtype.support {
                 return false;
             });
 
-            var inputWrapper = new api.dom.DivEl("input-wrapper");
+            var inputWrapper = new DivEl("input-wrapper");
             this.appendChild(inputWrapper);
 
             inputWrapper.appendChild(this.inputElement);
@@ -126,7 +131,7 @@ module api.form.inputtype.support {
             this.removeButtonEl.setVisible(this.inputOccurrence.isRemoveButtonRequiredStrict());
         }
 
-        getDataPath(): api.data.PropertyPath {
+        getDataPath(): PropertyPath {
 
             return this.property.getPath();
         }
@@ -135,7 +140,7 @@ module api.form.inputtype.support {
             return this.inputOccurrence.getIndex();
         }
 
-        getInputElement(): api.dom.Element {
+        getInputElement(): Element {
             return this.inputElement;
         }
 
@@ -163,4 +168,3 @@ module api.form.inputtype.support {
             this.inputElement.unBlur(listener);
         }
     }
-}

@@ -1,6 +1,15 @@
-module api.form {
+import {FormItemSetJson} from "./json/FormItemSetJson";
+import {FormItemJson} from "./json/FormItemJson";
+import {FormItemTypeWrapperJson} from "./json/FormItemTypeWrapperJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {FormItem} from "./FormItem";
+import {FormItemContainer} from "./FormItemContainer";
+import {FormItemFactory} from "./FormItemFactory";
+import {Input} from "./Input";
+import {Occurrences} from "./Occurrences";
 
-    /**
+/**
      * A set of [[FormItem]]s.
      *
      * The form items are kept in the order they where inserted.
@@ -21,7 +30,7 @@ module api.form {
 
         private helpText: string;
 
-        constructor(formItemSetJson: api.form.json.FormItemSetJson) {
+        constructor(formItemSetJson: FormItemSetJson) {
             super(formItemSetJson.name);
             this.label = formItemSetJson.label;
             this.immutable = formItemSetJson.immutable;
@@ -30,7 +39,7 @@ module api.form {
             this.helpText = formItemSetJson.helpText;
 
             if (formItemSetJson.items != null) {
-                formItemSetJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
+                formItemSetJson.items.forEach((formItemJson: FormItemJson) => {
                     var formItem = FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.addFormItem(formItem);
@@ -80,9 +89,9 @@ module api.form {
             return this.occurrences;
         }
 
-        public toFormItemSetJson(): api.form.json.FormItemTypeWrapperJson {
+        public toFormItemSetJson(): FormItemTypeWrapperJson {
 
-            return <api.form.json.FormItemTypeWrapperJson>{FormItemSet: <api.form.json.FormItemSetJson>{
+            return <FormItemTypeWrapperJson>{FormItemSet: <FormItemSetJson>{
                 name: this.getName(),
                 customText: this.getCustomText(),
                 helpText: this.getHelpText(),
@@ -93,9 +102,9 @@ module api.form {
             }};
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FormItemSet)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, FormItemSet)) {
                 return false;
             }
 
@@ -105,27 +114,27 @@ module api.form {
 
             var other = <FormItemSet>o;
 
-            if (!api.ObjectHelper.stringEquals(this.label, other.label)) {
+            if (!ObjectHelper.stringEquals(this.label, other.label)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
+            if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.occurrences, other.occurrences)) {
+            if (!ObjectHelper.equals(this.occurrences, other.occurrences)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.customText, other.customText)) {
+            if (!ObjectHelper.stringEquals(this.customText, other.customText)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.helpText, other.helpText)) {
+            if (!ObjectHelper.stringEquals(this.helpText, other.helpText)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
+            if (!ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
                 return false;
             }
 
@@ -133,4 +142,3 @@ module api.form {
         }
 
     }
-}

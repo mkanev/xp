@@ -1,11 +1,12 @@
-module api.liveedit.part {
+import {ItemType} from "../ItemType";
+import {ComponentItemType} from "../ComponentItemType";
+import {RegionView} from "../RegionView";
+import {PartComponent} from "../../content/page/region/PartComponent";
+import {CreateItemViewConfig} from "../CreateItemViewConfig";
+import {PartComponentViewBuilder} from "./PartComponentView";
+import {PartComponentView} from "./PartComponentView";
 
-    import ItemType = api.liveedit.ItemType;
-    import ComponentItemType = api.liveedit.ComponentItemType;
-    import RegionView = api.liveedit.RegionView;
-    import PartComponent = api.content.page.region.PartComponent;
-
-    export class PartItemType extends ComponentItemType {
+export class PartItemType extends ComponentItemType {
 
         private static INSTANCE = new PartItemType();
 
@@ -34,4 +35,3 @@ module api.liveedit.part {
     }
 
     PartItemType.get();
-}

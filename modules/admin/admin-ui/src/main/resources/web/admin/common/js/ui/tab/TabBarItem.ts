@@ -1,6 +1,7 @@
-module api.ui.tab {
+import {TabItem} from "./TabItem";
+import {TabItemBuilder} from "./TabItem";
 
-    export class TabBarItem extends TabItem {
+export class TabBarItem extends TabItem {
 
         constructor(builder: TabBarItemBuilder) {
             super(builder, "tab-bar-item");
@@ -14,4 +15,3 @@ module api.ui.tab {
         }
 
     }
-}

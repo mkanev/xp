@@ -1,9 +1,9 @@
-module api.liveedit {
+import {RegionPath} from "../content/page/region/RegionPath";
+import {RegionView} from "./RegionView";
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
 
-    import RegionPath = api.content.page.region.RegionPath;
-    import RegionView = api.liveedit.RegionView;
-
-    export class RegionSelectedEvent extends api.event.Event {
+export class RegionSelectedEvent extends Event {
 
         private pageItemView: RegionView;
 
@@ -17,11 +17,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: RegionSelectedEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler: (event: RegionSelectedEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

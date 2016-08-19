@@ -1,15 +1,16 @@
-import "../../api.ts";
-import {ContentWizardPanel} from "./ContentWizardPanel";
+import {CreateContentRequest} from "../../../../../common/js/content/resource/CreateContentRequest";
+import {Content} from "../../../../../common/js/content/Content";
+import {Flow} from "../../../../../common/js/util/Flow";
+import {PromiseHelper} from "../../../../../common/js/util/PromiseHelper";
 
-import CreateContentRequest = api.content.resource.CreateContentRequest;
-import Content = api.content.Content;
+import {ContentWizardPanel} from "./ContentWizardPanel";
 
 export class PersistedNewContentRoutineContext {
 
-    content: api.content.Content = null;
+    content: Content = null;
 }
 
-export class PersistNewContentRoutine extends api.util.Flow<api.content.Content,PersistedNewContentRoutineContext> {
+export class PersistNewContentRoutine extends Flow<Content,PersistedNewContentRoutineContext> {
 
     private createContentRequestProducer: {() : wemQ.Promise<CreateContentRequest>; };
 
@@ -60,7 +61,7 @@ export class PersistNewContentRoutine extends api.util.Flow<api.content.Content,
             });
         }
         else {
-            return api.util.PromiseHelper.newResolvedVoidPromise();
+            return PromiseHelper.newResolvedVoidPromise();
         }
     }
 }

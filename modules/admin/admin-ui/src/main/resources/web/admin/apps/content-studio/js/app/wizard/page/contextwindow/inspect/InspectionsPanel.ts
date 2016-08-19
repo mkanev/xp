@@ -1,4 +1,10 @@
-import "../../../../../api.ts";
+import {Action} from "../../../../../../../../common/js/ui/Action";
+import {Panel} from "../../../../../../../../common/js/ui/panel/Panel";
+import {DeckPanel} from "../../../../../../../../common/js/ui/panel/DeckPanel";
+import {DivEl} from "../../../../../../../../common/js/dom/DivEl";
+import {ActionButton} from "../../../../../../../../common/js/ui/button/ActionButton";
+import {ObjectHelper} from "../../../../../../../../common/js/ObjectHelper";
+
 import {ContentInspectionPanel} from "./ContentInspectionPanel";
 import {FragmentInspectionPanel} from "./region/FragmentInspectionPanel";
 import {TextInspectionPanel} from "./region/TextInspectionPanel";
@@ -18,13 +24,13 @@ export interface InspectionsPanelConfig {
     layoutInspectionPanel: LayoutInspectionPanel;
     fragmentInspectionPanel: FragmentInspectionPanel;
     textInspectionPanel: TextInspectionPanel;
-    saveAction: api.ui.Action;
+    saveAction: Action;
 }
 
-export class InspectionsPanel extends api.ui.panel.Panel {
+export class InspectionsPanel extends Panel {
 
-    private deck: api.ui.panel.DeckPanel;
-    private buttons: api.dom.DivEl;
+    private deck: DeckPanel;
+    private buttons: DivEl;
 
     private noSelectionPanel: NoSelectionInspectionPanel;
     private imageInspectionPanel: ImageInspectionPanel;
@@ -41,7 +47,7 @@ export class InspectionsPanel extends api.ui.panel.Panel {
     constructor(config: InspectionsPanelConfig) {
         super('inspections-panel');
 
-        this.deck = new api.ui.panel.DeckPanel();
+        this.deck = new DeckPanel();
 
         this.noSelectionPanel = new NoSelectionInspectionPanel();
         this.imageInspectionPanel = config.imageInspectionPanel;
@@ -65,18 +71,18 @@ export class InspectionsPanel extends api.ui.panel.Panel {
 
         this.deck.showPanel(this.pageInspectionPanel);
 
-        this.buttons = new api.dom.DivEl('button-bar');
-        var saveButton = new api.ui.button.ActionButton(config.saveAction);
+        this.buttons = new DivEl('button-bar');
+        var saveButton = new ActionButton(config.saveAction);
         this.buttons.appendChild(saveButton);
 
         this.appendChildren(this.deck, this.buttons);
 
     }
 
-    public showInspectionPanel(panel: api.ui.panel.Panel) {
+    public showInspectionPanel(panel: Panel) {
         this.deck.showPanel(panel);
-        var showButtons = !(api.ObjectHelper.iFrameSafeInstanceOf(panel, RegionInspectionPanel) ||
-                            api.ObjectHelper.iFrameSafeInstanceOf(panel, NoSelectionInspectionPanel));
+        var showButtons = !(ObjectHelper.iFrameSafeInstanceOf(panel, RegionInspectionPanel) ||
+                            ObjectHelper.iFrameSafeInstanceOf(panel, NoSelectionInspectionPanel));
         this.buttons.setVisible(showButtons);
     }
 

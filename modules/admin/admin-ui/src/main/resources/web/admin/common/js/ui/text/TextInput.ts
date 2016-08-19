@@ -1,6 +1,8 @@
-module api.ui.text {
+import {InputEl} from "../../dom/InputEl";
+import {StyleHelper} from "../../StyleHelper";
+import {StringHelper} from "../../util/StringHelper";
 
-    export class TextInput extends api.dom.InputEl {
+export class TextInput extends InputEl {
 
         static MIDDLE: string = 'middle';
         static LARGE: string = 'large';
@@ -18,7 +20,7 @@ module api.ui.text {
         private previousValue: string;
 
         constructor(className?: string, size?: string, originalValue?: string) {
-            super("text-input", 'text', api.StyleHelper.COMMON_PREFIX, originalValue);
+            super("text-input", 'text', StyleHelper.COMMON_PREFIX, originalValue);
             if (className) {
                 this.addClass(className);
             }
@@ -118,7 +120,7 @@ module api.ui.text {
         updateValidationStatusOnUserInput(isValid: boolean) {
             if (isValid) {
                 this.removeClass("invalid");
-                this.toggleClass("valid", !api.util.StringHelper.isEmpty(this.getValue()));
+                this.toggleClass("valid", !StringHelper.isEmpty(this.getValue()));
             } else {
                 this.removeClass("valid");
                 this.addClass("invalid");
@@ -146,4 +148,3 @@ module api.ui.text {
 
 
     }
-}

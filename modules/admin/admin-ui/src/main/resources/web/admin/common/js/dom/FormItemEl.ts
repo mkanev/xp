@@ -1,5 +1,8 @@
-module api.dom {
-    export class FormItemEl extends Element {
+import {ValidityChangedEvent} from "../ValidityChangedEvent";
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
+
+export class FormItemEl extends Element {
 
         private validityChangedListeners: {(event: ValidityChangedEvent):void}[] = [];
 
@@ -35,4 +38,3 @@ module api.dom {
         }
 
     }
-}

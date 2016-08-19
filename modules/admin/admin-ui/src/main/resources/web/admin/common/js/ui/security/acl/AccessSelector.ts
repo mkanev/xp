@@ -1,13 +1,16 @@
-module api.ui.security.acl {
+import {TabMenuItemBuilder} from "../../tab/TabMenuItem";
+import {TabMenu} from "../../tab/TabMenu";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {NavigatorEvent} from "../../NavigatorEvent";
+import {TabMenuItem} from "../../tab/TabMenuItem";
+import {Access} from "./Access";
 
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-
-    interface AccessSelectorOption {
+interface AccessSelectorOption {
         value: Access;
         name: string;
     }
 
-    export class AccessSelector extends api.ui.tab.TabMenu {
+    export class AccessSelector extends TabMenu {
 
         private static OPTIONS: AccessSelectorOption[] = [
             {value: Access.READ, name: 'Can Read'},
@@ -18,7 +21,7 @@ module api.ui.security.acl {
         ];
 
         private value: Access;
-        private valueChangedListeners: {(event: api.ValueChangedEvent):void}[] = [];
+        private valueChangedListeners: {(event: ValueChangedEvent):void}[] = [];
 
         constructor() {
             super("access-selector");
@@ -28,8 +31,8 @@ module api.ui.security.acl {
                 this.addNavigationItem(menuItem);
             });
 
-            this.onNavigationItemSelected((event: api.ui.NavigatorEvent) => {
-                var item: api.ui.tab.TabMenuItem = <api.ui.tab.TabMenuItem> event.getItem();
+            this.onNavigationItemSelected((event: NavigatorEvent) => {
+                var item: TabMenuItem = <TabMenuItem> event.getItem();
                 this.setValue(AccessSelector.OPTIONS[item.getIndex()].value);
             })
         }
@@ -43,7 +46,7 @@ module api.ui.security.acl {
             if (option) {
                 this.selectNavigationItem(AccessSelector.OPTIONS.indexOf(option));
                 if (!silent) {
-                    this.notifyValueChanged(new api.ValueChangedEvent(Access[this.value], Access[value]));
+                    this.notifyValueChanged(new ValueChangedEvent(Access[this.value], Access[value]));
                 }
                 this.value = value;
             }
@@ -85,17 +88,17 @@ module api.ui.security.acl {
             super.showMenu();
         }
 
-        onValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        onValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        unValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners = this.valueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        private notifyValueChanged(event: api.ValueChangedEvent) {
+        private notifyValueChanged(event: ValueChangedEvent) {
             this.valueChangedListeners.forEach((listener) => {
                 listener(event);
             })
@@ -103,4 +106,3 @@ module api.ui.security.acl {
 
     }
 
-}

@@ -1,6 +1,7 @@
-module api.app.browse {
+import {Equitable} from "../../Equitable";
+import {BrowseItem} from "./BrowseItem";
 
-    export class ItemDeselectedEvent<M extends api.Equitable> {
+export class ItemDeselectedEvent<M extends Equitable> {
 
         private browseItem: BrowseItem<M>;
 
@@ -12,4 +13,3 @@ module api.app.browse {
             return this.browseItem;
         }
     }
-}

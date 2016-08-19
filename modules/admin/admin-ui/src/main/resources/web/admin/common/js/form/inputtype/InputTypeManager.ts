@@ -1,18 +1,21 @@
-module api.form.inputtype {
+import {Class} from "../../Class";
+import {Input} from "../Input";
+import {InputTypeView} from "./InputTypeView";
+import {InputTypeViewContext} from "./InputTypeViewContext";
 
-    /**
+/**
      *      Class to manage input types and their visual representation
      */
     export class InputTypeManager {
 
-        private static inputTypes: { [name: string]: api.Class; } = {};
+        private static inputTypes: { [name: string]: Class; } = {};
 
         static isRegistered(inputTypeName: string): boolean {
             var name = InputTypeManager.normalize(inputTypeName);
             return InputTypeManager.inputTypes[name] != undefined;
         }
 
-        static register(inputTypeClass: api.Class) {
+        static register(inputTypeClass: Class) {
             var name = InputTypeManager.normalize(inputTypeClass.getName());
 
             if (!InputTypeManager.isRegistered(name)) {
@@ -51,4 +54,3 @@ module api.form.inputtype {
             return (inputTypeName || '').toLowerCase();
         }
     }
-}

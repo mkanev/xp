@@ -1,22 +1,25 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {Content} from "../../../../../common/js/content/Content";
+import {OpenEditPermissionsDialogEvent} from "../../../../../common/js/content/event/OpenEditPermissionsDialogEvent";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-export class ContentPermissionsAppliedEvent extends api.event.Event {
-    private content: api.content.Content;
+export class ContentPermissionsAppliedEvent extends Event {
+    private content: Content;
 
-    constructor(content: api.content.Content) {
+    constructor(content: Content) {
         super();
         this.content = content;
     }
 
-    getContent(): api.content.Content {
+    getContent(): Content {
         return this.content;
     }
 
-    static on(handler: (event: api.content.event.OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+    static on(handler: (event: OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
+        Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 
-    static un(handler?: (event: api.content.event.OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+    static un(handler?: (event: OpenEditPermissionsDialogEvent) => void, contextWindow: Window = window) {
+        Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 }

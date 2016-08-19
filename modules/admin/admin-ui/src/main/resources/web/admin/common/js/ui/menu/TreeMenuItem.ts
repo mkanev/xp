@@ -1,10 +1,11 @@
-module api.ui.menu {
+import {DdDtEl} from "../../dom/DdDtEl";
+import {Action} from "../Action";
 
-    export class TreeMenuItem extends api.dom.DdDtEl {
+export class TreeMenuItem extends DdDtEl {
 
-        private action: api.ui.Action;
+        private action: Action;
 
-        constructor(action: api.ui.Action, cls: string = "", expanded: boolean = false) {
+        constructor(action: Action, cls: string = "", expanded: boolean = false) {
             super(this.getTag(action), this.getCls(action, cls, expanded));
             this.action = action;
             this.getEl().setInnerHtml(this.action.getLabel());
@@ -20,7 +21,7 @@ module api.ui.menu {
             });
             this.setEnabled(action.isEnabled());
 
-            action.onPropertyChanged((action: api.ui.Action) => {
+            action.onPropertyChanged((action: Action) => {
                 this.setEnabled(action.isEnabled());
                 this.setVisible(action.isVisible());
             });
@@ -30,18 +31,18 @@ module api.ui.menu {
             this.toggleClass("expanded");
         }
 
-        private getTag(action: api.ui.Action): string {
+        private getTag(action: Action): string {
             return action.hasParentAction() ? "dd" : "dt";
         }
 
-        private getCls(action: api.ui.Action, cls: string = "", expanded: boolean = false): string {
+        private getCls(action: Action, cls: string = "", expanded: boolean = false): string {
             var fullCls = action.hasChildActions() ? "collapsible " : "";
             fullCls += expanded ? "expanded " : "";
 
             return fullCls + cls;
         }
 
-        getAction(): api.ui.Action {
+        getAction(): Action {
             return this.action;
         }
 
@@ -56,4 +57,3 @@ module api.ui.menu {
         }
     }
 
-}

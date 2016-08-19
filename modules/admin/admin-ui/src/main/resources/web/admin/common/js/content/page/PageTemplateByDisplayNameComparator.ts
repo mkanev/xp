@@ -1,6 +1,7 @@
-module api.content.page {
+import {Comparator} from "../../Comparator";
+import {PageTemplate} from "./PageTemplate";
 
-    export class PageTemplateByDisplayNameComparator implements api.Comparator<PageTemplate> {
+export class PageTemplateByDisplayNameComparator implements Comparator<PageTemplate> {
 
         compare(a: PageTemplate, b: PageTemplate): number {
             if (!a) {
@@ -16,4 +17,3 @@ module api.content.page {
             return firstName.localeCompare(secondName);
         }
     }
-}

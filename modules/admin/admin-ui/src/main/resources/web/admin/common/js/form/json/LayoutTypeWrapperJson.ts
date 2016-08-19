@@ -1,8 +1,8 @@
-module api.form.json{
+import {FieldSet} from "../FieldSet";
+import {FieldSetJson} from "./FieldSetJson";
 
-    export interface LayoutTypeWrapperJson {
+export interface LayoutTypeWrapperJson {
 
         FieldSet?:FieldSetJson;
 
     }
-}

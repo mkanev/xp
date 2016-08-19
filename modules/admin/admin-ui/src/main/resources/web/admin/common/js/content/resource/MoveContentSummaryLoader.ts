@@ -1,13 +1,18 @@
-module api.content.resource {
+import {LoadedDataEvent} from "../../util/loader/event/LoadedDataEvent";
+import {LoadingDataEvent} from "../../util/loader/event/LoadingDataEvent";
+import {QueryField} from "../../query/QueryField";
+import {GetContentTypeByNameRequest} from "../../schema/content/GetContentTypeByNameRequest";
+import {ContentType} from "../../schema/content/ContentType";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ArrayHelper} from "../../util/ArrayHelper";
+import {ContentByPathComparator} from "../util/ContentByPathComparator";
+import {CreateContentFilter} from "../util/CreateContentFilter";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentSummaryPreLoader} from "./ContentSummaryPreLoader";
+import {ContentSummaryRequest} from "./ContentSummaryRequest";
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-    import QueryField = api.query.QueryField;
-    import GetContentTypeByNameRequest = api.schema.content.GetContentTypeByNameRequest;
-    import ContentType = api.schema.content.ContentType;
-    import ContentTypeName = api.schema.content.ContentTypeName;
-
-    export class MoveContentSummaryLoader extends ContentSummaryPreLoader {
+export class MoveContentSummaryLoader extends ContentSummaryPreLoader {
 
         private contentSummaryRequest: ContentSummaryRequest;
 
@@ -51,7 +56,7 @@ module api.content.resource {
                 var deferred = wemQ.defer<ContentSummary[]>();
 
                 var allContentTypes = contents.map((content)=> content.getType());
-                var contentTypes = api.util.ArrayHelper.removeDuplicates(allContentTypes, (ct) => ct.toString());
+                var contentTypes = ArrayHelper.removeDuplicates(allContentTypes, (ct) => ct.toString());
                 var contentTypeRequests = contentTypes.map((contentType)=> new GetContentTypeByNameRequest(contentType).sendAndParse());
 
                 wemQ.all(contentTypeRequests).spread((...contentTypes: ContentType[]) => {
@@ -59,7 +64,7 @@ module api.content.resource {
                         contents = this.filterContent(contents, contentTypes);
                     }
                     if (contents && contents.length > 0) {
-                        contents.sort(new api.content.util.ContentByPathComparator().compare);
+                        contents.sort(new ContentByPathComparator().compare);
                         this.notifyLoadedData(contents);
                     } else {
                         this.notifyLoadedData([]);
@@ -76,7 +81,7 @@ module api.content.resource {
             var contentTypeAllowsChild: { [s: string]: boolean; } = {};
             contentTypes.forEach((contentType)=> contentTypeAllowsChild[contentType.getName()] = contentType.isAllowChildContent());
 
-            var createContentFilter = new api.content.util.CreateContentFilter();
+            var createContentFilter = new CreateContentFilter();
 
             return contents.filter((content: ContentSummary) => {
                 return !content.getPath().isDescendantOf(this.filterContentPath) && !this.filterContentPath.isChildOf(content.getPath()) &&
@@ -92,4 +97,3 @@ module api.content.resource {
 
     }
 
-}

@@ -1,11 +1,12 @@
-module api.ui.selector.combobox {
+import {Option} from "../Option";
+import {DropdownGridConfig} from "../DropdownGrid";
+import {DropdownGrid} from "../DropdownGrid";
+import {DropdownGridRowSelectedEvent} from "../DropdownGridRowSelectedEvent";
+import {DropdownGridMultipleSelectionEvent} from "../DropdownGridMultipleSelectionEvent";
+import {DropdownListConfig} from "../DropdownList";
+import {DropdownList} from "../DropdownList";
 
-    import Option = api.ui.selector.Option;
-    import DropdownGridConfig = api.ui.selector.DropdownGridConfig;
-    import DropdownGrid = api.ui.selector.DropdownGrid;
-    import DropdownGridRowSelectedEvent = api.ui.selector.DropdownGridRowSelectedEvent;
-
-    export interface ComboBoxDropdownConfig<OPTION_DISPLAY_VALUE> extends DropdownListConfig<OPTION_DISPLAY_VALUE> {
+export interface ComboBoxDropdownConfig<OPTION_DISPLAY_VALUE> extends DropdownListConfig<OPTION_DISPLAY_VALUE> {
         multipleSelections: boolean;
     }
 
@@ -87,4 +88,3 @@ module api.ui.selector.combobox {
             this.getDropdownGrid().unMultipleSelection(listener);
         }
     }
-}

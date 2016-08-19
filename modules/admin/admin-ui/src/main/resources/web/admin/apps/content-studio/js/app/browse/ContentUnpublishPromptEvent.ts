@@ -1,7 +1,8 @@
-import "../../api.ts";
-import {BaseContentModelEvent} from "./BaseContentModelEvent";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
+import {BaseContentModelEvent} from "./BaseContentModelEvent";
 
 export class ContentUnpublishPromptEvent extends BaseContentModelEvent {
 
@@ -10,10 +11,10 @@ export class ContentUnpublishPromptEvent extends BaseContentModelEvent {
     }
 
     static on(handler: (event: ContentUnpublishPromptEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ContentUnpublishPromptEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

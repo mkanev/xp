@@ -1,6 +1,7 @@
-module api.ui.time {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class DayOfWeek implements api.Equitable {
+export class DayOfWeek implements Equitable {
 
         private numberCode: number;
 
@@ -47,19 +48,18 @@ module api.ui.time {
             return this.next;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DayOfWeek)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, DayOfWeek)) {
                 return false;
             }
 
             var other = <DayOfWeek>o;
 
-            if (!api.ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
+            if (!ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
                 return false;
             }
 
             return true;
         }
     }
-}

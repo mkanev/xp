@@ -1,27 +1,28 @@
-module api.app.wizard {
+import {DivEl} from "../../dom/DivEl";
+import {PropertyChangedEvent} from "../../PropertyChangedEvent";
 
-    export class WizardHeader extends api.dom.DivEl {
+export class WizardHeader extends DivEl {
 
-        private propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];
+        private propertyChangedListeners: {(event: PropertyChangedEvent):void}[] = [];
 
         constructor() {
             super("wizard-header");
         }
 
-        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        onPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
             this.propertyChangedListeners.push(listener);
         }
 
-        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        unPropertyChanged(listener: (event: PropertyChangedEvent)=>void) {
             this.propertyChangedListeners =
-            this.propertyChangedListeners.filter((currentListener: (event: api.PropertyChangedEvent)=>void) => {
+            this.propertyChangedListeners.filter((currentListener: (event: PropertyChangedEvent)=>void) => {
                 return listener != currentListener;
             });
         }
 
         notifyPropertyChanged(property: string, oldValue: string, newValue: string) {
-            var event = new api.PropertyChangedEvent(property, oldValue, newValue);
-            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent)=>void) => {
+            var event = new PropertyChangedEvent(property, oldValue, newValue);
+            this.propertyChangedListeners.forEach((listener: (event: PropertyChangedEvent)=>void) => {
                 listener.call(this, event);
             })
         }
@@ -34,4 +35,3 @@ module api.app.wizard {
             return false;
         }
     }
-}

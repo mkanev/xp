@@ -1,27 +1,31 @@
-module api.ui.dialog {
+import {DivEl} from "../../dom/DivEl";
+import {Action} from "../Action";
+import {ModalDialogHeader} from "./ModalDialog";
+import {Body} from "../../dom/Body";
+import {ModalDialog} from "./ModalDialog";
 
-    export class ConfirmationDialog extends ModalDialog {
+export class ConfirmationDialog extends ModalDialog {
 
         private static instance: ConfirmationDialog;
 
-        private questionEl: api.dom.DivEl;
+        private questionEl: DivEl;
         private yesCallback: () => void;
         private noCallback: () => void;
 
-        private yesAction: api.ui.Action;
-        private noAction: api.ui.Action;
+        private yesAction: Action;
+        private noAction: Action;
 
         constructor() {
             super({
-                title: new api.ui.dialog.ModalDialogHeader("Confirmation")
+                title: new ModalDialogHeader("Confirmation")
             });
 
             this.addClass("confirmation-dialog");
 
-            this.questionEl = new api.dom.DivEl("question");
+            this.questionEl = new DivEl("question");
             this.appendChildToContentPanel(this.questionEl);
 
-            this.noAction = new api.ui.Action("No", "esc");
+            this.noAction = new Action("No", "esc");
             this.noAction.onExecuted(() => {
                 this.close();
                 if (this.noCallback) {
@@ -29,7 +33,7 @@ module api.ui.dialog {
                 }
             });
 
-            this.yesAction = new api.ui.Action("Yes");
+            this.yesAction = new Action("Yes");
             this.yesAction.onExecuted(() => {
                 this.close();
                 if (this.yesCallback) {
@@ -40,7 +44,7 @@ module api.ui.dialog {
             this.addAction(this.yesAction, true);
             this.addAction(this.noAction);
 
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
         }
 
         static get(): ConfirmationDialog {
@@ -66,4 +70,3 @@ module api.ui.dialog {
         }
     }
 
-}

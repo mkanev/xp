@@ -1,6 +1,7 @@
-module api.content.page {
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {PageDescriptor} from "./PageDescriptor";
 
-    export class PageDescriptorViewer extends api.ui.NamesAndIconViewer<PageDescriptor> {
+export class PageDescriptorViewer extends NamesAndIconViewer<PageDescriptor> {
 
         constructor() {
             super();
@@ -19,4 +20,3 @@ module api.content.page {
         }
     }
 
-}

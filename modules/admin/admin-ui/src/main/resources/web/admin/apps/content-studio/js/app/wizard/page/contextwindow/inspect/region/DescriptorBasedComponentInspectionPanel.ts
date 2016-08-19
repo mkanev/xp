@@ -1,14 +1,14 @@
-import "../../../../../../api.ts";
+import {FormView} from "../../../../../../../../../common/js/form/FormView";
+import {DescriptorBasedComponent} from "../../../../../../../../../common/js/content/page/region/DescriptorBasedComponent";
+import {DescriptorKey} from "../../../../../../../../../common/js/content/page/DescriptorKey";
+import {Descriptor} from "../../../../../../../../../common/js/content/page/Descriptor";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {SiteModel} from "../../../../../../../../../common/js/content/site/SiteModel";
+import {DescriptorBasedDropdown} from "../../../../../../../../../common/js/content/page/DescriptorBasedDropdown";
+import {GetLayoutDescriptorsByApplicationsRequest} from "../../../../../../../../../common/js/content/page/region/GetLayoutDescriptorsByApplicationsRequest";
+import {GetPartDescriptorsByApplicationsRequest} from "../../../../../../../../../common/js/content/page/region/GetPartDescriptorsByApplicationsRequest";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
 
-import FormView = api.form.FormView;
-import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-import DescriptorKey = api.content.page.DescriptorKey;
-import Descriptor = api.content.page.Descriptor;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import SiteModel = api.content.site.SiteModel;
-import DescriptorBasedDropdown = api.content.page.region.DescriptorBasedDropdown;
-import GetLayoutDescriptorsByApplicationsRequest = api.content.page.region.GetLayoutDescriptorsByApplicationsRequest;
-import GetPartDescriptorsByApplicationsRequest = api.content.page.region.GetPartDescriptorsByApplicationsRequest;
 import {ComponentInspectionPanel} from "./ComponentInspectionPanel";
 import {ComponentInspectionPanelConfig} from "./ComponentInspectionPanel";
 
@@ -78,7 +78,7 @@ export class DescriptorBasedComponentInspectionPanel<COMPONENT extends Descripto
         this.appendChild(this.formView);
         component.setDisableEventForwarding(true);
         this.formView.layout().catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).finally(() => {
             component.setDisableEventForwarding(false);
         }).done();

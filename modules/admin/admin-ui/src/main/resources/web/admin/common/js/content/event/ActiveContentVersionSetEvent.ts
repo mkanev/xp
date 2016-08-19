@@ -1,17 +1,19 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {ContentId} from "../ContentId";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class ActiveContentVersionSetEvent extends api.event.Event {
+export class ActiveContentVersionSetEvent extends Event {
 
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
         private versionId: string;
 
-        constructor(contentId: api.content.ContentId, versionId: string) {
+        constructor(contentId: ContentId, versionId: string) {
             this.contentId = contentId;
             this.versionId = versionId;
             super();
         }
 
-        getContentId(): api.content.ContentId {
+        getContentId(): ContentId {
             return this.contentId;
         }
 
@@ -20,11 +22,10 @@ module api.content.event {
         }
 
         static on(handler: (event: ActiveContentVersionSetEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ActiveContentVersionSetEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
-}

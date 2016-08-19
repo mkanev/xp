@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStore} from "./UserStore";
+import {UserStoreJson} from "./UserStoreJson";
+import {UserStoreListResult} from "./UserStoreListResult";
 
-    export class ListUserStoresRequest extends SecurityResourceRequest<UserStoreListResult, UserStore[]> {
+export class ListUserStoresRequest extends SecurityResourceRequest<UserStoreListResult, UserStore[]> {
 
         constructor() {
             super();
@@ -11,13 +16,13 @@ module api.security {
             return {};
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'userstore/list');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'userstore/list');
         }
 
         sendAndParse(): wemQ.Promise<UserStore[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<UserStoreListResult>) => {
+            return this.send().then((response: JsonResponse<UserStoreListResult>) => {
                 return response.getResult().userStores.map((userStoreJson: UserStoreJson) => {
                     return this.fromJsonToUserStore(userStoreJson);
                 });
@@ -28,4 +33,3 @@ module api.security {
             return UserStore.fromJson(json);
         }
     }
-}

@@ -1,8 +1,9 @@
-module api.content.image {
+import {Content} from "../Content";
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
+import {ContentId} from "../ContentId";
 
-    import Content = api.content.Content;
-
-    export class ImageErrorEvent extends api.event.Event {
+export class ImageErrorEvent extends Event {
 
         private contentId: ContentId;
 
@@ -16,11 +17,10 @@ module api.content.image {
         }
 
         static on(handler: (event: ImageErrorEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ImageErrorEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
-}

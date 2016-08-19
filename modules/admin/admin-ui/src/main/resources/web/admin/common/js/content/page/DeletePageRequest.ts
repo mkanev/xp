@@ -1,10 +1,16 @@
-module api.content.page {
+import {ContentJson} from "../json/ContentJson";
+import {Content} from "../Content";
+import {ContentId} from "../ContentId";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {PageCUDRequest} from "./PageCUDRequest";
+import {PageResourceRequest} from "./PageResourceRequest";
 
-    export class DeletePageRequest extends PageResourceRequest<api.content.json.ContentJson, api.content.Content> implements PageCUDRequest {
+export class DeletePageRequest extends PageResourceRequest<ContentJson, Content> implements PageCUDRequest {
 
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
 
-        constructor(contentId: api.content.ContentId) {
+        constructor(contentId: ContentId) {
             super();
             super.setMethod("GET");
             this.contentId = contentId;
@@ -16,15 +22,14 @@ module api.content.page {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "delete");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "delete");
         }
 
-        sendAndParse(): wemQ.Promise<api.content.Content> {
+        sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return response.isBlank() ? null : this.fromJsonToContent(response.getResult());
             });
         }
     }
-}

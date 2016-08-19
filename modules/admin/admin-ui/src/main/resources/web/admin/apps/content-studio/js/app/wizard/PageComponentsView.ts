@@ -1,40 +1,50 @@
-import "../../api.ts";
+import {ItemViewSelectedEvent} from "../../../../../common/js/liveedit/ItemViewSelectedEvent";
+import {ItemViewDeselectedEvent} from "../../../../../common/js/liveedit/ItemViewDeselectedEvent";
+import {LiveComponentAddedEvent as ComponentAddedEvent} from "../../../../../common/js/liveedit/LiveComponentAddedEvent";
+import {LiveComponentRemovedEvent as ComponentRemovedEvent} from "../../../../../common/js/liveedit/LiveComponentRemovedEvent";
+import {ComponentLoadedEvent} from "../../../../../common/js/liveedit/ComponentLoadedEvent";
+import {LiveComponentResetEvent as ComponentResetEvent} from "../../../../../common/js/liveedit/LiveComponentResetEvent";
+import {Content} from "../../../../../common/js/content/Content";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {PageView} from "../../../../../common/js/liveedit/PageView";
+import {ItemView} from "../../../../../common/js/liveedit/ItemView";
+import {TextComponentView} from "../../../../../common/js/liveedit/text/TextComponentView";
+import {FragmentComponentView} from "../../../../../common/js/liveedit/fragment/FragmentComponentView";
+import {Mask} from "../../../../../common/js/ui/mask/Mask";
+import {Highlighter} from "../../../../../common/js/liveedit/Highlighter";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {ResponsiveRanges} from "../../../../../common/js/ui/responsive/ResponsiveRanges";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {ItemViewContextMenu} from "../../../../../common/js/liveedit/ItemViewContextMenu";
+import {H3El} from "../../../../../common/js/dom/H3El";
+import {AppHelper} from "../../../../../common/js/util/AppHelper";
+import {CloseButton} from "../../../../../common/js/ui/button/CloseButton";
+import {H2El} from "../../../../../common/js/dom/H2El";
+import {Body} from "../../../../../common/js/dom/Body";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {ElementHelper} from "../../../../../common/js/dom/ElementHelper";
+import {DragHelper} from "../../../../../common/js/ui/DragHelper";
+import {BrowserHelper} from "../../../../../common/js/BrowserHelper";
+import {WindowDOM} from "../../../../../common/js/dom/WindowDOM";
+import {Position} from "../../../../../common/js/liveedit/Position";
+import {Action} from "../../../../../common/js/ui/Action";
+
 import {LiveEditPageProxy} from "./page/LiveEditPageProxy";
 import {PageComponentsTreeGrid} from "./PageComponentsTreeGrid";
 
-import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
-import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
-import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
-import ComponentRemovedEvent = api.liveedit.LiveComponentRemovedEvent;
-import ComponentLoadedEvent = api.liveedit.ComponentLoadedEvent;
-import ComponentResetEvent = api.liveedit.LiveComponentResetEvent;
-
-import Content = api.content.Content;
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import PageView = api.liveedit.PageView;
-import ItemView = api.liveedit.ItemView;
-import TextComponentView = api.liveedit.text.TextComponentView;
-import FragmentComponentView = api.liveedit.fragment.FragmentComponentView;
-
-import Mask = api.ui.mask.Mask;
-import Highlighter = api.liveedit.Highlighter;
-
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
-export class PageComponentsView extends api.dom.DivEl {
+export class PageComponentsView extends DivEl {
 
     private content: Content;
     private pageView: PageView;
     private liveEditPage: LiveEditPageProxy;
-    private contextMenu: api.liveedit.ItemViewContextMenu;
+    private contextMenu: ItemViewContextMenu;
 
     private responsiveItem: ResponsiveItem;
 
     private tree: PageComponentsTreeGrid;
-    private header: api.dom.H3El;
+    private header: H3El;
     private modal: boolean;
     private floating: boolean;
     private draggable: boolean;
@@ -43,7 +53,7 @@ export class PageComponentsView extends api.dom.DivEl {
     private mask: Mask;
 
     private selectionChangedHandler: (treeNode: TreeNode<ItemView>) =>
-        void = api.util.AppHelper.debounce(this.selectItem, 500, this.clicked);
+        void = AppHelper.debounce(this.selectItem, 500, this.clicked);
 
     private beforeInsertActionListeners: {(event):void}[] = [];
 
@@ -61,7 +71,7 @@ export class PageComponentsView extends api.dom.DivEl {
 
         this.onHidden((event) => this.hideContextMenu());
 
-        var closeButton = new api.ui.button.CloseButton();
+        var closeButton = new CloseButton();
         closeButton.onClicked((event: MouseEvent) => this.hide());
 
         this.onRemoved(() => {
@@ -70,7 +80,7 @@ export class PageComponentsView extends api.dom.DivEl {
             }
         });
 
-        this.header = new api.dom.H2El('header');
+        this.header = new H2El('header');
         this.header.setHtml('Components');
 
         this.appendChildren(closeButton, this.header);
@@ -85,7 +95,7 @@ export class PageComponentsView extends api.dom.DivEl {
             }
         });
 
-        this.responsiveItem = ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get(), (item: ResponsiveItem) => {
+        this.responsiveItem = ResponsiveManager.onAvailableSizeChanged(Body.get(), (item: ResponsiveItem) => {
             var smallSize = item.isInRangeOrSmaller(ResponsiveRanges._360_540);
             if (!smallSize && this.isVisible()) {
                 this.constrainToParent();
@@ -188,10 +198,10 @@ export class PageComponentsView extends api.dom.DivEl {
                             this.tree.expandNode(componentNode, true);
                         }
 
-                        if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponentView(), TextComponentView)) {
+                        if (ObjectHelper.iFrameSafeInstanceOf(event.getComponentView(), TextComponentView)) {
                             this.bindTreeTextNodeUpdateOnTextComponentModify(<TextComponentView>event.getComponentView());
                         }
-                        if (api.ObjectHelper.iFrameSafeInstanceOf(event.getComponentView(), FragmentComponentView)) {
+                        if (ObjectHelper.iFrameSafeInstanceOf(event.getComponentView(), FragmentComponentView)) {
                             this.bindTreeFragmentNodeUpdateOnComponentLoaded(<FragmentComponentView>event.getComponentView());
                         }
 
@@ -230,10 +240,10 @@ export class PageComponentsView extends api.dom.DivEl {
                     this.scrollToItem(newDataId);
                 }
 
-                if (api.ObjectHelper.iFrameSafeInstanceOf(event.getNewComponentView(), TextComponentView)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(event.getNewComponentView(), TextComponentView)) {
                     this.bindTreeTextNodeUpdateOnTextComponentModify(<TextComponentView>event.getNewComponentView());
                 }
-                if (api.ObjectHelper.iFrameSafeInstanceOf(event.getNewComponentView(), FragmentComponentView)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(event.getNewComponentView(), FragmentComponentView)) {
                     this.bindTreeFragmentNodeUpdateOnComponentLoaded(<FragmentComponentView>event.getNewComponentView());
                 }
             });
@@ -258,7 +268,7 @@ export class PageComponentsView extends api.dom.DivEl {
         });
 
         this.clickListener = (event, data) => {
-            var elem = new api.dom.ElementHelper(event.target);
+            var elem = new ElementHelper(event.target);
 
             if (this.sameRowClicked(data.row)) {
                 this.hideContextMenu();
@@ -288,7 +298,7 @@ export class PageComponentsView extends api.dom.DivEl {
 
         this.tree.getGrid().subscribeOnMouseEnter((event, data) => {
 
-            if (api.ui.DragHelper.get().isVisible()) {
+            if (DragHelper.get().isVisible()) {
                 return;
             }
 
@@ -305,8 +315,8 @@ export class PageComponentsView extends api.dom.DivEl {
 
             if (!this.pageView.isLocked()) {
                 this.highlightRow(rowElement, selected);
-                if (this.isMenuIcon(event.target) && api.BrowserHelper.isIOS()) {
-                    this.showContextMenu(new api.dom.ElementHelper(rowElement).getSiblingIndex(), {x: event.pageX, y: event.pageY});
+                if (this.isMenuIcon(event.target) && BrowserHelper.isIOS()) {
+                    this.showContextMenu(new ElementHelper(rowElement).getSiblingIndex(), {x: event.pageX, y: event.pageY});
                 }
             }
         });
@@ -358,7 +368,7 @@ export class PageComponentsView extends api.dom.DivEl {
         this.tree.getGrid().getDataView().getItems().map((dataItem) => {
             return dataItem.getData();
         }).filter((itemView: ItemView) => {
-            return api.ObjectHelper.iFrameSafeInstanceOf(itemView, TextComponentView);
+            return ObjectHelper.iFrameSafeInstanceOf(itemView, TextComponentView);
         }).forEach((textComponentView: TextComponentView) => {
             this.bindTreeTextNodeUpdateOnTextComponentModify(textComponentView);
         });
@@ -387,7 +397,7 @@ export class PageComponentsView extends api.dom.DivEl {
     }
 
     setDraggable(draggable: boolean): PageComponentsView {
-        var body = api.dom.Body.get();
+        var body = Body.get();
         if (!this.draggable && draggable) {
             var lastPos;
             if (!this.mouseDownListener) {
@@ -477,7 +487,7 @@ export class PageComponentsView extends api.dom.DivEl {
             parentOffset = parentEl.getOffset();
         }
         else {
-            parentEl = api.dom.WindowDOM.get();
+            parentEl = WindowDOM.get();
             parentOffset = {
                 top: 0,
                 left: 0
@@ -554,15 +564,15 @@ export class PageComponentsView extends api.dom.DivEl {
     }
 
     //
-    private showContextMenu(row: number, clickPosition: api.liveedit.Position) {
+    private showContextMenu(row: number, clickPosition: Position) {
         var node = this.tree.getGrid().getDataView().getItem(row);
         if (node) {
             var itemView: ItemView = node.getData(),
-                pageView: api.liveedit.PageView = itemView.getPageView();
+                pageView: PageView = itemView.getPageView();
         } else {
             pageView = this.pageView;
         }
-        var contextMenuActions: api.ui.Action[];
+        var contextMenuActions: Action[];
 
         if (pageView.isLocked()) {
             contextMenuActions = pageView.getLockedMenuActions();
@@ -571,20 +581,20 @@ export class PageComponentsView extends api.dom.DivEl {
         }
 
         if (!this.contextMenu) {
-            this.contextMenu = new api.liveedit.ItemViewContextMenu(null, contextMenuActions, false, false);
+            this.contextMenu = new ItemViewContextMenu(null, contextMenuActions, false, false);
             this.contextMenu.onHidden(this.removeMenuOpenStyleFromMenuIcon.bind(this));
         } else {
             this.contextMenu.setActions(contextMenuActions);
         }
 
-        this.contextMenu.getMenu().onBeforeAction((action: api.ui.Action) => {
+        this.contextMenu.getMenu().onBeforeAction((action: Action) => {
             this.pageView.setDisabledContextMenu(true);
             if (action.hasParentAction() && action.getParentAction().getLabel() == "Insert") {
                 this.notifyBeforeInsertAction();
             }
         });
 
-        this.contextMenu.getMenu().onAfterAction((action: api.ui.Action) => {
+        this.contextMenu.getMenu().onAfterAction((action: Action) => {
             this.hidePageComponentsIfInMobileView(action);
 
             setTimeout(() => {
@@ -602,8 +612,8 @@ export class PageComponentsView extends api.dom.DivEl {
         this.contextMenu.showAt(x, y, false);
     }
 
-    private hidePageComponentsIfInMobileView(action: api.ui.Action) {
-        if (api.BrowserHelper.isMobile() && ((action.hasParentAction() && action.getParentAction().getLabel() == "Insert")
+    private hidePageComponentsIfInMobileView(action: Action) {
+        if (BrowserHelper.isMobile() && ((action.hasParentAction() && action.getParentAction().getLabel() == "Insert")
                                              || action.getLabel() == "Inspect" || action.getLabel() == "Edit" ||
                                              action.getLabel() == "Duplicate")) {
             this.hide();
@@ -636,18 +646,18 @@ export class PageComponentsView extends api.dom.DivEl {
             Highlighter.get().hide();
         }
         else {
-            var elementHelper = new api.dom.ElementHelper(rowElement);
+            var elementHelper = new ElementHelper(rowElement);
             var dimensions = elementHelper.getDimensions();
             var nodes = this.tree.getRoot().getCurrentRoot().treeToList(),
-                hoveredNode = nodes[new api.dom.ElementHelper(rowElement).getSiblingIndex()];
+                hoveredNode = nodes[new ElementHelper(rowElement).getSiblingIndex()];
 
             if (hoveredNode) {
                 var data = hoveredNode.getData();
-                if (/*data.getType().isComponentType() && */!api.BrowserHelper.isMobile()) {
+                if (/*data.getType().isComponentType() && */!BrowserHelper.isMobile()) {
                     Highlighter.get().highlightElement(dimensions,
                         data.getType().getConfig().getHighlighterStyle());
                 }
-                if (api.BrowserHelper.isIOS()) {
+                if (BrowserHelper.isIOS()) {
                     this.selectItem(hoveredNode);
                 }
             }

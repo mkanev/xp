@@ -1,18 +1,25 @@
-module api.app {
+import {Equitable} from "../Equitable";
+import {NavigatedDeckPanel} from "../ui/panel/NavigatedDeckPanel";
+import {BrowsePanel} from "./browse/BrowsePanel";
+import {AppBarTabMenu} from "./bar/AppBarTabMenu";
+import {AppBarTabMenuItemBuilder} from "./bar/AppBarTabMenuItem";
+import {AppBarTabId} from "./bar/AppBarTabId";
+import {Panel} from "../ui/panel/Panel";
+import {ShowBrowsePanelEvent} from "./ShowBrowsePanelEvent";
 
-    export class AppPanel<M extends api.Equitable> extends api.ui.panel.NavigatedDeckPanel {
+export class AppPanel<M extends Equitable> extends NavigatedDeckPanel {
 
-        private browsePanel: api.app.browse.BrowsePanel<M>;
+        private browsePanel: BrowsePanel<M>;
 
-        constructor(tabNavigator: api.app.bar.AppBarTabMenu) {
+        constructor(tabNavigator: AppBarTabMenu) {
             super(tabNavigator);
         }
 
-        addBrowsePanel(browsePanel: api.app.browse.BrowsePanel<M>) {
+        addBrowsePanel(browsePanel: BrowsePanel<M>) {
             // limit to 1 browse panel
             if (!this.browsePanel) {
-                var browseMenuItem = new api.app.bar.AppBarTabMenuItemBuilder().setLabel("<Select>").
-                    setTabId(new api.app.bar.AppBarTabId("hidden", "____home")).
+                var browseMenuItem = new AppBarTabMenuItemBuilder().setLabel("<Select>").
+                    setTabId(new AppBarTabId("hidden", "____home")).
                     build();
                 browseMenuItem.setVisibleInMenu(false);
                 this.addNavigablePanel(browseMenuItem, browsePanel, true);
@@ -20,17 +27,17 @@ module api.app {
             }
         }
 
-        getBrowsePanel(): api.app.browse.BrowsePanel<M> {
+        getBrowsePanel(): BrowsePanel<M> {
             return this.browsePanel;
         }
 
-        removeNavigablePanel(panel: api.ui.panel.Panel, checkCanRemovePanel: boolean = true): number {
+        removeNavigablePanel(panel: Panel, checkCanRemovePanel: boolean = true): number {
             var index = super.removeNavigablePanel(panel, checkCanRemovePanel);
             this.checkBrowsePanelNeedsToBeShown(index, panel);
             return index;
         }
 
-        private checkBrowsePanelNeedsToBeShown(index: number, panel: api.ui.panel.Panel) {
+        private checkBrowsePanelNeedsToBeShown(index: number, panel: Panel) {
             if (panel == this.browsePanel && index > -1) {
                 this.browsePanel = undefined;
             } else if (this.getSize() == 0) {
@@ -39,8 +46,7 @@ module api.app {
             }
         }
 
-        getNavigator(): api.app.bar.AppBarTabMenu {
-            return <api.app.bar.AppBarTabMenu>super.getNavigator();
+        getNavigator(): AppBarTabMenu {
+            return <AppBarTabMenu>super.getNavigator();
         }
     }
-}

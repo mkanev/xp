@@ -1,6 +1,6 @@
-module api.ui.responsive {
+import {ResponsiveItem} from "./ResponsiveItem";
 
-    export class ResponsiveListener {
+export class ResponsiveListener {
 
         private item: ResponsiveItem;
         private listener: (event?: Event) => void;
@@ -18,4 +18,3 @@ module api.ui.responsive {
             return this.listener;
         }
     }
-}

@@ -1,20 +1,26 @@
-module api.ui.tab {
+import {Action} from "../Action";
+import {LiEl} from "../../dom/LiEl";
+import {NavigationItem} from "../NavigationItem";
+import {SpanEl} from "../../dom/SpanEl";
+import {ActionButton} from "../button/ActionButton";
+import {Tooltip} from "../Tooltip";
+import {TabItemClosedEvent} from "./TabItemClosedEvent";
+import {TabItemLabelChangedEvent} from "./TabItemLabelChangedEvent";
+import {TabItemSelectedEvent} from "./TabItemSelectedEvent";
 
-    import Action = api.ui.Action;
-
-    export class TabItem extends api.dom.LiEl implements api.ui.NavigationItem {
+export class TabItem extends LiEl implements NavigationItem {
 
         private index: number;
 
         private label: string;
 
-        private labelEl: api.dom.SpanEl;
+        private labelEl: SpanEl;
 
         private active: boolean = false;
 
-        private closeAction: api.ui.Action;
+        private closeAction: Action;
 
-        private removeButton: api.ui.button.ActionButton;
+        private removeButton: ActionButton;
 
         private labelChangedListeners: {(event: TabItemLabelChangedEvent):void}[] = [];
 
@@ -26,7 +32,7 @@ module api.ui.tab {
 
             super("tab-item" + (!classes ? "" : " " + classes));
 
-            this.labelEl = new api.dom.SpanEl('label');
+            this.labelEl = new SpanEl('label');
             this.appendChild(this.labelEl);
 
             this.setLabel(builder.label, builder.markUnnamed, builder.addLabelTitleAttribute);
@@ -47,8 +53,8 @@ module api.ui.tab {
         private createRemoveButton() {
             if (this.closeAction && !this.removeButton) {
 
-                this.removeButton = new api.ui.button.ActionButton(this.closeAction);
-                this.removeButton.getTooltip().setSide(api.ui.Tooltip.SIDE_LEFT);
+                this.removeButton = new ActionButton(this.closeAction);
+                this.removeButton.getTooltip().setSide(Tooltip.SIDE_LEFT);
                 this.removeButton.onClicked((event: MouseEvent) => {
                     event.stopPropagation();
                     event.preventDefault();
@@ -100,11 +106,11 @@ module api.ui.tab {
             return this.active;
         }
 
-        getCloseAction(): api.ui.Action {
+        getCloseAction(): Action {
             return this.closeAction;
         }
 
-        setCloseAction(closeAction: api.ui.Action) {
+        setCloseAction(closeAction: Action) {
             this.closeAction = closeAction;
         }
 
@@ -169,7 +175,7 @@ module api.ui.tab {
 
         addLabelTitleAttribute: boolean = true;
 
-        closeAction: api.ui.Action;
+        closeAction: Action;
 
         closeButtonEnabled: boolean;
 
@@ -182,7 +188,7 @@ module api.ui.tab {
             return this;
         }
 
-        setCloseAction(closeAction: api.ui.Action): TabItemBuilder {
+        setCloseAction(closeAction: Action): TabItemBuilder {
             this.closeAction = closeAction;
             return this;
         }
@@ -213,4 +219,3 @@ module api.ui.tab {
 
     }
 
-}

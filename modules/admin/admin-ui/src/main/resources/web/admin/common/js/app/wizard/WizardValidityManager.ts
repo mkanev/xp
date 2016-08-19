@@ -1,6 +1,9 @@
-module api.app.wizard {
+import {ValidityChangedEvent} from "../../ValidityChangedEvent";
+import {WizardHeader} from "./WizardHeader";
+import {WizardStep} from "./WizardStep";
+import {WizardStepValidityChangedEvent} from "./WizardStepValidityChangedEvent";
 
-    export class WizardValidityManager {
+export class WizardValidityManager {
 
         private steps: WizardStep[];
 
@@ -73,4 +76,3 @@ module api.app.wizard {
         }
 
     }
-}

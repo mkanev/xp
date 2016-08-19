@@ -1,6 +1,22 @@
-module api.dom {
+import {StyleHelper} from "../StyleHelper";
+import {assert} from "../util/Assert";
+import {StringHelper} from "../util/StringHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {ClassHelper} from "../ClassHelper";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {assertNotNull} from "../util/Assert";
+import {assertState} from "../util/Assert";
+import {Class} from "../Class";
+import {ArticleEl} from "./ArticleEl";
+import {ElementAddedEvent} from "./ElementAddedEvent";
+import {ElementHelper} from "./ElementHelper";
+import {ElementHiddenEvent} from "./ElementHiddenEvent";
+import {ElementRegistry} from "./ElementRegistry";
+import {ElementRemovedEvent} from "./ElementRemovedEvent";
+import {ElementRenderedEvent} from "./ElementRenderedEvent";
+import {ElementShownEvent} from "./ElementShownEvent";
 
-    export class ElementBuilder {
+export class ElementBuilder {
 
         generateId: boolean;
 
@@ -25,7 +41,7 @@ module api.dom {
             if (cls) {
                 cls = this.getParsedClass(cls);
                 if (prefix) {
-                    cls = api.StyleHelper.getCls(cls, prefix);
+                    cls = StyleHelper.getCls(cls, prefix);
                 }
             }
             this.className = cls;
@@ -73,7 +89,7 @@ module api.dom {
         helper: ElementHelper;
 
         setTagName(name: string): NewElementBuilder {
-            api.util.assert(!api.util.StringHelper.isEmpty(name), 'Tag name cannot be empty');
+            assert(!StringHelper.isEmpty(name), 'Tag name cannot be empty');
             this.tagName = name;
             return this;
         }
@@ -110,7 +126,7 @@ module api.dom {
             this.children = [];
             this.rendered = false;
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromElementBuilder)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromElementBuilder)) {
                 var fromElementBuilder = <ElementFromElementBuilder>builder;
                 var sourceElement = fromElementBuilder.element;
                 if (sourceElement) {
@@ -122,7 +138,7 @@ module api.dom {
                     this.el = sourceElement.el;
                 }
             }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromHelperBuilder)) {
+            else if (ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromHelperBuilder)) {
                 var fromHelperBuilder = <ElementFromHelperBuilder>builder;
 
                 this.el = fromHelperBuilder.helper;
@@ -133,7 +149,7 @@ module api.dom {
                     this.parentElement = fromHelperBuilder.parentElement;
                 }
             }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(builder, NewElementBuilder)) {
+            else if (ObjectHelper.iFrameSafeInstanceOf(builder, NewElementBuilder)) {
                 var newElementBuilder = <NewElementBuilder>builder;
                 if (!newElementBuilder.tagName) {
                     throw new Error("tagName cannot be null");
@@ -150,7 +166,7 @@ module api.dom {
                 }
             }
             else {
-                throw new Error("Unsupported builder: " + api.ClassHelper.getClassName(builder));
+                throw new Error("Unsupported builder: " + ClassHelper.getClassName(builder));
             }
 
             if (this.parentElement && this.el.getHTMLElement().parentElement) {
@@ -160,8 +176,8 @@ module api.dom {
             }
             // Do not generate id unless the distance to Element in the class hierarchy of this is larger than 1
             // This should result in that no id's are generated for new Element or classes extending Element directly
-            // (which should prevent id-generation of direct instances of most api.dom classes)
-            var distance = api.ClassHelper.distanceTo(this, Element);
+            // (which should prevent id-generation of direct instances of most dom classes)
+            var distance = ClassHelper.distanceTo(this, Element);
             if (builder.generateId || distance > 1) {
                 var id = ElementRegistry.registerElement(this);
                 this.setId(id);
@@ -217,7 +233,7 @@ module api.dom {
          */
         protected init(): wemQ.Promise<boolean> {
             if (Element.debug) {
-                console.debug("Element.init started", api.ClassHelper.getClassName(this));
+                console.debug("Element.init started", ClassHelper.getClassName(this));
             }
 
             if (this.isVisible()) {
@@ -236,7 +252,7 @@ module api.dom {
                 return this.initChildren(rendered);
             }).catch((reason) => {
 
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
                 return false;
             });
         }
@@ -255,12 +271,12 @@ module api.dom {
 
                 if (this.childrenAddedDuringInit) {
                     if (Element.debug) {
-                        console.debug("Element.init: initing children that were added during init", api.ClassHelper.getClassName(this));
+                        console.debug("Element.init: initing children that were added during init", ClassHelper.getClassName(this));
                     }
                     return this.initChildren(rendered);
                 } else {
                     if (Element.debug) {
-                        console.log("Element.init done", api.ClassHelper.getClassName(this));
+                        console.log("Element.init done", ClassHelper.getClassName(this));
                     }
 
                     this.rendering = false;
@@ -270,7 +286,7 @@ module api.dom {
                     return rendered;
                 }
             }).catch((reason) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
                 return false;
             });
         }
@@ -284,7 +300,7 @@ module api.dom {
          */
         render(deep: boolean = true): wemQ.Promise<boolean> {
             if (Element.debug) {
-                console.log('Element.render started', api.ClassHelper.getClassName(this));
+                console.log('Element.render started', ClassHelper.getClassName(this));
             }
             this.rendering = true;
             return this.doRender().then((rendered) => {
@@ -297,7 +313,7 @@ module api.dom {
                 }
                 return wemQ.all(childPromises).then((childResults) => {
                     if (Element.debug) {
-                        console.log('Element.render done', api.ClassHelper.getClassName(this));
+                        console.log('Element.render done', ClassHelper.getClassName(this));
                     }
 
                     this.rendering = false;
@@ -306,7 +322,7 @@ module api.dom {
 
                     return rendered;
                 }).catch((reason) => {
-                    api.DefaultErrorHandler.handle(reason);
+                    DefaultErrorHandler.handle(reason);
                     return false;
                 });
             })
@@ -359,24 +375,24 @@ module api.dom {
         }
 
         setClass(className: string): Element {
-            api.util.assert(!api.util.StringHelper.isEmpty(className), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(className), 'Class name cannot be empty');
             this.el.setClass(className);
             return this;
         }
 
         setClassEx(className: string): Element {
-            var cls = api.StyleHelper.getCls(className);
+            var cls = StyleHelper.getCls(className);
             return this.setClass(cls);
         }
 
         addClass(className: string): Element {
-            api.util.assert(!api.util.StringHelper.isEmpty(className), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(className), 'Class name cannot be empty');
             this.el.addClass(className);
             return this;
         }
 
         addClassEx(className: string): Element {
-            var cls = api.StyleHelper.getCls(className);
+            var cls = StyleHelper.getCls(className);
             return this.addClass(cls);
         }
 
@@ -390,7 +406,7 @@ module api.dom {
         }
 
         toggleClassEx(className: string, condition?: boolean): Element {
-            var cls = api.StyleHelper.getCls(className);
+            var cls = StyleHelper.getCls(className);
             return this.toggleClass(cls, condition);
         }
 
@@ -399,18 +415,18 @@ module api.dom {
         }
 
         hasClassEx(className: string): boolean {
-            var cls = api.StyleHelper.getCls(className);
+            var cls = StyleHelper.getCls(className);
             return this.hasClass(cls);
         }
 
         removeClass(className: string): Element {
-            api.util.assert(!api.util.StringHelper.isEmpty(className), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(className), 'Class name cannot be empty');
             this.el.removeClass(className);
             return this;
         }
 
         removeClassEx(className: string): Element {
-            var cls = api.StyleHelper.getCls(className);
+            var cls = StyleHelper.getCls(className);
             return this.removeClass(cls);
         }
 
@@ -469,7 +485,7 @@ module api.dom {
             this.el.focus();
             var gotFocus: boolean = document.activeElement == this.el.getHTMLElement();
             if (!gotFocus && Element.debug) {
-                console.log("Element.giveFocus(): Failed to give focus to Element: class = " + api.ClassHelper.getClassName(this) +
+                console.log("Element.giveFocus(): Failed to give focus to Element: class = " + ClassHelper.getClassName(this) +
                             ", id = " +
                             this.getId());
             }
@@ -486,7 +502,7 @@ module api.dom {
             this.el.blur();
             var gotBlur: boolean = document.activeElement != this.el.getHTMLElement();
             if (!gotBlur && Element.debug) {
-                console.log("Element.giveBlur(): Failed to give blur to Element: class = " + api.ClassHelper.getClassName(this) +
+                console.log("Element.giveBlur(): Failed to give blur to Element: class = " + ClassHelper.getClassName(this) +
                             ", id = " +
                             this.getId());
             }
@@ -503,7 +519,7 @@ module api.dom {
          */
 
         insertChild<T extends Element>(child: T, index: number): Element {
-            api.util.assertNotNull(child, 'Child cannot be null');
+            assertNotNull(child, 'Child cannot be null');
 
             this.el.insertChild(child.getEl().getHTMLElement(), index);
 
@@ -527,7 +543,7 @@ module api.dom {
         }
 
         insertAfterEl(existing: Element): Element {
-            api.util.assertNotNull(existing, 'Existing element cannot be null');
+            assertNotNull(existing, 'Existing element cannot be null');
             // get index before insertion !
             var existingIndex = existing.getSiblingIndex();
             this.el.insertAfterEl(existing.el);
@@ -536,7 +552,7 @@ module api.dom {
         }
 
         insertBeforeEl(existing: Element): Element {
-            api.util.assertNotNull(existing, 'Existing element cannot be null');
+            assertNotNull(existing, 'Existing element cannot be null');
             // get index before insertion !
             var existingIndex = existing.getSiblingIndex();
             this.el.insertBeforeEl(existing.el);
@@ -549,7 +565,7 @@ module api.dom {
         }
 
         removeChild(child: Element): Element {
-            api.util.assertNotNull(child, "Child element to remove cannot be null");
+            assertNotNull(child, "Child element to remove cannot be null");
 
             child.getEl().remove();
             this.removeChildElement(child);
@@ -570,8 +586,8 @@ module api.dom {
         }
 
         private insertChildElement(child: Element, parent: Element, index?: number): Element {
-            api.util.assertNotNull(child, 'Child element to insert cannot be null');
-            api.util.assertNotNull(parent, 'Parent element cannot be null');
+            assertNotNull(child, 'Child element to insert cannot be null');
+            assertNotNull(parent, 'Parent element cannot be null');
 
             parent.registerChildElement(child, index);
 
@@ -588,7 +604,7 @@ module api.dom {
         }
 
         private removeChildElement(child: Element): Element {
-            api.util.assertNotNull(child, 'Child element to insert cannot be null');
+            assertNotNull(child, 'Child element to insert cannot be null');
 
             this.unregisterChildElement(child);
 
@@ -653,7 +669,7 @@ module api.dom {
         }
 
         replaceWith(replacement: Element) {
-            api.util.assertNotNull(replacement, 'replacement element cannot be null');
+            assertNotNull(replacement, 'replacement element cannot be null');
 
             // Do the actual DOM replacement
             replacement.el.insertAfterEl(this.el);
@@ -677,7 +693,7 @@ module api.dom {
         }
 
         wrapWithElement(wrapperElement: Element) {
-            api.util.assertNotNull(wrapperElement, 'wrapperElement cannot be null');
+            assertNotNull(wrapperElement, 'wrapperElement cannot be null');
             var parent = this.parentElement;
             if (!parent) {
                 return;
@@ -726,7 +742,7 @@ module api.dom {
             var indexFromDOM = this.el.getSiblingIndex();
             if (this.parentElement) {
                 var indexFromElement = this.parentElement.children.indexOf(this);
-                api.util.assertState(indexFromElement == indexFromDOM, "index of Element in parentElement.children" +
+                assertState(indexFromElement == indexFromDOM, "index of Element in parentElement.children" +
                                                                        " [" + indexFromElement + "] does not correspond with" +
                                                                        " the actual index [" + indexFromDOM +
                                                                        "] of the HTMLElement in DOM");
@@ -1170,4 +1186,3 @@ module api.dom {
             }).get();
         }
     }
-}

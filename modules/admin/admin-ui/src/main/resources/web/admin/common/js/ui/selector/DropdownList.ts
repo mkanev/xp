@@ -1,6 +1,11 @@
-module api.ui.selector {
+import {DivEl} from "../../dom/DivEl";
+import {Viewer} from "../Viewer";
+import {DropdownGridConfig} from "./DropdownGrid";
+import {DropdownGrid} from "./DropdownGrid";
+import {DropdownGridRowSelectedEvent} from "./DropdownGridRowSelectedEvent";
+import {Option} from "./Option";
 
-    export interface DropdownListConfig<DISPLAY_VALUE> {
+export interface DropdownListConfig<DISPLAY_VALUE> {
 
         maxHeight?: number;
 
@@ -15,13 +20,13 @@ module api.ui.selector {
 
     export class DropdownList<OPTION_DISPLAY_VALUE> {
 
-        private emptyDropdown: api.dom.DivEl;
+        private emptyDropdown: DivEl;
 
         private dropdownGrid: DropdownGrid<OPTION_DISPLAY_VALUE>;
 
         constructor(config: DropdownListConfig<OPTION_DISPLAY_VALUE>) {
 
-            this.emptyDropdown = new api.dom.DivEl("empty-options");
+            this.emptyDropdown = new DivEl("empty-options");
             this.emptyDropdown.getEl().setInnerHtml("No matching items");
             this.emptyDropdown.hide();
 
@@ -46,7 +51,7 @@ module api.ui.selector {
             this.dropdownGrid.renderGrid();
         }
 
-        getEmptyDropdown(): api.dom.DivEl {
+        getEmptyDropdown(): DivEl {
             return this.emptyDropdown;
         }
 
@@ -186,4 +191,3 @@ module api.ui.selector {
             this.dropdownGrid.unRowSelection(listener);
         }
     }
-}

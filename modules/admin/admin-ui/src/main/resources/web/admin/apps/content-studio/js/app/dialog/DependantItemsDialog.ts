@@ -1,21 +1,28 @@
-import "../../api.ts";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentIds} from "../../../../../common/js/content/ContentIds";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {GetDescendantsOfContentsRequest} from "../../../../../common/js/content/resource/GetDescendantsOfContentsRequest";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {SelectionItem} from "../../../../../common/js/app/browse/SelectionItem";
+import {ListBox} from "../../../../../common/js/ui/selector/list/ListBox";
+import {LoadMask} from "../../../../../common/js/ui/mask/LoadMask";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {H6El} from "../../../../../common/js/dom/H6El";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Body} from "../../../../../common/js/dom/Body";
+import {Element} from "../../../../../common/js/dom/Element";
+import {ContentSummaryAndCompareStatusViewer} from "../../../../../common/js/content/ContentSummaryAndCompareStatusViewer";
+import {ContentIconUrlResolver} from "../../../../../common/js/content/util/ContentIconUrlResolver";
+
 import {StatusSelectionItem} from "./StatusSelectionItem";
 import {DependantItemViewer} from "./DependantItemViewer";
 
-import ContentSummary = api.content.ContentSummary;
-import ContentIds = api.content.ContentIds;
-import ContentId = api.content.ContentId;
-import GetDescendantsOfContentsRequest = api.content.resource.GetDescendantsOfContentsRequest;
-import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
-import BrowseItem = api.app.browse.BrowseItem;
-import SelectionItem = api.app.browse.SelectionItem;
-import ListBox = api.ui.selector.list.ListBox;
-import LoadMask = api.ui.mask.LoadMask;
-import DialogButton = api.ui.dialog.DialogButton;
-
-export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
+export class DependantItemsDialog extends ModalDialog {
 
     protected actionButton: DialogButton;
 
@@ -25,13 +32,13 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
 
     private ignoreItemsChanged: boolean;
 
-    private subTitle: api.dom.H6El;
+    private subTitle: H6El;
 
     private itemList: ListBox<ContentSummaryAndCompareStatus>;
 
-    private dependantsContainer: api.dom.DivEl;
+    private dependantsContainer: DivEl;
 
-    private dependantsHeader: api.dom.H6El;
+    private dependantsHeader: H6El;
 
     private dependantList: ListBox<ContentSummaryAndCompareStatus>;
 
@@ -47,13 +54,13 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
 
     constructor(dialogName: string, dialogSubName: string, dependantsName: string) {
         super({
-            title: new api.ui.dialog.ModalDialogHeader(dialogName)
+            title: new ModalDialogHeader(dialogName)
         });
         this.addClass("dependant-dialog");
 
         this.dialogName = dialogName;
 
-        this.subTitle = new api.dom.H6El("sub-title")
+        this.subTitle = new H6El("sub-title")
             .setHtml(dialogSubName, false);
         this.appendChildToTitle(this.subTitle);
 
@@ -72,12 +79,12 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
         this.itemList.onItemsRemoved(itemsChangedListener);
         this.itemList.onItemsAdded(itemsChangedListener);
 
-        this.dependantsHeader = new api.dom.H6El("dependants-header").setHtml(dependantsName, false);
+        this.dependantsHeader = new H6El("dependants-header").setHtml(dependantsName, false);
 
         this.dependantList = this.createDependantList();
         this.dependantList.addClass("dependant-list");
 
-        this.dependantsContainer = new api.dom.DivEl('dependants');
+        this.dependantsContainer = new DivEl('dependants');
         this.dependantsContainer.appendChildren(this.dependantsHeader, this.dependantList);
 
         let dependantsChangedListener = (items) => {
@@ -130,7 +137,7 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
     }
 
     show() {
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
         super.show();
         this.appendChildToContentPanel(this.loadMask);
         this.loadMask.show();
@@ -174,7 +181,7 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
     protected loadDescendantIds(filterStatuses?: CompareStatus[]) {
         let contents = this.getItemList().getItems();
 
-        return new api.content.resource.GetDescendantsOfContentsRequest().
+        return new GetDescendantsOfContentsRequest().
             setContentPaths(contents.map(content => content.getContentSummary().getPath())).
             setFilterStatuses(filterStatuses).sendAndParse()
             .then((result: ContentId[]) => {
@@ -186,7 +193,7 @@ export class DependantItemsDialog extends api.ui.dialog.ModalDialog {
                               size: number): wemQ.Promise<ContentSummaryAndCompareStatus[]> {
 
         let ids = this.dependantIds.slice(from, from+size);
-        return api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByIds(ids);
+        return ContentSummaryAndCompareStatusFetcher.fetchByIds(ids);
     }
 
     protected countTotal(): number {
@@ -265,14 +272,14 @@ export class DialogItemList extends ListBox<ContentSummaryAndCompareStatus> {
         });
     }
 
-    createItemView(item: ContentSummaryAndCompareStatus, readOnly: boolean): api.dom.Element {
-        let itemViewer = new api.content.ContentSummaryAndCompareStatusViewer();
+    createItemView(item: ContentSummaryAndCompareStatus, readOnly: boolean): Element {
+        let itemViewer = new ContentSummaryAndCompareStatusViewer();
 
         itemViewer.setObject(item);
 
         let browseItem = new BrowseItem<ContentSummaryAndCompareStatus>(item).setId(item.getId()).setDisplayName(
             item.getDisplayName()).setPath(item.getPath().toString()).setIconUrl(
-            new api.content.util.ContentIconUrlResolver().setContent(item.getContentSummary()).resolve());
+            new ContentIconUrlResolver().setContent(item.getContentSummary()).resolve());
 
         var statusItem = new StatusSelectionItem(itemViewer, browseItem);
         statusItem.onRemoveClicked((e: MouseEvent) => {
@@ -294,7 +301,7 @@ export class DialogDependantList extends ListBox<ContentSummaryAndCompareStatus>
         super(className);
     }
 
-    createItemView(item: ContentSummaryAndCompareStatus, readOnly: boolean): api.dom.Element {
+    createItemView(item: ContentSummaryAndCompareStatus, readOnly: boolean): Element {
 
         let dependantViewer = new DependantItemViewer();
 
@@ -302,7 +309,7 @@ export class DialogDependantList extends ListBox<ContentSummaryAndCompareStatus>
 
         let browseItem = new BrowseItem<ContentSummaryAndCompareStatus>(item).setId(item.getId()).setDisplayName(
             item.getDisplayName()).setPath(item.getPath().toString()).setIconUrl(
-            new api.content.util.ContentIconUrlResolver().setContent(item.getContentSummary()).resolve());
+            new ContentIconUrlResolver().setContent(item.getContentSummary()).resolve());
 
         let selectionItem = new StatusSelectionItem(dependantViewer, browseItem);
 

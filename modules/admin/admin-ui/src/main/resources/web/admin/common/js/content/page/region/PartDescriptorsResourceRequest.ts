@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {PartDescriptor} from "./PartDescriptor";
+import {PartDescriptorJson} from "./PartDescriptorJson";
+import {PartDescriptorResourceRequest} from "./PartDescriptorResourceRequest";
+import {PartDescriptorsJson} from "./PartDescriptorsJson";
 
-    export class PartDescriptorsResourceRequest extends PartDescriptorResourceRequest<PartDescriptorsJson, PartDescriptor[]> {
+export class PartDescriptorsResourceRequest extends PartDescriptorResourceRequest<PartDescriptorsJson, PartDescriptor[]> {
 
         fromJsonToPartDescriptors(json: PartDescriptorsJson): PartDescriptor[] {
 
@@ -11,4 +14,3 @@ module api.content.page.region {
             return array;
         }
     }
-}

@@ -1,6 +1,8 @@
-module api.form {
+import {DivEl} from "../dom/DivEl";
+import {SpanEl} from "../dom/SpanEl";
+import {FormItemSet} from "./FormItemSet";
 
-    export class FormItemSetLabel extends api.dom.DivEl {
+export class FormItemSetLabel extends DivEl {
 
         private formItemSet:FormItemSet;
 
@@ -11,7 +13,7 @@ module api.form {
 
             var nodes:Node[] = [];
 
-            var dragHandle = new api.dom.SpanEl( "drag-handle" );
+            var dragHandle = new SpanEl( "drag-handle" );
             dragHandle.setHtml( ":::" );
             nodes.push( dragHandle.getHTMLElement() );
 
@@ -19,11 +21,10 @@ module api.form {
 
             if( formItemSet.getOccurrences().required() ) {
                 nodes.push( document.createTextNode(" ") );
-                var requiredMarker = new api.dom.SpanEl("required");
+                var requiredMarker = new SpanEl("required");
                 nodes.push( requiredMarker.getHTMLElement() );
             }
             nodes.push( document.createTextNode(":") );
             this.getEl().appendChildren(nodes);
         }
     }
-}

@@ -1,6 +1,18 @@
-module api.app.browse.filter {
+import {Panel} from "../../../ui/panel/Panel";
+import {AggregationContainer} from "../../../aggregation/AggregationContainer";
+import {TextSearchField} from "./TextSearchField";
+import {ClearFilterButton} from "./ClearFilterButton";
+import {SpanEl} from "../../../dom/SpanEl";
+import {Aggregation} from "../../../aggregation/Aggregation";
+import {AggregationGroupView} from "../../../aggregation/AggregationGroupView";
+import {DivEl} from "../../../dom/DivEl";
+import {BucketViewSelectionChangedEvent} from "../../../aggregation/BucketViewSelectionChangedEvent";
+import {KeyBindings} from "../../../ui/KeyBindings";
+import {KeyBinding} from "../../../ui/KeyBinding";
+import {SearchInputValues} from "../../../query/SearchInputValues";
+import {Element} from "../../../dom/Element";
 
-    export class BrowseFilterPanel extends api.ui.panel.Panel {
+export class BrowseFilterPanel extends Panel {
 
         private searchStartedListeners: {():void}[] = [];
 
@@ -10,31 +22,31 @@ module api.app.browse.filter {
 
         private showResultsButtonClickedListeners: {():void}[] = [];
 
-        private aggregationContainer: api.aggregation.AggregationContainer;
+        private aggregationContainer: AggregationContainer;
 
-        private searchField: api.app.browse.filter.TextSearchField;
+        private searchField: TextSearchField;
 
-        private clearFilter: api.app.browse.filter.ClearFilterButton;
+        private clearFilter: ClearFilterButton;
 
-        private hitsCounterEl: api.dom.SpanEl;
+        private hitsCounterEl: SpanEl;
 
-        private hideFilterPanelButton: api.dom.SpanEl;
+        private hideFilterPanelButton: SpanEl;
 
-        private showResultsButton: api.dom.SpanEl;
+        private showResultsButton: SpanEl;
 
         protected filterPanelRefreshNeeded: boolean = false;
 
         private refreshStartedListeners: {():void}[] = [];
 
-        constructor(aggregations?: api.aggregation.Aggregation[], groupViews?: api.aggregation.AggregationGroupView[]) {
+        constructor(aggregations?: Aggregation[], groupViews?: AggregationGroupView[]) {
             super();
             this.addClass('filter-panel');
 
-            this.hideFilterPanelButton = new api.dom.SpanEl("hide-filter-panel-button icon-search");
+            this.hideFilterPanelButton = new SpanEl("hide-filter-panel-button icon-search");
             this.hideFilterPanelButton.onClicked(() => this.notifyHidePanelButtonPressed());
 
-            var showResultsButtonWrapper = new api.dom.DivEl("show-filter-results");
-            this.showResultsButton = new api.dom.SpanEl("show-filter-results-button");
+            var showResultsButtonWrapper = new DivEl("show-filter-results");
+            this.showResultsButton = new SpanEl("show-filter-results-button");
             this.showResultsButton.setHtml("Show results");
             this.showResultsButton.onClicked(() => this.notifyShowResultsButtonPressed());
             showResultsButtonWrapper.appendChild(this.showResultsButton);
@@ -49,18 +61,18 @@ module api.app.browse.filter {
                 this.reset();
             });
 
-            this.hitsCounterEl = new api.dom.SpanEl("hits-counter");
+            this.hitsCounterEl = new SpanEl("hits-counter");
 
-            var hitsCounterAndClearButtonWrapper = new api.dom.DivEl("hits-and-clear");
+            var hitsCounterAndClearButtonWrapper = new DivEl("hits-and-clear");
             hitsCounterAndClearButtonWrapper.appendChildren(this.clearFilter, this.hitsCounterEl);
 
-            this.aggregationContainer = new api.aggregation.AggregationContainer();
+            this.aggregationContainer = new AggregationContainer();
             this.appendChild(this.aggregationContainer);
 
             if (groupViews != null) {
-                groupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
+                groupViews.forEach((aggregationGroupView: AggregationGroupView) => {
 
-                        aggregationGroupView.onBucketViewSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {
+                        aggregationGroupView.onBucketViewSelectionChanged((event: BucketViewSelectionChangedEvent) => {
                             this.search(event.getBucketView());
                         });
 
@@ -79,7 +91,7 @@ module api.app.browse.filter {
 
                 this.showResultsButton.hide();
 
-                api.ui.KeyBindings.get().bindKey(new api.ui.KeyBinding("/", (e: ExtendedKeyboardEvent) => {
+                KeyBindings.get().bindKey(new KeyBinding("/", (e: ExtendedKeyboardEvent) => {
                     setTimeout(this.giveFocusToSearch.bind(this), 100);
                 }).setGlobal(true));
             })
@@ -96,13 +108,13 @@ module api.app.browse.filter {
             this.searchField.giveFocus();
         }
 
-        updateAggregations(aggregations: api.aggregation.Aggregation[], doUpdateAll?: boolean) {
+        updateAggregations(aggregations: Aggregation[], doUpdateAll?: boolean) {
             this.aggregationContainer.updateAggregations(aggregations, doUpdateAll);
         }
 
-        getSearchInputValues(): api.query.SearchInputValues {
+        getSearchInputValues(): SearchInputValues {
 
-            var searchInputValues: api.query.SearchInputValues = new api.query.SearchInputValues();
+            var searchInputValues: SearchInputValues = new SearchInputValues();
 
             searchInputValues.setAggregationSelections(this.aggregationContainer.getSelectedValuesByAggregationName());
             searchInputValues.setTextSearchFieldValue(this.searchField.getEl().getValue());
@@ -118,7 +130,7 @@ module api.app.browse.filter {
             return this.searchField.getHTMLElement()['value'].trim() != '';
         }
 
-        search(elementChanged?: api.dom.Element) {
+        search(elementChanged?: Element) {
             if (this.hasFilterSet()) {
                 this.clearFilter.show();
             }
@@ -129,7 +141,7 @@ module api.app.browse.filter {
             this.doSearch(elementChanged);
         }
 
-        doSearch(elementChanged?: api.dom.Element) {
+        doSearch(elementChanged?: Element) {
             return;
         }
 
@@ -248,4 +260,3 @@ module api.app.browse.filter {
         }
     }
 
-}

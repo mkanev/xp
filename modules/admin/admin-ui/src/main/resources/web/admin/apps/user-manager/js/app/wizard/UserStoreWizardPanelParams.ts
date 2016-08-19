@@ -1,8 +1,7 @@
-import "../../api.ts";
-import {UserItemWizardPanelParams} from "./UserItemWizardPanelParams";
-import UserStore = api.security.UserStore;
-import UserStoreKey = api.security.UserStoreKey;
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
 
+import {UserItemWizardPanelParams} from "./UserItemWizardPanelParams";
 export class UserStoreWizardPanelParams extends UserItemWizardPanelParams<UserStore> {
 
 }

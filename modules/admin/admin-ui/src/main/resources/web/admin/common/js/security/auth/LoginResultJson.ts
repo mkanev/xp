@@ -1,13 +1,12 @@
-module api.security.auth {
+import {UserJson} from "../UserJson";
 
-    export interface LoginResultJson {
+export interface LoginResultJson {
 
         authenticated: boolean;
 
-        user: api.security.UserJson;
+        user: UserJson;
 
         principals: string[];
 
         message?: string;
     }
-}

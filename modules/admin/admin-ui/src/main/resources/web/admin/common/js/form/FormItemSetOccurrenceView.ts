@@ -1,16 +1,28 @@
-module api.form {
+import {PropertySet} from "../data/PropertySet";
+import {PropertyArray} from "../data/PropertyArray";
+import {PropertyPath} from "../data/PropertyPath";
+import {PropertyPathElement} from "../data/PropertyPath";
+import {Property} from "../data/Property";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {PropertyTree} from "../data/PropertyTree";
+import {AEl} from "../dom/AEl";
+import {DivEl} from "../dom/DivEl";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {ContentSummary} from "../content/ContentSummary";
+import {FormContext} from "./FormContext";
+import {FormItemLayer} from "./FormItemLayer";
+import {FormItemOccurrenceView} from "./FormItemOccurrenceView";
+import {FormItemSet} from "./FormItemSet";
+import {FormItemSetLabel} from "./FormItemSetLabel";
+import {FormItemSetOccurrence} from "./FormItemSetOccurrence";
+import {FormItemView} from "./FormItemView";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
+import {ValidationRecordingPath} from "./ValidationRecordingPath";
 
-    import PropertySet = api.data.PropertySet;
-    import PropertyArray = api.data.PropertyArray;
-    import PropertyPath = api.data.PropertyPath;
-    import PropertyPathElement = api.data.PropertyPathElement;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import PropertyTree = api.data.PropertyTree;
-
-    export interface FormItemSetOccurrenceViewConfig {
+export interface FormItemSetOccurrenceViewConfig {
 
         context: FormContext;
 
@@ -31,7 +43,7 @@ module api.form {
 
         private formItemSet: FormItemSet;
 
-        private removeButton: api.dom.AEl;
+        private removeButton: AEl;
 
         private label: FormItemSetLabel;
 
@@ -45,7 +57,7 @@ module api.form {
 
         private formItemViews: FormItemView[] = [];
 
-        private formItemSetOccurrencesContainer: api.dom.DivEl;
+        private formItemSetOccurrencesContainer: DivEl;
 
         private validityChangedListeners: {(event: RecordingValidityChangedEvent) : void}[] = [];
 
@@ -72,7 +84,7 @@ module api.form {
 
             var deferred = wemQ.defer<void>();
 
-            this.removeButton = new api.dom.AEl("remove-button");
+            this.removeButton = new AEl("remove-button");
             this.appendChild(this.removeButton);
             this.removeButton.onClicked((event: MouseEvent) => {
                 this.notifyRemoveButtonClicked();
@@ -84,7 +96,7 @@ module api.form {
             this.label = new FormItemSetLabel(this.formItemSet);
             this.appendChild(this.label);
 
-            this.formItemSetOccurrencesContainer = new api.dom.DivEl("form-item-set-occurrences-container");
+            this.formItemSetOccurrencesContainer = new DivEl("form-item-set-occurrences-container");
             this.appendChild(this.formItemSetOccurrencesContainer);
 
 
@@ -121,7 +133,7 @@ module api.form {
                 this.refresh();
                 deferred.resolve(null);
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
             return deferred.promise;
@@ -161,13 +173,13 @@ module api.form {
             this.removeButton.setVisible(this.formItemSetOccurrence.isRemoveButtonRequired());
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(listener: (content: ContentSummary) => void) {
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.onEditContentRequest(listener);
             });
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(listener: (content: ContentSummary) => void) {
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.unEditContentRequest(listener);
             });
@@ -272,4 +284,3 @@ module api.form {
         }
     }
 
-}

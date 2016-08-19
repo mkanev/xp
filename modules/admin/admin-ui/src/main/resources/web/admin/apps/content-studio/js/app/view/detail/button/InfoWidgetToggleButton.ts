@@ -1,8 +1,8 @@
-import "../../../../api.ts";
+import {DivEl} from "../../../../../../../common/js/dom/DivEl";
 
 import {DetailsPanel} from "../DetailsPanel";
 
-export class InfoWidgetToggleButton extends api.dom.DivEl {
+export class InfoWidgetToggleButton extends DivEl {
 
     constructor(detailsPanel: DetailsPanel) {
         super("info-widget-toggle-button");

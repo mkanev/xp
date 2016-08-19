@@ -1,8 +1,7 @@
-module api.ui.security.acl {
+import {PrincipalKey} from "../../../security/PrincipalKey";
+import {EffectivePermissionMemberJson} from "../../../content/json/EffectivePermissionMemberJson";
 
-    import PrincipalKey = api.security.PrincipalKey;
-
-    export class EffectivePermissionMember {
+export class EffectivePermissionMember {
 
         private userKey: PrincipalKey;
 
@@ -21,10 +20,9 @@ module api.ui.security.acl {
             return this.displayName;
         }
 
-        static fromJson(json: api.content.json.EffectivePermissionMemberJson) {
+        static fromJson(json: EffectivePermissionMemberJson) {
             return new EffectivePermissionMember(PrincipalKey.fromString(json.key), json.displayName);
         }
 
     }
 
-}

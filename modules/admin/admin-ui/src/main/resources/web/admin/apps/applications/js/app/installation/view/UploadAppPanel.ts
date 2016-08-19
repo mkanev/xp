@@ -1,12 +1,12 @@
-import "../../../api.ts";
+import {ApplicationUploaderEl} from "../../../../../../common/js/application/ApplicationUploaderEl";
+import {InputEl} from "../../../../../../common/js/dom/InputEl";
+import {FileUploadStartedEvent} from "../../../../../../common/js/ui/uploader/FileUploadStartedEvent";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {Panel} from "../../../../../../common/js/ui/panel/Panel";
+
 import {ApplicationInput} from "./ApplicationInput";
 
-import ApplicationUploaderEl = api.application.ApplicationUploaderEl;
-import InputEl = api.dom.InputEl;
-import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-import Action = api.ui.Action;
-
-export class UploadAppPanel extends api.ui.panel.Panel {
+export class UploadAppPanel extends Panel {
 
     private cancelAction: Action;
     

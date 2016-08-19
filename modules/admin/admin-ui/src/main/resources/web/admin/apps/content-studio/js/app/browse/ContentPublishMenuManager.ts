@@ -1,7 +1,6 @@
-import "../../api.ts";
-import {ContentTreeGridActions} from "./action/ContentTreeGridActions";
+import {MenuButton} from "../../../../../common/js/ui/button/MenuButton";
 
-import MenuButton = api.ui.button.MenuButton;
+import {ContentTreeGridActions} from "./action/ContentTreeGridActions";
 
 export class ContentPublishMenuManager {
 

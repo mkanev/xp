@@ -1,30 +1,33 @@
-import "../../../api.ts";
+import {Event} from "../../../../../../common/js/event/Event";
+import {ContentQueryResult} from "../../../../../../common/js/content/resource/result/ContentQueryResult";
+import {ContentQuery} from "../../../../../../common/js/content/query/ContentQuery";
+import {ClassHelper} from "../../../../../../common/js/ClassHelper";
 
-export class ContentBrowseSearchEvent extends api.event.Event {
+export class ContentBrowseSearchEvent extends Event {
 
-    private contentQueryResult: api.content.resource.result.ContentQueryResult<any,any>;
-    private contentQuery: api.content.query.ContentQuery;
+    private contentQueryResult: ContentQueryResult<any,any>;
+    private contentQuery: ContentQuery;
 
-    constructor(contentQueryResult: api.content.resource.result.ContentQueryResult<any,any>,
-                contentQuery?: api.content.query.ContentQuery) {
+    constructor(contentQueryResult: ContentQueryResult<any,any>,
+                contentQuery?: ContentQuery) {
         super();
         this.contentQueryResult = contentQueryResult;
         this.contentQuery = contentQuery;
     }
 
-    getContentQueryResult(): api.content.resource.result.ContentQueryResult<any,any> {
+    getContentQueryResult(): ContentQueryResult<any,any> {
         return this.contentQueryResult;
     }
 
-    getContentQuery(): api.content.query.ContentQuery {
+    getContentQuery(): ContentQuery {
         return this.contentQuery;
     }
 
     static on(handler: (event: ContentBrowseSearchEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ContentBrowseSearchEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

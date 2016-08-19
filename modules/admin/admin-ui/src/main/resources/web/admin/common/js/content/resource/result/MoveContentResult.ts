@@ -1,8 +1,6 @@
-module api.content.resource.result {
+import {MoveContentResultJson} from "../../json/MoveContentResultJson";
 
-    import MoveContentResultJson = api.content.json.MoveContentResultJson;
-
-    export class MoveContentResult {
+export class MoveContentResult {
 
         private moveSuccess: string[];
         private moveFailures: MoveContentResultFailure[];
@@ -47,4 +45,3 @@ module api.content.resource.result {
             return this.reason;
         }
     }
-}

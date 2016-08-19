@@ -1,9 +1,8 @@
-module api.content.json {
+import {EffectivePermissionAccessJson} from "./EffectivePermissionAccessJson";
 
-    export interface EffectivePermissionJson {
+export interface EffectivePermissionJson {
 
         access: string;
 
         permissionAccessJson: EffectivePermissionAccessJson;
     }
-}

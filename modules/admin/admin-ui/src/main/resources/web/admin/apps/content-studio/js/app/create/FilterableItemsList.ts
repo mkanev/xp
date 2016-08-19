@@ -1,12 +1,14 @@
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {Site} from "../../../../../common/js/content/site/Site";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {Content} from "../../../../../common/js/content/Content";
+import {CreateContentFilter} from "../../../../../common/js/content/util/CreateContentFilter";
+
 import {NewContentDialogList} from "./NewContentDialogList";
 import {NewContentDialogListItem} from "./NewContentDialogListItem";
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-import Site = api.content.site.Site;
-import ApplicationKey = api.application.ApplicationKey;
-
 export class FilterableItemsList extends NewContentDialogList {
 
-    private parentContent: api.content.Content;
+    private parentContent: Content;
 
     private listItems: NewContentDialogListItem[];
 
@@ -25,7 +27,7 @@ export class FilterableItemsList extends NewContentDialogList {
         this.setItems(filteredItems);
     }
 
-    setParentContent(parent: api.content.Content) {
+    setParentContent(parent: Content) {
         this.parentContent = parent;
     }
 
@@ -69,7 +71,7 @@ export class FilterableItemsList extends NewContentDialogList {
 
     private filterByParentContent(items: NewContentDialogListItem[],
                                   siteApplicationKeys: ApplicationKey[]): NewContentDialogListItem[] {
-        var createContentFilter = new api.content.util.CreateContentFilter().siteApplicationsFilter(siteApplicationKeys);
+        var createContentFilter = new CreateContentFilter().siteApplicationsFilter(siteApplicationKeys);
         return items.filter((item: NewContentDialogListItem) =>
             createContentFilter.isCreateContentAllowed(this.parentContent, item.getContentType())
         );

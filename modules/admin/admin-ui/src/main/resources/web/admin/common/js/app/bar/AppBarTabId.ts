@@ -1,6 +1,6 @@
-module api.app.bar {
 
-    export class AppBarTabId {
+
+export class AppBarTabId {
 
         private mode: string;
 
@@ -40,4 +40,3 @@ module api.app.bar {
             return this.mode + ":" + this.id;
         }
     }
-}

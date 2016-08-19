@@ -1,6 +1,13 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {LocalDate} from "../util/LocalDate";
+import {LocalDateTime} from "../util/LocalDateTime";
+import {DateTime} from "../util/DateTime";
+import {PropertySet} from "./PropertySet";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
+import {ValueTypes} from "./ValueTypes";
 
-    export class ValueTypeConverter {
+export class ValueTypeConverter {
 
         private static VALID_REFERENCE_ID_PATTERN = /^([a-z0-9A-Z_\-\.:])*$/;
 
@@ -109,7 +116,7 @@ module api.data {
         }
 
         private static convertToData(value: Value): Value {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(value.getObject, PropertySet)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(value.getObject, PropertySet)) {
                 return new Value(value.getObject(), ValueTypes.DATA);
             }
             return new Value(new PropertySet(), ValueTypes.DATA);
@@ -132,8 +139,8 @@ module api.data {
             if (value.getType() === ValueTypes.STRING && ValueTypes.LOCAL_DATE_TIME.isConvertible(value.getString())) { // from string
                 return ValueTypes.LOCAL_DATE_TIME.newValue(value.getString());
             } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-                var localDate = <api.util.LocalDate>value.getObject();
-                return new Value(api.util.LocalDateTime.fromString(localDate.toString() + "T00:00:00"), ValueTypes.LOCAL_DATE_TIME);
+                var localDate = <LocalDate>value.getObject();
+                return new Value(LocalDateTime.fromString(localDate.toString() + "T00:00:00"), ValueTypes.LOCAL_DATE_TIME);
             } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) { // from DateTime
                 var dateTime = value.getString();
                 return ValueTypes.LOCAL_DATE_TIME.newValue(dateTime.substr(0, 19));
@@ -161,11 +168,10 @@ module api.data {
                 return ValueTypes.LOCAL_TIME.newValue(localDateTime.getHours() + ":" + localDateTime.getMinutes() + ":" +
                                                       localDateTime.getSeconds());
             } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) { // from DateTime
-                var dateTime = <api.util.DateTime> value.getObject();
+                var dateTime = <DateTime> value.getObject();
                 return ValueTypes.LOCAL_TIME.newValue(dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds());
             }
             return ValueTypes.LOCAL_TIME.newNullValue();
         }
 
     }
-}

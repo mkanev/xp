@@ -1,6 +1,14 @@
-module api.security {
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {FindPrincipalsResult} from "./FindPrincipalsResult";
+import {FindPrincipalsResultJson} from "./FindPrincipalsResultJson";
+import {Principal} from "./Principal";
+import {PrincipalJson} from "./PrincipalJson";
+import {PrincipalType} from "./PrincipalType";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class FindPrincipalsRequest extends api.security.SecurityResourceRequest<FindPrincipalsResultJson, FindPrincipalsResult> {
+export class FindPrincipalsRequest extends SecurityResourceRequest<FindPrincipalsResultJson, FindPrincipalsResult> {
 
         private allowedTypes: PrincipalType[];
         private searchQuery: string;
@@ -24,13 +32,13 @@ module api.security {
             }
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals');
         }
 
         sendAndParse(): wemQ.Promise<FindPrincipalsResult> {
             return this.send().
-                then((response: api.rest.JsonResponse<FindPrincipalsResultJson>) => {
+                then((response: JsonResponse<FindPrincipalsResultJson>) => {
                     var principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
                         return this.fromJsonToPrincipal(principalJson);
                     });
@@ -76,4 +84,3 @@ module api.security {
             this.filterPredicate = filterPredicate;
         }
     }
-}

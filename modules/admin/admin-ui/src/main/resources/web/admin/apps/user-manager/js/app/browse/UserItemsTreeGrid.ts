@@ -1,27 +1,28 @@
-import "../../api.ts";
+import {GridColumn} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../common/js/ui/grid/GridColumn";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {DateTimeFormatter} from "../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {TreeGridContextMenu} from "../../../../../common/js/ui/treegrid/TreeGridContextMenu";
+import {ListUserStoresRequest} from "../../../../../common/js/security/ListUserStoresRequest";
+import {FindPrincipalsRequest} from "../../../../../common/js/security/FindPrincipalsRequest";
+import {UserStoreListResult} from "../../../../../common/js/security/UserStoreListResult";
+import {UserStoreJson} from "../../../../../common/js/security/UserStoreJson";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
+
 import {UserTreeGridItem, UserTreeGridItemType, UserTreeGridItemBuilder} from "./UserTreeGridItem";
 import {UserTreeGridActions} from "./UserTreeGridActions";
 import {UserTreeGridItemViewer} from "./UserTreeGridItemViewer";
 import {EditPrincipalEvent} from "./EditPrincipalEvent";
 import {PrincipalBrowseResetEvent} from "./filter/PrincipalBrowseResetEvent";
 import {PrincipalBrowseSearchEvent} from "./filter/PrincipalBrowseSearchEvent";
-
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-import DateTimeFormatter = api.ui.treegrid.DateTimeFormatter;
-import TreeGridContextMenu = api.ui.treegrid.TreeGridContextMenu;
-
-import ListUserStoresRequest = api.security.ListUserStoresRequest;
-import FindPrincipalsRequest = api.security.FindPrincipalsRequest;
-import UserStoreListResult = api.security.UserStoreListResult;
-import UserStoreJson = api.security.UserStoreJson;
-import Principal = api.security.Principal;
-import UserStore = api.security.UserStore;
-import PrincipalType = api.security.PrincipalType;
-import UserStoreKey = api.security.UserStoreKey;
 
 export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
@@ -63,7 +64,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
             this.resetFilter();
         });
 
-        api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
             this.getGrid().resizeCanvas();
         });
 
@@ -124,7 +125,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
         }
     }
 
-    updateUserNode(principal: api.security.Principal, userStore: api.security.UserStore) {
+    updateUserNode(principal: Principal, userStore: UserStore) {
         var userTreeGridItem,
             builder = new UserTreeGridItemBuilder();
 
@@ -147,7 +148,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
         this.invalidate();
     }
 
-    appendUserNode(principal: api.security.Principal, userStore: api.security.UserStore, parentOfSameType?: boolean) {
+    appendUserNode(principal: Principal, userStore: UserStore, parentOfSameType?: boolean) {
         if (!principal) { // UserStore type
 
             var userTreeGridItem = new UserTreeGridItemBuilder().setUserStore(userStore).setType(UserTreeGridItemType.USER_STORE).build();
@@ -168,7 +169,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
         }
     }
 
-    deleteUserNodes(principals: api.security.Principal[], userStores: api.security.UserStore[]) {
+    deleteUserNodes(principals: Principal[], userStores: UserStore[]) {
         if (principals) {
             var principalItems = principals.map((principal) => {
                 return new UserTreeGridItemBuilder().setPrincipal(principal).setType(UserTreeGridItemType.PRINCIPAL).build();
@@ -223,7 +224,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
                 deferred.resolve(gridItems);
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
         } else if (parentNode.getData().getType() === UserTreeGridItemType.ROLES) {
@@ -284,7 +285,7 @@ export class UserItemsTreeGrid extends TreeGrid<UserTreeGridItem> {
 
                 deferred.resolve(gridItems);
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
         return deferred.promise;

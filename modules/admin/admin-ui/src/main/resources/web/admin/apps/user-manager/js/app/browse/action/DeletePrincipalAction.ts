@@ -1,6 +1,14 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ConfirmationDialog} from "../../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {ObjectHelper} from "../../../../../../common/js/ObjectHelper";
+import {Principal} from "../../../../../../common/js/security/Principal";
+import {UserStore} from "../../../../../../common/js/security/UserStore";
+import {DeletePrincipalRequest} from "../../../../../../common/js/security/DeletePrincipalRequest";
+import {JsonResponse} from "../../../../../../common/js/rest/JsonResponse";
+import {showFeedback} from "../../../../../../common/js/notify/MessageBus";
+import {UserItemDeletedEvent} from "../../../../../../common/js/security/UserItemDeletedEvent";
+import {DeleteUserStoreRequest} from "../../../../../../common/js/security/DeleteUserStoreRequest";
 
-import Action = api.ui.Action;
 import {UserItemsTreeGrid} from "../UserItemsTreeGrid";
 import {UserTreeGridItemType} from "../UserTreeGridItem";
 import {UserTreeGridItem} from "../UserTreeGridItem";
@@ -11,7 +19,7 @@ export class DeletePrincipalAction extends Action {
         super("Delete", "mod+del");
         this.setEnabled(false);
         this.onExecuted(() => {
-            api.ui.dialog.ConfirmationDialog.get()
+            ConfirmationDialog.get()
                 .setQuestion("Are you sure you want to delete this user item?")
                 .setNoCallback(null)
                 .setYesCallback(() => {
@@ -28,46 +36,46 @@ export class DeletePrincipalAction extends Action {
                     });
 
                     var principalKeys = principalItems.filter((userItem) => {
-                        return api.ObjectHelper.iFrameSafeInstanceOf(userItem, api.security.Principal);
-                    }).map((principal: api.security.Principal) => {
+                        return ObjectHelper.iFrameSafeInstanceOf(userItem, Principal);
+                    }).map((principal: Principal) => {
                         return principal.getKey();
                     });
 
                     var userStoreKeys = userStoreItems.filter((userItem) => {
-                        return api.ObjectHelper.iFrameSafeInstanceOf(userItem, api.security.UserStore);
-                    }).map((userStore: api.security.UserStore) => {
+                        return ObjectHelper.iFrameSafeInstanceOf(userItem, UserStore);
+                    }).map((userStore: UserStore) => {
                         return userStore.getKey();
                     });
 
 
                     if (principalKeys && principalKeys.length > 0) {
-                        new api.security.DeletePrincipalRequest()
+                        new DeletePrincipalRequest()
                             .setKeys(principalKeys)
                             .send()
-                            .done((jsonResponse: api.rest.JsonResponse<any>) => {
+                            .done((jsonResponse: JsonResponse<any>) => {
                                 var json = jsonResponse.getJson();
 
                                 if (json.results && json.results.length > 0) {
                                     var key = json.results[0].principalKey;
 
-                                    api.notify.showFeedback('Principal [' + key + '] deleted!');
-                                    api.security.UserItemDeletedEvent.create().setPrincipals(principalItems).build().fire();
+                                    showFeedback('Principal [' + key + '] deleted!');
+                                    UserItemDeletedEvent.create().setPrincipals(principalItems).build().fire();
                                 }
                             });
                     }
 
                     if (userStoreKeys && userStoreKeys.length > 0) {
-                        new api.security.DeleteUserStoreRequest()
+                        new DeleteUserStoreRequest()
                             .setKeys(userStoreKeys)
                             .send()
-                            .done((jsonResponse: api.rest.JsonResponse<any>) => {
+                            .done((jsonResponse: JsonResponse<any>) => {
                                 var json = jsonResponse.getJson();
 
                                 if (json.results && json.results.length > 0) {
                                     var key = json.results[0].userStoreKey;
 
-                                    api.notify.showFeedback('UserStore [' + key + '] deleted!');
-                                    api.security.UserItemDeletedEvent.create().setUserStores(userStoreItems).build().fire();
+                                    showFeedback('UserStore [' + key + '] deleted!');
+                                    UserItemDeletedEvent.create().setUserStores(userStoreItems).build().fire();
                                 }
                             });
                     }

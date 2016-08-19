@@ -1,6 +1,12 @@
-module api.ui.time {
+import {TextInput} from "../text/TextInput";
+import {StringHelper} from "../../util/StringHelper";
+import {Button} from "../button/Button";
+import {AppHelper} from "../../util/AppHelper";
+import {KeyHelper} from "../KeyHelper";
+import {Picker} from "./Picker";
+import {TimePickerPopupBuilder} from "./TimePickerPopup";
 
-    export class TimePickerBuilder {
+export class TimePickerBuilder {
 
         hours: number;
 
@@ -47,7 +53,7 @@ module api.ui.time {
                 value = this.formatTime(builder.hours, builder.minutes);
             }
 
-            this.input = api.ui.text.TextInput.middle(undefined, value);
+            this.input = TextInput.middle(undefined, value);
             this.input.onClicked((e: MouseEvent) => {
                 e.preventDefault();
                 this.togglePopupVisibility();
@@ -55,7 +61,7 @@ module api.ui.time {
 
             this.input.onKeyUp((event: KeyboardEvent) => {
                 var typedTime = this.input.getValue();
-                if (api.util.StringHelper.isEmpty(typedTime)) {
+                if (StringHelper.isEmpty(typedTime)) {
                     this.validUserInput = true;
                     this.popup.setSelectedTime(null, null);
                     if (this.popup.isVisible()) {
@@ -81,14 +87,14 @@ module api.ui.time {
         }
 
         protected initPopupTrigger() {
-            this.popupTrigger = new api.ui.button.Button();
+            this.popupTrigger = new Button();
             this.popupTrigger.addClass('icon-clock');
         }
 
         protected setupListeners(builder: TimePickerBuilder) {
 
             if (builder.closeOnOutsideClick) {
-                api.util.AppHelper.focusInOut(this, () => {
+                AppHelper.focusInOut(this, () => {
                     this.popup.hide();
                 }, 50, false);
 
@@ -113,7 +119,7 @@ module api.ui.time {
             });
 
             this.popup.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) {
+                if (KeyHelper.isTabKey(event)) {
                     if (!(document.activeElement == this.input.getEl().getHTMLElement())) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -124,7 +130,7 @@ module api.ui.time {
             });
 
             this.input.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) { // handles tab navigation events on date input
+                if (KeyHelper.isTabKey(event)) { // handles tab navigation events on date input
                     if (!event.shiftKey) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -136,7 +142,7 @@ module api.ui.time {
             });
 
             this.popupTrigger.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) {
+                if (KeyHelper.isTabKey(event)) {
                     this.popup.hide();
                 }
             });
@@ -165,4 +171,3 @@ module api.ui.time {
                    "";
         }
     }
-}

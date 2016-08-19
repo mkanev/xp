@@ -1,6 +1,6 @@
-module api.schema.content {
 
-    export enum ContentStateEnum {
+
+export enum ContentStateEnum {
         PENDING_DELETE,
         DEFAULT
     }
@@ -38,4 +38,3 @@ module api.schema.content {
         }
 
     }
-}

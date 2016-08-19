@@ -1,22 +1,39 @@
-module api.content {
+import {AccessControlList} from "../security/acl/AccessControlList";
+import {AccessControlEntry} from "../security/acl/AccessControlEntry";
+import {Property} from "../data/Property";
+import {PropertyTree} from "../data/PropertyTree";
+import {PropertyPath} from "../data/PropertyPath";
+import {PageTemplateBuilder} from "./page/PageTemplate";
+import {SiteBuilder} from "./site/Site";
+import {Equitable} from "../Equitable";
+import {Cloneable} from "../Cloneable";
+import {Attachments} from "./attachment/Attachments";
+import {Page} from "./page/Page";
+import {assertNotNull} from "../util/Assert";
+import {MixinName} from "../schema/mixin/MixinName";
+import {PrincipalKey} from "../security/PrincipalKey";
+import {Permission} from "../security/acl/Permission";
+import {RoleKeys} from "../security/RoleKeys";
+import {ExtraDataByMixinNameComparator} from "./util/ExtraDataByMixinNameComparator";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentJson} from "./json/ContentJson";
+import {ContentTypeName} from "../schema/content/ContentTypeName";
+import {AttachmentsBuilder} from "./attachment/Attachments";
+import {ExtraDataJson} from "./json/ExtraDataJson";
+import {PageBuilder} from "./page/Page";
+import {ContentSummary} from "./ContentSummary";
+import {ContentSummaryBuilder} from "./ContentSummary";
+import {ExtraData} from "./ExtraData";
 
-    import AccessControlList = api.security.acl.AccessControlList;
-    import AccessControlEntry = api.security.acl.AccessControlEntry;
-    import Property = api.data.Property;
-    import PropertyTree = api.data.PropertyTree;
-    import PropertyPath = api.data.PropertyPath;
-    import PageTemplateBuilder = api.content.page.PageTemplateBuilder;
-    import SiteBuilder = api.content.site.SiteBuilder;
-
-    export class Content extends ContentSummary implements api.Equitable, api.Cloneable {
+export class Content extends ContentSummary implements Equitable, Cloneable {
 
         private data: PropertyTree;
 
-        private attachments: api.content.attachment.Attachments;
+        private attachments: Attachments;
 
         private extraData: ExtraData[] = [];
 
-        private pageObj: api.content.page.Page;
+        private pageObj: Page;
 
         private permissions: AccessControlList;
 
@@ -25,7 +42,7 @@ module api.content {
         constructor(builder: ContentBuilder) {
             super(builder);
 
-            api.util.assertNotNull(builder.data, "data is required for Content");
+            assertNotNull(builder.data, "data is required for Content");
             this.data = builder.data;
             this.attachments = builder.attachments;
             this.extraData = builder.extraData || [];
@@ -38,11 +55,11 @@ module api.content {
             return this.data;
         }
 
-        getAttachments(): api.content.attachment.Attachments {
+        getAttachments(): Attachments {
             return this.attachments;
         }
 
-        getExtraData(name: api.schema.mixin.MixinName): ExtraData {
+        getExtraData(name: MixinName): ExtraData {
             return this.extraData.filter((item: ExtraData) => item.getName().equals(name))[0];
         }
 
@@ -54,7 +71,7 @@ module api.content {
             return !!propertyName ? this.data.getProperty(propertyName) : null;
         }
 
-        getPage(): api.content.page.Page {
+        getPage(): Page {
             return this.pageObj;
         }
 
@@ -66,9 +83,9 @@ module api.content {
             return this.inheritPermissions;
         }
 
-        isAnyPrincipalAllowed(principalKeys: api.security.PrincipalKey[], permission: api.security.acl.Permission): boolean {
+        isAnyPrincipalAllowed(principalKeys: PrincipalKey[], permission: Permission): boolean {
 
-            if (principalKeys.map(key => key.toString()).indexOf(api.security.RoleKeys.ADMIN.toString()) > -1) {
+            if (principalKeys.map(key => key.toString()).indexOf(RoleKeys.ADMIN.toString()) > -1) {
                 return true;
             }
 
@@ -76,7 +93,7 @@ module api.content {
                 var entry = this.permissions.getEntries()[i];
 
                 if (entry.isAllowed(permission)) {
-                    var principalInEntry = principalKeys.some((principalKey: api.security.PrincipalKey) => {
+                    var principalInEntry = principalKeys.some((principalKey: PrincipalKey) => {
                         if (principalKey.equals(entry.getPrincipalKey())) {
                             return true;
                         }
@@ -105,12 +122,12 @@ module api.content {
             extraData = extraData.map((m) => this.trimExtraData(m)).filter((m) => !m.getData().isEmpty());
             otherMeta = otherMeta.map((m) => this.trimExtraData(m)).filter((m) => !m.getData().isEmpty());
 
-            var comparator = new api.content.util.ExtraDataByMixinNameComparator();
-            return api.ObjectHelper.arrayEquals(extraData.sort(comparator.compare), otherMeta.sort(comparator.compare));
+            var comparator = new ExtraDataByMixinNameComparator();
+            return ObjectHelper.arrayEquals(extraData.sort(comparator.compare), otherMeta.sort(comparator.compare));
         }
 
-        equals(o: api.Equitable, ignoreEmptyValues: boolean = false): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Content)) {
+        equals(o: Equitable, ignoreEmptyValues: boolean = false): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Content)) {
                 return false;
             }
 
@@ -121,11 +138,11 @@ module api.content {
             var other = <Content>o;
 
             if (ignoreEmptyValues) {
-                if (!api.ObjectHelper.equals(this.trimPropertyTree(this.data), this.trimPropertyTree(other.data))) {
+                if (!ObjectHelper.equals(this.trimPropertyTree(this.data), this.trimPropertyTree(other.data))) {
                     return false;
                 }
             } else {
-                if (!api.ObjectHelper.equals(this.data, other.data)) {
+                if (!ObjectHelper.equals(this.data, other.data)) {
                     return false;
                 }
             }
@@ -135,21 +152,21 @@ module api.content {
                     return false;
                 }
             } else {
-                var comparator = new api.content.util.ExtraDataByMixinNameComparator();
-                if (!api.ObjectHelper.arrayEquals(this.extraData.sort(comparator.compare), other.extraData.sort(comparator.compare))) {
+                var comparator = new ExtraDataByMixinNameComparator();
+                if (!ObjectHelper.arrayEquals(this.extraData.sort(comparator.compare), other.extraData.sort(comparator.compare))) {
                     return false;
                 }
             }
 
-            if (!api.ObjectHelper.equals(this.pageObj, other.pageObj)) {
+            if (!ObjectHelper.equals(this.pageObj, other.pageObj)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.permissions, other.permissions)) {
+            if (!ObjectHelper.equals(this.permissions, other.permissions)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.attachments, other.attachments)) {
+            if (!ObjectHelper.equals(this.attachments, other.attachments)) {
                 return false;
             }
 
@@ -168,9 +185,9 @@ module api.content {
             return new ContentBuilder(this);
         }
 
-        static fromJson(json: api.content.json.ContentJson): Content {
+        static fromJson(json: ContentJson): Content {
 
-            var type = new api.schema.content.ContentTypeName(json.type);
+            var type = new ContentTypeName(json.type);
 
             if (type.isSite()) {
                 return new SiteBuilder().fromContentJson(json).build();
@@ -186,11 +203,11 @@ module api.content {
 
         data: PropertyTree;
 
-        attachments: api.content.attachment.Attachments;
+        attachments: Attachments;
 
         extraData: ExtraData[];
 
-        pageObj: api.content.page.Page;
+        pageObj: Page;
 
         permissions: AccessControlList;
 
@@ -209,19 +226,19 @@ module api.content {
             }
         }
 
-        fromContentJson(json: api.content.json.ContentJson): ContentBuilder {
+        fromContentJson(json: ContentJson): ContentBuilder {
 
             super.fromContentSummaryJson(json);
 
             this.data = PropertyTree.fromJson(json.data);
-            this.attachments = new api.content.attachment.AttachmentsBuilder().fromJson(json.attachments).build();
+            this.attachments = new AttachmentsBuilder().fromJson(json.attachments).build();
             this.extraData = [];
-            json.meta.forEach((extraDataJson: api.content.json.ExtraDataJson) => {
+            json.meta.forEach((extraDataJson: ExtraDataJson) => {
                 this.extraData.push(ExtraData.fromJson(extraDataJson));
             });
 
             if (this.page) {
-                this.pageObj = new api.content.page.PageBuilder().fromJson(json.page).build();
+                this.pageObj = new PageBuilder().fromJson(json.page).build();
                 this.page = true;
             }
             if (json.permissions) {
@@ -239,12 +256,12 @@ module api.content {
             return this;
         }
 
-        setAttachments(value: api.content.attachment.Attachments): ContentBuilder {
+        setAttachments(value: Attachments): ContentBuilder {
             this.attachments = value;
             return this;
         }
 
-        setPage(value: api.content.page.Page): ContentBuilder {
+        setPage(value: Page): ContentBuilder {
             this.pageObj = value;
             this.page = value ? true : false;
             return this;
@@ -269,4 +286,3 @@ module api.content {
             return new Content(this);
         }
     }
-}

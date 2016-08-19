@@ -1,11 +1,11 @@
-module api.ui.security.acl {
+import {Permission} from "../../../security/acl/Permission";
+import {Principal} from "../../../security/Principal";
+import {PrincipalType} from "../../../security/PrincipalType";
+import {UserStoreAccessControlEntry} from "../../../security/acl/UserStoreAccessControlEntry";
+import {ListBox} from "../../selector/list/ListBox";
+import {UserStoreAccessControlEntryView} from "./UserStoreAccessControlEntryView";
 
-    import Permission = api.security.acl.Permission;
-    import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
-
-    export class UserStoreAccessControlListView extends api.ui.selector.list.ListBox<UserStoreAccessControlEntry> {
+export class UserStoreAccessControlListView extends ListBox<UserStoreAccessControlEntry> {
 
         private itemValueChangedListeners: {(item: UserStoreAccessControlEntry): void}[] = [];
         private itemsEditable: boolean = true;
@@ -66,4 +66,3 @@ module api.ui.security.acl {
 
     }
 
-}

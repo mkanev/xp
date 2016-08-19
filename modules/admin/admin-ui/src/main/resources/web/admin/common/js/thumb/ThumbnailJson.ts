@@ -1,6 +1,6 @@
-module api.thumb {
 
-    export interface ThumbnailJson {
+
+export interface ThumbnailJson {
 
         binaryReference:string;
 
@@ -8,4 +8,3 @@ module api.thumb {
 
         size:number;
     }
-}

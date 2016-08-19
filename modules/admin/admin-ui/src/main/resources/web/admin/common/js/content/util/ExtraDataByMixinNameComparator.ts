@@ -1,6 +1,7 @@
-module api.content.util {
+import {Comparator} from "../../Comparator";
+import {ExtraData} from "../ExtraData";
 
-    export class ExtraDataByMixinNameComparator implements api.Comparator<ExtraData> {
+export class ExtraDataByMixinNameComparator implements Comparator<ExtraData> {
 
         compare(a: ExtraData, b: ExtraData): number {
             if (!a.getName()) {
@@ -16,4 +17,3 @@ module api.content.util {
             return firstName.localeCompare(secondName);
         }
     }
-}

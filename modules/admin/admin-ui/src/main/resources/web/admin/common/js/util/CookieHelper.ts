@@ -1,6 +1,6 @@
-module api.util {
 
-    export class CookieHelper {
+
+export class CookieHelper {
 
         static setCookie(name:string, value:string, days:number = 1):void {
             if (days) {
@@ -40,4 +40,3 @@ module api.util {
             return decodeURIComponent(value);
         }
     }
-}

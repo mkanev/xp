@@ -1,20 +1,20 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {Component} from "../content/page/region/Component";
+import {FragmentComponentView} from "./fragment/FragmentComponentView";
+import {ComponentType} from "../content/page/region/ComponentType";
+import {Content} from "../content/Content";
+import {ClassHelper} from "../ClassHelper";
 
-    import Event = api.event.Event;
-    import Component = api.content.page.region.Component;
-    import FragmentComponentView = api.liveedit.fragment.FragmentComponentView;
-    import ComponentType = api.content.page.region.ComponentType;
-
-    export class ComponentFragmentCreatedEvent extends api.event.Event {
+export class ComponentFragmentCreatedEvent extends Event {
 
         private sourceComponentType: ComponentType;
 
         private fragmentComponentView: FragmentComponentView;
 
-        private fragmentContent: api.content.Content;
+        private fragmentContent: Content;
 
         constructor(fragmentComponentView: FragmentComponentView, sourceComponentType: ComponentType,
-                    fragmentContent: api.content.Content) {
+                    fragmentContent: Content) {
             super();
             this.fragmentComponentView = fragmentComponentView;
             this.sourceComponentType = sourceComponentType;
@@ -25,7 +25,7 @@ module api.liveedit {
             return this.fragmentComponentView;
         }
 
-        getFragmentContent(): api.content.Content {
+        getFragmentContent(): Content {
             return this.fragmentContent;
         }
 
@@ -34,11 +34,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: ComponentFragmentCreatedEvent) => void, contextWindow: Window = window) {
-            Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: ComponentFragmentCreatedEvent) => void, contextWindow: Window = window) {
-            Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

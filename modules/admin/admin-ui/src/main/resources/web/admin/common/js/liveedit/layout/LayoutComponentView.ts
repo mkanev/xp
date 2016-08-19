@@ -1,15 +1,24 @@
-module api.liveedit.layout {
+import {Component} from "../../content/page/region/Component";
+import {ComponentPath} from "../../content/page/region/ComponentPath";
+import {Region} from "../../content/page/region/Region";
+import {LayoutComponent} from "../../content/page/region/LayoutComponent";
+import {Regions} from "../../content/page/region/Regions";
+import {ComponentView} from "../ComponentView";
+import {RegionView} from "../RegionView";
+import {ItemView} from "../ItemView";
+import {Element} from "../../dom/Element";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ComponentViewBuilder} from "../ComponentView";
+import {ItemType} from "../ItemType";
+import {ItemViewAddedEvent} from "../ItemViewAddedEvent";
+import {ItemViewRemovedEvent} from "../ItemViewRemovedEvent";
+import {RegionItemType} from "../RegionItemType";
+import {RegionViewBuilder} from "../RegionView";
+import {LayoutComponentViewer} from "./LayoutComponentViewer";
+import {LayoutItemType} from "./LayoutItemType";
+import {LayoutPlaceholder} from "./LayoutPlaceholder";
 
-    import Component = api.content.page.region.Component;
-    import ComponentPath = api.content.page.region.ComponentPath;
-    import Region = api.content.page.region.Region;
-    import LayoutComponent = api.content.page.region.LayoutComponent;
-    import Regions = api.content.page.region.Regions;
-    import ComponentView = api.liveedit.ComponentView;
-    import RegionView = api.liveedit.RegionView;
-    import ItemView = api.liveedit.ItemView;
-
-    export class LayoutComponentViewBuilder extends ComponentViewBuilder<LayoutComponent> {
+export class LayoutComponentViewBuilder extends ComponentViewBuilder<LayoutComponent> {
 
         constructor() {
             super();
@@ -116,7 +125,7 @@ module api.liveedit.layout {
             return this.doParseRegions();
         }
 
-        private doParseRegions(parentElement?: api.dom.Element) {
+        private doParseRegions(parentElement?: Element) {
 
             var layoutComponent: LayoutComponent = <LayoutComponent>this.getComponent();
             var layoutRegions = layoutComponent.getRegions();
@@ -125,9 +134,9 @@ module api.liveedit.layout {
             }
             var children = parentElement ? parentElement.getChildren() : this.getChildren();
 
-            children.forEach((childElement: api.dom.Element) => {
+            children.forEach((childElement: Element) => {
                 var itemType = ItemType.fromElement(childElement);
-                var isRegionView = api.ObjectHelper.iFrameSafeInstanceOf(childElement, RegionView);
+                var isRegionView = ObjectHelper.iFrameSafeInstanceOf(childElement, RegionView);
                 var region, regionName, regionView;
 
                 if (isRegionView) {
@@ -190,4 +199,3 @@ module api.liveedit.layout {
             }
         }
     }
-}

@@ -1,6 +1,6 @@
-module api.cache {
 
-    export class Cache<T,KEY> {
+
+export class Cache<T,KEY> {
 
         private objectsByKey: {[s:string] : T;} = {};
 
@@ -50,4 +50,3 @@ module api.cache {
             return this.copy(object);
         }
     }
-}

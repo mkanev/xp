@@ -1,15 +1,16 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
 
-export class BaseContentModelEvent extends api.event.Event {
+export class BaseContentModelEvent extends Event {
 
-    private model: api.content.ContentSummaryAndCompareStatus[];
+    private model: ContentSummaryAndCompareStatus[];
 
-    constructor(model: api.content.ContentSummaryAndCompareStatus[]) {
+    constructor(model: ContentSummaryAndCompareStatus[]) {
         this.model = model;
         super();
     }
 
-    getModels(): api.content.ContentSummaryAndCompareStatus[] {
+    getModels(): ContentSummaryAndCompareStatus[] {
         return this.model;
     }
 }

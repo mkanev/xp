@@ -1,6 +1,16 @@
-module api.ui.tags {
+import {FormInputEl} from "../../dom/FormInputEl";
+import {TextInput} from "../text/TextInput";
+import {ValueChangedEvent} from "../../ValueChangedEvent";
+import {StringHelper} from "../../util/StringHelper";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {TagBuilder} from "./Tag";
+import {Tag} from "./Tag";
+import {TagAddedEvent} from "./TagAddedEvent";
+import {TagRemovedEvent} from "./TagRemovedEvent";
+import {TagSuggester} from "./TagSuggester";
+import {TagSuggestions} from "./TagSuggestions";
 
-    export class TagsBuilder {
+export class TagsBuilder {
 
         tagSuggester: TagSuggester;
 
@@ -28,11 +38,11 @@ module api.ui.tags {
         }
     }
 
-    export class Tags extends api.dom.FormInputEl {
+    export class Tags extends FormInputEl {
 
         private tagSuggester: TagSuggester;
 
-        private textInput: api.ui.text.TextInput;
+        private textInput: TextInput;
 
         private tagSuggestions: TagSuggestions;
 
@@ -54,7 +64,7 @@ module api.ui.tags {
 
             this.maxTags = builder.maxTags;
 
-            this.textInput = new api.ui.text.TextInput();
+            this.textInput = new TextInput();
             this.textInput.disableAutocomplete();
             this.appendChild(this.textInput);
 
@@ -104,7 +114,7 @@ module api.ui.tags {
                 this.textInput.getEl().setWidth('');
             });
 
-            this.textInput.onValueChanged((event: api.ValueChangedEvent) => {
+            this.textInput.onValueChanged((event: ValueChangedEvent) => {
                 if (this.searchTimeout) {
                     clearTimeout(this.searchTimeout);
                     this.searchTimeout = undefined;
@@ -112,7 +122,7 @@ module api.ui.tags {
 
                 var searchString = event.getNewValue();
 
-                if (api.util.StringHelper.isBlank(searchString)) {
+                if (StringHelper.isBlank(searchString)) {
                     this.tagSuggestions.hide();
                 } else {
                     this.searchTimeout = setTimeout(() => this.searchSuggestions(searchString), 100);
@@ -156,7 +166,7 @@ module api.ui.tags {
                     this.preservedValue = searchString;
                 }
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
                 return [];
             }).done();
         }
@@ -221,7 +231,7 @@ module api.ui.tags {
         }
 
         private indexOf(value: string): number {
-            if (!api.util.StringHelper.isEmpty(value)) {
+            if (!StringHelper.isEmpty(value)) {
                 for (var i = 0; i < this.tags.length; i++) {
                     if (value == this.tags[i].getValue()) {
                         return i;
@@ -296,4 +306,3 @@ module api.ui.tags {
         }
 
     }
-}

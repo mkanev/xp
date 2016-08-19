@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface ContentVersionJson {
+
+export interface ContentVersionJson {
 
         modifier: string;
 
@@ -16,4 +16,3 @@ module api.content.json {
     }
 
 
-}

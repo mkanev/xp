@@ -1,18 +1,22 @@
-module api.liveedit {
+import {PageDescriptor} from "../content/page/PageDescriptor";
+import {PageDescriptorDropdown} from "../content/page/PageDescriptorDropdown";
+import {LoadedDataEvent} from "../util/loader/event/LoadedDataEvent";
+import {GetContentTypeByNameRequest} from "../schema/content/GetContentTypeByNameRequest";
+import {ContentType} from "../schema/content/ContentType";
+import {DivEl} from "../dom/DivEl";
+import {StyleHelper} from "../StyleHelper";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {ItemViewPlaceholder} from "./ItemViewPlaceholder";
+import {PagePlaceholderInfoBlock} from "./PagePlaceholderInfoBlock";
+import {PageView} from "./PageView";
 
-    import PageDescriptor = api.content.page.PageDescriptor;
-    import PageDescriptorDropdown = api.content.page.PageDescriptorDropdown;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import GetContentTypeByNameRequest = api.schema.content.GetContentTypeByNameRequest;
-    import ContentType = api.schema.content.ContentType;
-
-    export class PagePlaceholder extends ItemViewPlaceholder {
+export class PagePlaceholder extends ItemViewPlaceholder {
 
         constructor(pageView: PageView) {
             super();
             this.addClassEx("page-placeholder");
 
-            var pageDescriptorPlaceholder = new api.dom.DivEl("page-descriptor-placeholder", api.StyleHelper.getCurrentPrefix());
+            var pageDescriptorPlaceholder = new DivEl("page-descriptor-placeholder", StyleHelper.getCurrentPrefix());
 
             var infoBlock = new PagePlaceholderInfoBlock();
             var controllerDropdown = this.createControllerDropdown(pageView, infoBlock);
@@ -43,7 +47,7 @@ module api.liveedit {
                             infoBlock.setTextForContent(contentType.getDisplayName());
                         }).catch((reason)=> {
                             infoBlock.setTextForContent(content.getType().toString());
-                            api.DefaultErrorHandler.handle(reason);
+                            DefaultErrorHandler.handle(reason);
                         }).done();
                     }
                     infoBlock.removeClass("empty");
@@ -62,4 +66,3 @@ module api.liveedit {
             });
         }
     }
-}

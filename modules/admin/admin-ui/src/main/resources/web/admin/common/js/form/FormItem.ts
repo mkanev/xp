@@ -1,6 +1,14 @@
-module api.form {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {FormItemTypeWrapperJson} from "./json/FormItemTypeWrapperJson";
+import {FieldSet} from "./FieldSet";
+import {FormItemPath} from "./FormItemPath";
+import {FormItemPathElement} from "./FormItemPath";
+import {FormItemSet} from "./FormItemSet";
+import {Input} from "./Input";
+import {Layout} from "./Layout";
 
-    export class FormItem implements api.Equitable {
+export class FormItem implements Equitable {
 
         private name: string;
 
@@ -11,7 +19,7 @@ module api.form {
         }
 
         setParent(parent: FormItem) {
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(parent, FormItemSet) || api.ObjectHelper.iFrameSafeInstanceOf(parent, FieldSet))) {
+            if (!(ObjectHelper.iFrameSafeInstanceOf(parent, FormItemSet) || ObjectHelper.iFrameSafeInstanceOf(parent, FieldSet))) {
                 throw new Error("A parent FormItem must either be a FormItemSet or a FieldSet");
             }
 
@@ -40,30 +48,30 @@ module api.form {
             }
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FormItem)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, FormItem)) {
                 return false;
             }
 
             var other = <FormItem>o;
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
             return true;
         }
 
-        public toFormItemJson(): api.form.json.FormItemTypeWrapperJson {
+        public toFormItemJson(): FormItemTypeWrapperJson {
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(this, Input)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(this, Input)) {
                 return (<Input>this).toInputJson();
             }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(this, FormItemSet)) {
+            else if (ObjectHelper.iFrameSafeInstanceOf(this, FormItemSet)) {
                 return (<FormItemSet>this).toFormItemSetJson();
             }
-            else if (api.ObjectHelper.iFrameSafeInstanceOf(this, Layout)) {
+            else if (ObjectHelper.iFrameSafeInstanceOf(this, Layout)) {
                 return (<Layout>this).toLayoutJson();
             }
             else {
@@ -71,13 +79,12 @@ module api.form {
             }
         }
 
-        public static formItemsToJson(formItems: FormItem[]): api.form.json.FormItemTypeWrapperJson[] {
+        public static formItemsToJson(formItems: FormItem[]): FormItemTypeWrapperJson[] {
 
-            var formItemArray: api.form.json.FormItemTypeWrapperJson[] = [];
+            var formItemArray: FormItemTypeWrapperJson[] = [];
             formItems.forEach((formItem: FormItem) => {
                 formItemArray.push(formItem.toFormItemJson());
             });
             return formItemArray;
         }
     }
-}

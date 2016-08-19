@@ -1,10 +1,9 @@
-import "../../api.ts";
-import {UserItemWizardPanelParams} from "./UserItemWizardPanelParams";
-import Principal = api.security.Principal;
-import PrincipalType = api.security.PrincipalType;
-import UserStore = api.security.UserStore;
-import PrincipalKey = api.security.PrincipalKey;
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
 
+import {UserItemWizardPanelParams} from "./UserItemWizardPanelParams";
 export class PrincipalWizardPanelParams extends UserItemWizardPanelParams<Principal> {
 
     persistedType: PrincipalType;
@@ -16,7 +15,7 @@ export class PrincipalWizardPanelParams extends UserItemWizardPanelParams<Princi
     principalKey: PrincipalKey;
 
 
-    setPrincipalKey(value: api.security.PrincipalKey): PrincipalWizardPanelParams {
+    setPrincipalKey(value: PrincipalKey): PrincipalWizardPanelParams {
         this.principalKey = value;
         return this;
     }

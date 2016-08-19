@@ -1,8 +1,11 @@
-module api.ui.responsive {
+import {Element} from "../../dom/Element";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ResponsiveRange} from "./ResponsiveRange";
+import {ResponsiveRanges} from "./ResponsiveRanges";
 
-    export class ResponsiveItem {
+export class ResponsiveItem {
 
-        private element: api.dom.Element;
+        private element: Element;
 
         private rangeSize: ResponsiveRange;    // Current layoutRange with class
 
@@ -14,7 +17,7 @@ module api.ui.responsive {
 
         private handle: Function;              // Additional handler on update
 
-        constructor(element: api.dom.Element, handler: (item: ResponsiveItem) => void = ((item: ResponsiveItem) => {
+        constructor(element: Element, handler: (item: ResponsiveItem) => void = ((item: ResponsiveItem) => {
         })) {
             this.element = element;
             this.rangeValue = this.element.getEl().getWidthWithBorder();
@@ -27,14 +30,14 @@ module api.ui.responsive {
         private fitToRange() {
             for (var key in ResponsiveRanges) {
                 var range = ResponsiveRanges[key];
-                if (range && (api.ObjectHelper.iFrameSafeInstanceOf(range, ResponsiveRange)) && range.isFit(this.rangeValue)) {
+                if (range && (ObjectHelper.iFrameSafeInstanceOf(range, ResponsiveRange)) && range.isFit(this.rangeValue)) {
                     this.rangeSize = range;
                     break;
                 }
             }
         }
 
-        getElement(): api.dom.Element {
+        getElement(): Element {
             return this.element;
         }
 
@@ -93,4 +96,3 @@ module api.ui.responsive {
             return range.isFitOrBigger(this.rangeValue);
         }
     }
-}

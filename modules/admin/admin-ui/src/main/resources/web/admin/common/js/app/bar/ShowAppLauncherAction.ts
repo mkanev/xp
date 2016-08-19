@@ -1,8 +1,10 @@
-module api.app.bar {
+import {Action} from "../../ui/Action";
+import {App} from "../Application";
+import {ShowAppLauncherEvent} from "../ShowAppLauncherEvent";
 
-    export class ShowAppLauncherAction extends api.ui.Action {
+export class ShowAppLauncherAction extends Action {
 
-        constructor(application: api.app.App) {
+        constructor(application: App) {
             super('Start', 'mod+esc', true);
 
             this.onExecuted(() => {
@@ -11,4 +13,3 @@ module api.app.bar {
             });
         }
     }
-}

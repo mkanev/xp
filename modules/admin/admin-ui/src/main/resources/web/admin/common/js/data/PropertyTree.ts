@@ -1,11 +1,28 @@
-module api.data {
+import {Reference} from "../util/Reference";
+import {BinaryReference} from "../util/BinaryReference";
+import {GeoPoint} from "../util/GeoPoint";
+import {LocalTime} from "../util/LocalTime";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {assertNotNull} from "../util/Assert";
+import {LocalDate} from "../util/LocalDate";
+import {LocalDateTime} from "../util/LocalDateTime";
+import {DateTime} from "../util/DateTime";
+import {Property} from "./Property";
+import {PropertyAddedEvent} from "./PropertyAddedEvent";
+import {PropertyArray} from "./PropertyArray";
+import {PropertyArrayJson} from "./PropertyArrayJson";
+import {PropertyEvent} from "./PropertyEvent";
+import {PropertyIndexChangedEvent} from "./PropertyIndexChangedEvent";
+import {PropertyPath} from "./PropertyPath";
+import {PropertyRemovedEvent} from "./PropertyRemovedEvent";
+import {PropertySet} from "./PropertySet";
+import {PropertyValueChangedEvent} from "./PropertyValueChangedEvent";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
+import {ValueTypes} from "./ValueTypes";
 
-    import Reference = api.util.Reference;
-    import BinaryReference = api.util.BinaryReference;
-    import GeoPoint = api.util.GeoPoint;
-    import LocalTime = api.util.LocalTime;
-
-    /**
+/**
      * The PropertyTree is the root container of properties.
      *
      * The PropertyTree is mutable and most mutations can be observed by listening to the following events:
@@ -46,7 +63,7 @@ module api.data {
      * @see [[PropertyArray]]
      * @see [[PropertySet]]
      */
-    export class PropertyTree implements api.Equitable {
+    export class PropertyTree implements Equitable {
 
         private root: PropertySet;
 
@@ -120,17 +137,17 @@ module api.data {
 
         /**
          * @param o
-         * @returns {boolean} true if given [[api.Equitable]] equals this tree.
+         * @returns {boolean} true if given [[Equitable]] equals this tree.
          */
-        public equals(o: api.Equitable): boolean {
+        public equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertyTree)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PropertyTree)) {
                 return false;
             }
 
             var other = <PropertyTree>o;
 
-            if (!api.ObjectHelper.equals(this.root, other.root)) {
+            if (!ObjectHelper.equals(this.root, other.root)) {
                 return false;
             }
 
@@ -140,7 +157,7 @@ module api.data {
         /**
          * Copies this tree (deep copy).
          * @see [[PropertySet.copy]]
-         * @returns {api.data.PropertyTree}
+         * @returns {PropertyTree}
          */
         copy(): PropertyTree {
             return new PropertyTree(this.getRoot());
@@ -243,7 +260,7 @@ module api.data {
 
         public static fromJson(json: PropertyArrayJson[]): PropertyTree {
 
-            api.util.assertNotNull(json, "a json is required");
+            assertNotNull(json, "a json is required");
             var tree = new PropertyTree();
 
             json.forEach((propertyArrayJson: PropertyArrayJson) => {
@@ -503,29 +520,29 @@ module api.data {
 
         // local date methods
 
-        addLocalDate(name: string, value: api.util.LocalDate): Property {
+        addLocalDate(name: string, value: LocalDate): Property {
             return this.root.addLocalDate(name, value);
         }
 
-        addLocalDates(name: string, values: api.util.LocalDate[]): Property[] {
+        addLocalDates(name: string, values: LocalDate[]): Property[] {
             return this.root.addLocalDates(name, values);
         }
 
-        setLocalDate(name: string, index: number, value: api.util.LocalDate): Property {
+        setLocalDate(name: string, index: number, value: LocalDate): Property {
             return this.root.setLocalDate(name, index, value);
         }
 
-        setLocalDateByPath(path: any, value: api.util.LocalDate): Property {
+        setLocalDateByPath(path: any, value: LocalDate): Property {
             return this.root.setLocalDateByPath(path, value)
         }
 
-        getLocalDate(identifier: string, index?: number): api.util.LocalDate {
+        getLocalDate(identifier: string, index?: number): LocalDate {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getLocalDate();
         }
 
-        getLocalDates(name: string): api.util.LocalDate[] {
-            var values: api.util.LocalDate[] = [];
+        getLocalDates(name: string): LocalDate[] {
+            var values: LocalDate[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getLocalDate());
@@ -535,29 +552,29 @@ module api.data {
 
         // local date time methods
 
-        addLocalDateTime(name: string, value: api.util.LocalDateTime): Property {
+        addLocalDateTime(name: string, value: LocalDateTime): Property {
             return this.root.addLocalDateTime(name, value);
         }
 
-        addLocalDateTimes(name: string, values: api.util.LocalDateTime[]): Property[] {
+        addLocalDateTimes(name: string, values: LocalDateTime[]): Property[] {
             return this.root.addLocalDateTimes(name, values);
         }
 
-        setLocalDateTime(name: string, index: number, value: api.util.LocalDateTime): Property {
+        setLocalDateTime(name: string, index: number, value: LocalDateTime): Property {
             return this.root.setLocalDateTime(name, index, value);
         }
 
-        setLocalDateTimeByPath(path: any, value: api.util.LocalDateTime): Property {
+        setLocalDateTimeByPath(path: any, value: LocalDateTime): Property {
             return this.root.setLocalDateTimeByPath(path, value)
         }
 
-        getLocalDateTime(identifier: string, index?: number): api.util.LocalDateTime {
+        getLocalDateTime(identifier: string, index?: number): LocalDateTime {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getLocalDateTime();
         }
 
-        getLocalDateTimes(name: string): api.util.LocalDateTime[] {
-            var values: api.util.LocalDateTime[] = [];
+        getLocalDateTimes(name: string): LocalDateTime[] {
+            var values: LocalDateTime[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getLocalDateTime());
@@ -599,29 +616,29 @@ module api.data {
 
         // date time methods
 
-        addDateTime(name: string, value: api.util.DateTime): Property {
+        addDateTime(name: string, value: DateTime): Property {
             return this.root.addDateTime(name, value);
         }
 
-        addDateTimes(name: string, values: api.util.DateTime[]): Property[] {
+        addDateTimes(name: string, values: DateTime[]): Property[] {
             return this.root.addDateTimes(name, values);
         }
 
-        setDateTime(name: string, index: number, value: api.util.DateTime): Property {
+        setDateTime(name: string, index: number, value: DateTime): Property {
             return this.root.setDateTime(name, index, value);
         }
 
-        setDateTimeByPath(path: any, value: api.util.DateTime): Property {
+        setDateTimeByPath(path: any, value: DateTime): Property {
             return this.root.setDateTimeByPath(path, value)
         }
 
-        getDateTime(identifier: string, index?: number): api.util.DateTime {
+        getDateTime(identifier: string, index?: number): DateTime {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getDateTime();
         }
 
-        getDateTimes(name: string): api.util.DateTime[] {
-            var values: api.util.DateTime[] = [];
+        getDateTimes(name: string): DateTime[] {
+            var values: DateTime[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getDateTime());
@@ -634,4 +651,3 @@ module api.data {
             ;
         }
     }
-}

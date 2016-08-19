@@ -1,13 +1,14 @@
-module api.ui.tab {
+import {DivEl} from "../../dom/DivEl";
+import {SpanEl} from "../../dom/SpanEl";
 
-    export class TabMenuButton extends api.dom.DivEl {
+export class TabMenuButton extends DivEl {
 
-        private labelEl: api.dom.SpanEl;
+        private labelEl: SpanEl;
 
         constructor() {
             super("tab-menu-button icon-arrow-down2");
 
-            this.labelEl = new api.dom.SpanEl('label');
+            this.labelEl = new SpanEl('label');
             this.appendChild(this.labelEl);
         }
 
@@ -18,4 +19,3 @@ module api.ui.tab {
             }
         }
     }
-}

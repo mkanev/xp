@@ -1,6 +1,7 @@
-module api.ui.tab {
+import {TabItem} from "./TabItem";
+import {TabItemEvent} from "./TabItemEvent";
 
-    export class TabItemLabelChangedEvent extends TabItemEvent {
+export class TabItemLabelChangedEvent extends TabItemEvent {
 
         private oldValue: string;
         private newValue: string;
@@ -19,4 +20,3 @@ module api.ui.tab {
             return this.newValue;
         }
     }
-}

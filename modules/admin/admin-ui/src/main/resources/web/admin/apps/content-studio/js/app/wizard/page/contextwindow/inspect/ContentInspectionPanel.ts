@@ -1,23 +1,28 @@
-import "../../../../../api.ts";
+import {Content} from "../../../../../../../../common/js/content/Content";
+import {NamesAndIconView} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../../../../common/js/app/NamesAndIconViewSize";
+import {ItemViewIconClassResolver} from "../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
+
 import {BaseInspectionPanel} from "./BaseInspectionPanel";
 
 export class ContentInspectionPanel extends BaseInspectionPanel {
 
-    private content: api.content.Content;
+    private content: Content;
 
-    private namesAndIcon: api.app.NamesAndIconView;
+    private namesAndIcon: NamesAndIconView;
 
     constructor() {
         super();
 
         this.namesAndIcon =
-            new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.medium)).setIconClass(
-                api.liveedit.ItemViewIconClassResolver.resolveByType("content", "icon-xlarge"));
+            new NamesAndIconView(new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.medium)).setIconClass(
+                ItemViewIconClassResolver.resolveByType("content", "icon-xlarge"));
 
         this.appendChild(this.namesAndIcon);
     }
 
-    setContent(content: api.content.Content) {
+    setContent(content: Content) {
 
         this.content = content;
 

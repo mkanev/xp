@@ -1,8 +1,9 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+
 import {ShowLiveEditEvent} from "../ShowLiveEditEvent";
 import {ContentWizardPanel} from "../ContentWizardPanel";
 
-export class ShowLiveEditAction extends api.ui.Action {
+export class ShowLiveEditAction extends Action {
 
     constructor(wizard: ContentWizardPanel) {
         super("Live");

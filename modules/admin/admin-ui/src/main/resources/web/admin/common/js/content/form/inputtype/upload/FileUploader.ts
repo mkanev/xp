@@ -1,26 +1,28 @@
-module api.content.form.inputtype.upload {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {FileUploadStartedEvent} from "../../../../ui/uploader/FileUploadStartedEvent";
+import {UploaderEl} from "../../../../ui/uploader/UploaderEl";
+import {FileUploaderEl} from "../../../../ui/uploader/FileUploaderEl";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {DivEl} from "../../../../dom/DivEl";
+import {Button} from "../../../../ui/button/Button";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-    import UploaderEl = api.ui.uploader.UploaderEl
-    import FileUploaderEl = api.ui.uploader.FileUploaderEl;
+export class FileUploader extends BaseInputTypeManagingAdd<string> {
 
-    export class FileUploader extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
-
-        protected config: api.content.form.inputtype.ContentInputTypeViewContext;
+        protected config: ContentInputTypeViewContext;
         protected uploaderEl: FileUploaderEl<any>;
-        protected uploaderWrapper: api.dom.DivEl;
+        protected uploaderWrapper: DivEl;
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
             super("file-uploader");
             this.config = config;
         }
 
-        getContext(): api.content.form.inputtype.ContentInputTypeViewContext {
+        getContext(): ContentInputTypeViewContext {
             return this.config;
         }
 
@@ -68,10 +70,10 @@ module api.content.form.inputtype.upload {
             })
         }
 
-        protected createUploaderWrapper(): api.dom.DivEl {
-            var wrapper = new api.dom.DivEl("uploader-wrapper");
+        protected createUploaderWrapper(): DivEl {
+            var wrapper = new DivEl("uploader-wrapper");
 
-            var uploadButton = new api.ui.button.Button();
+            var uploadButton = new Button();
             uploadButton.addClass('upload-button');
 
             uploadButton.onClicked((event: MouseEvent) => {
@@ -104,4 +106,3 @@ module api.content.form.inputtype.upload {
             this.uploaderEl.unBlur(listener);
         }
     }
-}

@@ -1,29 +1,31 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {ContentSummary} from "../ContentSummary";
+import {ContentId} from "../ContentId";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class ContentUpdatedEvent extends api.event.Event {
+export class ContentUpdatedEvent extends Event {
 
-        private contentSummary: api.content.ContentSummary;
+        private contentSummary: ContentSummary;
 
-        constructor(contentSummary: api.content.ContentSummary) {
+        constructor(contentSummary: ContentSummary) {
             super();
             this.contentSummary = contentSummary;
         }
 
-        public getContentId(): api.content.ContentId {
+        public getContentId(): ContentId {
             return this.contentSummary.getContentId();
         }
 
-        public getContentSummary(): api.content.ContentSummary {
+        public getContentSummary(): ContentSummary {
             return this.contentSummary;
         }
 
         static on(handler: (event: ContentUpdatedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ContentUpdatedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
     }
-}

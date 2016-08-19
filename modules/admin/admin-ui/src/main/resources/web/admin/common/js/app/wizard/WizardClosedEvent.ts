@@ -1,6 +1,6 @@
-module api.app.wizard {
+import {WizardPanel} from "./WizardPanel";
 
-    export class WizardClosedEvent {
+export class WizardClosedEvent {
 
         private wizard: WizardPanel<any>;
 
@@ -12,4 +12,3 @@ module api.app.wizard {
             return this.wizard;
         }
     }
-}

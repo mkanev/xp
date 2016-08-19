@@ -1,9 +1,15 @@
-module api.ui.grid {
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {ResponsiveItem} from "../responsive/ResponsiveItem";
+import {DivEl} from "../../dom/DivEl";
+import {LoadMask} from "../mask/LoadMask";
+import {AppHelper} from "../../util/AppHelper";
+import {DataView} from "./DataView";
+import {GridColumn} from "./GridColumn";
+import {GridOnClickData} from "./GridOnClickData";
+import {GridOptionsBuilder} from "./GridOptions";
+import {GridOptions} from "./GridOptions";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-
-    export class Grid<T extends Slick.SlickData> extends api.dom.DivEl {
+export class Grid<T extends Slick.SlickData> extends DivEl {
 
         private defaultHeight = 400;
 
@@ -23,7 +29,7 @@ module api.ui.grid {
 
         private rowManagerPlugin;
 
-        private loadMask: api.ui.mask.LoadMask;
+        private loadMask: LoadMask;
 
         private debounceSelectionChange: boolean;
 
@@ -120,7 +126,7 @@ module api.ui.grid {
         }
 
         private createLoadMask() {
-            this.loadMask = new api.ui.mask.LoadMask(this);
+            this.loadMask = new LoadMask(this);
             this.getParentElement().appendChild(this.loadMask);
         }
 
@@ -457,7 +463,7 @@ module api.ui.grid {
         }
 
         subscribeOnSelectedRowsChanged(callback: (e, args) => void) {
-            var debouncedCallback = api.util.AppHelper.debounce(callback, 500, false);
+            var debouncedCallback = AppHelper.debounce(callback, 500, false);
             this.slickGrid.onSelectedRowsChanged.subscribe((e, args) => {
                 if (this.debounceSelectionChange) {
                     debouncedCallback(e, args);
@@ -527,4 +533,3 @@ module api.ui.grid {
             this.slickGrid.onMouseLeave.subscribe(callback);
         }
     }
-}

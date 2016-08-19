@@ -1,8 +1,12 @@
-module api.schema.mixin {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Mixin} from "./Mixin";
+import {MixinJson} from "./MixinJson";
+import {MixinListJson} from "./MixinListJson";
+import {MixinResourceRequest} from "./MixinResourceRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetMixinsByApplicationRequest extends MixinResourceRequest<MixinListJson, Mixin[]> {
+export class GetMixinsByApplicationRequest extends MixinResourceRequest<MixinListJson, Mixin[]> {
 
         private applicationKey: ApplicationKey;
 
@@ -18,17 +22,16 @@ module api.schema.mixin {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "byApplication");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "byApplication");
         }
 
         sendAndParse(): wemQ.Promise<Mixin[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<MixinListJson>) => {
+            return this.send().then((response: JsonResponse<MixinListJson>) => {
                 return response.getResult().mixins.map((mixinJson: MixinJson) => {
                     return this.fromJsonToMixin(mixinJson);
                 })
             });
         }
     }
-}

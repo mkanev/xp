@@ -1,12 +1,11 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {WizardPanelParams} from "../../../../../common/js/app/wizard/WizardPanel";
+import {GetPrincipalByKeyRequest} from "../../../../../common/js/security/GetPrincipalByKeyRequest";
+
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
-
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalType = api.security.PrincipalType;
-import UserStore = api.security.UserStore;
-import WizardPanelParams = api.app.wizard.WizardPanelParams;
-
 
 export class PrincipalWizardDataLoader {
 
@@ -43,7 +42,7 @@ export class PrincipalWizardDataLoader {
 
     private loadPrincipalToEdit(params: PrincipalWizardPanelParams): wemQ.Promise<Principal> {
         if (!params.persistedItem && !!params.principalKey) {
-            return new api.security.GetPrincipalByKeyRequest(params.principalKey).includeUserMemberships(true).sendAndParse();
+            return new GetPrincipalByKeyRequest(params.principalKey).includeUserMemberships(true).sendAndParse();
         } else {
             return wemQ(params.persistedItem);
         }

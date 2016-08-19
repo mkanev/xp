@@ -1,10 +1,15 @@
-import "../api.ts";
-import Application = api.application.Application;
+import {Application} from "../../../../common/js/application/Application";
+import {BrowseAndWizardBasedAppPanel} from "../../../../common/js/app/BrowseAndWizardBasedAppPanel";
+import {AppBar} from "../../../../common/js/app/bar/AppBar";
+import {Path} from "../../../../common/js/rest/Path";
+import {ShowBrowsePanelEvent} from "../../../../common/js/app/ShowBrowsePanelEvent";
+import {BrowsePanel} from "../../../../common/js/app/browse/BrowsePanel";
+
 import {ApplicationBrowsePanel} from "./browse/ApplicationBrowsePanel";
 
-export class ApplicationAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Application> {
+export class ApplicationAppPanel extends BrowseAndWizardBasedAppPanel<Application> {
 
-    constructor(appBar: api.app.bar.AppBar, path?: api.rest.Path) {
+    constructor(appBar: AppBar, path?: Path) {
 
         super({
             appBar: appBar
@@ -15,7 +20,7 @@ export class ApplicationAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Ap
         this.route(path)
     }
 
-    private route(path?: api.rest.Path) {
+    private route(path?: Path) {
         var action = path ? path.getElement(0) : undefined;
 
         switch (action) {
@@ -32,20 +37,20 @@ export class ApplicationAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Ap
             }
             break;
         default:
-            new api.app.ShowBrowsePanelEvent().fire();
+            new ShowBrowsePanelEvent().fire();
             break;
         }
     }
 
     private handleGlobalEvents() {
 
-        api.app.ShowBrowsePanelEvent.on((event) => {
+        ShowBrowsePanelEvent.on((event) => {
             this.handleBrowse(event);
         });
     }
 
-    private handleBrowse(event: api.app.ShowBrowsePanelEvent) {
-        var browsePanel: api.app.browse.BrowsePanel<Application> = this.getBrowsePanel();
+    private handleBrowse(event: ShowBrowsePanelEvent) {
+        var browsePanel: BrowsePanel<Application> = this.getBrowsePanel();
         if (!browsePanel) {
             this.addBrowsePanel(new ApplicationBrowsePanel());
         } else {

@@ -1,6 +1,6 @@
-module api.ui.button {
+import {Button} from "./Button";
 
-    export class CloseButton extends api.ui.button.Button {
+export class CloseButton extends Button {
 
         constructor(className?: string) {
             super();
@@ -11,4 +11,3 @@ module api.ui.button {
         }
     }
 
-}

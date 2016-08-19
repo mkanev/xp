@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {Link} from "../util/Link";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeLink extends ValueType {
+export class ValueTypeLink extends ValueType {
 
         constructor() {
             super("Link");
@@ -10,14 +14,14 @@ module api.data {
             if (!(typeof value === 'object')) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.Link)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, Link)) {
                 return false;
             }
             return true;
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             return true;
@@ -25,7 +29,7 @@ module api.data {
 
         newValue(value: string): Value {
             if (this.isConvertible(value)) {
-                return new Value(new api.util.Link(value), this);
+                return new Value(new Link(value), this);
             }
             else {
                 return this.newNullValue();
@@ -45,8 +49,7 @@ module api.data {
             return value.isNull() ? null : value.getLink().toString();
         }
 
-        valueEquals(a: api.util.Link, b: api.util.Link): boolean {
-            return api.ObjectHelper.equals(a, b);
+        valueEquals(a: Link, b: Link): boolean {
+            return ObjectHelper.equals(a, b);
         }
     }
-}

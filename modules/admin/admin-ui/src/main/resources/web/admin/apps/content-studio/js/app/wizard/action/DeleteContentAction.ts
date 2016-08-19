@@ -1,12 +1,12 @@
-import "../../../api.ts";
+import {ContentId} from "../../../../../../common/js/content/ContentId";
+import {ContentPath} from "../../../../../../common/js/content/ContentPath";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Action} from "../../../../../../common/js/ui/Action";
 
-import ContentId = api.content.ContentId;
-import ContentPath = api.content.ContentPath;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import {ContentWizardPanel} from "../ContentWizardPanel";
 import {ContentDeleteDialog} from "../../remove/ContentDeleteDialog";
 
-export class DeleteContentAction extends api.ui.Action {
+export class DeleteContentAction extends Action {
 
     constructor(wizardPanel: ContentWizardPanel) {
         super("Delete", "mod+del", true);

@@ -1,10 +1,13 @@
-module api.content.page {
+import {Equitable} from "../../Equitable";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ObjectHelper} from "../../ObjectHelper";
+import {DescriptorName} from "./DescriptorName";
 
-    export class DescriptorKey implements api.Equitable {
+export class DescriptorKey implements Equitable {
 
         private static SEPARATOR = ":";
 
-        private applicationKey: api.application.ApplicationKey;
+        private applicationKey: ApplicationKey;
 
         private name: DescriptorName;
 
@@ -19,16 +22,16 @@ module api.content.page {
             var applicationKey = str.substring(0, sepIndex);
             var name = str.substring(sepIndex + 1, str.length);
 
-            return new DescriptorKey(api.application.ApplicationKey.fromString(applicationKey), new DescriptorName(name));
+            return new DescriptorKey(ApplicationKey.fromString(applicationKey), new DescriptorName(name));
         }
 
-        constructor(applicationKey: api.application.ApplicationKey, name: DescriptorName) {
+        constructor(applicationKey: ApplicationKey, name: DescriptorName) {
             this.applicationKey = applicationKey;
             this.name = name;
             this.refString = applicationKey.toString() + DescriptorKey.SEPARATOR + name.toString();
         }
 
-        getApplicationKey(): api.application.ApplicationKey {
+        getApplicationKey(): ApplicationKey {
             return this.applicationKey;
         }
 
@@ -40,19 +43,18 @@ module api.content.page {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DescriptorKey)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, DescriptorKey)) {
                 return false;
             }
 
             var other = <DescriptorKey>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
             return true;
         }
     }
-}

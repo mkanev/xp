@@ -1,18 +1,34 @@
-module api.app {
+import {AppBar} from "./bar/AppBar";
+import {Equitable} from "../Equitable";
+import {AppBarTabMenu} from "./bar/AppBarTabMenu";
+import {KeyBinding} from "../ui/KeyBinding";
+import {PanelShownEvent} from "../ui/panel/PanelShownEvent";
+import {KeyBindings} from "../ui/KeyBindings";
+import {Action} from "../ui/Action";
+import {BrowsePanel} from "./browse/BrowsePanel";
+import {AppBarTabMenuItem} from "./bar/AppBarTabMenuItem";
+import {ItemViewPanel} from "./view/ItemViewPanel";
+import {ItemViewClosedEvent} from "./view/ItemViewClosedEvent";
+import {WizardPanel} from "./wizard/WizardPanel";
+import {WizardClosedEvent} from "./wizard/WizardClosedEvent";
+import {Panel} from "../ui/panel/Panel";
+import {ObjectHelper} from "../ObjectHelper";
+import {ActionContainer} from "../ui/ActionContainer";
+import {AppPanel} from "./AppPanel";
 
-    export interface BrowseBasedAppPanelConfig<M> {
+export interface BrowseBasedAppPanelConfig<M> {
 
-        appBar:api.app.bar.AppBar;
+        appBar:AppBar;
 
     }
 
-    export class BrowseAndWizardBasedAppPanel<M extends api.Equitable> extends AppPanel<M> {
+    export class BrowseAndWizardBasedAppPanel<M extends Equitable> extends AppPanel<M> {
 
-        private appBarTabMenu: api.app.bar.AppBarTabMenu;
+        private appBarTabMenu: AppBarTabMenu;
 
-        private currentKeyBindings: api.ui.KeyBinding[];
+        private currentKeyBindings: KeyBinding[];
 
-        private appBar: api.app.bar.AppBar;
+        private appBar: AppBar;
 
         constructor(config: BrowseBasedAppPanelConfig<M>) {
             super(config.appBar.getTabMenu());
@@ -21,73 +37,72 @@ module api.app {
 
             this.appBarTabMenu = config.appBar.getTabMenu();
 
-            this.onPanelShown((event: api.ui.panel.PanelShownEvent) => {
+            this.onPanelShown((event: PanelShownEvent) => {
                 if (event.getPanel() === this.getBrowsePanel()) {
                     this.getBrowsePanel().refreshFilter();
                 }
 
                 var previousActions = this.resolveActions(event.getPreviousPanel());
-                api.ui.KeyBindings.get().unbindKeys(api.ui.Action.getKeyBindings(previousActions));
+                KeyBindings.get().unbindKeys(Action.getKeyBindings(previousActions));
 
                 var nextActions = this.resolveActions(event.getPanel());
-                this.currentKeyBindings = api.ui.Action.getKeyBindings(nextActions);
-                api.ui.KeyBindings.get().bindKeys(this.currentKeyBindings);
+                this.currentKeyBindings = Action.getKeyBindings(nextActions);
+                KeyBindings.get().bindKeys(this.currentKeyBindings);
             });
         }
 
-        addBrowsePanel(browsePanel: api.app.browse.BrowsePanel<M>) {
+        addBrowsePanel(browsePanel: BrowsePanel<M>) {
             super.addBrowsePanel(browsePanel);
 
-            this.currentKeyBindings = api.ui.Action.getKeyBindings(this.resolveActions(browsePanel));
+            this.currentKeyBindings = Action.getKeyBindings(this.resolveActions(browsePanel));
             this.activateCurrentKeyBindings();
         }
 
         activateCurrentKeyBindings() {
 
             if (this.currentKeyBindings) {
-                api.ui.KeyBindings.get().bindKeys(this.currentKeyBindings);
+                KeyBindings.get().bindKeys(this.currentKeyBindings);
             }
         }
 
-        getAppBarTabMenu(): api.app.bar.AppBarTabMenu {
+        getAppBarTabMenu(): AppBarTabMenu {
             return this.appBarTabMenu;
         }
 
-        addViewPanel(tabMenuItem: api.app.bar.AppBarTabMenuItem, viewPanel: api.app.view.ItemViewPanel<M>) {
+        addViewPanel(tabMenuItem: AppBarTabMenuItem, viewPanel: ItemViewPanel<M>) {
             super.addNavigablePanel(tabMenuItem, viewPanel, true);
 
-            viewPanel.onClosed((event: api.app.view.ItemViewClosedEvent<M>) => {
+            viewPanel.onClosed((event: ItemViewClosedEvent<M>) => {
                 this.removeNavigablePanel(event.getView(), false);
             });
         }
 
-        addWizardPanel(tabMenuItem: api.app.bar.AppBarTabMenuItem, wizardPanel: api.app.wizard.WizardPanel<any>) {
+        addWizardPanel(tabMenuItem: AppBarTabMenuItem, wizardPanel: WizardPanel<any>) {
             super.addNavigablePanel(tabMenuItem, wizardPanel, true);
 
-            wizardPanel.onClosed((event: api.app.wizard.WizardClosedEvent) => {
+            wizardPanel.onClosed((event: WizardClosedEvent) => {
                 this.removeNavigablePanel(event.getWizard(), false);
             });
         }
 
-        canRemovePanel(panel: api.ui.panel.Panel): boolean {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(panel, api.app.wizard.WizardPanel)) {
-                var wizardPanel: api.app.wizard.WizardPanel<any> = <api.app.wizard.WizardPanel<any>>panel;
+        canRemovePanel(panel: Panel): boolean {
+            if (ObjectHelper.iFrameSafeInstanceOf(panel, WizardPanel)) {
+                var wizardPanel: WizardPanel<any> = <WizardPanel<any>>panel;
                 return wizardPanel.canClose();
             }
             return true;
         }
 
-        private resolveActions(panel: api.ui.panel.Panel): api.ui.Action[] {
+        private resolveActions(panel: Panel): Action[] {
             var actions = [];
             actions = actions.concat(this.appBar.getActions());
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(panel, api.app.wizard.WizardPanel) ||
-                api.ObjectHelper.iFrameSafeInstanceOf(panel, api.app.browse.BrowsePanel) ||
-                api.ObjectHelper.iFrameSafeInstanceOf(panel, api.app.view.ItemViewPanel)) {
-                var actionContainer: api.ui.ActionContainer = <any>panel;
+            if (ObjectHelper.iFrameSafeInstanceOf(panel, WizardPanel) ||
+                ObjectHelper.iFrameSafeInstanceOf(panel, BrowsePanel) ||
+                ObjectHelper.iFrameSafeInstanceOf(panel, ItemViewPanel)) {
+                var actionContainer: ActionContainer = <any>panel;
                 actions = actions.concat(actionContainer.getActions());
             }
             return actions;
         }
     }
-}

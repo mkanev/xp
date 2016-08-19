@@ -1,8 +1,10 @@
-module api.content.page {
+import {ContentId} from "../ContentId";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class PageTemplateKey extends api.content.ContentId {
+export class PageTemplateKey extends ContentId {
 
-        public static fromContentId(id: api.content.ContentId): PageTemplateKey {
+        public static fromContentId(id: ContentId): PageTemplateKey {
 
             return new PageTemplateKey(id.toString());
         }
@@ -16,9 +18,9 @@ module api.content.page {
             super(s);
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PageTemplateKey)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PageTemplateKey)) {
                 return false;
             }
 
@@ -26,4 +28,3 @@ module api.content.page {
             return super.equals(other);
         }
     }
-}

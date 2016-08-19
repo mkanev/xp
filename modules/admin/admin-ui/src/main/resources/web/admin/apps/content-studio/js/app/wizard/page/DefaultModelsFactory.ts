@@ -1,11 +1,13 @@
-import "../../../api.ts";
+import {ContentTypeName} from "../../../../../../common/js/schema/content/ContentTypeName";
+import {ContentId} from "../../../../../../common/js/content/ContentId";
+import {PageTemplate} from "../../../../../../common/js/content/page/PageTemplate";
+import {PageDescriptor} from "../../../../../../common/js/content/page/PageDescriptor";
+import {GetPageDescriptorByKeyRequest} from "../../../../../../common/js/content/page/GetPageDescriptorByKeyRequest";
+import {GetDefaultPageTemplateRequest} from "../../../../../../common/js/content/page/GetDefaultPageTemplateRequest";
+import {ApplicationKey} from "../../../../../../common/js/application/ApplicationKey";
+import {Exception} from "../../../../../../common/js/Exception";
+import {ExceptionType} from "../../../../../../common/js/Exception";
 
-import ContentTypeName = api.schema.content.ContentTypeName;
-import ContentId = api.content.ContentId;
-import PageTemplate = api.content.page.PageTemplate;
-import PageDescriptor = api.content.page.PageDescriptor;
-import GetPageDescriptorByKeyRequest = api.content.page.GetPageDescriptorByKeyRequest;
-import GetDefaultPageTemplateRequest = api.content.page.GetDefaultPageTemplateRequest;
 import {DefaultModels} from "./DefaultModels";
 
 export interface DefaultModelsFactoryConfig {
@@ -14,7 +16,7 @@ export interface DefaultModelsFactoryConfig {
 
     contentType: ContentTypeName;
 
-    applications: api.application.ApplicationKey[];
+    applications: ApplicationKey[];
 }
 
 export class DefaultModelsFactory {
@@ -40,8 +42,8 @@ export class DefaultModelsFactory {
                         deferred.resolve(new DefaultModels(defaultPageTemplate, defaultPageTemplateDescriptor));
                     }).catch((reason) => {
 
-                        deferred.reject(new api.Exception("Page descriptor '" + defaultPageTemplate.getController() + "' not found.",
-                            api.ExceptionType.WARNING));
+                        deferred.reject(new Exception("Page descriptor '" + defaultPageTemplate.getController() + "' not found.",
+                            ExceptionType.WARNING));
                     }).done();
                 }
                 else {

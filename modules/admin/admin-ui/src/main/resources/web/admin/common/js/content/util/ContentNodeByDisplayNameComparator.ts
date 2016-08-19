@@ -1,8 +1,8 @@
-module api.content.util {
+import {TreeNode} from "../../ui/treegrid/TreeNode";
+import {Comparator} from "../../Comparator";
+import {ContentSummaryAndCompareStatus} from "../ContentSummaryAndCompareStatus";
 
-    import TreeNode = api.ui.treegrid.TreeNode;
-
-    export class ContentNodeByDisplayNameComparator implements api.Comparator<TreeNode<ContentSummaryAndCompareStatus>> {
+export class ContentNodeByDisplayNameComparator implements Comparator<TreeNode<ContentSummaryAndCompareStatus>> {
 
         compare(a: TreeNode<ContentSummaryAndCompareStatus>, b: TreeNode<ContentSummaryAndCompareStatus>): number {
             if (!a.getData().getContentSummary()) {
@@ -18,4 +18,3 @@ module api.content.util {
             return firstName.localeCompare(secondName);
         }
     }
-}

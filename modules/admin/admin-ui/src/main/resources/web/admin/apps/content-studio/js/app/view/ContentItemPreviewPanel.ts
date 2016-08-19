@@ -1,22 +1,28 @@
-import "../../api.ts";
+import {RenderingMode} from "../../../../../common/js/rendering/RenderingMode";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {UriHelper} from "../../../../../common/js/util/UriHelper";
+import {ContentTypeName} from "../../../../../common/js/schema/content/ContentTypeName";
+import {ItemPreviewPanel} from "../../../../../common/js/app/view/ItemPreviewPanel";
+import {ImgEl} from "../../../../../common/js/dom/ImgEl";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {ContentImageUrlResolver} from "../../../../../common/js/content/util/ContentImageUrlResolver";
+import {PortalUriHelper} from "../../../../../common/js/rendering/PortalUriHelper";
+import {Branch} from "../../../../../common/js/content/Branch";
+
 import {ContentPreviewPathChangedEvent} from "./ContentPreviewPathChangedEvent";
 
-import RenderingMode = api.rendering.RenderingMode;
-import ViewItem = api.app.view.ViewItem;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import UriHelper = api.util.UriHelper;
-import ContentTypeName = api.schema.content.ContentTypeName;
+export class ContentItemPreviewPanel extends ItemPreviewPanel {
 
-export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
-
-    private image: api.dom.ImgEl;
+    private image: ImgEl;
     private item: ViewItem<ContentSummaryAndCompareStatus>;
     private skipNextSetItemCall: boolean = false;
 
     constructor() {
         super("content-item-preview-panel");
-        this.image = new api.dom.ImgEl();
+        this.image = new ImgEl();
         this.image.onLoaded((event: UIEvent) => {
             this.mask.hide();
             var imgEl = this.image.getEl();
@@ -30,7 +36,7 @@ export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
 
         this.appendChild(this.image);
 
-        api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
             if (this.hasClass("image-preview")) {
                 var imgEl = this.image.getEl(),
                     el = this.getEl();
@@ -109,7 +115,7 @@ export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
 
     public addImageSizeToUrl(item: ViewItem<ContentSummaryAndCompareStatus>) {
         var imgSize = Math.max(this.getEl().getWidth(), this.getEl().getHeight());
-        var imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(item.getModel().getContentId()).setTimestamp(
+        var imgUrl = new ContentImageUrlResolver().setContentId(item.getModel().getContentId()).setTimestamp(
             item.getModel().getContentSummary().getModifiedTime()).setSize(imgSize).resolve();
         this.image.setSrc(imgUrl);
     }
@@ -125,7 +131,7 @@ export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
                 if (this.isVisible()) {
                     if (item.getModel().getContentSummary().getType().equals(ContentTypeName.MEDIA_VECTOR)) {
                         this.getEl().addClass("svg-preview");
-                        var imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(
+                        var imgUrl = new ContentImageUrlResolver().setContentId(
                             item.getModel().getContentId()).setTimestamp(
                             item.getModel().getContentSummary().getModifiedTime()).resolve();
                         this.image.setSrc(imgUrl);
@@ -140,7 +146,7 @@ export class ContentItemPreviewPanel extends api.app.view.ItemPreviewPanel {
                 this.showMask();
                 if (item.isRenderable()) {
                     this.getEl().removeClass("image-preview no-preview svg-preview").addClass('page-preview');
-                    var src = api.rendering.PortalUriHelper.getPortalUri(item.getPath(), RenderingMode.PREVIEW, api.content.Branch.DRAFT);
+                    var src = PortalUriHelper.getPortalUri(item.getPath(), RenderingMode.PREVIEW, Branch.DRAFT);
                     // test if it returns no error( like because of used app was deleted ) first and show no preview otherwise
                     wemjq.get(src).done(() => this.frame.setSrc(src)).fail(() => this.setNoPreview());
                 } else {

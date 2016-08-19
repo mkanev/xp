@@ -1,19 +1,20 @@
-module api.query {
+import {ValueExpr} from "./expr/ValueExpr";
+import {FunctionExpr} from "./expr/FunctionExpr";
+import {DynamicConstraintExpr} from "./expr/DynamicConstraintExpr";
+import {LogicalExpr} from "./expr/LogicalExpr";
+import {LogicalOperator} from "./expr/LogicalOperator";
+import {Expression} from "./expr/Expression";
+import {QueryField} from "./QueryField";
+import {QueryFields} from "./QueryFields";
 
-    import ValueExpr = api.query.expr.ValueExpr;
-    import FunctionExpr = api.query.expr.FunctionExpr;
-    import DynamicConstraintExpr = api.query.expr.DynamicConstraintExpr;
-    import LogicalExpr = api.query.expr.LogicalExpr;
-    import LogicalOperator = api.query.expr.LogicalOperator;
+export class FulltextSearchExpression {
 
-    export class FulltextSearchExpression {
-
-        static create(searchString: string, queryFields: QueryFields): api.query.expr.Expression {
+        static create(searchString: string, queryFields: QueryFields): Expression {
 
             if (searchString == null) {
                 return null;
             }
-            var args: api.query.expr.ValueExpr[] = [];
+            var args: ValueExpr[] = [];
 
             args.push(ValueExpr.stringValue(queryFields.toString()));
             args.push(ValueExpr.stringValue(searchString));
@@ -46,11 +47,9 @@ module api.query {
             return this;
         }
 
-        build(): api.query.expr.Expression {
+        build(): Expression {
             return FulltextSearchExpression.create(this.searchString, this.queryFields);
         }
 
     }
-
-}
 

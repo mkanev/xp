@@ -1,8 +1,7 @@
-module api.security {
 
-    export enum PrincipalType {
+
+export enum PrincipalType {
         USER,
         GROUP,
         ROLE
     }
-}

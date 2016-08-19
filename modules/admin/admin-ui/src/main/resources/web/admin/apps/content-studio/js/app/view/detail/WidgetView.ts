@@ -1,13 +1,14 @@
-import "../../../api.ts";
+import {ViewItem} from "../../../../../../common/js/app/view/ViewItem";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {RenderingMode} from "../../../../../../common/js/rendering/RenderingMode";
+import {Widget} from "../../../../../../common/js/content/Widget";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+import {PortalUriHelper} from "../../../../../../common/js/rendering/PortalUriHelper";
+
 import {DetailsPanel} from "./DetailsPanel";
 import {WidgetItemView} from "./WidgetItemView";
 
-import ViewItem = api.app.view.ViewItem;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import RenderingMode = api.rendering.RenderingMode;
-import Widget = api.content.Widget;
-
-export class WidgetView extends api.dom.DivEl {
+export class WidgetView extends DivEl {
 
     private widgetName: string;
 
@@ -52,7 +53,7 @@ export class WidgetView extends api.dom.DivEl {
     }
 
     private getWidgetUrl() {
-        return api.rendering.PortalUriHelper.getAdminUri(this.widget.getUrl(), "/");
+        return PortalUriHelper.getAdminUri(this.widget.getUrl(), "/");
     }
 
     private getFullUrl(url: string) {

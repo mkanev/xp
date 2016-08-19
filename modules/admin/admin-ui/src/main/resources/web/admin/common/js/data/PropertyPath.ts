@@ -1,6 +1,8 @@
-module api.data {
+import {Equitable} from "../Equitable";
+import {assert} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class PropertyPath implements api.Equitable {
+export class PropertyPath implements Equitable {
 
         private static ELEMENT_DIVIDER: string = ".";
 
@@ -47,7 +49,7 @@ module api.data {
         }
 
         removeFirstPathElement(): PropertyPath {
-            api.util.assert(this.elements.length > 1,
+            assert(this.elements.length > 1,
                 "Cannot create new path without first path element when path does not contain more than one element");
             return new PropertyPath(this.elements.slice(1), this.absolute);
         }
@@ -102,13 +104,13 @@ module api.data {
 
         equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertyPath)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PropertyPath)) {
                 return false;
             }
 
             var other = <PropertyPath>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
@@ -153,4 +155,3 @@ module api.data {
             return new PropertyPathElement(name, index);
         }
     }
-}

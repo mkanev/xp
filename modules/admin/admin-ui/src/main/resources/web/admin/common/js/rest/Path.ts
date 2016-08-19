@@ -1,6 +1,6 @@
-module api.rest {
 
-    export class Path {
+
+export class Path {
 
         private static DEFAULT_ELEMENT_DIVIDER:string = "/";
 
@@ -90,4 +90,3 @@ module api.rest {
             return this.absolute;
         }
     }
-}

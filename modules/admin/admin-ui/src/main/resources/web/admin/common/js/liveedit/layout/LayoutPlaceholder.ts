@@ -1,17 +1,18 @@
-module api.liveedit.layout {
+import {LayoutComponent} from "../../content/page/region/LayoutComponent";
+import {PageItemType} from "../PageItemType";
+import {SiteModel} from "../../content/site/SiteModel";
+import {LayoutDescriptor} from "../../content/page/region/LayoutDescriptor";
+import {GetLayoutDescriptorsByApplicationsRequest} from "../../content/page/region/GetLayoutDescriptorsByApplicationsRequest";
+import {LayoutDescriptorLoader} from "../../content/page/region/LayoutDescriptorLoader";
+import {LayoutDescriptorComboBox} from "../../content/page/region/LayoutDescriptorComboBox";
+import {SelectedOptionEvent} from "../../ui/selector/combobox/SelectedOptionEvent";
+import {DescriptorByDisplayNameComparator} from "../../content/page/DescriptorByDisplayNameComparator";
+import {ItemViewPlaceholder} from "../ItemViewPlaceholder";
+import {LayoutComponentView} from "./LayoutComponentView";
 
-    import LayoutComponent = api.content.page.region.LayoutComponent;
-    import PageItemType = api.liveedit.PageItemType;
-    import SiteModel = api.content.site.SiteModel;
-    import LayoutDescriptor = api.content.page.region.LayoutDescriptor;
-    import GetLayoutDescriptorsByApplicationsRequest = api.content.page.region.GetLayoutDescriptorsByApplicationsRequest;
-    import LayoutDescriptorLoader = api.content.page.region.LayoutDescriptorLoader;
-    import LayoutDescriptorComboBox = api.content.page.region.LayoutDescriptorComboBox;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+export class LayoutPlaceholder extends ItemViewPlaceholder {
 
-    export class LayoutPlaceholder extends ItemViewPlaceholder {
-
-        private comboBox: api.content.page.region.LayoutDescriptorComboBox;
+        private comboBox: LayoutDescriptorComboBox;
 
         private layoutComponentView: LayoutComponentView;
 
@@ -22,7 +23,7 @@ module api.liveedit.layout {
 
             var request = new GetLayoutDescriptorsByApplicationsRequest(layoutView.getLiveEditModel().getSiteModel().getApplicationKeys());
             var loader = new LayoutDescriptorLoader(request);
-            loader.setComparator(new api.content.page.DescriptorByDisplayNameComparator());
+            loader.setComparator(new DescriptorByDisplayNameComparator());
             this.comboBox = new LayoutDescriptorComboBox(loader);
             loader.load();
 
@@ -55,4 +56,3 @@ module api.liveedit.layout {
             this.comboBox.hide();
         }
     }
-}

@@ -1,10 +1,16 @@
-module api.ui.text {
+import {FormInputEl} from "../../dom/FormInputEl";
+import {Element} from "../../dom/Element";
+import {DivEl} from "../../dom/DivEl";
+import {ElementAddedEvent} from "../../dom/ElementAddedEvent";
+import {ElementShownEvent} from "../../dom/ElementShownEvent";
+import {ValueChangedEvent} from "../../ValueChangedEvent";
+import {WindowDOM} from "../../dom/WindowDOM";
 
-    export class TextAreaInput extends api.dom.FormInputEl {
+export class TextAreaInput extends FormInputEl {
 
-        private attendant: api.dom.Element;
+        private attendant: Element;
 
-        private clone: api.dom.Element;
+        private clone: Element;
 
         constructor(name: string, originalValue?: string) {
             super("textarea", "text-area", undefined, originalValue);
@@ -15,17 +21,17 @@ module api.ui.text {
                 this.refreshValueChanged();
             });
 
-            this.clone = new api.dom.DivEl('autosize-clone').addClass(this.getEl().getAttribute('class'));
-            this.attendant = new api.dom.DivEl('autosize-attendant');
+            this.clone = new DivEl('autosize-clone').addClass(this.getEl().getAttribute('class'));
+            this.attendant = new DivEl('autosize-attendant');
             this.attendant.appendChild(this.clone);
 
-            this.onAdded((event: api.dom.ElementAddedEvent) => {
+            this.onAdded((event: ElementAddedEvent) => {
                 this.attendant.insertAfterEl(this);
             });
 
-            this.onShown((event: api.dom.ElementShownEvent) => this.updateSize());
-            this.onValueChanged((event: api.ValueChangedEvent) => this.updateSize());
-            api.dom.WindowDOM.get().onResized((event: UIEvent) => this.updateSize(), this);
+            this.onShown((event: ElementShownEvent) => this.updateSize());
+            this.onValueChanged((event: ValueChangedEvent) => this.updateSize());
+            WindowDOM.get().onResized((event: UIEvent) => this.updateSize(), this);
         }
 
         setRows(rows: number) {
@@ -44,4 +50,3 @@ module api.ui.text {
         }
     }
 
-}

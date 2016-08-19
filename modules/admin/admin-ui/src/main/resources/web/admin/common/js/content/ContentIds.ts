@@ -1,6 +1,9 @@
-module api.content {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentId} from "./ContentId";
+import {ContentSummary} from "./ContentSummary";
 
-    export class ContentIds implements api.Equitable {
+export class ContentIds implements Equitable {
 
         private array: ContentId[];
 
@@ -47,13 +50,13 @@ module api.content {
             return builder.build();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentIds)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentIds)) {
                 return false;
             }
 
             var other = <ContentIds>o;
-            return api.ObjectHelper.arrayEquals(this.array, other.array);
+            return ObjectHelper.arrayEquals(this.array, other.array);
         }
 
         static create(): ContentIdsBuilder {
@@ -90,4 +93,3 @@ module api.content {
             return new ContentIds(this.array);
         }
     }
-}

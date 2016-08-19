@@ -1,7 +1,11 @@
-module api.content.resource {
+import {ContentJson} from "../json/ContentJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Content} from "../Content";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ContentJson = api.content.json.ContentJson;
-    export class GetContentByIdRequest extends ContentResourceRequest<ContentJson, Content> {
+export class GetContentByIdRequest extends ContentResourceRequest<ContentJson, Content> {
 
         private id: ContentId;
 
@@ -25,15 +29,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return super.getResourcePath();
         }
 
         sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return this.fromJsonToContent(response.getResult());
             });
         }
     }
-}

@@ -1,15 +1,21 @@
-module api.content.page {
+import {PropertyTree} from "../../data/PropertyTree";
+import {Component} from "./region/Component";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {Regions} from "./region/Regions";
+import {ObjectHelper} from "../../ObjectHelper";
+import {PageJson} from "./PageJson";
+import {ComponentFactory} from "./region/ComponentFactory";
+import {DescriptorKey} from "./DescriptorKey";
+import {PageTemplateKey} from "./PageTemplateKey";
 
-    import PropertyTree = api.data.PropertyTree;
-    import Component = api.content.page.region.Component;
-
-    export class Page implements api.Equitable, api.Cloneable {
+export class Page implements Equitable, Cloneable {
 
         private controller: DescriptorKey;
 
         private template: PageTemplateKey;
 
-        private regions: api.content.page.region.Regions;
+        private regions: Regions;
 
         private fragment: Component;
 
@@ -46,7 +52,7 @@ module api.content.page {
             return this.regions != null;
         }
 
-        getRegions(): api.content.page.region.Regions {
+        getRegions(): Regions {
             return this.regions;
         }
 
@@ -70,24 +76,24 @@ module api.content.page {
             return this.fragment != null;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Page)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Page)) {
                 return false;
             }
 
             var other = <Page>o;
 
-            if (!api.ObjectHelper.equals(this.controller, other.controller)) {
+            if (!ObjectHelper.equals(this.controller, other.controller)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.template, other.template)) {
+            if (!ObjectHelper.equals(this.template, other.template)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.regions, other.regions)) {
+            if (!ObjectHelper.equals(this.regions, other.regions)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.fragment, other.fragment)) {
+            if (!ObjectHelper.equals(this.fragment, other.fragment)) {
                 return false;
             }
 
@@ -97,7 +103,7 @@ module api.content.page {
             if (!other.config && (!this.config || this.config.isEmpty())) {
                 return true;
             }
-            return api.ObjectHelper.equals(this.config, other.config);
+            return ObjectHelper.equals(this.config, other.config);
         }
 
         clone(): Page {
@@ -112,7 +118,7 @@ module api.content.page {
 
         template: PageTemplateKey;
 
-        regions: api.content.page.region.Regions;
+        regions: Regions;
 
         config: PropertyTree;
 
@@ -131,17 +137,17 @@ module api.content.page {
             }
         }
 
-        public fromJson(json: api.content.page.PageJson): PageBuilder {
+        public fromJson(json: PageJson): PageBuilder {
             this.setController(json.controller ? DescriptorKey.fromString(json.controller) : null);
             this.setTemplate(json.template ? PageTemplateKey.fromString(json.template) : null);
-            this.setRegions(json.regions != null ? api.content.page.region.Regions.create().fromJson(json.regions, null).build() : null);
+            this.setRegions(json.regions != null ? Regions.create().fromJson(json.regions, null).build() : null);
             this.setConfig(json.config != null
                 ? PropertyTree.fromJson(json.config)
                 : null);
             this.setCustomized(json.customized);
 
             if (json.fragment) {
-                var component: Component = api.content.page.region.ComponentFactory.createFromJson(json.fragment, 0, null);
+                var component: Component = ComponentFactory.createFromJson(json.fragment, 0, null);
                 this.setFragment(component);
             }
 
@@ -158,7 +164,7 @@ module api.content.page {
             return this;
         }
 
-        public setRegions(value: api.content.page.region.Regions): PageBuilder {
+        public setRegions(value: Regions): PageBuilder {
             this.regions = value;
             return this;
         }
@@ -182,4 +188,3 @@ module api.content.page {
             return new Page(this);
         }
     }
-}

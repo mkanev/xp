@@ -1,8 +1,7 @@
-module api.app {
 
-    export enum NamesAndIconViewSize {
+
+export enum NamesAndIconViewSize {
         large,
         medium,
         small
     }
-}

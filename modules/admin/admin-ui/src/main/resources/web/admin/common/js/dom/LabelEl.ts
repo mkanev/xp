@@ -1,6 +1,7 @@
-module api.dom {
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
 
-    export class LabelEl extends Element {
+export class LabelEl extends Element {
 
         constructor(value: string, forElement?: Element, className?: string) {
             super(new NewElementBuilder().setTagName("label").setClassName(className));
@@ -18,4 +19,3 @@ module api.dom {
             return this.getEl().getInnerHtml();
         }
     }
-}

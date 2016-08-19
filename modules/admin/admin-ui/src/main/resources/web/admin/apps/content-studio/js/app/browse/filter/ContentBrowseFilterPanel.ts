@@ -1,38 +1,54 @@
-import "../../../api.ts";
+import {ContentQueryRequest} from "../../../../../../common/js/content/resource/ContentQueryRequest";
+import {ContentTypeName} from "../../../../../../common/js/schema/content/ContentTypeName";
+import {ContentSummaryJson} from "../../../../../../common/js/content/json/ContentSummaryJson";
+import {ContentQueryResult} from "../../../../../../common/js/content/resource/result/ContentQueryResult";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {AggregationTypeWrapperJson} from "../../../../../../common/js/aggregation/AggregationTypeWrapperJson";
+import {AggregationGroupView} from "../../../../../../common/js/aggregation/AggregationGroupView";
+import {ContentTypeAggregationGroupView} from "../../../../../../common/js/aggregation/ContentTypeAggregationGroupView";
+import {Aggregation} from "../../../../../../common/js/aggregation/Aggregation";
+import {AggregationFactory} from "../../../../../../common/js/aggregation/AggregationFactory";
+import {SearchInputValues} from "../../../../../../common/js/query/SearchInputValues";
+import {ContentQuery} from "../../../../../../common/js/content/query/ContentQuery";
+import {TermsAggregationQuery} from "../../../../../../common/js/query/aggregation/TermsAggregationQuery";
+import {DateRangeAggregationQuery} from "../../../../../../common/js/query/aggregation/DateRangeAggregationQuery";
+import {DateRange} from "../../../../../../common/js/query/aggregation/DateRange";
+import {QueryExpr} from "../../../../../../common/js/query/expr/QueryExpr";
+import {CompareExpr} from "../../../../../../common/js/query/expr/CompareExpr";
+import {LogicalExpr} from "../../../../../../common/js/query/expr/LogicalExpr";
+import {ValueExpr} from "../../../../../../common/js/query/expr/ValueExpr";
+import {LogicalOperator} from "../../../../../../common/js/query/expr/LogicalOperator";
+import {FieldExpr} from "../../../../../../common/js/query/expr/FieldExpr";
+import {Value} from "../../../../../../common/js/data/Value";
+import {ValueTypes} from "../../../../../../common/js/data/ValueTypes";
+import {QueryField} from "../../../../../../common/js/query/QueryField";
+import {ContentSummaryViewer} from "../../../../../../common/js/content/ContentSummaryViewer";
+import {ActionButton} from "../../../../../../common/js/ui/button/ActionButton";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {BrowseFilterPanel} from "../../../../../../common/js/app/browse/filter/BrowseFilterPanel";
+import {Element} from "../../../../../../common/js/dom/Element";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
+import {Filter} from "../../../../../../common/js/query/filter/Filter";
+import {Expand} from "../../../../../../common/js/rest/Expand";
+import {ObjectHelper} from "../../../../../../common/js/ObjectHelper";
+import {Expression} from "../../../../../../common/js/query/expr/Expression";
+import {FulltextSearchExpressionBuilder} from "../../../../../../common/js/query/FulltextSearchExpression";
+import {Bucket} from "../../../../../../common/js/aggregation/Bucket";
+import {DateRangeBucket} from "../../../../../../common/js/aggregation/DateRangeBucket";
+import {RangeFilter} from "../../../../../../common/js/query/filter/RangeFilter";
+import {BooleanFilter} from "../../../../../../common/js/query/filter/BooleanFilter";
+import {TermsAggregationOrderType} from "../../../../../../common/js/query/aggregation/TermsAggregationQuery";
+import {TermsAggregationOrderDirection} from "../../../../../../common/js/query/aggregation/TermsAggregationQuery";
+import {BucketAggregation} from "../../../../../../common/js/aggregation/BucketAggregation";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../../common/js/dom/LabelEl";
+import {ContentId} from "../../../../../../common/js/content/ContentId";
+
 import {ContentBrowseResetEvent} from "./ContentBrowseResetEvent";
 import {ContentBrowseSearchEvent} from "./ContentBrowseSearchEvent";
 import {ContentBrowseRefreshEvent} from "./ContentBrowseRefreshEvent";
 
-import ContentQueryRequest = api.content.resource.ContentQueryRequest;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import ContentSummaryJson = api.content.json.ContentSummaryJson;
-import ContentQueryResult = api.content.resource.result.ContentQueryResult;
-import ContentSummary = api.content.ContentSummary;
-import AggregationTypeWrapperJson = api.aggregation.AggregationTypeWrapperJson;
-import AggregationGroupView = api.aggregation.AggregationGroupView;
-import ContentTypeAggregationGroupView = api.aggregation.ContentTypeAggregationGroupView;
-import Aggregation = api.aggregation.Aggregation;
-import AggregationFactory = api.aggregation.AggregationFactory;
-import SearchInputValues = api.query.SearchInputValues;
-import ContentQuery = api.content.query.ContentQuery;
-import TermsAggregationQuery = api.query.aggregation.TermsAggregationQuery;
-import DateRangeAggregationQuery = api.query.aggregation.DateRangeAggregationQuery;
-import DateRange = api.query.aggregation.DateRange;
-import QueryExpr = api.query.expr.QueryExpr;
-import CompareExpr = api.query.expr.CompareExpr;
-import LogicalExpr = api.query.expr.LogicalExpr;
-import ValueExpr = api.query.expr.ValueExpr;
-import LogicalOperator = api.query.expr.LogicalOperator;
-import LogicalExp = api.query.expr.LogicalExpr;
-import FieldExpr = api.query.expr.FieldExpr;
-import Value = api.data.Value;
-import ValueTypes = api.data.ValueTypes;
-import QueryField = api.query.QueryField;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-import ActionButton = api.ui.button.ActionButton;
-import Action = api.ui.Action;
-
-export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilterPanel {
+export class ContentBrowseFilterPanel extends BrowseFilterPanel {
 
     static CONTENT_TYPE_AGGREGATION_NAME: string = "contentTypes";
     static LAST_MODIFIED_AGGREGATION_NAME: string = "lastModified";
@@ -95,7 +111,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         }
     }
 
-    doSearch(elementChanged?: api.dom.Element) {
+    doSearch(elementChanged?: Element) {
         if (!this.isAnyFilterSet()) {
             this.handleEmptyFilterInput();
         } else {
@@ -113,7 +129,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
             this.resetFacets(true, true).then(() => {
                 new ContentBrowseRefreshEvent().fire();
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
         } else { // it's SearchEvent, usual reset with grid reload
@@ -128,7 +144,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         this.appendContentTypeFilter(values, contentQuery);
         this.appendOutboundReferencesFilter(contentQuery);
 
-        var lastModifiedFilter: api.query.filter.Filter = this.appendLastModifiedQuery(values);
+        var lastModifiedFilter: Filter = this.appendLastModifiedQuery(values);
         if (lastModifiedFilter != null) {
             contentQuery.addQueryFilter(lastModifiedFilter);
         }
@@ -142,16 +158,16 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
     }
 
     private searchDataAndHandleResponse(contentQuery: ContentQuery) {
-        new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).setExpand(api.rest.Expand.SUMMARY).sendAndParse().then(
+        new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).setExpand(Expand.SUMMARY).sendAndParse().then(
             (contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
                 this.handleDataSearchResult(contentQuery, contentQueryResult);
             }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
     private refreshDataAndHandleResponse(contentQuery: ContentQuery) {
-        new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).setExpand(api.rest.Expand.SUMMARY).sendAndParse().then(
+        new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).setExpand(Expand.SUMMARY).sendAndParse().then(
             (contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
                 if (contentQueryResult.getMetadata().getTotalHits() > 0) {
                     this.handleDataSearchResult(contentQuery, contentQueryResult);
@@ -160,13 +176,13 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
                     this.handleNoSearchResultOnRefresh(contentQuery);
                 }
             }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
     private handleDataSearchResult(contentQuery: ContentQuery,
                                    contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) {
-        this.getAggregations(contentQuery, contentQueryResult).then((aggregations: api.aggregation.Aggregation[]) => {
+        this.getAggregations(contentQuery, contentQueryResult).then((aggregations: Aggregation[]) => {
             this.updateAggregations(aggregations, true);
             this.updateHitsCounter(contentQueryResult.getMetadata().getTotalHits());
             this.toggleAggregationsVisibility(contentQueryResult.getAggregations());
@@ -205,22 +221,22 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
     }
 
     private getAggregations(contentQuery: ContentQuery,
-                            contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>): wemQ.Promise<api.aggregation.Aggregation[]> {
+                            contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>): wemQ.Promise<Aggregation[]> {
 
         var clonedContentQueryNoContentTypes: ContentQuery = this.cloneContentQueryNoContentTypes(contentQuery);
 
-        if (api.ObjectHelper.objectEquals(contentQuery, clonedContentQueryNoContentTypes)) {
+        if (ObjectHelper.objectEquals(contentQuery, clonedContentQueryNoContentTypes)) {
             return wemQ(this.combineAggregations(contentQueryResult, contentQueryResult));
         }
 
         return new ContentQueryRequest<ContentSummaryJson,ContentSummary>(clonedContentQueryNoContentTypes).setExpand(
-            api.rest.Expand.SUMMARY).sendAndParse().then(
+            Expand.SUMMARY).sendAndParse().then(
             (contentQueryResultNoContentTypesSelected: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
                 return this.combineAggregations(contentQueryResult, contentQueryResultNoContentTypesSelected);
             });
     }
 
-    private combineAggregations(contentQueryResult, contentQueryResultNoContentTypesSelected): api.aggregation.Aggregation[] {
+    private combineAggregations(contentQueryResult, contentQueryResultNoContentTypesSelected): Aggregation[] {
         var contentTypesAggr = contentQueryResultNoContentTypesSelected.getAggregations().filter((aggregation) => {
             return aggregation.getName() === ContentBrowseFilterPanel.CONTENT_TYPE_AGGREGATION_NAME;
         });
@@ -248,7 +264,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
                     aggregationGroupView.initialize();
                 });
             }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
@@ -272,7 +288,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
                 }
             }
         ).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         });
     }
 
@@ -302,7 +318,7 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         contentQuery.setQueryExpr(query);
     }
 
-    private makeInboundDependenciesSearchExpr(): api.query.expr.Expression {
+    private makeInboundDependenciesSearchExpr(): Expression {
         var dependencyId = this.dependenciesSection.getDependencyId().toString();
 
         var query: QueryExpr = new QueryExpr(new LogicalExpr(
@@ -313,17 +329,17 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         return query;
     }
 
-    private makeFulltextSearchExpr(searchInputValues: SearchInputValues): api.query.expr.Expression {
+    private makeFulltextSearchExpr(searchInputValues: SearchInputValues): Expression {
 
         var searchString: string = searchInputValues.getTextSearchFieldValue();
 
-        return new api.query.FulltextSearchExpressionBuilder().setSearchString(
+        return new FulltextSearchExpressionBuilder().setSearchString(
             searchString).addField(new QueryField(QueryField.DISPLAY_NAME, 5)).addField(new QueryField(QueryField.NAME, 3)).addField(
             new QueryField(QueryField.ALL)).build();
     }
 
     private appendContentTypeFilter(searchInputValues: SearchInputValues, contentQuery: ContentQuery): void {
-        var selectedBuckets: api.aggregation.Bucket[] = searchInputValues.getSelectedValuesForAggregationName(
+        var selectedBuckets: Bucket[] = searchInputValues.getSelectedValuesForAggregationName(
             ContentBrowseFilterPanel.CONTENT_TYPE_AGGREGATION_NAME);
 
         var contentTypeNames: ContentTypeName[] = this.parseContentTypeNames(selectedBuckets);
@@ -343,9 +359,9 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         }
     }
 
-    private appendLastModifiedQuery(searchInputValues: api.query.SearchInputValues): api.query.filter.Filter {
+    private appendLastModifiedQuery(searchInputValues: SearchInputValues): Filter {
 
-        var lastModifiedSelectedBuckets: api.aggregation.Bucket[] = searchInputValues.getSelectedValuesForAggregationName(
+        var lastModifiedSelectedBuckets: Bucket[] = searchInputValues.getSelectedValuesForAggregationName(
             ContentBrowseFilterPanel.LAST_MODIFIED_AGGREGATION_NAME);
 
         if (lastModifiedSelectedBuckets == null || lastModifiedSelectedBuckets.length == 0) {
@@ -353,30 +369,30 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         }
 
         if (lastModifiedSelectedBuckets.length == 1) {
-            var dateRangeBucket: api.aggregation.DateRangeBucket = <api.aggregation.DateRangeBucket> lastModifiedSelectedBuckets.pop();
-            return new api.query.filter.RangeFilter(QueryField.MODIFIED_TIME, ValueExpr.dateTime(dateRangeBucket.getFrom()).getValue(),
+            var dateRangeBucket: DateRangeBucket = <DateRangeBucket> lastModifiedSelectedBuckets.pop();
+            return new RangeFilter(QueryField.MODIFIED_TIME, ValueExpr.dateTime(dateRangeBucket.getFrom()).getValue(),
                 null);
         }
 
-        var booleanFilter: api.query.filter.BooleanFilter = new api.query.filter.BooleanFilter();
+        var booleanFilter: BooleanFilter = new BooleanFilter();
 
-        lastModifiedSelectedBuckets.forEach((selectedBucket: api.aggregation.DateRangeBucket) => {
-            var rangeFilter: api.query.filter.RangeFilter =
-                new api.query.filter.RangeFilter(QueryField.MODIFIED_TIME, ValueExpr.dateTime(selectedBucket.getFrom()).getValue(),
+        lastModifiedSelectedBuckets.forEach((selectedBucket: DateRangeBucket) => {
+            var rangeFilter: RangeFilter =
+                new RangeFilter(QueryField.MODIFIED_TIME, ValueExpr.dateTime(selectedBucket.getFrom()).getValue(),
                     null);
 
-            booleanFilter.addShould(<api.query.filter.Filter>rangeFilter);
+            booleanFilter.addShould(<Filter>rangeFilter);
         });
 
         return booleanFilter;
     }
 
-    private parseContentTypeNames(buckets: api.aggregation.Bucket[]): ContentTypeName[] {
+    private parseContentTypeNames(buckets: Bucket[]): ContentTypeName[] {
         var contentTypeNames: ContentTypeName[] = [];
 
         if (buckets) {
             for (var i = 0; i < buckets.length; i++) {
-                var bucket: api.aggregation.Bucket = buckets[i];
+                var bucket: Bucket = buckets[i];
                 contentTypeNames.push(new ContentTypeName(bucket.getKey()));
             }
         }
@@ -393,8 +409,8 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         var termsAggregation = new TermsAggregationQuery(name);
         termsAggregation.setFieldName(fieldName);
         termsAggregation.setSize(size);
-        termsAggregation.setOrderByType(api.query.aggregation.TermsAggregationOrderType.DOC_COUNT);
-        termsAggregation.setOrderByDirection(api.query.aggregation.TermsAggregationOrderDirection.DESC);
+        termsAggregation.setOrderByType(TermsAggregationOrderType.DOC_COUNT);
+        termsAggregation.setOrderByDirection(TermsAggregationOrderDirection.DESC);
         return termsAggregation;
     }
 
@@ -409,9 +425,9 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
         contentQuery.addAggregationQuery(dateRangeAgg);
     }
 
-    private toggleAggregationsVisibility(aggregations: api.aggregation.Aggregation[]) {
-        aggregations.forEach((aggregation: api.aggregation.BucketAggregation) => {
-            var aggregationIsEmpty = !aggregation.getBuckets().some((bucket: api.aggregation.Bucket) => {
+    private toggleAggregationsVisibility(aggregations: Aggregation[]) {
+        aggregations.forEach((aggregation: BucketAggregation) => {
+            var aggregationIsEmpty = !aggregation.getBuckets().some((bucket: Bucket) => {
                 if (bucket.docCount > 0) {
                     return true;
                 }
@@ -432,10 +448,10 @@ export class ContentBrowseFilterPanel extends api.app.browse.filter.BrowseFilter
 
 }
 
-export class DependenciesSection extends api.dom.DivEl {
+export class DependenciesSection extends DivEl {
 
-    private inboundLabel: api.dom.LabelEl = new api.dom.LabelEl("Inbound Dependencies");
-    private outboundLabel: api.dom.LabelEl = new api.dom.LabelEl("Outbound Dependencies");
+    private inboundLabel: LabelEl = new LabelEl("Inbound Dependencies");
+    private outboundLabel: LabelEl = new LabelEl("Outbound Dependencies");
 
     private dependencyItem: ContentSummary;
     private viewer: ContentSummaryViewer = new ContentSummaryViewer();
@@ -484,7 +500,7 @@ export class DependenciesSection extends api.dom.DivEl {
         this.checkVisibilityState();
     }
 
-    public getDependencyId(): api.content.ContentId {
+    public getDependencyId(): ContentId {
         return this.dependencyItem.getContentId();
     }
 

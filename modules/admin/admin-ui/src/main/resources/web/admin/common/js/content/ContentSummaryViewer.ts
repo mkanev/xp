@@ -1,6 +1,10 @@
-module api.content {
+import {NamesAndIconViewer} from "../ui/NamesAndIconViewer";
+import {ContentUnnamed} from "./ContentUnnamed";
+import {ContentIconUrlResolver} from "./util/ContentIconUrlResolver";
+import {ContentPath} from "./ContentPath";
+import {ContentSummary} from "./ContentSummary";
 
-    export class ContentSummaryViewer extends api.ui.NamesAndIconViewer<ContentSummary> {
+export class ContentSummaryViewer extends NamesAndIconViewer<ContentSummary> {
 
         constructor() {
             super("content-summary-viewer");
@@ -24,11 +28,11 @@ module api.content {
             var contentName = object.getName();
             if (relativePath) {
                 return !contentName.isUnnamed() ? object.getName().toString() :
-                       api.content.ContentUnnamed.prettifyUnnamed();
+                       ContentUnnamed.prettifyUnnamed();
             } else {
                 return !contentName.isUnnamed() ? object.getPath().toString() :
                                                   ContentPath.fromParent(object.getPath().getParentPath(),
-                                                      api.content.ContentUnnamed.prettifyUnnamed()).toString();
+                                                      ContentUnnamed.prettifyUnnamed()).toString();
             }
         }
 
@@ -37,7 +41,6 @@ module api.content {
         }
 
         resolveIconUrl(object: ContentSummary): string {
-            return new api.content.util.ContentIconUrlResolver().setContent(object).resolve();
+            return new ContentIconUrlResolver().setContent(object).resolve();
         }
     }
-}

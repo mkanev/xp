@@ -1,4 +1,15 @@
-import "../../../../api.ts";
+import {PageTemplateKey} from "../../../../../../../common/js/content/page/PageTemplateKey";
+import {PageTemplate} from "../../../../../../../common/js/content/page/PageTemplate";
+import {PageDescriptor} from "../../../../../../../common/js/content/page/PageDescriptor";
+import {Region} from "../../../../../../../common/js/content/page/region/Region";
+import {ImageComponent} from "../../../../../../../common/js/content/page/region/ImageComponent";
+import {ImageComponentBuilder} from "../../../../../../../common/js/content/page/region/ImageComponent";
+import {ResponsiveManager} from "../../../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../../../common/js/ui/responsive/ResponsiveItem";
+import {DockedPanel} from "../../../../../../../common/js/ui/panel/DockedPanel";
+import {DivEl} from "../../../../../../../common/js/dom/DivEl";
+import {DragMask} from "../../../../../../../common/js/ui/mask/DragMask";
+
 import {LiveEditPageProxy} from "../LiveEditPageProxy";
 import {LiveFormPanel} from "../LiveFormPanel";
 import {InspectionsPanel} from "./inspect/InspectionsPanel";
@@ -6,15 +17,6 @@ import {BaseInspectionPanel} from "./inspect/BaseInspectionPanel";
 import {EmulatorPanel} from "./EmulatorPanel";
 import {InsertablesPanel} from "./insert/InsertablesPanel";
 import {PageComponentsView} from "../../PageComponentsView";
-
-import PageTemplateKey = api.content.page.PageTemplateKey;
-import PageTemplate = api.content.page.PageTemplate;
-import PageDescriptor = api.content.page.PageDescriptor;
-import Region = api.content.page.region.Region;
-import ImageComponent = api.content.page.region.ImageComponent;
-import ImageComponentBuilder = api.content.page.region.ImageComponentBuilder;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
 export interface ContextWindowConfig {
 
@@ -29,7 +31,7 @@ export interface ContextWindowConfig {
     insertablesPanel: InsertablesPanel;
 }
 
-export class ContextWindow extends api.ui.panel.DockedPanel {
+export class ContextWindow extends DockedPanel {
 
     private insertablesPanel: InsertablesPanel;
 
@@ -41,11 +43,11 @@ export class ContextWindow extends api.ui.panel.DockedPanel {
 
     private contextWindowState: ContextWindowState = ContextWindowState.HIDDEN;
 
-    private splitter: api.dom.DivEl;
+    private splitter: DivEl;
 
-    private ghostDragger: api.dom.DivEl;
+    private ghostDragger: DivEl;
 
-    private mask: api.ui.mask.DragMask;
+    private mask: DragMask;
 
     private actualWidth: number;
 
@@ -82,8 +84,8 @@ export class ContextWindow extends api.ui.panel.DockedPanel {
 
             this.addClass("context-window");
 
-            this.ghostDragger = new api.dom.DivEl("ghost-dragger");
-            this.splitter = new api.dom.DivEl("splitter");
+            this.ghostDragger = new DivEl("ghost-dragger");
+            this.splitter = new DivEl("splitter");
 
             ResponsiveManager.onAvailableSizeChanged(this.liveFormPanel, (item: ResponsiveItem) => {
                 this.updateFrameSize();
@@ -114,7 +116,7 @@ export class ContextWindow extends api.ui.panel.DockedPanel {
         var splitterPosition = 0;
         var parent = this.getParentElement();
         this.actualWidth = this.getEl().getWidth();
-        this.mask = new api.ui.mask.DragMask(parent);
+        this.mask = new DragMask(parent);
 
         var dragListener = (e: MouseEvent) => {
             if (this.splitterWithinBoundaries(initialPos - e.clientX)) {

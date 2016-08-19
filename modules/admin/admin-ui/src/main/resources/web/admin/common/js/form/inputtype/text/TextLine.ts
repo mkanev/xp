@@ -1,17 +1,23 @@
-module api.form.inputtype.text {
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {BaseInputTypeNotManagingAdd} from "../support/BaseInputTypeNotManagingAdd";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Element} from "../../../dom/Element";
+import {TextInput} from "../../../ui/text/TextInput";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {StringHelper} from "../../../util/StringHelper";
+import {InputTypeName} from "../../InputTypeName";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-
-    export class TextLine extends BaseInputTypeNotManagingAdd<string> {
+export class TextLine extends BaseInputTypeNotManagingAdd<string> {
 
         private regexpStr: string;
         private regexp: RegExp;
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
+        constructor(config: InputTypeViewContext) {
             super(config);
             this.readConfig(config.inputConfig);
         }
@@ -30,15 +36,15 @@ module api.form.inputtype.text {
             return super.newInitialValue() || new Value("", ValueTypes.STRING);
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
             if (!ValueTypes.STRING.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
 
-            var inputEl = api.ui.text.TextInput.middle(undefined, property.getString());
+            var inputEl = TextInput.middle(undefined, property.getString());
             inputEl.setName(this.getInput().getName() + "-" + index);
 
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+            inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var isValid = this.isValid(event.getNewValue(), inputEl);
                 if (isValid) {
                     var value = ValueTypes.STRING.newValue(event.getNewValue());
@@ -50,8 +56,8 @@ module api.form.inputtype.text {
         }
 
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var input = <api.ui.text.TextInput> occurrence;
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
+            var input = <TextInput> occurrence;
 
             if (!unchangedOnly || !input.isDirty()) {
                 input.setValue(property.getString());
@@ -67,17 +73,17 @@ module api.form.inputtype.text {
 
         valueBreaksRequiredContract(value: Value): boolean {
             return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-                   api.util.StringHelper.isBlank(value.getString());
+                   StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
-            var textInput = <api.ui.text.TextInput>inputElement;
+        hasInputElementValidUserInput(inputElement: Element) {
+            var textInput = <TextInput>inputElement;
             return this.isValid(textInput.getValue(), textInput, true);
         }
 
-        private isValid(value: string, textInput: api.ui.text.TextInput, silent: boolean = false): boolean {
+        private isValid(value: string, textInput: TextInput, silent: boolean = false): boolean {
             var parent = textInput.getParentElement();
-            if (!this.regexpStr || api.util.StringHelper.isEmpty(value)) {
+            if (!this.regexpStr || StringHelper.isEmpty(value)) {
                 parent.removeClass('valid-regexp').removeClass('invalid-regexp');
                 return true;
             }
@@ -92,11 +98,10 @@ module api.form.inputtype.text {
             return valid;
         }
 
-        static getName(): api.form.InputTypeName {
-            return new api.form.InputTypeName("TextLine", false);
+        static getName(): InputTypeName {
+            return new InputTypeName("TextLine", false);
         }
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class(TextLine.getName().getName(), TextLine));
-}
+    InputTypeManager.register(new Class(TextLine.getName().getName(), TextLine));

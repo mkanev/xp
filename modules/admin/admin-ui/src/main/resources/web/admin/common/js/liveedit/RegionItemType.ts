@@ -1,8 +1,14 @@
-module api.liveedit {
+import {Region} from "../content/page/region/Region";
+import {StyleHelper} from "../StyleHelper";
+import {Element} from "../dom/Element";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {ItemType} from "./ItemType";
+import {ItemTypeConfigJson} from "./ItemTypeConfig";
+import {ItemView} from "./ItemView";
+import {RegionViewBuilder} from "./RegionView";
+import {RegionView} from "./RegionView";
 
-    import Region = api.content.page.region.Region;
-
-    export class RegionItemType extends ItemType {
+export class RegionItemType extends ItemType {
 
         private static INSTANCE = new RegionItemType();
 
@@ -15,7 +21,7 @@ module api.liveedit {
                 cssSelector: '[data-portal-region]',
                 draggable: false,
                 cursor: 'pointer',
-                iconCls: api.StyleHelper.COMMON_PREFIX + 'icon-region',
+                iconCls: StyleHelper.COMMON_PREFIX + 'icon-region',
                 highlighterStyle: {
                     stroke: 'rgba(20, 20, 20, 1)', // not used
                     strokeDasharray: '5 5',
@@ -26,7 +32,7 @@ module api.liveedit {
             });
         }
 
-        static getRegionName(element: api.dom.Element): string {
+        static getRegionName(element: Element): string {
             return element.getEl().getAttribute('data-' + ItemType.ATTRIBUTE_REGION_NAME);
         }
 
@@ -40,4 +46,3 @@ module api.liveedit {
     }
 
     RegionItemType.get();
-}

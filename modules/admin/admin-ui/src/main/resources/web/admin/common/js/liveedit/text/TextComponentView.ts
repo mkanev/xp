@@ -1,17 +1,30 @@
-module api.liveedit.text {
+import {ComponentView} from "../ComponentView";
+import {RegionView} from "../RegionView";
+import {TextComponent} from "../../content/page/region/TextComponent";
+import {LinkModalDialog} from "../../util/htmlarea/dialog/LinkModalDialog";
+import {AnchorModalDialog} from "../../util/htmlarea/dialog/AnchorModalDialog";
+import {HtmlAreaAnchor} from "../../util/htmlarea/dialog/HtmlModalDialog";
+import {HTMLAreaBuilder} from "../../util/htmlarea/editor/HTMLAreaBuilder";
+import {HTMLAreaHelper} from "../../util/htmlarea/editor/HTMLAreaHelper";
+import {HtmlModalDialog as ModalDialog} from "../../util/htmlarea/dialog/HtmlModalDialog";
+import {Element} from "../../dom/Element";
+import {DivEl} from "../../dom/DivEl";
+import {BrowserHelper} from "../../BrowserHelper";
+import {LiveEditPageDialogCreatedEvent} from "../LiveEditPageDialogCreatedEvent";
+import {ContentSummary} from "../../content/ContentSummary";
+import {ContentPath} from "../../content/ContentPath";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {SectionEl} from "../../dom/SectionEl";
+import {Highlighter} from "../Highlighter";
+import {TextItemType} from "./TextItemType";
+import {Action} from "../../ui/Action";
+import {ComponentViewBuilder} from "../ComponentView";
+import {DragAndDrop} from "../DragAndDrop";
+import {ItemView} from "../ItemView";
+import {TextComponentViewer} from "./TextComponentViewer";
+import {TextPlaceholder} from "./TextPlaceholder";
 
-    declare var CONFIG;
-
-    import ComponentView = api.liveedit.ComponentView;
-    import RegionView = api.liveedit.RegionView;
-    import TextComponent = api.content.page.region.TextComponent;
-
-    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
-    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
-    import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
-    import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
-    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import ModalDialog = api.util.htmlarea.dialog.HtmlModalDialog;
+declare var CONFIG;
 
     export class TextComponentViewBuilder extends ComponentViewBuilder<TextComponent> {
         constructor() {
@@ -24,7 +37,7 @@ module api.liveedit.text {
 
         private textComponent: TextComponent;
 
-        private rootElement: api.dom.Element;
+        private rootElement: Element;
 
         private htmlAreaEditor;
 
@@ -32,7 +45,7 @@ module api.liveedit.text {
 
         private focusOnInit: boolean;
 
-        private editorContainer: api.dom.DivEl;
+        private editorContainer: DivEl;
 
         public static debug = false;
 
@@ -68,7 +81,7 @@ module api.liveedit.text {
             this.rootElement.getHTMLElement().onpaste = this.handlePasteEvent.bind(this);
 
             this.onAdded(() => { // is triggered on item insert or move
-                if (api.BrowserHelper.isFirefox() && !!tinymce.activeEditor) {
+                if (BrowserHelper.isFirefox() && !!tinymce.activeEditor) {
                     tinymce.activeEditor.fire('blur');
                 }
                 this.focusOnInit = true;
@@ -98,7 +111,7 @@ module api.liveedit.text {
                 }
             });
 
-            api.liveedit.LiveEditPageDialogCreatedEvent.on(handleDialogCreated.bind(this));
+            LiveEditPageDialogCreatedEvent.on(handleDialogCreated.bind(this));
         }
 
         private reInitEditor() {
@@ -108,15 +121,15 @@ module api.liveedit.text {
             this.htmlAreaEditor = null;
         }
 
-        private getContent(): api.content.ContentSummary {
+        private getContent(): ContentSummary {
             return this.liveEditModel.getContent();
         }
 
-        private getContentPath(): api.content.ContentPath {
+        private getContentPath(): ContentPath {
             return this.liveEditModel.getContent().getPath();
         }
 
-        private getApplicationKeys(): api.application.ApplicationKey[] {
+        private getApplicationKeys(): ApplicationKey[] {
             return this.liveEditModel.getSiteModel().getSite().getApplicationKeys();
         }
 
@@ -156,7 +169,7 @@ module api.liveedit.text {
             }
             if (!this.rootElement) {
                 // create it in case of new component
-                this.rootElement = new api.dom.SectionEl();
+                this.rootElement = new SectionEl();
                 this.prependChild(this.rootElement);
             }
         }
@@ -176,7 +189,7 @@ module api.liveedit.text {
                 this.htmlAreaEditor.focus();
                 this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);
             }
-            api.liveedit.Highlighter.get().hide();
+            Highlighter.get().hide();
         }
 
         private doHandleClick(event: MouseEvent) {
@@ -252,7 +265,7 @@ module api.liveedit.text {
                     this.processEditorValue();
                 }
                 this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
-                if (api.BrowserHelper.isFirefox()) {
+                if (BrowserHelper.isFirefox()) {
                     var activeEditor = tinymce.activeEditor;
                     if (!!activeEditor) {
                         activeEditor.fire('blur');
@@ -313,7 +326,7 @@ module api.liveedit.text {
             this.addClass(id);
 
             if (!this.editorContainer) {
-                this.editorContainer = new api.dom.DivEl("tiny-mce-here");
+                this.editorContainer = new DivEl("tiny-mce-here");
                 this.appendChild(this.editorContainer);
             }
 
@@ -336,7 +349,7 @@ module api.liveedit.text {
                         this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
                     }
                     if (this.focusOnInit) {
-                        if (api.BrowserHelper.isFirefox()) {
+                        if (BrowserHelper.isFirefox()) {
                             setTimeout(() => {
                                 this.forceEditorFocus();
                             }, 100);
@@ -358,7 +371,7 @@ module api.liveedit.text {
         }
 
         private anyEditorHasFocus(): boolean {
-            var textItemViews = this.getPageView().getItemViewsByType(api.liveedit.text.TextItemType.get());
+            var textItemViews = this.getPageView().getItemViewsByType(TextItemType.get());
 
             var editorFocused = textItemViews.some((view: ItemView) => {
                 return view.getEl().hasClass(TextComponentView.EDITOR_FOCUSED_CLASS);
@@ -432,9 +445,9 @@ module api.liveedit.text {
             return this.rootElement.giveFocus();
         }
 
-        private createTextContextMenuActions(): api.ui.Action[] {
-            var actions: api.ui.Action[] = [];
-            actions.push(new api.ui.Action('Edit').onExecuted(() => {
+        private createTextContextMenuActions(): Action[] {
+            var actions: Action[] = [];
+            actions.push(new Action('Edit').onExecuted(() => {
                 this.startPageTextEditMode();
                 this.focusOnInit = true;
                 this.forceEditorFocus();
@@ -442,4 +455,3 @@ module api.liveedit.text {
             return actions;
         }
     }
-}

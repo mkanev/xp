@@ -1,6 +1,17 @@
-module api.util.htmlarea.dialog {
+import {ContentSummary} from "../../../content/ContentSummary";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {AnchorModalDialog} from "./AnchorModalDialog";
+import {HtmlAreaDialogType} from "./CreateHtmlAreaDialogEvent";
+import {CreateHtmlAreaDialogEvent} from "./CreateHtmlAreaDialogEvent";
+import {HtmlModalDialog} from "./HtmlModalDialog";
+import {HtmlAreaAnchor} from "./HtmlModalDialog";
+import {HtmlAreaImage} from "./HtmlModalDialog";
+import {HtmlAreaMacro} from "./HtmlModalDialog";
+import {ImageModalDialog} from "./ImageModalDialog";
+import {LinkModalDialog} from "./LinkModalDialog";
+import {MacroModalDialog} from "./MacroModalDialog";
 
-    export class HTMLAreaDialogHandler {
+export class HTMLAreaDialogHandler {
 
         private static modalDialog: HtmlModalDialog;
 
@@ -36,11 +47,11 @@ module api.util.htmlarea.dialog {
             return this.modalDialog;
         }
 
-        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary): HtmlModalDialog {
+        private static openLinkDialog(config: HtmlAreaAnchor, content: ContentSummary): HtmlModalDialog {
             return this.openDialog(new LinkModalDialog(config, content));
         }
 
-        private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): HtmlModalDialog {
+        private static openImageDialog(config: HtmlAreaImage, content: ContentSummary): HtmlModalDialog {
             return this.openDialog(new ImageModalDialog(config, content));
         }
 
@@ -48,8 +59,8 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new AnchorModalDialog(editor));
         }
 
-        private static openMacroDialog(config: HtmlAreaMacro, content: api.content.ContentSummary,
-                                       applicationKeys: api.application.ApplicationKey[]): HtmlModalDialog {
+        private static openMacroDialog(config: HtmlAreaMacro, content: ContentSummary,
+                                       applicationKeys: ApplicationKey[]): HtmlModalDialog {
             return this.openDialog(new MacroModalDialog(config, content, applicationKeys));
         }
 
@@ -58,4 +69,3 @@ module api.util.htmlarea.dialog {
             return dialog;
         }
     }
-}

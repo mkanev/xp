@@ -1,6 +1,6 @@
-module api.relationship {
+import {RelationshipJson} from "./json/RelationshipJson";
 
-    export class Relationship {
+export class Relationship {
 
         private id:string;
         private createdTime:Date;
@@ -12,7 +12,7 @@ module api.relationship {
         private toContent:string;
         private properties:any;
 
-        constructor(json:api.relationship.json.RelationshipJson) {
+        constructor(json:RelationshipJson) {
             this.createdTime = new Date(json.createdTime);
             this.modifiedTime = new Date(json.modifiedTime);
             this.type = json.type;
@@ -60,4 +60,3 @@ module api.relationship {
             return this.id;
         }
     }
-}

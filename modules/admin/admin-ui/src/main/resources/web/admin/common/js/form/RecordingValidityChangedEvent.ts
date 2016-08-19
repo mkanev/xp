@@ -1,21 +1,22 @@
-module api.form {
+import {ValidationRecordingPath} from "./ValidationRecordingPath";
+import {ValidationRecording} from "./ValidationRecording";
 
-    export class RecordingValidityChangedEvent {
+export class RecordingValidityChangedEvent {
 
-        private origin: api.form.ValidationRecordingPath;
+        private origin: ValidationRecordingPath;
 
-        private recording: api.form.ValidationRecording;
+        private recording: ValidationRecording;
 
         private inputValueBroken: boolean = false;
 
         private includeChildren: boolean = false;
 
-        constructor(recording: api.form.ValidationRecording, origin: api.form.ValidationRecordingPath) {
+        constructor(recording: ValidationRecording, origin: ValidationRecordingPath) {
             this.recording = recording;
             this.origin = origin;
         }
 
-        getOrigin(): api.form.ValidationRecordingPath {
+        getOrigin(): ValidationRecordingPath {
             return this.origin;
         }
 
@@ -23,7 +24,7 @@ module api.form {
             return this.recording.isValid() && !this.inputValueBroken;
         }
 
-        getRecording(): api.form.ValidationRecording {
+        getRecording(): ValidationRecording {
             return this.recording;
         }
 
@@ -45,4 +46,3 @@ module api.form {
             return this.includeChildren;
         }
     }
-}

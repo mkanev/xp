@@ -1,6 +1,8 @@
-module api.content {
+import {GetContentVersionsForViewResultsJson} from "./json/GetContentVersionsForViewResultsJson";
+import {ContentVersionViewJson} from "./json/ContentVersionViewJson";
+import {ContentVersion} from "./ContentVersion";
 
-    export class ContentVersions {
+export class ContentVersions {
 
         private contentVersions: ContentVersion[];
 
@@ -19,10 +21,10 @@ module api.content {
             this.activeVersion = activeVersion;
         }
 
-        static fromJson(contentVersionForViewJson: api.content.json.GetContentVersionsForViewResultsJson): ContentVersions {
+        static fromJson(contentVersionForViewJson: GetContentVersionsForViewResultsJson): ContentVersions {
 
             var contentVersions: ContentVersion[] = [];
-            contentVersionForViewJson.contentVersions.forEach((contentVersionViewJson: api.content.json.ContentVersionViewJson) => {
+            contentVersionForViewJson.contentVersions.forEach((contentVersionViewJson: ContentVersionViewJson) => {
                 contentVersions.push(ContentVersion.fromJson(contentVersionViewJson, contentVersionViewJson.workspaces));
             });
 
@@ -36,4 +38,3 @@ module api.content {
         }
     }
 
-}

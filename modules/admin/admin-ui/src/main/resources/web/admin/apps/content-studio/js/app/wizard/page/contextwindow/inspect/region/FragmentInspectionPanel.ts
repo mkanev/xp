@@ -1,25 +1,30 @@
-import "../../../../../../api.ts";
+import {FragmentComponent} from "../../../../../../../../../common/js/content/page/region/FragmentComponent";
+import {ContentSummary} from "../../../../../../../../../common/js/content/ContentSummary";
+import {ContentId} from "../../../../../../../../../common/js/content/ContentId";
+import {GetContentSummaryByIdRequest} from "../../../../../../../../../common/js/content/resource/GetContentSummaryByIdRequest";
+import {ContentTypeName} from "../../../../../../../../../common/js/schema/content/ContentTypeName";
+import {FragmentComponentView} from "../../../../../../../../../common/js/liveedit/fragment/FragmentComponentView";
+import {ComponentPropertyChangedEvent} from "../../../../../../../../../common/js/content/page/region/ComponentPropertyChangedEvent";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {SelectedOption} from "../../../../../../../../../common/js/ui/selector/combobox/SelectedOption";
+import {GetContentByIdRequest} from "../../../../../../../../../common/js/content/resource/GetContentByIdRequest";
+import {Content} from "../../../../../../../../../common/js/content/Content";
+import {LayoutComponentType} from "../../../../../../../../../common/js/content/page/region/LayoutComponentType";
+import {QueryExpr} from "../../../../../../../../../common/js/query/expr/QueryExpr";
+import {FieldExpr} from "../../../../../../../../../common/js/query/expr/FieldExpr";
+import {ValueExpr} from "../../../../../../../../../common/js/query/expr/ValueExpr";
+import {FragmentDropdown} from "../../../../../../../../../common/js/content/page/region/FragmentDropdown";
+import {OptionSelectedEvent} from "../../../../../../../../../common/js/ui/selector/OptionSelectedEvent";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {FragmentContentSummaryLoader} from "../../../../../../../../../common/js/content/resource/FragmentContentSummaryLoader";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+import {ObjectHelper} from "../../../../../../../../../common/js/ObjectHelper";
+import {showWarning} from "../../../../../../../../../common/js/notify/MessageBus";
+import {LayoutItemType} from "../../../../../../../../../common/js/liveedit/layout/LayoutItemType";
+
 import {ComponentInspectionPanel, ComponentInspectionPanelConfig} from "./ComponentInspectionPanel";
 import {FragmentSelectorForm} from "./FragmentSelectorForm";
-
-import FragmentComponent = api.content.page.region.FragmentComponent;
-import ContentSummary = api.content.ContentSummary;
-import ContentId = api.content.ContentId;
-import GetContentSummaryByIdRequest = api.content.resource.GetContentSummaryByIdRequest;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import FragmentComponentView = api.liveedit.fragment.FragmentComponentView;
-import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
-import Option = api.ui.selector.Option;
-import SelectedOption = api.ui.selector.combobox.SelectedOption;
-import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
-import Content = api.content.Content;
-import LayoutComponentType = api.content.page.region.LayoutComponentType;
-import QueryExpr = api.query.expr.QueryExpr;
-import FieldExpr = api.query.expr.FieldExpr;
-import ValueExpr = api.query.expr.ValueExpr;
-import FragmentDropdown = api.content.page.region.FragmentDropdown;
-import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-import LiveEditModel = api.liveedit.LiveEditModel;
 
 export class FragmentInspectionPanel extends ComponentInspectionPanel<FragmentComponent> {
 
@@ -35,14 +40,14 @@ export class FragmentInspectionPanel extends ComponentInspectionPanel<FragmentCo
 
     private componentPropertyChangedEventHandler: (event: ComponentPropertyChangedEvent) => void;
 
-    private loader: api.content.resource.FragmentContentSummaryLoader;
+    private loader: FragmentContentSummaryLoader;
 
     constructor() {
         super(<ComponentInspectionPanelConfig>{
-            iconClass: api.liveedit.ItemViewIconClassResolver.resolveByType("fragment")
+            iconClass: ItemViewIconClassResolver.resolveByType("fragment")
         });
 
-        this.loader = new api.content.resource.FragmentContentSummaryLoader();
+        this.loader = new FragmentContentSummaryLoader();
     }
 
     setModel(liveEditModel: LiveEditModel) {
@@ -98,7 +103,7 @@ export class FragmentInspectionPanel extends ComponentInspectionPanel<FragmentCo
                     if (this.isNotFoundError(reason)) {
                         this.setSelectorValue(null);
                     } else {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }
                 }).done();
             }
@@ -141,8 +146,8 @@ export class FragmentInspectionPanel extends ComponentInspectionPanel<FragmentCo
                         let fragmentComponent = content.getPage() ? content.getPage().getFragment() : null;
 
                         if (fragmentComponent &&
-                            api.ObjectHelper.iFrameSafeInstanceOf(fragmentComponent.getType(), LayoutComponentType)) {
-                            api.notify.showWarning("Layout within layout not allowed");
+                            ObjectHelper.iFrameSafeInstanceOf(fragmentComponent.getType(), LayoutComponentType)) {
+                            showWarning("Layout within layout not allowed");
 
                         } else {
                             this.fragmentComponent.setFragment(fragmentContent.getContentId(), fragmentContent.getDisplayName());
@@ -164,7 +169,7 @@ export class FragmentInspectionPanel extends ComponentInspectionPanel<FragmentCo
         if (!parent) {
             return false;
         }
-        return api.ObjectHelper.iFrameSafeInstanceOf(parent.getType(), api.liveedit.layout.LayoutItemType);
+        return ObjectHelper.iFrameSafeInstanceOf(parent.getType(), LayoutItemType);
     }
 
     getComponentView(): FragmentComponentView {

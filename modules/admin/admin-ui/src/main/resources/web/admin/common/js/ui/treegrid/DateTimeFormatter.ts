@@ -1,6 +1,6 @@
-module api.ui.treegrid {
 
-    export class DateTimeFormatter {
+
+export class DateTimeFormatter {
 
         static format(row:number, cell:number, value:any, columnDef:any, item:any): string {
             return DateTimeFormatter.createHtml(value);
@@ -56,4 +56,3 @@ module api.ui.treegrid {
             return s + n
         }
     }
-}

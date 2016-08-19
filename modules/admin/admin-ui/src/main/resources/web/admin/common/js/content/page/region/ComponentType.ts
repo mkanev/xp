@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {StringHelper} from "../../../util/StringHelper";
+import {Component} from "./Component";
+import {ComponentBuilder} from "./Component";
+import {ComponentName} from "./ComponentName";
 
-    export class ComponentType {
+export class ComponentType {
 
         private static shortNameToInstance: {[shortName: string]: ComponentType} = {};
 
@@ -24,8 +27,7 @@ module api.content.page.region {
         }
 
         getDefaultName(): ComponentName {
-            return new ComponentName(api.util.StringHelper.capitalize(api.util.StringHelper.removeWhitespaces(this.shortName)));
+            return new ComponentName(StringHelper.capitalize(StringHelper.removeWhitespaces(this.shortName)));
         }
     }
 
-}

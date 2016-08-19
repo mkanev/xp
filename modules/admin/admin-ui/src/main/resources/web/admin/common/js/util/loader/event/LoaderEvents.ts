@@ -1,7 +1,6 @@
-module api.util.loader.event {
 
-    export enum LoaderEvents {
+
+export enum LoaderEvents {
         LoadedData,
         LoadingData
     }
-}

@@ -1,21 +1,23 @@
-import "../../../../../../api.ts";
+import {ImageComponent} from "../../../../../../../../../common/js/content/page/region/ImageComponent";
+import {ContentSummary} from "../../../../../../../../../common/js/content/ContentSummary";
+import {ContentId} from "../../../../../../../../../common/js/content/ContentId";
+import {ContentSummaryLoader} from "../../../../../../../../../common/js/content/resource/ContentSummaryLoader";
+import {GetContentSummaryByIdRequest} from "../../../../../../../../../common/js/content/resource/GetContentSummaryByIdRequest";
+import {ContentComboBox} from "../../../../../../../../../common/js/content/ContentComboBox";
+import {ContentTypeName} from "../../../../../../../../../common/js/schema/content/ContentTypeName";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {ImageComponentView} from "../../../../../../../../../common/js/liveedit/image/ImageComponentView";
+import {ComponentPropertyChangedEvent} from "../../../../../../../../../common/js/content/page/region/ComponentPropertyChangedEvent";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {SelectedOption} from "../../../../../../../../../common/js/ui/selector/combobox/SelectedOption";
+import {PropertyTree} from "../../../../../../../../../common/js/data/PropertyTree";
+import {SelectedOptionEvent} from "../../../../../../../../../common/js/ui/selector/combobox/SelectedOptionEvent";
+import {FormView} from "../../../../../../../../../common/js/form/FormView";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+
 import {ComponentInspectionPanel, ComponentInspectionPanelConfig} from "./ComponentInspectionPanel";
 import {ImageSelectorForm} from "./ImageSelectorForm";
-
-import ImageComponent = api.content.page.region.ImageComponent;
-import ContentSummary = api.content.ContentSummary;
-import ContentId = api.content.ContentId;
-import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-import GetContentSummaryByIdRequest = api.content.resource.GetContentSummaryByIdRequest;
-import ContentComboBox = api.content.ContentComboBox;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import ImageComponentView = api.liveedit.image.ImageComponentView;
-import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
-import Option = api.ui.selector.Option;
-import SelectedOption = api.ui.selector.combobox.SelectedOption;
-import PropertyTree = api.data.PropertyTree;
-import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
 export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponent> {
 
@@ -23,7 +25,7 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
 
     private imageView: ImageComponentView;
 
-    private formView: api.form.FormView;
+    private formView: FormView;
 
     private imageSelector: ContentComboBox;
 
@@ -37,9 +39,9 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
 
     constructor() {
         super(<ComponentInspectionPanelConfig>{
-            iconClass: api.liveedit.ItemViewIconClassResolver.resolveByType("image", "icon-xlarge")
+            iconClass: ItemViewIconClassResolver.resolveByType("image", "icon-xlarge")
         });
-        this.loader = new api.content.resource.ContentSummaryLoader();
+        this.loader = new ContentSummaryLoader();
         this.loader.setAllowedContentTypeNames([ContentTypeName.IMAGE, ContentTypeName.MEDIA_VECTOR]);
         this.imageSelector = ContentComboBox.create().setMaximumOccurrences(1).setLoader(this.loader).build();
 
@@ -90,7 +92,7 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
                         this.setSelectorValue(null);
                         this.setupComponentForm(this.imageComponent);
                     } else {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }
                 }).done();
             }
@@ -123,11 +125,11 @@ export class ImageInspectionPanel extends ComponentInspectionPanel<ImageComponen
         }
         var configData = imageComponent.getConfig();
         var configForm = imageComponent.getForm();
-        this.formView = new api.form.FormView(this.formContext, configForm, configData.getRoot());
+        this.formView = new FormView(this.formContext, configForm, configData.getRoot());
         this.appendChild(this.formView);
         imageComponent.setDisableEventForwarding(true);
         this.formView.layout().catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).finally(() => {
             imageComponent.setDisableEventForwarding(false);
         }).done();

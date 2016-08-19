@@ -1,23 +1,28 @@
-module api.security {
-    export class AuthConfig implements api.Equitable {
-        private applicationKey: api.application.ApplicationKey;
-        private config: api.data.PropertyTree;
+import {Equitable} from "../Equitable";
+import {ApplicationKey} from "../application/ApplicationKey";
+import {PropertyTree} from "../data/PropertyTree";
+import {ObjectHelper} from "../ObjectHelper";
+import {AuthConfigJson} from "./AuthConfigJson";
+
+export class AuthConfig implements Equitable {
+        private applicationKey: ApplicationKey;
+        private config: PropertyTree;
 
         constructor(builder: AuthConfigBuilder) {
             this.applicationKey = builder.applicationKey;
             this.config = builder.config;
         }
 
-        getApplicationKey(): api.application.ApplicationKey {
+        getApplicationKey(): ApplicationKey {
             return this.applicationKey;
         }
 
-        getConfig(): api.data.PropertyTree {
+        getConfig(): PropertyTree {
             return this.config;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, AuthConfig)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, AuthConfig)) {
                 return false;
             }
 
@@ -52,26 +57,26 @@ module api.security {
     }
 
     export class AuthConfigBuilder {
-        applicationKey: api.application.ApplicationKey;
-        config: api.data.PropertyTree;
+        applicationKey: ApplicationKey;
+        config: PropertyTree;
 
         constructor() {
         }
 
-        setApplicationKey(applicationKey: api.application.ApplicationKey): AuthConfigBuilder {
+        setApplicationKey(applicationKey: ApplicationKey): AuthConfigBuilder {
             this.applicationKey = applicationKey;
             return this;
         }
 
-        setConfig(config: api.data.PropertyTree): AuthConfigBuilder {
+        setConfig(config: PropertyTree): AuthConfigBuilder {
             this.config = config;
             return this;
         }
 
 
-        fromJson(json: api.security.AuthConfigJson): AuthConfigBuilder {
-            this.applicationKey = api.application.ApplicationKey.fromString(json.applicationKey);
-            this.config = json.config != null ? api.data.PropertyTree.fromJson(json.config) : null;
+        fromJson(json: AuthConfigJson): AuthConfigBuilder {
+            this.applicationKey = ApplicationKey.fromString(json.applicationKey);
+            this.config = json.config != null ? PropertyTree.fromJson(json.config) : null;
             return this;
         }
 
@@ -79,4 +84,3 @@ module api.security {
             return new AuthConfig(this);
         }
     }
-}

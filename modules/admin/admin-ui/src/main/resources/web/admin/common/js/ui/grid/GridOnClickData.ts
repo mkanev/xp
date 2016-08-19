@@ -1,6 +1,6 @@
-module api.ui.grid {
 
-    export class GridOnClickDataBuilder {
+
+export class GridOnClickDataBuilder {
 
         row: number;
 
@@ -63,4 +63,3 @@ module api.ui.grid {
             return this.grid;
         }
     }
-}

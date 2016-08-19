@@ -1,14 +1,16 @@
-module api.query.aggregation {
+import {AggregationQueryTypeWrapperJson} from "./AggregationQueryTypeWrapperJson";
+import {ClassHelper} from "../../ClassHelper";
+import {AggregationQueryJson} from "./AggregationQueryJson";
 
-    export class AggregationQuery {
+export class AggregationQuery {
 
         private name: string;
 
-        toJson(): api.query.aggregation.AggregationQueryTypeWrapperJson {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+        toJson(): AggregationQueryTypeWrapperJson {
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
-        toAggregationQueryJson(): api.query.aggregation.AggregationQueryJson {
+        toAggregationQueryJson(): AggregationQueryJson {
 
             return {
                 "name": this.getName()
@@ -24,4 +26,3 @@ module api.query.aggregation {
         }
 
     }
-}

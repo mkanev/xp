@@ -1,22 +1,25 @@
-import "../../api.ts";
+import {TabMenuItemBuilder} from "../../../../../common/js/ui/tab/TabMenuItem";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {SpanEl} from "../../../../../common/js/dom/SpanEl";
+import {ContentUnnamed} from "../../../../../common/js/content/ContentUnnamed";
 
-import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-import ViewItem = api.app.view.ViewItem;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import StringHelper = api.util.StringHelper;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 import {DetailsPanel, SLIDE_FROM} from "./detail/DetailsPanel";
 import {ContentItemPreviewPanel} from "./ContentItemPreviewPanel";
 import {MobileDetailsPanelToggleButton} from "./detail/button/MobileDetailsPanelToggleButton";
 import {MobileContentTreeGridActions} from "../browse/action/MobileContentTreeGridActions";
 import {MobileContentBrowseToolbar} from "../browse/MobileContentBrowseToolbar";
 
-export class MobileContentItemStatisticsPanel extends api.app.view.ItemStatisticsPanel<api.content.ContentSummaryAndCompareStatus> {
+export class MobileContentItemStatisticsPanel extends ItemStatisticsPanel<ContentSummaryAndCompareStatus> {
 
-    private itemHeader: api.dom.DivEl = new api.dom.DivEl("mobile-content-item-statistics-header");
-    private headerLabel: api.dom.SpanEl = new api.dom.SpanEl();
+    private itemHeader: DivEl = new DivEl("mobile-content-item-statistics-header");
+    private headerLabel: SpanEl = new SpanEl();
 
     private previewPanel: ContentItemPreviewPanel;
     private detailsPanel: DetailsPanel = DetailsPanel.create().setUseSplitter(false).setUseViewer(false).setSlideFrom(
@@ -60,7 +63,7 @@ export class MobileContentItemStatisticsPanel extends api.app.view.ItemStatistic
         this.detailsToggleButton = new MobileDetailsPanelToggleButton(this.detailsPanel, () => {
             this.calcAndSetDetailsPanelTopOffset();
         });
-        var backButton = new api.dom.DivEl("back-button");
+        var backButton = new DivEl("back-button");
         backButton.onClicked((event) => {
             this.slideAllOut();
         });
@@ -97,7 +100,7 @@ export class MobileContentItemStatisticsPanel extends api.app.view.ItemStatistic
     private makeDisplayName(item: ViewItem<ContentSummaryAndCompareStatus>): string {
         let localName = item.getModel().getType().getLocalName() || "";
         return StringHelper.isEmpty(item.getDisplayName())
-            ? api.content.ContentUnnamed.prettifyUnnamed(localName)
+            ? ContentUnnamed.prettifyUnnamed(localName)
             : item.getDisplayName();
     }
 

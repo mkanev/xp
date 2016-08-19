@@ -1,14 +1,21 @@
-module api.form {
+import {PropertyPath} from "../data/PropertyPath";
+import {Property} from "../data/Property";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {PropertyTree} from "../data/PropertyTree";
+import {PropertySet} from "../data/PropertySet";
+import {DivEl} from "../dom/DivEl";
+import {ContentSummary} from "../content/ContentSummary";
+import {assertNotNull} from "../util/Assert";
+import {FormContext} from "./FormContext";
+import {FormItem} from "./FormItem";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {Layout} from "./Layout";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
 
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import PropertyTree = api.data.PropertyTree;
-    import PropertySet = api.data.PropertySet;
-
-    export interface FormItemViewConfig {
+export interface FormItemViewConfig {
 
         className: string;
 
@@ -20,7 +27,7 @@ module api.form {
 
     }
 
-    export class FormItemView extends api.dom.DivEl {
+    export class FormItemView extends DivEl {
 
         private context: FormContext;
 
@@ -28,14 +35,14 @@ module api.form {
 
         private parent: FormItemSetOccurrenceView;
 
-        private editContentRequestListeners: {(content: api.content.ContentSummary): void}[] = [];
+        private editContentRequestListeners: {(content: ContentSummary): void}[] = [];
 
         private highlightOnValidityChanged: boolean;
 
         constructor(config: FormItemViewConfig) {
             super(config.className);
-            api.util.assertNotNull(config.context, "context cannot be null");
-            api.util.assertNotNull(config.formItem, "formItem cannot be null");
+            assertNotNull(config.context, "context cannot be null");
+            assertNotNull(config.formItem, "formItem cannot be null");
             this.context = config.context;
             this.formItem = config.formItem;
             this.parent = config.parent;
@@ -92,17 +99,17 @@ module api.form {
             return this.highlightOnValidityChanged;
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(listener: (content: ContentSummary) => void) {
             this.editContentRequestListeners.push(listener);
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(listener: (content: ContentSummary) => void) {
             this.editContentRequestListeners = this.editContentRequestListeners.filter(function (curr) {
                 return curr != listener;
             });
         }
 
-        notifyEditContentRequested(content: api.content.ContentSummary) {
+        notifyEditContentRequested(content: ContentSummary) {
             this.editContentRequestListeners.forEach((listener) => {
                 listener(content);
             })
@@ -116,4 +123,3 @@ module api.form {
             //Should be implemented in child classes
         }
     }
-}

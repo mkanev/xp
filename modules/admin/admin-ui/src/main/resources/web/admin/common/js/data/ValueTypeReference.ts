@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {Reference} from "../util/Reference";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeReference extends ValueType {
+export class ValueTypeReference extends ValueType {
 
         constructor() {
             super("Reference");
@@ -12,14 +16,14 @@ module api.data {
                 return false;
             }
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.Reference)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, Reference)) {
                 return false;
             }
             return true;
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             return true;
@@ -27,7 +31,7 @@ module api.data {
 
         newValue(value: string): Value {
             if (this.isConvertible(value)) {
-                return new Value(new api.util.Reference(value), this);
+                return new Value(new Reference(value), this);
             }
             else {
                 return this.newNullValue();
@@ -47,8 +51,7 @@ module api.data {
             return value.isNull() ? null : value.getReference().toString();
         }
 
-        valueEquals(a: api.util.Reference, b: api.util.Reference): boolean {
-            return api.ObjectHelper.equals(a, b);
+        valueEquals(a: Reference, b: Reference): boolean {
+            return ObjectHelper.equals(a, b);
         }
     }
-}

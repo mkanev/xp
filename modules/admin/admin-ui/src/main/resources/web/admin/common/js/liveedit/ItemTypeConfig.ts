@@ -1,6 +1,6 @@
-module api.liveedit {
 
-    export interface HighlighterStyle {
+
+export interface HighlighterStyle {
         stroke:string;
         strokeDasharray:string;
         fill:string;
@@ -65,6 +65,4 @@ module api.liveedit {
             return this.contextMenuConfig;
         }
     }
-
-}
 

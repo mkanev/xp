@@ -1,6 +1,6 @@
-module api.ui.grid {
+import {Grid} from "./Grid";
 
-    export class DataView<T extends Slick.SlickData> {
+export class DataView<T extends Slick.SlickData> {
 
         private slickDataView:Slick.Data.DataView<T>;
 
@@ -88,4 +88,3 @@ module api.ui.grid {
             this.slickDataView.getItemMetadata = metadataHandler;
         }
     }
-}

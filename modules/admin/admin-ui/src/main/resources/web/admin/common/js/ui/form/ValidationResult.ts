@@ -1,6 +1,6 @@
-module api.ui.form {
+import {FormItem} from "./FormItem";
 
-    export class ValidationResult {
+export class ValidationResult {
 
         private valid: boolean = true;
         private errors: ValidationError[] = [];
@@ -26,15 +26,15 @@ module api.ui.form {
     }
 
     export class ValidationError {
-        private formItem: api.ui.form.FormItem;
+        private formItem: FormItem;
         private message: string;
 
-        constructor(formItem: api.ui.form.FormItem, message?: string) {
+        constructor(formItem: FormItem, message?: string) {
             this.formItem = formItem;
             this.message = message;
         }
 
-        getFormItem(): api.ui.form.FormItem {
+        getFormItem(): FormItem {
             return this.formItem;
         }
 
@@ -43,4 +43,3 @@ module api.ui.form {
         }
     }
 
-}

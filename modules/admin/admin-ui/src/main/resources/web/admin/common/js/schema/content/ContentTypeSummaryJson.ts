@@ -1,6 +1,6 @@
-module api.schema.content {
+import {SchemaJson} from "../SchemaJson";
 
-    export interface ContentTypeSummaryJson extends api.schema.SchemaJson {
+export interface ContentTypeSummaryJson extends SchemaJson {
 
         abstract:boolean;
 
@@ -18,4 +18,3 @@ module api.schema.content {
 
         metadata:string[];
     }
-}

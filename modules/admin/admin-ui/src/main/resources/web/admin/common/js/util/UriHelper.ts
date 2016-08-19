@@ -1,6 +1,6 @@
-module api.util {
+import {StringHelper} from "./StringHelper";
 
-    export class UriHelper {
+export class UriHelper {
 
         private static DEFAULT_URI = '/';
         private static DEFAULT_ADMIN_URI = '/admin';
@@ -147,4 +147,3 @@ module api.util {
             return urlArray.join("&");
         }
     }
-}

@@ -1,6 +1,7 @@
-module api.form {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class InputTypeName implements api.Equitable {
+export class InputTypeName implements Equitable {
 
         private static CUSTOM_PREFIX: string = "custom:";
 
@@ -48,23 +49,22 @@ module api.form {
             return this.toString()
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, InputTypeName)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, InputTypeName)) {
                 return false;
             }
 
             var other = <InputTypeName>o;
 
-            if (!api.ObjectHelper.booleanEquals(this.custom, other.custom)) {
+            if (!ObjectHelper.booleanEquals(this.custom, other.custom)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
             return true;
         }
     }
-}

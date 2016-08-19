@@ -1,20 +1,21 @@
-import "../../../../../../api.ts";
+import {PropertyChangedEvent} from "../../../../../../../../../common/js/PropertyChangedEvent";
+import {PropertyTree} from "../../../../../../../../../common/js/data/PropertyTree";
+import {FormContextBuilder} from "../../../../../../../../../common/js/form/FormContext";
+import {FormView} from "../../../../../../../../../common/js/form/FormView";
+import {FormContext} from "../../../../../../../../../common/js/form/FormContext";
+import {Content} from "../../../../../../../../../common/js/content/Content";
+import {Page} from "../../../../../../../../../common/js/content/page/Page";
+import {SetTemplate} from "../../../../../../../../../common/js/content/page/PageModel";
+import {PageModel} from "../../../../../../../../../common/js/content/page/PageModel";
+import {PageMode} from "../../../../../../../../../common/js/content/page/PageMode";
+import {SiteModel} from "../../../../../../../../../common/js/content/site/SiteModel";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {PageTemplate} from "../../../../../../../../../common/js/content/page/PageTemplate";
+import {PageDescriptor} from "../../../../../../../../../common/js/content/page/PageDescriptor";
+import {GetPageDescriptorByKeyRequest} from "../../../../../../../../../common/js/content/page/GetPageDescriptorByKeyRequest";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+import {Form} from "../../../../../../../../../common/js/ui/form/Form";
 
-import PropertyChangedEvent = api.PropertyChangedEvent;
-import PropertyTree = api.data.PropertyTree;
-import FormContextBuilder = api.form.FormContextBuilder;
-import FormView = api.form.FormView;
-import FormContext = api.form.FormContext;
-import Content = api.content.Content;
-import Page = api.content.page.Page;
-import SetTemplate = api.content.page.SetTemplate;
-import PageModel = api.content.page.PageModel;
-import PageMode = api.content.page.PageMode;
-import SiteModel = api.content.site.SiteModel;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import PageTemplate = api.content.page.PageTemplate;
-import PageDescriptor = api.content.page.PageDescriptor;
-import GetPageDescriptorByKeyRequest = api.content.page.GetPageDescriptorByKeyRequest;
 import {PageTemplateSelector} from "./PageTemplateSelector";
 import {BaseInspectionPanel} from "../BaseInspectionPanel";
 import {PageTemplateForm} from "./PageTemplateForm";
@@ -96,7 +97,7 @@ export class PageInspectionPanel extends BaseInspectionPanel {
                         var setTemplate = new SetTemplate(this).setTemplate(pageTemplate, pageDescriptor);
                         this.pageModel.setTemplate(setTemplate, true);
                     }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }).done();
                 }
                 else if (this.pageModel.hasDefaultPageTemplate()) {
@@ -150,7 +151,7 @@ class BaseInspectionHandler {
 
     pageTemplateForm: PageTemplateForm;
 
-    private pageDescriptorForm: api.ui.form.Form;
+    private pageDescriptorForm: Form;
 
     private propertyChangedListener: (event: PropertyChangedEvent) => void;
 
@@ -237,7 +238,7 @@ class BaseInspectionHandler {
         this.pageInspectionPanel.appendChild(this.configForm);
         this.pageModel.setIgnorePropertyChanges(true);
         this.configForm.layout().catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).finally(() => {
             this.pageModel.setIgnorePropertyChanges(false);
         }).done();

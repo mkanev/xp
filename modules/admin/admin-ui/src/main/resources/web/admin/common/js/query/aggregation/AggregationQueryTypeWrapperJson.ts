@@ -1,10 +1,12 @@
-module api.query.aggregation {
+import {TermsAggregationQueryJson} from "./TermsAggregationQueryJson";
+import {DateRangeAggregationQueryJson} from "./DateRangeAggregationQueryJson";
+import {DateRangeAggregationQuery} from "./DateRangeAggregationQuery";
+import {TermsAggregationQuery} from "./TermsAggregationQuery";
 
-    export interface AggregationQueryTypeWrapperJson {
+export interface AggregationQueryTypeWrapperJson {
 
-        TermsAggregationQuery?:api.query.aggregation.TermsAggregationQueryJson;
-        DateRangeAggregationQuery?:api.query.aggregation.DateRangeAggregationQueryJson;
+        TermsAggregationQuery?:TermsAggregationQueryJson;
+        DateRangeAggregationQuery?:DateRangeAggregationQueryJson;
 
     }
 
-}

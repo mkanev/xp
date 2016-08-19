@@ -1,6 +1,7 @@
-module api.ui {
+import {KeyBinding} from "./KeyBinding";
+import {KeyBindingAction} from "./KeyBinding";
 
-    export class KeyBindings {
+export class KeyBindings {
 
         private static instanceCount: number = 0;
 
@@ -141,11 +142,11 @@ module api.ui {
         }
 
         private initializeHelpKey() {
-            this.bindKey(new api.ui.KeyBinding("f2", (e: ExtendedKeyboardEvent) => {
+            this.bindKey(new KeyBinding("f2", (e: ExtendedKeyboardEvent) => {
                 this.notifyHelpKeyPressed(e);
             }).setGlobal(false).setAction(KeyBindingAction.KEYDOWN));
 
-            this.bindKey(new api.ui.KeyBinding("f2", (e: ExtendedKeyboardEvent) => {
+            this.bindKey(new KeyBinding("f2", (e: ExtendedKeyboardEvent) => {
                 this.notifyHelpKeyPressed(e);
             }).setGlobal(false).setAction(KeyBindingAction.KEYUP));
         }
@@ -167,4 +168,3 @@ module api.ui {
             });
         }
     }
-}

@@ -1,6 +1,7 @@
-module api.ui.time {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class MonthOfYear implements api.Equitable {
+export class MonthOfYear implements Equitable {
 
         private numberCode: number;
 
@@ -47,19 +48,18 @@ module api.ui.time {
             return this.next;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MonthOfYear)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MonthOfYear)) {
                 return false;
             }
 
             var other = <MonthOfYear>o;
 
-            if (!api.ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
+            if (!ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
                 return false;
             }
 
             return true;
         }
     }
-}

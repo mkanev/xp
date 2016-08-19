@@ -1,6 +1,7 @@
-module api.content.json {
+import {ActiveContentVersionJson} from "./ActiveContentVersionJson";
+import {ContentVersionViewJson} from "./ContentVersionViewJson";
 
-    export interface GetContentVersionsForViewResultsJson {
+export interface GetContentVersionsForViewResultsJson {
 
         from: number;
 
@@ -14,5 +15,3 @@ module api.content.json {
 
         contentVersions: ContentVersionViewJson[];
     }
-}
-

@@ -1,14 +1,15 @@
-import "../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {UnpublishContentRequest} from "../../../../../common/js/content/resource/UnpublishContentRequest";
+import {ResolvePublishDependenciesResult} from "../../../../../common/js/content/resource/result/ResolvePublishDependenciesResult";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {ListBox} from "../../../../../common/js/ui/selector/list/ListBox";
+import {JsonResponse} from "../../../../../common/js/rest/JsonResponse";
+import {UnpublishContentJson} from "../../../../../common/js/content/json/UnpublishContentJson";
+import {Action} from "../../../../../common/js/ui/Action";
+
 import {DependantItemsDialog} from "../dialog/DependantItemsDialog";
-
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import DialogButton = api.ui.dialog.DialogButton;
-import UnpublishContentRequest = api.content.resource.UnpublishContentRequest;
-import ResolvePublishDependenciesResult = api.content.resource.result.ResolvePublishDependenciesResult;
-import CompareStatus = api.content.CompareStatus;
-import ContentId = api.content.ContentId;
-import ListBox = api.ui.selector.list.ListBox;
-
 
 export class ContentUnpublishDialog extends DependantItemsDialog {
 
@@ -103,7 +104,7 @@ export class ContentUnpublishDialog extends DependantItemsDialog {
         var selectedIds = this.getContentToUnpublishIds();
 
         new UnpublishContentRequest().setIds(selectedIds).setIncludeChildren(true).send().then(
-            (jsonResponse: api.rest.JsonResponse<api.content.json.UnpublishContentJson>) => {
+            (jsonResponse: JsonResponse<UnpublishContentJson>) => {
                 this.close();
                 UnpublishContentRequest.feedback(jsonResponse);
             }).finally(() => {
@@ -113,7 +114,7 @@ export class ContentUnpublishDialog extends DependantItemsDialog {
     }
 }
 
-export class ContentUnpublishDialogAction extends api.ui.Action {
+export class ContentUnpublishDialogAction extends Action {
     constructor() {
         super("Unpublish");
         this.setIconClass("unpublish-action");

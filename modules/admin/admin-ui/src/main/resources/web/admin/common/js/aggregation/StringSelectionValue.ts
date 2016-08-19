@@ -1,8 +1,7 @@
-module api.aggregation {
 
-    export class StringSelectionValue {
+
+export class StringSelectionValue {
 
 
     }
 
-}

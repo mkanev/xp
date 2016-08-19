@@ -1,6 +1,5 @@
-import "../../../../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../../../../common/js/content/ContentSummaryAndCompareStatus";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import {WidgetItemView} from "../../WidgetItemView";
 import {VersionsView} from "./VersionsView";
 

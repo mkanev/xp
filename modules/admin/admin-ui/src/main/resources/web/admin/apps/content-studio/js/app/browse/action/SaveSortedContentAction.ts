@@ -1,8 +1,9 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+
 import {SortContentDialog} from "../SortContentDialog";
 import {SaveSortedContentEvent} from "../SaveSortedContentEvent";
 
-export class SaveSortedContentAction extends api.ui.Action {
+export class SaveSortedContentAction extends Action {
 
     constructor(dialog: SortContentDialog) {
         super("Save");

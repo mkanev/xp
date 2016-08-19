@@ -1,8 +1,9 @@
-module api.util {
+import {StringHelper} from "./StringHelper";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {DateHelper} from "./DateHelper";
 
-    import StringHelper = api.util.StringHelper;
-
-    export class LocalDate implements api.Equitable {
+export class LocalDate implements Equitable {
 
         public static DATE_SEPARATOR: string = "-";
 
@@ -30,12 +31,12 @@ module api.util {
             return this.day;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, LocalDate)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, LocalDate)) {
                 return false;
             }
             var other = <LocalDate>o;
-            if (!api.ObjectHelper.stringEquals(this.toString(), other.toString())) {
+            if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
                 return false;
             }
             return true;
@@ -141,4 +142,3 @@ module api.util {
 
     }
 
-}

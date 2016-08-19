@@ -1,8 +1,8 @@
-module api.content {
+import {ApplicationKey} from "../application/ApplicationKey";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class Widget {
+export class Widget {
 
         private url: string;
         private displayName: string;
@@ -34,12 +34,12 @@ module api.content {
             return this.interfaces;
         }
 
-        public getWidgetDescriptorKey(): api.content.WidgetDescriptorKey {
+        public getWidgetDescriptorKey(): WidgetDescriptorKey {
             return this.widgetDescriptorKey;
         }
     }
 
-    export class WidgetDescriptorKey implements api.Equitable {
+    export class WidgetDescriptorKey implements Equitable {
 
         private static SEPARATOR = ":";
 
@@ -79,19 +79,18 @@ module api.content {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, WidgetDescriptorKey)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, WidgetDescriptorKey)) {
                 return false;
             }
 
             var other = <WidgetDescriptorKey>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
             return true;
         }
     }
-}

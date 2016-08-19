@@ -1,6 +1,13 @@
-module api.security {
+import {Equitable} from "../Equitable";
+import {User} from "./User";
+import {Group} from "./Group";
+import {Role} from "./Role";
+import {ObjectHelper} from "../ObjectHelper";
+import {PrincipalJson} from "./PrincipalJson";
+import {PrincipalKey} from "./PrincipalKey";
+import {PrincipalType} from "./PrincipalType";
 
-    export class Principal implements api.Equitable {
+export class Principal implements Equitable {
 
         private key: PrincipalKey;
 
@@ -73,41 +80,41 @@ module api.security {
         }
 
         asUser(): User {
-            return (this instanceof api.security.User) ? <api.security.User> this : null;
+            return (this instanceof User) ? <User> this : null;
         }
 
         asGroup(): Group {
-            return (this instanceof api.security.Group) ? <api.security.Group> this : null;
+            return (this instanceof Group) ? <Group> this : null;
         }
 
         asRole(): Role {
-            return (this instanceof api.security.Role) ? <api.security.Role> this : null;
+            return (this instanceof Role) ? <Role> this : null;
         }
 
         getModifiedTime(): Date {
             return this.modifiedTime;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Principal)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Principal)) {
                 return false;
             }
 
             var other = <Principal> o;
 
-            if (!api.ObjectHelper.equals(this.key, other.key)) {
+            if (!ObjectHelper.equals(this.key, other.key)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.displayName, other.displayName)) {
+            if (!ObjectHelper.stringEquals(this.displayName, other.displayName)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
+            if (!ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.description, other.description)) {
+            if (!ObjectHelper.stringEquals(this.description, other.description)) {
                 return false;
             }
 
@@ -126,7 +133,7 @@ module api.security {
             return new PrincipalBuilder();
         }
 
-        static fromJson(json: api.security.PrincipalJson): Principal {
+        static fromJson(json: PrincipalJson): Principal {
             return new PrincipalBuilder().fromJson(json).build();
         }
     }
@@ -149,7 +156,7 @@ module api.security {
             }
         }
 
-        fromJson(json: api.security.PrincipalJson): PrincipalBuilder {
+        fromJson(json: PrincipalJson): PrincipalBuilder {
             this.key = PrincipalKey.fromString(json.key);
             this.displayName = json.displayName;
             this.modifiedTime = json.modifiedTime ? new Date(Date.parse(json.modifiedTime)) : null;
@@ -181,4 +188,3 @@ module api.security {
             return new Principal(this);
         }
     }
-}

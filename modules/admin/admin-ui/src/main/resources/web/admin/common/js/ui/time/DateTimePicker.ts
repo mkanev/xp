@@ -1,8 +1,24 @@
-module api.ui.time {
+import {Timezone} from "../../util/Timezone";
+import {ElementRemovedEvent} from "../../dom/ElementRemovedEvent";
+import {TextInput} from "../text/TextInput";
+import {Button} from "../button/Button";
+import {DivEl} from "../../dom/DivEl";
+import {Element} from "../../dom/Element";
+import {AppHelper} from "../../util/AppHelper";
+import {KeyHelper} from "../KeyHelper";
+import {StringHelper} from "../../util/StringHelper";
+import {DateHelper} from "../../util/DateHelper";
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
+import {CalendarBuilder} from "./Calendar";
+import {DateTimePickerPopupBuilder} from "./DateTimePickerPopup";
+import {DateTimePickerPopup} from "./DateTimePickerPopup";
+import {DayOfWeek} from "./DayOfWeek";
+import {DaysOfWeek} from "./DaysOfWeek";
+import {Picker} from "./Picker";
+import {SelectedDateChangedEvent} from "./SelectedDateChangedEvent";
 
-    import Timezone = api.util.Timezone;
-
-    export class DateTimePickerBuilder {
+export class DateTimePickerBuilder {
 
         year: number;
 
@@ -103,13 +119,13 @@ module api.ui.time {
         protected handleShownEvent() {
             var onDatePickerShown = this.onDateTimePickerShown.bind(this);
             DateTimePickerShownEvent.on(onDatePickerShown);
-            this.onRemoved((event: api.dom.ElementRemovedEvent) => {
+            this.onRemoved((event: ElementRemovedEvent) => {
                 DateTimePickerShownEvent.un(onDatePickerShown);
             });
         }
 
         protected initInput() {
-            this.input = api.ui.text.TextInput.middle(undefined, this.formatDateTime(this.selectedDate));
+            this.input = TextInput.middle(undefined, this.formatDateTime(this.selectedDate));
             this.input.onClicked((e: MouseEvent) => {
                 e.preventDefault();
                 this.togglePopupVisibility();
@@ -137,13 +153,13 @@ module api.ui.time {
         }
 
         protected initPopupTrigger() {
-            this.popupTrigger = new api.ui.button.Button();
+            this.popupTrigger = new Button();
             this.popupTrigger.addClass('icon-calendar');
         }
 
         protected wrapChildrenAndAppend() {
-            var wrapper = new api.dom.DivEl('wrapper');
-            wrapper.appendChildren<api.dom.Element>(this.input, this.popup, this.popupTrigger);
+            var wrapper = new DivEl('wrapper');
+            wrapper.appendChildren<Element>(this.input, this.popup, this.popupTrigger);
 
             this.appendChild(wrapper);
         }
@@ -151,7 +167,7 @@ module api.ui.time {
         protected setupListeners(builder: DateTimePickerBuilder) {
 
             if (builder.closeOnOutsideClick) {
-                api.util.AppHelper.focusInOut(this, () => {
+                AppHelper.focusInOut(this, () => {
                     this.popup.hide();
                 }, 50, false);
 
@@ -180,17 +196,17 @@ module api.ui.time {
             });
 
             this.input.onKeyUp((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isArrowKey(event) || api.ui.KeyHelper.isModifierKey(event)) {
+                if (KeyHelper.isArrowKey(event) || KeyHelper.isModifierKey(event)) {
                     return;
                 }
                 var typedDateTime = this.input.getValue();
                 var date: Date = null;
-                if (api.util.StringHelper.isEmpty(typedDateTime)) {
+                if (StringHelper.isEmpty(typedDateTime)) {
                     this.validUserInput = true;
                     this.setDateTime(null);
                     this.popup.hide();
                 } else {
-                    date = api.util.DateHelper.parseDateTime(typedDateTime);
+                    date = DateHelper.parseDateTime(typedDateTime);
                     var dateLength = date && date.getFullYear().toString().length + 12;
                     if (date && date.toString() != "Invalid Date" && typedDateTime.length == dateLength) {
                         this.validUserInput = true;
@@ -208,7 +224,7 @@ module api.ui.time {
             });
 
             this.popup.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) {
+                if (KeyHelper.isTabKey(event)) {
                     if (!(document.activeElement == this.input.getEl().getHTMLElement())) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -219,7 +235,7 @@ module api.ui.time {
             });
 
             this.input.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) { // handles tab navigation events on date input
+                if (KeyHelper.isTabKey(event)) { // handles tab navigation events on date input
                     if (!event.shiftKey) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -231,7 +247,7 @@ module api.ui.time {
             });
 
             this.popupTrigger.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) {
+                if (KeyHelper.isTabKey(event)) {
                     this.popup.hide();
                 }
             });
@@ -307,11 +323,11 @@ module api.ui.time {
             if (!date) {
                 return "";
             }
-            return api.util.DateHelper.formatDate(date) + ' ' + api.util.DateHelper.formatTime(date, false);
+            return DateHelper.formatDate(date) + ' ' + DateHelper.formatTime(date, false);
         }
     }
 
-    export class DateTimePickerShownEvent extends api.event.Event {
+    export class DateTimePickerShownEvent extends Event {
 
         private dateTimePicker: DateTimePicker;
 
@@ -325,12 +341,11 @@ module api.ui.time {
         }
 
         static on(handler: (event: DateTimePickerShownEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: DateTimePickerShownEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
     }
-}

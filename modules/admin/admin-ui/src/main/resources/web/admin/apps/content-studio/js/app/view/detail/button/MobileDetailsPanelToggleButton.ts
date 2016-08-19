@@ -1,8 +1,8 @@
-import "../../../../api.ts";
+import {DivEl} from "../../../../../../../common/js/dom/DivEl";
 
 import {DetailsPanel} from "../DetailsPanel";
 
-export class MobileDetailsPanelToggleButton extends api.dom.DivEl {
+export class MobileDetailsPanelToggleButton extends DivEl {
 
     private detailsPanel: DetailsPanel;
 

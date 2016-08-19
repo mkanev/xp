@@ -1,10 +1,9 @@
-module api.content.util {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ContentTypeSummary} from "../../schema/content/ContentTypeSummary";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ContentSummary} from "../ContentSummary";
 
-    import ApplicationKey = api.application.ApplicationKey;
-    import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-    import ContentTypeName = api.schema.content.ContentTypeName;
-
-    var TYPES_ALLOWED_EVERYWHERE: {[key:string]: ContentTypeName} = {};
+var TYPES_ALLOWED_EVERYWHERE: {[key:string]: ContentTypeName} = {};
     [ContentTypeName.UNSTRUCTURED, ContentTypeName.FOLDER, ContentTypeName.SITE,
         ContentTypeName.SHORTCUT, ContentTypeName.FRAGMENT].forEach((contentTypeName: ContentTypeName) => {
         TYPES_ALLOWED_EVERYWHERE[contentTypeName.toString()] = contentTypeName;
@@ -62,4 +61,3 @@ module api.content.util {
         }
 
     }
-}

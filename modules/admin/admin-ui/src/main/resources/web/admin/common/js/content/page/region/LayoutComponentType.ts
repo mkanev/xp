@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentType} from "./ComponentType";
+import {LayoutComponentBuilder} from "./LayoutComponent";
 
-    export class LayoutComponentType extends ComponentType {
+export class LayoutComponentType extends ComponentType {
 
         private static INSTANCE = new LayoutComponentType();
 
@@ -17,4 +18,3 @@ module api.content.page.region {
         }
     }
 
-}

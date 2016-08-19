@@ -1,19 +1,26 @@
-module api.content.resource {
+import {ListContentResult} from "./result/ListContentResult";
+import {ContentResponse} from "./result/ContentResponse";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {Expand} from "../../rest/Expand";
+import {ChildOrder} from "../order/ChildOrder";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentMetadata} from "../ContentMetadata";
+import {ContentSummary} from "../ContentSummary";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ListContentResult = api.content.resource.result.ListContentResult;
-    import ContentResponse = api.content.resource.result.ContentResponse;
-    
-    export class ListContentByIdRequest extends ContentResourceRequest<ListContentResult<api.content.json.ContentSummaryJson>, ContentResponse<ContentSummary>> {
+export class ListContentByIdRequest extends ContentResourceRequest<ListContentResult<ContentSummaryJson>, ContentResponse<ContentSummary>> {
 
         private parentId: ContentId;
 
-        private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
+        private expand: Expand = Expand.SUMMARY;
 
         private from: number;
 
         private size: number;
 
-        private order: api.content.order.ChildOrder;
+        private order: ChildOrder;
 
         constructor(parentId: ContentId) {
             super();
@@ -21,7 +28,7 @@ module api.content.resource {
             this.parentId = parentId;
         }
 
-        setExpand(value: api.rest.Expand): ListContentByIdRequest {
+        setExpand(value: Expand): ListContentByIdRequest {
             this.expand = value;
             return this;
         }
@@ -36,7 +43,7 @@ module api.content.resource {
             return this;
         }
 
-        setOrder(value: api.content.order.ChildOrder): ListContentByIdRequest {
+        setOrder(value: ChildOrder): ListContentByIdRequest {
             this.order = value;
             return this;
         }
@@ -51,13 +58,13 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "list");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "list");
         }
 
         sendAndParse(): wemQ.Promise<ContentResponse<ContentSummary>> {
 
-            return this.send().then((response: api.rest.JsonResponse<ListContentResult<api.content.json.ContentSummaryJson>>) => {
+            return this.send().then((response: JsonResponse<ListContentResult<ContentSummaryJson>>) => {
                 return new ContentResponse(
                     ContentSummary.fromJsonArray(response.getResult().contents),
                     new ContentMetadata(response.getResult().metadata["hits"], response.getResult().metadata["totalHits"])
@@ -65,4 +72,3 @@ module api.content.resource {
             });
         }
     }
-}

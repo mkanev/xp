@@ -1,8 +1,7 @@
-module api {
+import {StringHelper} from "./util/StringHelper";
+import {BrowserHelper} from "./BrowserHelper";
 
-    import StringHelper = api.util.StringHelper;
-
-    export class NamePrettyfier {
+export class NamePrettyfier {
 
         private static STRIP_BEGINNING_PATTERN = /^([\.|\-|_]+)(.*)$/g;
 
@@ -34,7 +33,7 @@ module api {
             prettifiedPathName = this.ensureNiceBeginningAndEnding(prettifiedPathName);
 
             // String.prototype.normalize is not supported on Windows 8.1, thus no sense calling transcribe (error will be thrown)
-            if (!api.BrowserHelper.isIE()) {
+            if (!BrowserHelper.isIE()) {
                 prettifiedPathName = this.transcribe(prettifiedPathName);
             }
 
@@ -543,4 +542,3 @@ module api {
             return nonDiacriticsObject;
         }
     }
-}

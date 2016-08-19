@@ -1,11 +1,14 @@
-module api.content.resource {
+import {ContentQueryResultJson} from "../json/ContentQueryResultJson";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {ContentId} from "../ContentId";
+import {ContentSummary} from "../ContentSummary";
+import {GetContentSummaryByIds} from "./GetContentSummaryByIds";
 
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
+export class ContentSummaryPreLoader extends BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary> {
 
-    export class ContentSummaryPreLoader extends api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary> {
-
-        constructor(request: api.rest.ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]>) {
+        constructor(request: ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]>) {
             super(request);
         }
 
@@ -13,7 +16,7 @@ module api.content.resource {
             this.notifyLoadingData(false);
 
             let contentIds = ids.split(";").map((id) => {
-                return new api.content.ContentId(id);
+                return new ContentId(id);
             });
             return new GetContentSummaryByIds(contentIds).sendAndParse().then((results: ContentSummary[]) => {
                 if (this.getComparator()) {
@@ -28,4 +31,3 @@ module api.content.resource {
     }
 
 
-}

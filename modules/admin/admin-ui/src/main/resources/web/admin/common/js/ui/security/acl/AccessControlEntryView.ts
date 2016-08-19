@@ -1,19 +1,23 @@
-module api.ui.security.acl {
+import {Principal} from "../../../security/Principal";
+import {PrincipalType} from "../../../security/PrincipalType";
+import {PrincipalKey} from "../../../security/PrincipalKey";
+import {Permission} from "../../../security/acl/Permission";
+import {AccessControlEntry} from "../../../security/acl/AccessControlEntry";
+import {PrincipalViewer} from "../PrincipalViewer";
+import {AEl} from "../../../dom/AEl";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {Access} from "./Access";
+import {AccessSelector} from "./AccessSelector";
+import {PermissionSelector} from "./PermissionSelector";
 
-    import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import PrincipalKey = api.security.PrincipalKey;
-    import Permission = api.security.acl.Permission;
-    import AccessControlEntry = api.security.acl.AccessControlEntry;
-
-    export class AccessControlEntryView extends api.ui.security.PrincipalViewer {
+export class AccessControlEntryView extends PrincipalViewer {
 
         private ace: AccessControlEntry;
 
         private accessSelector: AccessSelector;
         private permissionSelector: PermissionSelector;
 
-        private removeButton: api.dom.AEl;
+        private removeButton: AEl;
 
         private valueChangedListeners: {(item: AccessControlEntry): void}[] = [];
         private editable: boolean = true;
@@ -46,7 +50,7 @@ module api.ui.security.acl {
             this.accessSelector.setValue(AccessControlEntryView.getAccessValueFromEntry(this.ace), true);
 
             if (!this.removeButton) {
-                this.removeButton = new api.dom.AEl("icon-close");
+                this.removeButton = new AEl("icon-close");
                 this.removeButton.onClicked((event: MouseEvent) => {
                     this.notifyRemoveClicked(event);
                     event.stopPropagation();
@@ -58,7 +62,7 @@ module api.ui.security.acl {
 
             if (!this.permissionSelector) {
                 this.permissionSelector = new PermissionSelector();
-                this.permissionSelector.onValueChanged((event: api.ValueChangedEvent) => {
+                this.permissionSelector.onValueChanged((event: ValueChangedEvent) => {
                     this.toggleClass("dirty", event.getNewValue() != JSON.stringify({
                             allow: this.ace.getAllowedPermissions().sort(),
                             deny: this.ace.getDeniedPermissions().sort()
@@ -69,7 +73,7 @@ module api.ui.security.acl {
 
                 // this.toggleClass("dirty", !ace.isInherited());
 
-                this.accessSelector.onValueChanged((event: api.ValueChangedEvent) => {
+                this.accessSelector.onValueChanged((event: ValueChangedEvent) => {
                     if (Access[event.getNewValue()] == Access.CUSTOM) {
                         this.permissionSelector.show();
                     } else {
@@ -223,4 +227,3 @@ module api.ui.security.acl {
         }
     }
 
-}

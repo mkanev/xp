@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {LocalTime} from "../util/LocalTime";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeLocalTime extends ValueType {
+export class ValueTypeLocalTime extends ValueType {
 
         constructor() {
             super("LocalTime");
@@ -11,7 +15,7 @@ module api.data {
             if (!(typeof value === 'object')) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.LocalTime)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, LocalTime)) {
                 return false;
             }
             return true;
@@ -20,10 +24,10 @@ module api.data {
         isConvertible(value: string): boolean {
 
             var asString = <string>value;
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
-            return api.util.LocalTime.isValidString(value);
+            return LocalTime.isValidString(value);
         }
 
 
@@ -35,7 +39,7 @@ module api.data {
             if (!this.isConvertible(value)) {
                 return this.newNullValue();
             }
-            return new Value(api.util.LocalTime.fromString(value), this);
+            return new Value(LocalTime.fromString(value), this);
         }
 
         valueToString(value: Value): string {
@@ -47,8 +51,8 @@ module api.data {
             }
         }
 
-        valueEquals(a: api.util.LocalTime, b: api.util.LocalTime): boolean {
-            return api.ObjectHelper.equals(a, b);
+        valueEquals(a: LocalTime, b: LocalTime): boolean {
+            return ObjectHelper.equals(a, b);
         }
 
 
@@ -56,4 +60,3 @@ module api.data {
             return value.isNull() ? null : value.getLocalTime().toString();
         }
     }
-}

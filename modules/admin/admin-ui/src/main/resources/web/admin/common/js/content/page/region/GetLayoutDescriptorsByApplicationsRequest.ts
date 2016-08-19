@@ -1,17 +1,19 @@
-module api.content.page.region {
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {Path} from "../../../rest/Path";
+import {GetLayoutDescriptorsByApplicationRequest} from "./GetLayoutDescriptorsByApplicationRequest";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorsResourceRequest} from "./LayoutDescriptorsResourceRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
+export class GetLayoutDescriptorsByApplicationsRequest extends LayoutDescriptorsResourceRequest {
 
-    export class GetLayoutDescriptorsByApplicationsRequest extends LayoutDescriptorsResourceRequest {
+        private applicationKeys: ApplicationKey[];
 
-        private applicationKeys: api.application.ApplicationKey[];
-
-        constructor(applicationKey: api.application.ApplicationKey[]) {
+        constructor(applicationKey: ApplicationKey[]) {
             super();
             this.applicationKeys = applicationKey;
         }
 
-        setApplicationKeys(applicationKeys: api.application.ApplicationKey[]) {
+        setApplicationKeys(applicationKeys: ApplicationKey[]) {
             this.applicationKeys = applicationKeys;
         }
 
@@ -19,7 +21,7 @@ module api.content.page.region {
             throw new Error("Unexpected call");
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             throw new Error("Unexpected call");
         }
 
@@ -38,4 +40,3 @@ module api.content.page.region {
                 });
         }
     }
-}

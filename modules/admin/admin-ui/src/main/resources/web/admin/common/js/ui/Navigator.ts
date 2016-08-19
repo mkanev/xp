@@ -1,6 +1,7 @@
-module api.ui {
+import {NavigationItem} from "./NavigationItem";
+import {NavigatorEvent} from "./NavigatorEvent";
 
-    export interface Navigator {
+export interface Navigator {
 
         insertNavigationItem(item: NavigationItem, index: number);
 
@@ -34,4 +35,3 @@ module api.ui {
 
         unNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
     }
-}

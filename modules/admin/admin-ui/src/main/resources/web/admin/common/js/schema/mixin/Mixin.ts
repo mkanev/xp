@@ -1,10 +1,20 @@
-module api.schema.mixin {
+import {Schema} from "../Schema";
+import {Equitable} from "../../Equitable";
+import {FormItem} from "../../form/FormItem";
+import {ObjectHelper} from "../../ObjectHelper";
+import {Form} from "../../form/Form";
+import {FormBuilder} from "../../form/Form";
+import {MixinJson} from "./MixinJson";
+import {SchemaBuilder} from "../Schema";
+import {FormItemJson} from "../../form/json/FormItemJson";
+import {FormItemFactory} from "../../form/FormItemFactory";
+import {MixinName} from "./MixinName";
 
-    export class Mixin extends api.schema.Schema implements api.Equitable {
+export class Mixin extends Schema implements Equitable {
 
         private schemaKey: string;
 
-        private formItems: api.form.FormItem[];
+        private formItems: FormItem[];
 
         constructor(builder: MixinBuilder) {
             super(builder);
@@ -16,7 +26,7 @@ module api.schema.mixin {
             return new MixinName(this.getName());
         }
 
-        getFormItems(): api.form.FormItem[] {
+        getFormItems(): FormItem[] {
             return this.formItems;
         }
 
@@ -24,9 +34,9 @@ module api.schema.mixin {
             return this.schemaKey;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Mixin)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Mixin)) {
                 return false;
             }
 
@@ -37,32 +47,32 @@ module api.schema.mixin {
             var other = <Mixin>o;
 
 
-            if (!api.ObjectHelper.stringEquals(this.schemaKey, other.schemaKey)) {
+            if (!ObjectHelper.stringEquals(this.schemaKey, other.schemaKey)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
+            if (!ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
                 return false;
             }
 
             return true;
         }
 
-        toForm(): api.form.Form {
-            return new api.form.FormBuilder().addFormItems(this.formItems).build();
+        toForm(): Form {
+            return new FormBuilder().addFormItems(this.formItems).build();
         }
 
-        static fromJson(json: api.schema.mixin.MixinJson): Mixin {
+        static fromJson(json: MixinJson): Mixin {
             return new MixinBuilder().fromMixinJson(json).build();
         }
 
     }
 
-    export class MixinBuilder extends api.schema.SchemaBuilder {
+    export class MixinBuilder extends SchemaBuilder {
 
         schemaKey: string;
 
-        formItems: api.form.FormItem[];
+        formItems: FormItem[];
 
         constructor(source?: Mixin) {
             super(source);
@@ -72,13 +82,13 @@ module api.schema.mixin {
             }
         }
 
-        fromMixinJson(mixinJson: api.schema.mixin.MixinJson): MixinBuilder {
+        fromMixinJson(mixinJson: MixinJson): MixinBuilder {
 
             super.fromSchemaJson(mixinJson);
 
             this.formItems = [];
-            mixinJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
-                var formItem = api.form.FormItemFactory.createFormItem(formItemJson);
+            mixinJson.items.forEach((formItemJson: FormItemJson) => {
+                var formItem = FormItemFactory.createFormItem(formItemJson);
                 if (formItem) {
                     this.formItems.push(formItem);
                 }
@@ -92,4 +102,3 @@ module api.schema.mixin {
         }
 
     }
-}

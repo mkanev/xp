@@ -1,12 +1,13 @@
-module api.query {
+import {AggregationSelection} from "../aggregation/AggregationSelection";
+import {Bucket} from "../aggregation/Bucket";
 
-    export class SearchInputValues {
+export class SearchInputValues {
 
         textSearchFieldValue: string;
 
-        aggregationSelections: api.aggregation.AggregationSelection[];
+        aggregationSelections: AggregationSelection[];
 
-        public setAggregationSelections(aggregationSelections: api.aggregation.AggregationSelection[]): void {
+        public setAggregationSelections(aggregationSelections: AggregationSelection[]): void {
             this.aggregationSelections = aggregationSelections;
         }
 
@@ -19,7 +20,7 @@ module api.query {
             return this.textSearchFieldValue;
         }
 
-        public getSelectedValuesForAggregationName(name: string): api.aggregation.Bucket[] {
+        public getSelectedValuesForAggregationName(name: string): Bucket[] {
 
             for (var i = 0; i < this.aggregationSelections.length; i++) {
 
@@ -34,4 +35,3 @@ module api.query {
         }
     }
 
-}

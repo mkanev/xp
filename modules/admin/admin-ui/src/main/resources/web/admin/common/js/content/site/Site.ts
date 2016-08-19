@@ -1,10 +1,15 @@
-module api.content.site {
+import {Property} from "../../data/Property";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ValueTypes} from "../../data/ValueTypes";
+import {Content} from "../Content";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ContentBuilder} from "../Content";
+import {ContentJson} from "../json/ContentJson";
+import {SiteConfig} from "./SiteConfig";
 
-    import Property = api.data.Property;
-    import ApplicationKey = api.application.ApplicationKey;
-    import ValueTypes = api.data.ValueTypes;
-
-    export class Site extends api.content.Content implements api.Equitable, api.Cloneable {
+export class Site extends Content implements Equitable, Cloneable {
 
         constructor(builder: SiteBuilder) {
             super(builder);
@@ -36,9 +41,9 @@ module api.content.site {
             return this.getSiteConfigs().map((config: SiteConfig) => config.getApplicationKey());
         }
 
-        equals(o: api.Equitable, ignoreEmptyValues: boolean = false): boolean {
+        equals(o: Equitable, ignoreEmptyValues: boolean = false): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Site)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Site)) {
                 return false;
             }
 
@@ -55,13 +60,13 @@ module api.content.site {
         }
     }
 
-    export class SiteBuilder extends api.content.ContentBuilder {
+    export class SiteBuilder extends ContentBuilder {
 
         constructor(source?: Site) {
             super(source);
         }
 
-        fromContentJson(contentJson: api.content.json.ContentJson): SiteBuilder {
+        fromContentJson(contentJson: ContentJson): SiteBuilder {
             super.fromContentJson(contentJson);
             return this;
         }
@@ -70,4 +75,3 @@ module api.content.site {
             return new Site(this);
         }
     }
-}

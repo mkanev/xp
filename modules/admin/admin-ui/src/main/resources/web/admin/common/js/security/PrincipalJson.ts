@@ -1,6 +1,6 @@
-module api.security {
 
-    export interface PrincipalJson {
+
+export interface PrincipalJson {
 
         key: string;
 
@@ -10,4 +10,3 @@ module api.security {
 
         description?: string;
     }
-}

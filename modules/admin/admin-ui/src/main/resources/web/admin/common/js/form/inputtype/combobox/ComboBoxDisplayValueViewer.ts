@@ -1,6 +1,6 @@
-module api.form.inputtype.combobox {
+import {Viewer} from "../../../ui/Viewer";
 
-    export class ComboBoxDisplayValueViewer extends api.ui.Viewer<string> {
+export class ComboBoxDisplayValueViewer extends Viewer<string> {
 
         constructor() {
             super();
@@ -17,4 +17,3 @@ module api.form.inputtype.combobox {
         }
 
     }
-}

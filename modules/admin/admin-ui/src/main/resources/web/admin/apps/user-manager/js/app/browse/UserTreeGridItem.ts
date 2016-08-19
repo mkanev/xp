@@ -1,7 +1,7 @@
-import "../../api.ts";
-
-import Principal = api.security.Principal;
-import UserStore = api.security.UserStore;
+import {Principal} from "../../../../../common/js/security/Principal";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {Equitable} from "../../../../../common/js/Equitable";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
 
 export enum UserTreeGridItemType {
     USER_STORE,
@@ -11,7 +11,7 @@ export enum UserTreeGridItemType {
     ROLES
 }
 
-export class UserTreeGridItem implements api.Equitable {
+export class UserTreeGridItem implements Equitable {
 
     private userStore: UserStore;
 
@@ -103,8 +103,8 @@ export class UserTreeGridItem implements api.Equitable {
                 this.type === UserTreeGridItemType.ROLES || this.type === UserTreeGridItemType.USERS);
     }
 
-    equals(o: api.Equitable): boolean {
-        if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserTreeGridItem)) {
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, UserTreeGridItem)) {
             return false;
         }
 

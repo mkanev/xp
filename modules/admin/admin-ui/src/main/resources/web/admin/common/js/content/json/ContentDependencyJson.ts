@@ -1,7 +1,6 @@
-module api.content.json {
+import {ContentDependencyGroupJson} from "./ContentDependencyGroupJson";
 
-    export interface ContentDependencyJson {
+export interface ContentDependencyJson {
         inbound: ContentDependencyGroupJson[];
         outbound: ContentDependencyGroupJson[];
     }
-}

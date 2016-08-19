@@ -1,6 +1,8 @@
-module api.ui.text {
+import {CompositeFormInputEl} from "../../dom/CompositeFormInputEl";
+import {TextAreaInput} from "./TextAreaInput";
+import {UriHelper} from "../../util/UriHelper";
 
-    export class CodeAreaBuilder {
+export class CodeAreaBuilder {
 
         name: string;
 
@@ -35,9 +37,9 @@ module api.ui.text {
         }
     }
 
-    export class CodeArea extends api.dom.CompositeFormInputEl {
+    export class CodeArea extends CompositeFormInputEl {
 
-        private textArea: api.ui.text.TextAreaInput;
+        private textArea: TextAreaInput;
 
         private options: CodeMirrorOptions;
 
@@ -54,7 +56,7 @@ module api.ui.text {
             this.options = {
                 lineNumbers: builder.lineNumbers
             };
-            CodeMirror.modeURL = api.util.UriHelper.getAdminUri('common/lib/codemirror/mode/%N.js');
+            CodeMirror.modeURL = UriHelper.getAdminUri('common/lib/codemirror/mode/%N.js');
 
             this.onAdded((event) => {
                 this.codeMirror = CodeMirror.fromTextArea(<HTMLTextAreaElement>this.textArea.getHTMLElement(), this.options);
@@ -69,4 +71,3 @@ module api.ui.text {
             });
         }
     }
-}

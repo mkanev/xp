@@ -1,9 +1,8 @@
-module api.rest {
 
-    export enum Expand {
+
+export enum Expand {
 
         NONE,
         SUMMARY,
         FULL
     }
-}

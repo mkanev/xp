@@ -1,6 +1,6 @@
-module api.application.json {
 
-    export interface MarketApplicationJson {
+
+export interface MarketApplicationJson {
 
         displayName: string,
         name: string,
@@ -10,4 +10,3 @@ module api.application.json {
         latestVersion: string,
         versions: Object
     }
-}

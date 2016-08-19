@@ -1,16 +1,16 @@
-import "../../api.ts";
+import {UserStoreAccessControlList} from "../../../../../common/js/security/acl/UserStoreAccessControlList";
+import {UserStoreAccessControlComboBox} from "../../../../../common/js/ui/security/acl/UserStoreAccessControlComboBox";
+import {Content} from "../../../../../common/js/content/Content";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {Validators} from "../../../../../common/js/ui/form/Validators";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Form} from "../../../../../common/js/ui/form/Form";
 
-import UserStoreAccessControlList = api.security.acl.UserStoreAccessControlList;
-import UserStoreAccessControlComboBox = api.ui.security.acl.UserStoreAccessControlComboBox;
-import Content = api.content.Content;
-import UserStore = api.security.UserStore;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-import Validators = api.ui.form.Validators;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-
-export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
+export class SecurityWizardStepForm extends WizardStepForm {
 
     private inheritance: DivEl;
     private comboBox: UserStoreAccessControlComboBox;
@@ -28,10 +28,10 @@ export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
 
         var accessComboBoxFormItem = new FormItemBuilder(this.comboBox).setValidator(Validators.required).setLabel("Permissions").build();
 
-        var fieldSet = new api.ui.form.Fieldset();
+        var fieldSet = new Fieldset();
         fieldSet.add(accessComboBoxFormItem);
 
-        var form = new api.ui.form.Form().add(fieldSet);
+        var form = new Form().add(fieldSet);
 
         form.onFocus((event) => {
             this.notifyFocused(event);
@@ -81,7 +81,7 @@ export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
     }
 
     getPermissions(): UserStoreAccessControlList {
-        return new api.security.acl.UserStoreAccessControlList(this.comboBox.getSelectedDisplayValues());
+        return new UserStoreAccessControlList(this.comboBox.getSelectedDisplayValues());
     }
 
 }

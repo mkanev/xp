@@ -1,14 +1,15 @@
-import "../../../api.ts";
+import {DropdownInput} from "../../../../../../common/js/ui/selector/dropdown/DropdownInput";
+import {DropdownConfig} from "../../../../../../common/js/ui/selector/dropdown/DropdownInput";
+import {Option} from "../../../../../../common/js/ui/selector/Option";
+import {OptionSelectedEvent} from "../../../../../../common/js/ui/selector/OptionSelectedEvent";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+import {AppHelper} from "../../../../../../common/js/util/AppHelper";
+
 import {WidgetView} from "./WidgetView";
 import {DetailsPanel} from "./DetailsPanel";
 import {InfoWidgetToggleButton} from "./button/InfoWidgetToggleButton";
 
-import DropdownInput = api.ui.selector.dropdown.DropdownInput;
-import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-import Option = api.ui.selector.Option;
-import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-
-export class WidgetsSelectionRow extends api.dom.DivEl {
+export class WidgetsSelectionRow extends DivEl {
 
     private detailsPanel: DetailsPanel;
 
@@ -105,7 +106,7 @@ export class WidgetSelectorDropdown extends DropdownInput<WidgetViewOption> {
             }
         });
 
-        api.util.AppHelper.focusInOut(this, () => {
+        AppHelper.focusInOut(this, () => {
             this.hideDropdown();
         });
     }

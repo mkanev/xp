@@ -1,23 +1,24 @@
-import "../../api.ts";
+import {CycleButton} from "../../../../../common/js/ui/button/CycleButton";
+import {TogglerButton} from "../../../../../common/js/ui/button/TogglerButton";
+import {Action} from "../../../../../common/js/ui/Action";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
+
 import {ContentWizardToolbarPublishControls} from "./ContentWizardToolbarPublishControls";
 
-import CycleButton = api.ui.button.CycleButton;
-import TogglerButton = api.ui.button.TogglerButton;
-
 export interface ContentWizardToolbarParams {
-    saveAction:api.ui.Action;
-    duplicateAction:api.ui.Action;
-    deleteAction:api.ui.Action;
-    publishAction:api.ui.Action;
-    publishTreeAction:api.ui.Action;
-    unpublishAction:api.ui.Action;
-    previewAction:api.ui.Action;
-    showLiveEditAction:api.ui.Action;
-    showFormAction:api.ui.Action;
-    showSplitEditAction:api.ui.Action;
+    saveAction:Action;
+    duplicateAction:Action;
+    deleteAction:Action;
+    publishAction:Action;
+    publishTreeAction:Action;
+    unpublishAction:Action;
+    previewAction:Action;
+    showLiveEditAction:Action;
+    showFormAction:Action;
+    showSplitEditAction:Action;
 }
 
-export class ContentWizardToolbar extends api.ui.toolbar.Toolbar {
+export class ContentWizardToolbar extends Toolbar {
 
     private contextWindowToggler: TogglerButton;
     private componentsViewToggler: TogglerButton;

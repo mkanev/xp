@@ -1,11 +1,12 @@
-module api.ui {
-    export enum IconSize {
+import {IEl} from "../dom/IEl";
+
+export enum IconSize {
         SMALL,
         MEDIUM,
         LARGE
     }
 
-    export class Icon extends api.dom.IEl {
+    export class Icon extends IEl {
         constructor(iconClass:string, size?:IconSize) {
             super(iconClass);
             this.addClass("wem-icon");
@@ -19,4 +20,3 @@ module api.ui {
             }
         }
     }
-}

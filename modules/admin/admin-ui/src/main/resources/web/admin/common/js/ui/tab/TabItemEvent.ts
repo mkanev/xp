@@ -1,6 +1,6 @@
-module api.ui.tab {
+import {TabItem} from "./TabItem";
 
-    export class TabItemEvent {
+export class TabItemEvent {
 
         private tab: TabItem;
 
@@ -12,4 +12,3 @@ module api.ui.tab {
             return this.tab;
         }
     }
-}

@@ -1,9 +1,13 @@
-module api.system {
+import {ResourceRequest} from "../rest/ResourceRequest";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {StatusJson} from "./StatusJson";
+import {StatusResult} from "./StatusResult";
 
-    export class StatusRequest extends api.rest.ResourceRequest<StatusJson, StatusResult> {
+export class StatusRequest extends ResourceRequest<StatusJson, StatusResult> {
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getRestPath(), "status");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getRestPath(), "status");
         }
 
         getParams(): Object {
@@ -12,9 +16,8 @@ module api.system {
 
         sendAndParse(): wemQ.Promise<StatusResult> {
 
-            return this.send().then((response: api.rest.JsonResponse<StatusJson>) => {
+            return this.send().then((response: JsonResponse<StatusJson>) => {
                 return new StatusResult(response.getResult());
             });
         }
     }
-}

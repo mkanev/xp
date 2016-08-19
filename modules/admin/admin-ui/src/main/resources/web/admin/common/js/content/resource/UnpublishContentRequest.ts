@@ -1,6 +1,11 @@
-module api.content.resource {
+import {UnpublishContentJson} from "../json/UnpublishContentJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {showFeedback} from "../../notify/MessageBus";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class UnpublishContentRequest extends ContentResourceRequest<api.content.json.UnpublishContentJson, any> {
+export class UnpublishContentRequest extends ContentResourceRequest<UnpublishContentJson, any> {
 
         private ids: ContentId[] = [];
 
@@ -39,29 +44,28 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "unpublish");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "unpublish");
         }
 
-        static feedback(jsonResponse: api.rest.JsonResponse<api.content.json.UnpublishContentJson>) {
+        static feedback(jsonResponse: JsonResponse<UnpublishContentJson>) {
 
             var result = jsonResponse.getResult(),
                 total = result.successes;
 
             switch (total) {
             case 0:
-                api.notify.showFeedback('Nothing to unpublish.');
+                showFeedback('Nothing to unpublish.');
                 break;
             case 1:
                 if (total === 1) {
-                    api.notify.showFeedback(`"${result.contentName}" was unpublished`);
+                    showFeedback(`"${result.contentName}" was unpublished`);
                 }
                 break;
             default: // > 1
                 if (total > 0) {
-                    api.notify.showFeedback(`${total} items were unpublished`);
+                    showFeedback(`${total} items were unpublished`);
                 }
             }
         }
     }
-}

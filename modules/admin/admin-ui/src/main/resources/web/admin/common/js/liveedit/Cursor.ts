@@ -1,8 +1,7 @@
-module api.liveedit {
+import {Body} from "../dom/Body";
+import {ItemView} from "./ItemView";
 
-    import Body = api.dom.Body;
-
-    export class Cursor {
+export class Cursor {
 
         defaultBodyCursor: string;
 
@@ -38,4 +37,3 @@ module api.liveedit {
         }
 
     }
-}

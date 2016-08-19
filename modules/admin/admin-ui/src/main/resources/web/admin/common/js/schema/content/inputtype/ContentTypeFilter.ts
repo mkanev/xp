@@ -1,23 +1,27 @@
-module api.schema.content.inputtype {
+import {ContentInputTypeViewContext} from "../../../content/form/inputtype/ContentInputTypeViewContext";
+import {InputValidationRecording} from "../../../form/inputtype/InputValidationRecording";
+import {InputValidityChangedEvent} from "../../../form/inputtype/InputValidityChangedEvent";
+import {InputValueChangedEvent as ValueChangedEvent} from "../../../form/inputtype/InputValueChangedEvent";
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {Input} from "../../../form/Input";
+import {ContentTypeComboBox} from "../ContentTypeComboBox";
+import {ContentTypeSummary} from "../ContentTypeSummary";
+import {SelectedOption} from "../../../ui/selector/combobox/SelectedOption";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {SelectedOptionEvent} from "../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../ui/FocusSwitchEvent";
+import {BaseInputTypeManagingAdd} from "../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {PageTemplateContentTypeLoader} from "../PageTemplateContentTypeLoader";
+import {ContentTypeSummaryByDisplayNameComparator} from "../ContentTypeSummaryByDisplayNameComparator";
+import {InputTypeManager} from "../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../Class";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
 
-    import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
-    import InputValidationRecording = api.form.inputtype.InputValidationRecording;
-    import InputValidityChangedEvent = api.form.inputtype.InputValidityChangedEvent;
-    import ValueChangedEvent = api.form.inputtype.InputValueChangedEvent;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import Input = api.form.Input;
-    import ContentTypeComboBox = api.schema.content.ContentTypeComboBox;
-    import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ApplicationKey = api.application.ApplicationKey;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-
-    export class ContentTypeFilter extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+export class ContentTypeFilter extends BaseInputTypeManagingAdd<string> {
 
         private combobox: ContentTypeComboBox;
 
@@ -41,9 +45,9 @@ module api.schema.content.inputtype {
 
         private createPageTemplateLoader(): PageTemplateContentTypeLoader {
             var contentId = this.context.site.getContentId(),
-                loader = new api.schema.content.PageTemplateContentTypeLoader(contentId);
+                loader = new PageTemplateContentTypeLoader(contentId);
 
-            loader.setComparator(new api.content.ContentTypeSummaryByDisplayNameComparator());
+            loader.setComparator(new ContentTypeSummaryByDisplayNameComparator());
 
             return loader;
         }
@@ -73,7 +77,7 @@ module api.schema.content.inputtype {
             this.combobox.unLoaded(this.onContentTypesLoadedHandler);
         }
 
-        private onContentTypeSelected(selectedOption: api.ui.selector.combobox.SelectedOption<ContentTypeSummary>): void {
+        private onContentTypeSelected(selectedOption: SelectedOption<ContentTypeSummary>): void {
             if (this.isLayoutInProgress()) {
                 return;
             }
@@ -112,7 +116,7 @@ module api.schema.content.inputtype {
         }
 
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
             var superPromise = super.update(propertyArray, unchangedOnly);
 
             if (!unchangedOnly || !this.combobox.isDirty()) {
@@ -156,6 +160,5 @@ module api.schema.content.inputtype {
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("ContentTypeFilter", ContentTypeFilter));
+    InputTypeManager.register(new Class("ContentTypeFilter", ContentTypeFilter));
 
-}

@@ -1,15 +1,14 @@
-module api.app.wizard {
+import {UploadItem} from "../../ui/uploader/UploadItem";
 
-    export class UploadFinishedEvent {
+export class UploadFinishedEvent {
 
-        private uploadItem: api.ui.uploader.UploadItem<any>;
+        private uploadItem: UploadItem<any>;
 
-        constructor(uploadItem: api.ui.uploader.UploadItem<any>) {
+        constructor(uploadItem: UploadItem<any>) {
             this.uploadItem = uploadItem;
         }
 
-        getUploadItem(): api.ui.uploader.UploadItem<any> {
+        getUploadItem(): UploadItem<any> {
             return this.uploadItem;
         }
     }
-}

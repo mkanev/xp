@@ -1,6 +1,6 @@
-module api.ui.selector {
+import {Option} from "./Option";
 
-    export class OptionSelectedEvent<OPTION_DISPLAY_VALUE> {
+export class OptionSelectedEvent<OPTION_DISPLAY_VALUE> {
 
         private option: Option<OPTION_DISPLAY_VALUE>;
 
@@ -26,4 +26,3 @@ module api.ui.selector {
             return this.keyCode;
         }
     }
-}

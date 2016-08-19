@@ -1,6 +1,5 @@
-module api.security.auth {
 
-    export interface LogoutResultJson {
+
+export interface LogoutResultJson {
 
     }
-}

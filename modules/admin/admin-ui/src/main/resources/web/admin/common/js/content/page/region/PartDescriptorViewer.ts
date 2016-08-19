@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {NamesAndIconViewer} from "../../../ui/NamesAndIconViewer";
+import {PartDescriptor} from "./PartDescriptor";
 
-    export class PartDescriptorViewer extends api.ui.NamesAndIconViewer<PartDescriptor> {
+export class PartDescriptorViewer extends NamesAndIconViewer<PartDescriptor> {
 
         constructor() {
             super();
@@ -18,4 +19,3 @@ module api.content.page.region {
             return "icon-puzzle icon-large";
         }
     }
-}

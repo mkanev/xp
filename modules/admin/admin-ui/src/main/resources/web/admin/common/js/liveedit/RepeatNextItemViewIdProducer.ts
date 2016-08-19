@@ -1,6 +1,7 @@
-module api.liveedit {
+import {ItemViewId} from "./ItemViewId";
+import {ItemViewIdProducer} from "./ItemViewIdProducer";
 
-    export class RepeatNextItemViewIdProducer extends ItemViewIdProducer {
+export class RepeatNextItemViewIdProducer extends ItemViewIdProducer {
 
         private idToRepeatNext: ItemViewId;
 
@@ -25,4 +26,3 @@ module api.liveedit {
             }
         }
     }
-}

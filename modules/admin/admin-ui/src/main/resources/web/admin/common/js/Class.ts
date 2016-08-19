@@ -1,6 +1,6 @@
-module api {
 
-    export class Class {
+
+export class Class {
 
         private name: string;
 
@@ -22,4 +22,3 @@ module api {
             return newInstance;
         }
     }
-}

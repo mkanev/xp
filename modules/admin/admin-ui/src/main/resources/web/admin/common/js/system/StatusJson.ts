@@ -1,6 +1,6 @@
-module api.system {
 
-    export interface StatusJson {
+
+export interface StatusJson {
         installation:string;
         version:string;
         context?: {
@@ -9,4 +9,3 @@ module api.system {
         }
     }
 
-}

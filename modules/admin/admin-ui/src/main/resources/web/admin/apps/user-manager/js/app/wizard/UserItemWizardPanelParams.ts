@@ -1,11 +1,13 @@
-import "../../api.ts";
-import Principal = api.security.Principal;
+import {Principal} from "../../../../../common/js/security/Principal";
+import {Equitable} from "../../../../../common/js/Equitable";
+import {AppBarTabId} from "../../../../../common/js/app/bar/AppBarTabId";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
 
-export class UserItemWizardPanelParams<USER_ITEM_TYPE extends api.Equitable> {
+export class UserItemWizardPanelParams<USER_ITEM_TYPE extends Equitable> {
 
-    tabId: api.app.bar.AppBarTabId;
+    tabId: AppBarTabId;
 
-    userStoreKey: api.security.UserStoreKey;
+    userStoreKey: UserStoreKey;
 
     persistedPath: string;
 
@@ -21,12 +23,12 @@ export class UserItemWizardPanelParams<USER_ITEM_TYPE extends api.Equitable> {
         return this;
     }
 
-    setUserStoreKey(value: api.security.UserStoreKey): UserItemWizardPanelParams<USER_ITEM_TYPE> {
+    setUserStoreKey(value: UserStoreKey): UserItemWizardPanelParams<USER_ITEM_TYPE> {
         this.userStoreKey = value;
         return this;
     }
 
-    setTabId(value: api.app.bar.AppBarTabId): UserItemWizardPanelParams<USER_ITEM_TYPE> {
+    setTabId(value: AppBarTabId): UserItemWizardPanelParams<USER_ITEM_TYPE> {
         this.tabId = value;
         return this;
     }

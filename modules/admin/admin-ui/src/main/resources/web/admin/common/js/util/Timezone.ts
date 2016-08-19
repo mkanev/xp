@@ -1,6 +1,9 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {DateHelper} from "./DateHelper";
+import {StringHelper} from "./StringHelper";
 
-    export class Timezone implements api.Equitable {
+export class Timezone implements Equitable {
 
         private offset: number;
 
@@ -30,14 +33,14 @@ module api.util {
             return this.offsetToString();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Timezone)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Timezone)) {
                 return false;
             }
 
             var other = <Timezone>o;
 
-            if (!api.ObjectHelper.stringEquals(this.toString(), other.toString())) {
+            if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
                 return false;
             }
 
@@ -119,4 +122,3 @@ module api.util {
             return new Timezone(this);
         }
     }
-}

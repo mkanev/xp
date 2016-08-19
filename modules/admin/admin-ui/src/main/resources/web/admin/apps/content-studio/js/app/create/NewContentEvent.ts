@@ -1,9 +1,9 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {Content} from "../../../../../common/js/content/Content";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-import Content = api.content.Content;
-
-export class NewContentEvent extends api.event.Event {
+export class NewContentEvent extends Event {
 
     private contentType: ContentTypeSummary;
 
@@ -24,10 +24,10 @@ export class NewContentEvent extends api.event.Event {
     }
 
     static on(handler: (event: NewContentEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: NewContentEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

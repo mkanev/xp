@@ -1,12 +1,14 @@
-module api.ui.treegrid {
+import {TreeGridActions} from "./actions/TreeGridActions";
+import {TreeGridToolbarActions} from "./actions/TreeGridToolbarActions";
+import {Toolbar} from "../toolbar/Toolbar";
+import {Element} from "../../dom/Element";
+import {Button} from "../button/Button";
+import {TreeGrid} from "./TreeGrid";
 
-    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-    import TreeGridToolbarActions = api.ui.treegrid.actions.TreeGridToolbarActions;
-
-    export class TreeGridToolbar extends api.ui.toolbar.Toolbar {
+export class TreeGridToolbar extends Toolbar {
 
         private treeGrid: TreeGrid<any>;
-        private refreshButton: api.dom.Element;
+        private refreshButton: Element;
 
         constructor(actions: TreeGridToolbarActions<any>, treeGrid: TreeGrid<any>) {
             super("tree-grid-toolbar");
@@ -14,11 +16,10 @@ module api.ui.treegrid {
             this.addActions(actions.getAllActions());
 
             this.addGreedySpacer();
-            this.refreshButton = new api.ui.button.Button().addClass('icon-loop2');
+            this.refreshButton = new Button().addClass('icon-loop2');
             this.refreshButton.onClicked((event: MouseEvent) => treeGrid.reload());
             this.addElement(this.refreshButton);
 
             this.treeGrid = treeGrid;
         }
     }
-}

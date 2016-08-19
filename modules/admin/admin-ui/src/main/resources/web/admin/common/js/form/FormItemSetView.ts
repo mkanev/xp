@@ -1,13 +1,32 @@
-module api.form {
+import {PropertySet} from "../data/PropertySet";
+import {Property} from "../data/Property";
+import {PropertyArray} from "../data/PropertyArray";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {DivEl} from "../dom/DivEl";
+import {Button} from "../ui/button/Button";
+import {AEl} from "../dom/AEl";
+import {DragHelper} from "../ui/DragHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentSummary} from "../content/ContentSummary";
+import {Element} from "../dom/Element";
+import {assert} from "../util/Assert";
+import {FormContext} from "./FormContext";
+import {FormItemOccurrenceView} from "./FormItemOccurrenceView";
+import {FormItemSet} from "./FormItemSet";
+import {FormItemSetOccurrencesConfig} from "./FormItemSetOccurrences";
+import {FormItemSetOccurrences} from "./FormItemSetOccurrences";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {FormItemViewConfig} from "./FormItemView";
+import {FormItemView} from "./FormItemView";
+import {OccurrenceAddedEvent} from "./OccurrenceAddedEvent";
+import {OccurrenceRemovedEvent} from "./OccurrenceRemovedEvent";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
+import {ValidationRecordingPath} from "./ValidationRecordingPath";
 
-    import PropertySet = api.data.PropertySet;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-
-    export interface FormItemSetViewConfig {
+export interface FormItemSetViewConfig {
 
         context: FormContext;
 
@@ -24,15 +43,15 @@ module api.form {
 
         private parentDataSet: PropertySet;
 
-        private occurrenceViewsContainer: api.dom.DivEl;
+        private occurrenceViewsContainer: DivEl;
 
         private formItemSetOccurrences: FormItemSetOccurrences;
 
-        private bottomButtonRow: api.dom.DivEl;
+        private bottomButtonRow: DivEl;
 
-        private addButton: api.ui.button.Button;
+        private addButton: Button;
 
-        private collapseButton: api.dom.AEl;
+        private collapseButton: AEl;
 
         private validityChangedListeners: {(event: RecordingValidityChangedEvent) : void}[] = [];
 
@@ -72,7 +91,7 @@ module api.form {
         public layout(validate: boolean = true): wemQ.Promise<void> {
             var deferred = wemQ.defer<void>();
 
-            this.occurrenceViewsContainer = new api.dom.DivEl("occurrence-views-container");
+            this.occurrenceViewsContainer = new DivEl("occurrence-views-container");
 
             wemjq(this.occurrenceViewsContainer.getHTMLElement()).sortable({
                 revert: false,
@@ -83,7 +102,7 @@ module api.form {
                 tolerance: 'pointer',
                 handle: '.drag-control',
                 placeholder: 'form-item-set-drop-target-placeholder',
-                helper: (event, ui) => api.ui.DragHelper.get().getHTMLElement(),
+                helper: (event, ui) => DragHelper.get().getHTMLElement(),
                 start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
                 update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui)
             });
@@ -110,7 +129,7 @@ module api.form {
                     this.refresh();
                     wemjq(this.occurrenceViewsContainer.getHTMLElement()).sortable("refresh");
 
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormItemSetOccurrenceView)) {
+                    if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormItemSetOccurrenceView)) {
                         var addedFormItemSetOccurrenceView = <FormItemSetOccurrenceView>event.getOccurrenceView();
                         addedFormItemSetOccurrenceView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                             this.handleFormItemSetOccurrenceViewValidityChanged(event);
@@ -121,7 +140,7 @@ module api.form {
 
                     this.refresh();
 
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormItemSetOccurrenceView)) {
+                    if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormItemSetOccurrenceView)) {
                         // force validate, since FormItemSet might have become invalid
                         this.validate(false);
                     }
@@ -131,14 +150,14 @@ module api.form {
                     formItemSetOccurrenceView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                         this.handleFormItemSetOccurrenceViewValidityChanged(event);
                     });
-                    formItemSetOccurrenceView.onEditContentRequest((summary: api.content.ContentSummary) => {
+                    formItemSetOccurrenceView.onEditContentRequest((summary: ContentSummary) => {
                         this.notifyEditContentRequested(summary);
                     })
                 });
-                this.bottomButtonRow = new api.dom.DivEl("bottom-button-row");
+                this.bottomButtonRow = new DivEl("bottom-button-row");
                 this.appendChild(this.bottomButtonRow);
 
-                this.addButton = new api.ui.button.Button("Add " + this.formItemSet.getLabel());
+                this.addButton = new Button("Add " + this.formItemSet.getLabel());
                 this.addButton.addClass("small");
                 this.addButton.onClicked((event: MouseEvent) => {
                     this.formItemSetOccurrences.createAndAddOccurrence(this.formItemSetOccurrences.countOccurrences(),
@@ -150,7 +169,7 @@ module api.form {
                     }
 
                 });
-                this.collapseButton = new api.dom.AEl("collapse-button");
+                this.collapseButton = new AEl("collapse-button");
                 this.collapseButton.setHtml("Collapse");
                 this.collapseButton.onClicked((event: MouseEvent) => {
                     if (this.formItemSetOccurrences.isCollapsed()) {
@@ -181,7 +200,7 @@ module api.form {
         }
 
 
-        update(propertySet: api.data.PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
             this.parentDataSet = propertySet;
             var propertyArray = this.getPropertyArray(propertySet);
             return this.formItemSetOccurrences.update(propertyArray, unchangedOnly);
@@ -366,8 +385,8 @@ module api.form {
 
         private handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
 
-            var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
-            api.util.assert(draggedElement.hasClass("form-item-set-occurrence-view"));
+            var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            assert(draggedElement.hasClass("form-item-set-occurrence-view"));
             this.draggingIndex = draggedElement.getSiblingIndex();
 
             ui.placeholder.html("Drop form item set here");
@@ -376,8 +395,8 @@ module api.form {
         private handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
-                api.util.assert(draggedElement.hasClass("form-item-set-occurrence-view"));
+                var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                assert(draggedElement.hasClass("form-item-set-occurrence-view"));
                 var draggedToIndex = draggedElement.getSiblingIndex();
 
                 this.formItemSetOccurrences.moveOccurrence(this.draggingIndex, draggedToIndex);
@@ -402,4 +421,3 @@ module api.form {
             this.formItemSetOccurrences.unBlur(listener);
         }
     }
-}

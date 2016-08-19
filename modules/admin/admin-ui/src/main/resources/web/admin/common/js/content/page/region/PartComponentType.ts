@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentType} from "./ComponentType";
+import {PartComponentBuilder} from "./PartComponent";
 
-    export class PartComponentType extends ComponentType {
+export class PartComponentType extends ComponentType {
 
         private static INSTANCE = new PartComponentType();
 
@@ -17,4 +18,3 @@ module api.content.page.region {
         }
     }
 
-}

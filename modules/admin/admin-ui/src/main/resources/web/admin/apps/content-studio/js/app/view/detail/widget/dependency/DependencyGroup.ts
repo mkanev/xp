@@ -1,14 +1,14 @@
-import "../../../../../api.ts";
-
-import ContentDependencyGroupJson = api.content.json.ContentDependencyGroupJson;
-import ContentTypeName = api.schema.content.ContentTypeName;
+import {ContentDependencyGroupJson} from "../../../../../../../../common/js/content/json/ContentDependencyGroupJson";
+import {ContentTypeName} from "../../../../../../../../common/js/schema/content/ContentTypeName";
+import {Equitable} from "../../../../../../../../common/js/Equitable";
+import {ObjectHelper} from "../../../../../../../../common/js/ObjectHelper";
 
 export enum DependencyType {
     INBOUND,
     OUTBOUND
 }
 
-export class DependencyGroup implements api.Equitable {
+export class DependencyGroup implements Equitable {
 
     private itemCount: number;
 
@@ -45,21 +45,21 @@ export class DependencyGroup implements api.Equitable {
         return DependencyType[this.type];
     }
 
-    equals(o: api.Equitable): boolean {
+    equals(o: Equitable): boolean {
 
-        if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DependencyGroup)) {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, DependencyGroup)) {
             return false;
         }
 
         var other = <DependencyGroup>o;
 
-        if (!api.ObjectHelper.numberEquals(this.itemCount, other.itemCount)) {
+        if (!ObjectHelper.numberEquals(this.itemCount, other.itemCount)) {
             return false;
         }
-        if (!api.ObjectHelper.equals(this.contentType, other.contentType)) {
+        if (!ObjectHelper.equals(this.contentType, other.contentType)) {
             return false;
         }
-        if (!api.ObjectHelper.stringEquals(DependencyType[this.type], DependencyType[other.type])) {
+        if (!ObjectHelper.stringEquals(DependencyType[this.type], DependencyType[other.type])) {
             return false;
         }
 
@@ -82,7 +82,7 @@ export class DependencyGroupBuilder {
 
     iconUrl: string;
 
-    contentType: api.schema.content.ContentTypeName;
+    contentType: ContentTypeName;
 
     type: DependencyType;
 

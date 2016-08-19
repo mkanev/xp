@@ -1,15 +1,31 @@
-module api.liveedit {
+import {PropertyTree} from "../data/PropertyTree";
+import {Component} from "../content/page/region/Component";
+import {ComponentName} from "../content/page/region/ComponentName";
+import {ComponentType} from "../content/page/region/ComponentType";
+import {DescriptorBasedComponent} from "../content/page/region/DescriptorBasedComponent";
+import {DescriptorBasedComponentBuilder} from "../content/page/region/DescriptorBasedComponent";
+import {DragHelper} from "../ui/DragHelper";
+import {Body} from "../dom/Body";
+import {StyleHelper} from "../StyleHelper";
+import {StringHelper} from "../util/StringHelper";
+import {FragmentItemType} from "./fragment/FragmentItemType";
+import {FragmentComponentView} from "./fragment/FragmentComponentView";
+import {assertState} from "../util/Assert";
+import {ComponentItemType} from "./ComponentItemType";
+import {ComponentView} from "./ComponentView";
+import {ComponentViewDragCanceledEvent} from "./ComponentViewDragCanceledEvent";
+import {ComponentViewDragDroppedEvent} from "./ComponentViewDragDroppedEventEvent";
+import {ComponentViewDragStoppedEvent} from "./ComponentViewDraggingStoppedEvent";
+import {ComponentViewDragStartedEvent} from "./ComponentViewDragStartedEvent";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {DragPlaceholder} from "./DragPlaceholder";
+import {ItemType} from "./ItemType";
+import {ItemView} from "./ItemView";
+import {PageView} from "./PageView";
+import {RegionItemType} from "./RegionItemType";
+import {RegionView} from "./RegionView";
 
-    import PropertyTree = api.data.PropertyTree;
-    import Component = api.content.page.region.Component;
-    import ComponentName = api.content.page.region.ComponentName;
-    import ComponentType = api.content.page.region.ComponentType;
-    import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-    import DescriptorBasedComponentBuilder = api.content.page.region.DescriptorBasedComponentBuilder;
-
-    import DragHelper = api.ui.DragHelper;
-
-    export class DragAndDrop {
+export class DragAndDrop {
 
         public static debug = false;
 
@@ -106,7 +122,7 @@ module api.liveedit {
             wemjq(selector).sortable({
                 // append helper to pageView so it doesn't jump when sortable jumps
                 // because of adding/removing placeholder (appended to sortable by default)
-                // Don't use api.dom.Body.get() because it may return the parent's body if it had been called there earlier
+                // Don't use Body.get() because it may return the parent's body if it had been called there earlier
                 appendTo: document.body,
                 revert: false,
                 cancel: this.ITEM_NOT_DRAGGABLE_SELECTOR,
@@ -272,7 +288,7 @@ module api.liveedit {
 
                 this.cancelDrag(<HTMLElement> event.target);
             } else {
-                var componentIndex = wemjq('>.drag-helper, >.' + api.StyleHelper.getCls("item-view"),
+                var componentIndex = wemjq('>.drag-helper, >.' + StyleHelper.getCls("item-view"),
                     regionView.getHTMLElement()).index(ui.item);
 
                 if (this.isDraggingFromContextWindow()) {
@@ -549,7 +565,7 @@ module api.liveedit {
             var placeholder = DragPlaceholder.get().setRegionView(enter ? regionView : null);
 
             helper.setItemName(this._draggedComponentView ?
-                               this._draggedComponentView.getName() : api.util.StringHelper.capitalize(this.getItemType().getShortName()));
+                               this._draggedComponentView.getName() : StringHelper.capitalize(this.getItemType().getShortName()));
 
             if (!enter) {
                 helper.setDropAllowed(false);
@@ -583,8 +599,8 @@ module api.liveedit {
             var isLayout = regionView.hasParentLayoutComponentView() && draggingItemType.getShortName() == 'layout';
             if (!isLayout) {
                 var itemType = this.getItemType();
-                if (api.liveedit.fragment.FragmentItemType.get().equals(itemType)) {
-                    var fragment = <api.liveedit.fragment.FragmentComponentView> this._draggedComponentView;
+                if (FragmentItemType.get().equals(itemType)) {
+                    var fragment = <FragmentComponentView> this._draggedComponentView;
                     isLayout = fragment && fragment.containsLayout();
                     if (isLayout && DragAndDrop.debug) {
                         console.log('DragAndDrop.isDraggingLayoutOverLayout - Fragment contains layout');
@@ -600,14 +616,14 @@ module api.liveedit {
 
         private getComponentView(jq: JQuery): ComponentView<Component> {
             var comp = this.pageView.getComponentViewByElement(jq.get(0));
-            api.util.assertState(!!comp, "ComponentView is not expected to be null");
+            assertState(!!comp, "ComponentView is not expected to be null");
             return comp;
         }
 
 
         private getRegionView(jq: JQuery): RegionView {
             var region = this.pageView.getRegionViewByElement(jq.get(0));
-            api.util.assertState(!!region, "RegionView is not expected to be null");
+            assertState(!!region, "RegionView is not expected to be null");
             return region;
         }
 
@@ -635,4 +651,3 @@ module api.liveedit {
         }
 
     }
-}

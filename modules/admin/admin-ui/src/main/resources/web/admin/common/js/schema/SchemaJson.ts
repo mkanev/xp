@@ -1,6 +1,6 @@
-module api.schema {
+import {ItemJson} from "../item/ItemJson";
 
-    export interface SchemaJson extends api.item.ItemJson {
+export interface SchemaJson extends ItemJson {
 
         displayName:string;
 
@@ -10,4 +10,3 @@ module api.schema {
 
         iconUrl: string;
     }
-}

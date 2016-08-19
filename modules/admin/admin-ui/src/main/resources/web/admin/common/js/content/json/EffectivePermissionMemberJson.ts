@@ -1,8 +1,7 @@
-module api.content.json {
 
-    export interface EffectivePermissionMemberJson {
+
+export interface EffectivePermissionMemberJson {
 
         key: string;
         displayName: string;
     }
-}

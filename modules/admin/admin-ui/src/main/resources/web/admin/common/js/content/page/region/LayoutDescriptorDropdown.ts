@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {DescriptorBasedDropdown} from "../DescriptorBasedDropdown";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorLoader} from "./LayoutDescriptorLoader";
+import {LayoutDescriptorViewer} from "./LayoutDescriptorViewer";
 
-    export class LayoutDescriptorDropdown extends DescriptorBasedDropdown<LayoutDescriptor> {
+export class LayoutDescriptorDropdown extends DescriptorBasedDropdown<LayoutDescriptor> {
 
         constructor(name: string, loader: LayoutDescriptorLoader) {
 
@@ -11,4 +14,3 @@ module api.content.page.region {
             });
         }
     }
-}

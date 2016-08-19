@@ -1,9 +1,11 @@
-import "../../../api.ts";
+import {Application} from "../../../../../../common/js/application/Application";
+import {Panel} from "../../../../../../common/js/ui/panel/Panel";
+import {ResponsiveManager} from "../../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../../common/js/ui/responsive/ResponsiveItem";
+
 import {MarketAppsTreeGrid} from "./MarketAppsTreeGrid";
 
-import Application = api.application.Application;
-
-export class MarketAppPanel extends api.ui.panel.Panel {
+export class MarketAppPanel extends Panel {
 
     private marketAppsTreeGrid: MarketAppsTreeGrid;
 
@@ -45,12 +47,12 @@ export class MarketAppPanel extends api.ui.panel.Panel {
         this.marketAppsTreeGrid.onLoaded(firstLoadListener);
     }
 
-    public updateInstallApplications(installApplications: api.application.Application[]) {
+    public updateInstallApplications(installApplications: Application[]) {
         this.marketAppsTreeGrid.updateInstallApplications(installApplications);
     }
 
     private initAvailableSizeChangeListener() {
-        api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
             this.marketAppsTreeGrid.getGrid().resizeCanvas();
         });
     }

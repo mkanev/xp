@@ -1,6 +1,6 @@
-module api.util {
 
-    export class DateHelper {
+
+export class DateHelper {
 
         public static isInvalidDate(value: Date): boolean {
             return isNaN(value.getTime());
@@ -245,4 +245,3 @@ module api.util {
         seconds: number;
         fractions: number;
     }
-}

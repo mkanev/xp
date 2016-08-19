@@ -1,6 +1,6 @@
-module api {
 
-    export interface Cloneable {
+
+export interface Cloneable {
 
         /**
          * Returns a new instance of this object and ensures that all member variables that are mutable also are cloned
@@ -8,4 +8,3 @@ module api {
          */
         clone() : any;
     }
-}

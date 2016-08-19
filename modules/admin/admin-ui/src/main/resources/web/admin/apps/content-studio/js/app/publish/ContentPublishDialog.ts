@@ -1,17 +1,25 @@
-import "../../api.ts";
-import {DependantItemsDialog, DialogDependantList} from "../dialog/DependantItemsDialog";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareContentResults} from "../../../../../common/js/content/resource/result/CompareContentResults";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {PublishContentRequest} from "../../../../../common/js/content/resource/PublishContentRequest";
+import {ContentIds} from "../../../../../common/js/content/ContentIds";
+import {ResolvePublishDependenciesResult} from "../../../../../common/js/content/resource/result/ResolvePublishDependenciesResult";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {ListBox} from "../../../../../common/js/ui/selector/list/ListBox";
+import {LoadMask} from "../../../../../common/js/ui/mask/LoadMask";
+import {ResponsiveRanges} from "../../../../../common/js/ui/responsive/ResponsiveRanges";
+import {Checkbox} from "../../../../../common/js/ui/Checkbox";
+import {EditContentEvent} from "../../../../../common/js/content/event/EditContentEvent";
+import {ResolvePublishDependenciesRequest} from "../../../../../common/js/content/resource/ResolvePublishDependenciesRequest";
+import {JsonResponse} from "../../../../../common/js/rest/JsonResponse";
+import {PublishContentJson} from "../../../../../common/js/content/json/PublishContentJson";
+import {Action} from "../../../../../common/js/ui/Action";
+import {Element} from "../../../../../common/js/dom/Element";
+import {ElementHelper} from "../../../../../common/js/dom/ElementHelper";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareContentResults = api.content.resource.result.CompareContentResults;
-import DialogButton = api.ui.dialog.DialogButton;
-import PublishContentRequest = api.content.resource.PublishContentRequest;
-import ContentIds = api.content.ContentIds;
-import ResolvePublishDependenciesResult = api.content.resource.result.ResolvePublishDependenciesResult;
-import CompareStatus = api.content.CompareStatus;
-import ContentId = api.content.ContentId;
-import ListBox = api.ui.selector.list.ListBox;
-import LoadMask = api.ui.mask.LoadMask;
-import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
+import {DependantItemsDialog, DialogDependantList} from "../dialog/DependantItemsDialog";
 
 /**
  * ContentPublishDialog manages list of initially checked (initially requested) items resolved via ResolvePublishDependencies command.
@@ -21,7 +29,7 @@ import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
  */
 export class ContentPublishDialog extends DependantItemsDialog {
 
-    private childrenCheckbox: api.ui.Checkbox;
+    private childrenCheckbox: Checkbox;
 
     private excludedIds: ContentId[] = [];
 
@@ -58,7 +66,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
 
         dependants.onItemClicked((item: ContentSummaryAndCompareStatus) => {
             if (!isContentSummaryValid(item)) {
-                new api.content.event.EditContentEvent([item]).fire();
+                new EditContentEvent([item]).fire();
                 this.close();
             }
         });
@@ -136,7 +144,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
         let ids = this.getContentToPublishIds(),
             loadChildren = this.childrenCheckbox.isChecked();
 
-        let resolveDependenciesRequest = api.content.resource.ResolvePublishDependenciesRequest.
+        let resolveDependenciesRequest = ResolvePublishDependenciesRequest.
             create().
             setIds(ids).
             setExcludedIds(this.excludedIds).
@@ -186,7 +194,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
     }
 
 
-    setDependantItems(items: api.content.ContentSummaryAndCompareStatus[]) {
+    setDependantItems(items: ContentSummaryAndCompareStatus[]) {
         super.setDependantItems(items);
 
         let count = this.countTotal();
@@ -216,7 +224,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
 
         let childrenCheckboxListener = () => this.refreshPublishDependencies().done();
 
-        this.childrenCheckbox = api.ui.Checkbox.create().setLabelText('Include child items').build();
+        this.childrenCheckbox = Checkbox.create().setLabelText('Include child items').build();
         this.childrenCheckbox.addClass('include-child-check');
         this.childrenCheckbox.onValueChanged(childrenCheckboxListener);
 
@@ -256,7 +264,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
         new PublishContentRequest().setIncludeChildren(this.childrenCheckbox.isChecked())
             .setIds(selectedIds).
             setExcludedIds(this.excludedIds).send().then(
-            (jsonResponse: api.rest.JsonResponse<api.content.json.PublishContentJson>) => {
+            (jsonResponse: JsonResponse<PublishContentJson>) => {
                 this.close();
                 PublishContentRequest.feedback(jsonResponse);
             }).finally(() => {
@@ -332,7 +340,7 @@ export class ContentPublishDialog extends DependantItemsDialog {
 
 }
 
-export class ContentPublishDialogAction extends api.ui.Action {
+export class ContentPublishDialogAction extends Action {
     constructor() {
         super("Publish");
         this.setIconClass("publish-action");
@@ -351,7 +359,7 @@ export class PublishDialogDependantList extends DialogDependantList {
         super.clearItems();
     }
 
-    createItemView(item: api.content.ContentSummaryAndCompareStatus, readOnly: boolean): api.dom.Element {
+    createItemView(item: ContentSummaryAndCompareStatus, readOnly: boolean): Element {
         let view = super.createItemView(item, readOnly);
 
         if (CompareStatus.NEWER == item.getCompareStatus()) {
@@ -360,7 +368,7 @@ export class PublishDialogDependantList extends DialogDependantList {
         }
 
         view.onClicked((event) => {
-            if (new api.dom.ElementHelper(<HTMLElement>event.target).hasClass("remove")) {
+            if (new ElementHelper(<HTMLElement>event.target).hasClass("remove")) {
                 this.notifyItemRemoveClicked(item);
             } else {
                 this.notifyItemClicked(item)
@@ -414,5 +422,5 @@ function isContentSummaryValid(item: ContentSummaryAndCompareStatus): boolean {
         summary = item.getContentSummary();
 
     return status == CompareStatus.PENDING_DELETE ||
-           (summary.isValid() && !api.util.StringHelper.isBlank(summary.getDisplayName()) && !summary.getName().isUnnamed());
+           (summary.isValid() && !StringHelper.isBlank(summary.getDisplayName()) && !summary.getName().isUnnamed());
 }

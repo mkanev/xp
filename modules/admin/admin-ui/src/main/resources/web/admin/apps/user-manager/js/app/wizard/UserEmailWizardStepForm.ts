@@ -1,22 +1,24 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {EmailInput} from "../../../../../common/js/ui/text/EmailInput";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {Validators} from "../../../../../common/js/ui/form/Validators";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Form} from "../../../../../common/js/ui/form/Form";
+import {FormView} from "../../../../../common/js/form/FormView";
+import {ValidityChangedEvent} from "../../../../../common/js/ValidityChangedEvent";
+import {WizardStepValidityChangedEvent} from "../../../../../common/js/app/wizard/WizardStepValidityChangedEvent";
 
-import Principal = api.security.Principal;
-
-import EmailInput = api.ui.text.EmailInput;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-import Validators = api.ui.form.Validators;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-
-
-export class UserEmailWizardStepForm extends api.app.wizard.WizardStepForm {
+export class UserEmailWizardStepForm extends WizardStepForm {
 
     private email: EmailInput;
 
-    private userStoreKey: api.security.UserStoreKey;
+    private userStoreKey: UserStoreKey;
 
-    constructor(userStoreKey: api.security.UserStoreKey) {
+    constructor(userStoreKey: UserStoreKey) {
         super();
 
         this.userStoreKey = userStoreKey;
@@ -25,10 +27,10 @@ export class UserEmailWizardStepForm extends api.app.wizard.WizardStepForm {
 
         var emailFormItem = new FormItemBuilder(this.email).setLabel('Email').setValidator(Validators.required).build();
 
-        var fieldSet = new api.ui.form.Fieldset();
+        var fieldSet = new Fieldset();
         fieldSet.add(emailFormItem);
 
-        var form = new api.ui.form.Form(api.form.FormView.VALIDATION_CLASS).add(fieldSet);
+        var form = new Form(FormView.VALIDATION_CLASS).add(fieldSet);
 
         form.onFocus((event) => {
             this.notifyFocused(event);
@@ -37,8 +39,8 @@ export class UserEmailWizardStepForm extends api.app.wizard.WizardStepForm {
             this.notifyBlurred(event);
         });
 
-        form.onValidityChanged((event: api.ValidityChangedEvent) => {
-            this.notifyValidityChanged(new api.app.wizard.WizardStepValidityChangedEvent(event.isValid()));
+        form.onValidityChanged((event: ValidityChangedEvent) => {
+            this.notifyValidityChanged(new WizardStepValidityChangedEvent(event.isValid()));
             emailFormItem.toggleClass("invalid", !event.isValid());
         });
 

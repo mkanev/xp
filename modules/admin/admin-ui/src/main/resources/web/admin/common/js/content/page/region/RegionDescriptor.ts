@@ -1,6 +1,6 @@
-module api.content.page.region {
+import {RegionsDescriptorJson} from "./RegionsDescriptorJson";
 
-    export class RegionDescriptor {
+export class RegionDescriptor {
 
         private name: string;
 
@@ -31,4 +31,3 @@ module api.content.page.region {
             return new RegionDescriptor(this);
         }
     }
-}

@@ -1,6 +1,9 @@
-module api.macro {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {MacroPreviewJson} from "./resource/MacroPreviewJson";
+import {PageContributions} from "./PageContributions";
 
-    export class MacroPreview implements api.Equitable {
+export class MacroPreview implements Equitable {
 
         private html: string;
 
@@ -30,8 +33,8 @@ module api.macro {
             return new MacroPreviewBuilder();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MacroPreview)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MacroPreview)) {
                 return false;
             }
 
@@ -45,7 +48,7 @@ module api.macro {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.pageContributions, other.pageContributions)) {
+            if (!ObjectHelper.equals(this.pageContributions, other.pageContributions)) {
                 return false;
             }
 
@@ -61,7 +64,7 @@ module api.macro {
 
         pageContributions: PageContributions;
 
-        fromJson(json: api.macro.resource.MacroPreviewJson) {
+        fromJson(json: MacroPreviewJson) {
             this.html = json.html;
             this.macroString = json.macro;
             this.pageContributions = PageContributions.create().fromJson(json.pageContributions).build();
@@ -87,4 +90,3 @@ module api.macro {
             return new MacroPreview(this);
         }
     }
-}

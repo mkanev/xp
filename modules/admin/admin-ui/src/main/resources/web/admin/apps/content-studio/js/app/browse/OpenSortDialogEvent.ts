@@ -1,22 +1,24 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-export class OpenSortDialogEvent extends api.event.Event {
-    private content: api.content.ContentSummaryAndCompareStatus;
+export class OpenSortDialogEvent extends Event {
+    private content: ContentSummaryAndCompareStatus;
 
-    constructor(content: api.content.ContentSummaryAndCompareStatus) {
+    constructor(content: ContentSummaryAndCompareStatus) {
         super();
         this.content = content;
     }
 
-    getContent(): api.content.ContentSummaryAndCompareStatus {
+    getContent(): ContentSummaryAndCompareStatus {
         return this.content;
     }
 
     static on(handler: (event: OpenSortDialogEvent) => void, contextWindow: Window = window) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+        Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 
     static un(handler?: (event: OpenSortDialogEvent) => void, contextWindow: Window = window) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+        Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 }

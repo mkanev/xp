@@ -1,6 +1,9 @@
-module api.item {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {Item} from "./Item";
+import {ItemJson} from "./ItemJson";
 
-    export class BaseItem implements Item, api.Equitable {
+export class BaseItem implements Item, Equitable {
 
         private id: string;
 
@@ -40,9 +43,9 @@ module api.item {
             return this.editable;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BaseItem)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, BaseItem)) {
                 return false;
             }
 
@@ -109,4 +112,3 @@ module api.item {
         }
     }
 
-}

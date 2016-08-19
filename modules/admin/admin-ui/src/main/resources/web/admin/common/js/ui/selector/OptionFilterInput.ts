@@ -1,6 +1,6 @@
-module api.ui.selector {
+import {TextInput} from "../text/TextInput";
 
-    export class OptionFilterInput extends api.ui.text.TextInput {
+export class OptionFilterInput extends TextInput {
 
         private placeholderText: string;
 
@@ -22,4 +22,3 @@ module api.ui.selector {
         }
     }
 
-}

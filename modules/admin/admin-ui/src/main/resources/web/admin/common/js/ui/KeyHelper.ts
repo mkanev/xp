@@ -1,6 +1,6 @@
-module api.ui {
 
-    export class KeyHelper {
+
+export class KeyHelper {
 
         static isNumber(event: KeyboardEvent): boolean {
             return event.keyCode >= 48 && event.keyCode <= 57;
@@ -76,4 +76,3 @@ module api.ui {
             return event.keyCode === 13;
         }
     }
-}

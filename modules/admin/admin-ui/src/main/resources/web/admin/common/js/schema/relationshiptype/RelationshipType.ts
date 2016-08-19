@@ -1,6 +1,11 @@
-module api.schema.relationshiptype {
+import {Schema} from "../Schema";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {RelationshipTypeJson} from "./RelationshipTypeJson";
+import {SchemaBuilder} from "../Schema";
+import {RelationshipTypeName} from "./RelationshipTypeName";
 
-    export class RelationshipType extends api.schema.Schema implements api.Equitable {
+export class RelationshipType extends Schema implements Equitable {
 
         private fromSemantic: string;
 
@@ -38,9 +43,9 @@ module api.schema.relationshiptype {
             return this.allowedToTypes;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, RelationshipType)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, RelationshipType)) {
                 return false;
             }
 
@@ -69,12 +74,12 @@ module api.schema.relationshiptype {
             return true;
         }
 
-        static fromJson(json: api.schema.relationshiptype.RelationshipTypeJson): RelationshipType {
+        static fromJson(json: RelationshipTypeJson): RelationshipType {
             return new RelationshipTypeBuilder().fromRelationshipTypeJson(json).build();
         }
     }
 
-    export class RelationshipTypeBuilder extends api.schema.SchemaBuilder {
+    export class RelationshipTypeBuilder extends SchemaBuilder {
 
         fromSemantic: string;
 
@@ -94,7 +99,7 @@ module api.schema.relationshiptype {
             }
         }
 
-        fromRelationshipTypeJson(relationshipTypeJson: api.schema.relationshiptype.RelationshipTypeJson): RelationshipTypeBuilder {
+        fromRelationshipTypeJson(relationshipTypeJson: RelationshipTypeJson): RelationshipTypeBuilder {
 
             super.fromSchemaJson(relationshipTypeJson);
 
@@ -109,4 +114,3 @@ module api.schema.relationshiptype {
             return new RelationshipType(this);
         }
     }
-}

@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {BaseLoader} from "../../../util/loader/BaseLoader";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorsJson} from "./LayoutDescriptorsJson";
+import {LayoutDescriptorsResourceRequest} from "./LayoutDescriptorsResourceRequest";
 
-    export class LayoutDescriptorLoader extends api.util.loader.BaseLoader<LayoutDescriptorsJson, LayoutDescriptor> {
+export class LayoutDescriptorLoader extends BaseLoader<LayoutDescriptorsJson, LayoutDescriptor> {
 
         constructor(request: LayoutDescriptorsResourceRequest) {
             super(request);
@@ -12,4 +15,3 @@ module api.content.page.region {
         }
 
     }
-}

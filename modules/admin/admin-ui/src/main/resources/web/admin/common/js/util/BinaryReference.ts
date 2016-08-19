@@ -1,6 +1,7 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class BinaryReference implements api.Equitable {
+export class BinaryReference implements Equitable {
 
         private value: string;
 
@@ -14,13 +15,13 @@ module api.util {
 
         equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BinaryReference)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, BinaryReference)) {
                 return false;
             }
 
             var other = <BinaryReference>o;
 
-            if (!api.ObjectHelper.stringEquals(this.value, other.value)) {
+            if (!ObjectHelper.stringEquals(this.value, other.value)) {
                 return false;
             }
 
@@ -31,4 +32,3 @@ module api.util {
             return this.value;
         }
     }
-}

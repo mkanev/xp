@@ -1,24 +1,27 @@
-module api.ui.menu {
+import {DlEl} from "../../dom/DlEl";
+import {Action} from "../Action";
+import {Body} from "../../dom/Body";
+import {TreeMenuItem} from "./TreeMenuItem";
 
-    export class TreeContextMenu extends api.dom.DlEl {
+export class TreeContextMenu extends DlEl {
         private itemClickListeners: {(item: TreeMenuItem): void}[] = [];
 
-        private actions: api.ui.Action[] = [];
+        private actions: Action[] = [];
 
-        constructor(actions?: api.ui.Action[], appendToBody = true) {
+        constructor(actions?: Action[], appendToBody = true) {
             super("context-menu");
 
             if (actions) {
-                actions.sort(function (action1: api.ui.Action, action2: api.ui.Action) {
+                actions.sort(function (action1: Action, action2: Action) {
                     return action1.getSortOrder() - action2.getSortOrder();
-                }).forEach((action: api.ui.Action) => {
+                }).forEach((action: Action) => {
                     this.addAction(action);
                 });
             }
 
             if (appendToBody) {
-                api.dom.Body.get().appendChild(this);
-                api.dom.Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
+                Body.get().appendChild(this);
+                Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
             }
 
             this.onClicked((e: MouseEvent) => {
@@ -28,7 +31,7 @@ module api.ui.menu {
             });
         }
 
-        private addAction(action: api.ui.Action): TreeMenuItem {
+        private addAction(action: Action): TreeMenuItem {
             var childActions = action.getChildActions();
             var menuItem = this.createMenuItem(action);
             var subItems = [];
@@ -57,14 +60,14 @@ module api.ui.menu {
             return menuItem;
         }
 
-        addActions(actions: api.ui.Action[]): TreeContextMenu {
+        addActions(actions: Action[]): TreeContextMenu {
             actions.forEach((action) => {
                 this.addAction(action);
             });
             return this;
         }
 
-        setActions(actions: api.ui.Action[]): TreeContextMenu {
+        setActions(actions: Action[]): TreeContextMenu {
             this.removeChildren();
             this.clearActionListeners();
 
@@ -96,14 +99,14 @@ module api.ui.menu {
             });
         }
 
-        onBeforeAction(listener: (action: api.ui.Action) => void) {
-            this.actions.forEach((action: api.ui.Action) => {
+        onBeforeAction(listener: (action: Action) => void) {
+            this.actions.forEach((action: Action) => {
                 action.onBeforeExecute(listener);
             });
         }
 
-        onAfterAction(listener: (action: api.ui.Action) => void) {
-            this.actions.forEach((action: api.ui.Action) => {
+        onAfterAction(listener: (action: Action) => void) {
+            this.actions.forEach((action: Action) => {
                 action.onAfterExecute(listener);
             });
         }
@@ -126,7 +129,7 @@ module api.ui.menu {
             menu.getEl().setLeftPx(x).setTopPx(y);
         }
 
-        private createMenuItem(action: api.ui.Action): TreeMenuItem {
+        private createMenuItem(action: Action): TreeMenuItem {
             return new TreeMenuItem(action, action.getIconClass());
         }
 
@@ -138,4 +141,3 @@ module api.ui.menu {
         }
     }
 
-}

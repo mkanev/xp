@@ -1,6 +1,6 @@
-module api.dom {
+import {FormInputEl} from "./FormInputEl";
 
-    export class InputEl extends FormInputEl {
+export class InputEl extends FormInputEl {
 
         constructor(className?: string, type?: string, prefix?: string, originalValue?: string) {
             super("input", className, prefix, originalValue);
@@ -97,4 +97,3 @@ module api.dom {
             return this.getEl().hasAttribute('readonly');
         }
     }
-}

@@ -1,8 +1,6 @@
-module api.content.resource.result {
-    
-    import DeleteContentResultJson = api.content.json.DeleteContentResultJson;
+import {DeleteContentResultJson} from "../../json/DeleteContentResultJson";
 
-    export class DeleteContentResult {
+export class DeleteContentResult {
 
         private success: number;
         private pending: number;
@@ -89,4 +87,3 @@ module api.content.resource.result {
             return new DeleteContentResult(this);
         }
     }
-}

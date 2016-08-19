@@ -1,9 +1,13 @@
-module api.ui.text {
+import {Element} from "../../dom/Element";
+import {DivEl} from "../../dom/DivEl";
+import {WindowDOM} from "../../dom/WindowDOM";
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {TextInput} from "./TextInput";
 
-    export class AutosizeTextInput extends TextInput {
+export class AutosizeTextInput extends TextInput {
 
-        private attendant: api.dom.Element;
-        private clone: api.dom.Element;
+        private attendant: Element;
+        private clone: Element;
 
         constructor(className?: string, size: string = TextInput.MIDDLE, originalValue?: string) {
             super(className, size, originalValue);
@@ -13,13 +17,13 @@ module api.ui.text {
             // Create <div> element with the same styles as this text input.
             // This clone <div> is displayed as inline element so its width matches to its text length.
             // Then input width will be updated according to text length from the div.
-            this.clone = new api.dom.DivEl().addClass('autosize-clone').addClass(this.getEl().getAttribute('class'));
+            this.clone = new DivEl().addClass('autosize-clone').addClass(this.getEl().getAttribute('class'));
             // In order to have styles of clone div calculated it has to be in DOM.
             // Attendant element wraps the clone and has zero height
             // so it has calculated styles but isn't shown on a page.
             // Much more the attendant is displayed as block element and will be placed after this input.
             // Therefore it will have the maximum possible length.
-            this.attendant = new api.dom.DivEl().addClass('autosize-attendant');
+            this.attendant = new DivEl().addClass('autosize-attendant');
             this.attendant.appendChild(this.clone);
 
             // Update input after input has been shown.
@@ -29,9 +33,9 @@ module api.ui.text {
             this.onValueChanged((event) => this.updateSize());
 
             // Update input width according to current page size.
-            api.dom.WindowDOM.get().onResized((event: UIEvent) => this.updateSize(), this);
+            WindowDOM.get().onResized((event: UIEvent) => this.updateSize(), this);
             // Update input width according to current panel size.
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item) => this.updateSize());
+            ResponsiveManager.onAvailableSizeChanged(this, (item) => this.updateSize());
         }
 
         static large(className?: string, originalValue?: string): AutosizeTextInput {
@@ -69,4 +73,3 @@ module api.ui.text {
         }
 
     }
-}

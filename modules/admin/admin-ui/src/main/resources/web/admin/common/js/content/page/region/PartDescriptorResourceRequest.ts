@@ -1,18 +1,23 @@
-module api.content.page.region {
+import {ResourceRequest} from "../../../rest/ResourceRequest";
+import {Path} from "../../../rest/Path";
+import {PartDescriptor} from "./PartDescriptor";
+import {PartDescriptorBuilder} from "./PartDescriptor";
+import {PartDescriptorCache} from "./PartDescriptorCache";
+import {PartDescriptorJson} from "./PartDescriptorJson";
 
-    export class PartDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class PartDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         cache: PartDescriptorCache;
 
         constructor() {
             super();
             this.cache = PartDescriptorCache.get();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "content", "page", "part", "descriptor");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "content", "page", "part", "descriptor");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
@@ -22,4 +27,3 @@ module api.content.page.region {
             return  partDescriptor;
         }
     }
-}

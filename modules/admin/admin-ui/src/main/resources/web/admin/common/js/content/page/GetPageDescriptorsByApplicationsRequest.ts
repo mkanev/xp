@@ -1,8 +1,11 @@
-module api.content.page {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {GetPageDescriptorsByApplicationRequest} from "./GetPageDescriptorsByApplicationRequest";
+import {PageDescriptor} from "./PageDescriptor";
+import {PageDescriptorResourceRequest} from "./PageDescriptorResourceRequest";
+import {PageDescriptorsJson} from "./PageDescriptorsJson";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetPageDescriptorsByApplicationsRequest extends PageDescriptorResourceRequest<PageDescriptorsJson, PageDescriptor[]> {
+export class GetPageDescriptorsByApplicationsRequest extends PageDescriptorResourceRequest<PageDescriptorsJson, PageDescriptor[]> {
 
         private applicationKeys: ApplicationKey[];
 
@@ -19,7 +22,7 @@ module api.content.page {
             throw new Error("Unexpected call");
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             throw new Error("Unexpected call");
         }
 
@@ -36,4 +39,3 @@ module api.content.page {
             });
         }
     }
-}

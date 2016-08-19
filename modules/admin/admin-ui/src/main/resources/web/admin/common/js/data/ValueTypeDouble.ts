@@ -1,17 +1,21 @@
-module api.data {
+import {NumberHelper} from "../util/NumberHelper";
+import {StringHelper} from "../util/StringHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeDouble extends ValueType {
+export class ValueTypeDouble extends ValueType {
 
         constructor() {
             super("Double");
         }
 
         isValid(value: any): boolean {
-            return api.util.NumberHelper.isNumber(value);
+            return NumberHelper.isNumber(value);
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             var convertedValue = Number(value);
@@ -42,7 +46,6 @@ module api.data {
         }
 
         valueEquals(a: number, b: number): boolean {
-            return api.ObjectHelper.numberEquals(a, b) || (a == null && b == null);
+            return ObjectHelper.numberEquals(a, b) || (a == null && b == null);
         }
     }
-}

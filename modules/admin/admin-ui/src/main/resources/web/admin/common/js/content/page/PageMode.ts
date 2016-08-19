@@ -1,6 +1,7 @@
-module api.content.page {
+import {Content} from "../Content";
+import {PageTemplate} from "./PageTemplate";
 
-    export enum PageMode {
+export enum PageMode {
 
         AUTOMATIC,              // Content: when page.template is null
         FORCED_TEMPLATE,        // Content: when page.template is not null
@@ -13,4 +14,3 @@ module api.content.page {
         Automatic,
         Custom
     }
-}

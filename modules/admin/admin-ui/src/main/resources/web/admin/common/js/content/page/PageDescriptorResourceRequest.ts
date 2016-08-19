@@ -1,24 +1,30 @@
-module api.content.page {
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {PageDescriptorJson} from "./PageDescriptorJson";
+import {PageDescriptorBuilder} from "./PageDescriptor";
+import {PageDescriptor} from "./PageDescriptor";
+import {PageDescriptorCache} from "./PageDescriptorCache";
+import {PageDescriptorsJson} from "./PageDescriptorsJson";
 
-    export class PageDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class PageDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         cache: PageDescriptorCache;
 
         constructor() {
             super();
             this.cache = PageDescriptorCache.get();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "content", "page", "descriptor");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "content", "page", "descriptor");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
-        fromJsonToPageDescriptor(json: api.content.page.PageDescriptorJson, ignoreCache: boolean = false): PageDescriptor {
+        fromJsonToPageDescriptor(json: PageDescriptorJson, ignoreCache: boolean = false): PageDescriptor {
 
-            var pageDescriptor = new api.content.page.PageDescriptorBuilder().fromJson(json).build();
+            var pageDescriptor = new PageDescriptorBuilder().fromJson(json).build();
             if(!ignoreCache) {
                 this.cache.put(pageDescriptor);
             }
@@ -33,4 +39,3 @@ module api.content.page {
             });
         }
     }
-}

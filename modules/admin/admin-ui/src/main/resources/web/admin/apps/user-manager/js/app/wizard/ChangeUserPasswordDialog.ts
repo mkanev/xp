@@ -1,31 +1,39 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PasswordGenerator} from "../../../../../common/js/ui/text/PasswordGenerator";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {Validators} from "../../../../../common/js/ui/form/Validators";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {H6El} from "../../../../../common/js/dom/H6El";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Form} from "../../../../../common/js/ui/form/Form";
+import {Action} from "../../../../../common/js/ui/Action";
+import {SetUserPasswordRequest} from "../../../../../common/js/security/SetUserPasswordRequest";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {Body} from "../../../../../common/js/dom/Body";
 
-import Principal = api.security.Principal;
-import PasswordGenerator = api.ui.text.PasswordGenerator;
-import DialogButton = api.ui.dialog.DialogButton;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-import Validators = api.ui.form.Validators;
 import {OpenChangePasswordDialogEvent} from "./OpenChangePasswordDialogEvent";
 
-export class ChangeUserPasswordDialog extends api.ui.dialog.ModalDialog {
+export class ChangeUserPasswordDialog extends ModalDialog {
 
     private password: PasswordGenerator;
 
     private principal: Principal;
 
-    private userPath: api.dom.H6El;
+    private userPath: H6El;
 
     private changePasswordButton: DialogButton;
 
     constructor() {
         super({
-            title: new api.ui.dialog.ModalDialogHeader("Change password")
+            title: new ModalDialogHeader("Change password")
         });
 
         this.getEl().addClass("change-password-dialog");
 
-        this.userPath = new api.dom.H6El().addClass("user-path");
-        var descMessage = new api.dom.H6El().addClass("desc-message").setHtml("Password will be updated immediately after finishing");
+        this.userPath = new H6El().addClass("user-path");
+        var descMessage = new H6El().addClass("desc-message").setHtml("Password will be updated immediately after finishing");
 
         this.appendChildToContentPanel(this.userPath);
         this.appendChildToContentPanel(descMessage);
@@ -38,10 +46,10 @@ export class ChangeUserPasswordDialog extends api.ui.dialog.ModalDialog {
 
         var passwordFormItem = new FormItemBuilder(this.password).setLabel('Password').setValidator(Validators.required).build();
 
-        var fieldSet = new api.ui.form.Fieldset();
+        var fieldSet = new Fieldset();
         fieldSet.add(passwordFormItem);
 
-        var form = new api.ui.form.Form().add(fieldSet);
+        var form = new Form().add(fieldSet);
 
         this.appendChildToContentPanel(form);
         this.initializeActions();
@@ -57,10 +65,10 @@ export class ChangeUserPasswordDialog extends api.ui.dialog.ModalDialog {
 
     private initializeActions() {
 
-        this.changePasswordButton = this.addAction(new api.ui.Action("Change Password", "").onExecuted(() => {
-            new api.security.SetUserPasswordRequest().setKey(this.principal.getKey()).setPassword(
+        this.changePasswordButton = this.addAction(new Action("Change Password", "").onExecuted(() => {
+            new SetUserPasswordRequest().setKey(this.principal.getKey()).setPassword(
                 this.password.getValue()).sendAndParse().then((result) => {
-                api.notify.showFeedback('Password was changed!');
+                showFeedback('Password was changed!');
                 this.close();
             });
         }));
@@ -80,7 +88,7 @@ export class ChangeUserPasswordDialog extends api.ui.dialog.ModalDialog {
     }
 
     show() {
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
         super.show();
     }
 

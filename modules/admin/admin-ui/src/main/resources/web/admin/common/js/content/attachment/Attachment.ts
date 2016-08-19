@@ -1,6 +1,10 @@
-module api.content.attachment {
+import {Equitable} from "../../Equitable";
+import {BinaryReference} from "../../util/BinaryReference";
+import {ObjectHelper} from "../../ObjectHelper";
+import {AttachmentJson} from "./AttachmentJson";
+import {AttachmentName} from "./AttachmentName";
 
-    export class Attachment implements api.Equitable {
+export class Attachment implements Equitable {
 
         private name: AttachmentName;
 
@@ -17,8 +21,8 @@ module api.content.attachment {
             this.size = builder.size;
         }
 
-        getBinaryReference(): api.util.BinaryReference {
-            return new api.util.BinaryReference(this.name.toString());
+        getBinaryReference(): BinaryReference {
+            return new BinaryReference(this.name.toString());
         }
 
         getName(): AttachmentName {
@@ -37,33 +41,33 @@ module api.content.attachment {
             return this.size;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Attachment)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Attachment)) {
                 return false;
             }
 
             var other = <Attachment>o;
 
-            if (!api.ObjectHelper.equals(this.name, other.name)) {
+            if (!ObjectHelper.equals(this.name, other.name)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.label, other.label)) {
+            if (!ObjectHelper.stringEquals(this.label, other.label)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
+            if (!ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.numberEquals(this.size, other.size)) {
+            if (!ObjectHelper.numberEquals(this.size, other.size)) {
                 return false;
             }
 
             return true;
         }
 
-        toJson(): api.content.attachment.AttachmentJson {
+        toJson(): AttachmentJson {
             return {
                 "name": this.getName().toString(),
                 "label": this.getLabel(),
@@ -121,4 +125,3 @@ module api.content.attachment {
             return new Attachment(this);
         }
     }
-}

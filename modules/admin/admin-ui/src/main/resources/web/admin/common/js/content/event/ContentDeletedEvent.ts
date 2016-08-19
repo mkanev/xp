@@ -1,6 +1,9 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {ContentPath} from "../ContentPath";
+import {ClassHelper} from "../../ClassHelper";
+import {ContentId} from "../ContentId";
 
-    export class ContentDeletedEvent extends api.event.Event {
+export class ContentDeletedEvent extends Event {
 
         private contentDeletedItems: ContentDeletedItem[] = [];
 
@@ -8,12 +11,12 @@ module api.content.event {
             super();
         }
 
-        addItem(contentId: ContentId, contentPath: api.content.ContentPath, branch: string): ContentDeletedEvent {
+        addItem(contentId: ContentId, contentPath: ContentPath, branch: string): ContentDeletedEvent {
             this.contentDeletedItems.push(new ContentDeletedItem(contentId, contentPath, branch, false));
             return this;
         }
 
-        addPendingItem(contentId: ContentId, contentPath: api.content.ContentPath): ContentDeletedEvent {
+        addPendingItem(contentId: ContentId, contentPath: ContentPath): ContentDeletedEvent {
             this.contentDeletedItems.push(new ContentDeletedItem(contentId, contentPath, "master", true));
             return this;
         }
@@ -33,17 +36,17 @@ module api.content.event {
         }
 
         static on(handler: (event: ContentDeletedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ContentDeletedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
 
     export class ContentDeletedItem {
 
-        private contentPath: api.content.ContentPath;
+        private contentPath: ContentPath;
 
         private pending: boolean;
 
@@ -51,7 +54,7 @@ module api.content.event {
 
         private branch: string;
 
-        constructor(contentId: ContentId, contentPath: api.content.ContentPath, branch: string, pending: boolean = false) {
+        constructor(contentId: ContentId, contentPath: ContentPath, branch: string, pending: boolean = false) {
             this.contentPath = contentPath;
             this.pending = pending;
             this.contentId = contentId;
@@ -74,4 +77,3 @@ module api.content.event {
             return this.pending;
         }
     }
-}

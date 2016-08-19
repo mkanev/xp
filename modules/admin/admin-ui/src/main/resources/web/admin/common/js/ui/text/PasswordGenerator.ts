@@ -1,21 +1,24 @@
-module api.ui.text {
+import {StringHelper} from "../../util/StringHelper";
+import {NumberHelper} from "../../util/NumberHelper";
+import {ArrayHelper} from "../../util/ArrayHelper";
+import {FormInputEl} from "../../dom/FormInputEl";
+import {AEl} from "../../dom/AEl";
+import {DivEl} from "../../dom/DivEl";
+import {Element} from "../../dom/Element";
+import {PasswordInput} from "./PasswordInput";
 
-    import StringHelper = api.util.StringHelper;
-    import NumberHelper = api.util.NumberHelper;
-    import ArrayHelper = api.util.ArrayHelper;
-
-    enum CharType {
+enum CharType {
         SPECIAL,
         DIGIT,
         UPPERCASE,
         LOWERCASE
     }
 
-    export class PasswordGenerator extends api.dom.FormInputEl {
+    export class PasswordGenerator extends FormInputEl {
 
         private input: PasswordInput;
-        private showLink: api.dom.AEl;
-        private generateLink: api.dom.AEl;
+        private showLink: AEl;
+        private generateLink: AEl;
 
         private complexity: string;
 
@@ -31,10 +34,10 @@ module api.ui.text {
         constructor() {
             super("div", "password-generator");
 
-            var inputWrapper = new api.dom.DivEl('input-wrapper');
+            var inputWrapper = new DivEl('input-wrapper');
             this.appendChild(inputWrapper);
 
-            var strengthMeter = new api.dom.DivEl('strength-meter');
+            var strengthMeter = new DivEl('strength-meter');
             inputWrapper.appendChild(strengthMeter);
 
             this.input = new PasswordInput();
@@ -45,7 +48,7 @@ module api.ui.text {
             });
             inputWrapper.appendChild(this.input);
 
-            this.showLink = new api.dom.AEl('show-link');
+            this.showLink = new AEl('show-link');
             this.initFocusEvents(this.showLink);
             this.showLink.onClicked((event: MouseEvent) => {
                 var unlocked = this.hasClass('unlocked');
@@ -57,7 +60,7 @@ module api.ui.text {
             });
             this.appendChild(this.showLink);
 
-            this.generateLink = new api.dom.AEl();
+            this.generateLink = new AEl();
             this.generateLink.setHtml('Generate');
             this.initFocusEvents(this.generateLink);
             this.generateLink.onClicked((event: MouseEvent) => {
@@ -217,7 +220,7 @@ module api.ui.text {
             return /[^a-z\s]/i.test(value);
         }
 
-        private initFocusEvents(el: api.dom.Element) {
+        private initFocusEvents(el: Element) {
             el.onFocus((event: FocusEvent) => {
                 this.notifyFocused(event);
             });
@@ -268,4 +271,3 @@ module api.ui.text {
         }
 
     }
-}

@@ -1,8 +1,7 @@
-module api.application {
+import {ApplicationKey} from "./ApplicationKey";
+import {MarketApplicationJson} from "./json/MarketApplicationJson";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class MarketApplication {
+export class MarketApplication {
 
         private appKey: ApplicationKey;
         private displayName: string;
@@ -25,14 +24,14 @@ module api.application {
             this.appKey = builder.appKey;
         }
 
-        static fromJson(appKey: string, json: api.application.json.MarketApplicationJson): MarketApplication {
+        static fromJson(appKey: string, json: MarketApplicationJson): MarketApplication {
             return new MarketApplicationBuilder().fromJson(appKey, json).build();
         }
 
         static fromJsonArray(appsObj: Object): MarketApplication[] {
             var array: MarketApplication[] = [];
             for (var property in appsObj) {
-                array.push(MarketApplication.fromJson(property, <api.application.json.MarketApplicationJson>appsObj[property]));
+                array.push(MarketApplication.fromJson(property, <MarketApplicationJson>appsObj[property]));
             }
             return array;
         }
@@ -185,7 +184,7 @@ module api.application {
         constructor() {
         }
 
-        public fromJson(appKey: string, json: api.application.json.MarketApplicationJson): MarketApplicationBuilder {
+        public fromJson(appKey: string, json: MarketApplicationJson): MarketApplicationBuilder {
             this.appKey = ApplicationKey.fromString(appKey);
             this.displayName = json.displayName;
             this.description = json.description;
@@ -206,4 +205,3 @@ module api.application {
             return new MarketApplication(this);
         }
     }
-}

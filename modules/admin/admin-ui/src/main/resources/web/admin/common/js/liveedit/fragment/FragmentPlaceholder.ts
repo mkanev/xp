@@ -1,39 +1,46 @@
-module api.liveedit.fragment {
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {FragmentComponent} from "../../content/page/region/FragmentComponent";
+import {GetContentByIdRequest} from "../../content/resource/GetContentByIdRequest";
+import {Content} from "../../content/Content";
+import {LayoutComponentType} from "../../content/page/region/LayoutComponentType";
+import {QueryExpr} from "../../query/expr/QueryExpr";
+import {FieldExpr} from "../../query/expr/FieldExpr";
+import {ValueExpr} from "../../query/expr/ValueExpr";
+import {SelectedOptionEvent} from "../../ui/selector/combobox/SelectedOptionEvent";
+import {ItemViewPlaceholder} from "../ItemViewPlaceholder";
+import {ContentComboBox} from "../../content/ContentComboBox";
+import {DivEl} from "../../dom/DivEl";
+import {FragmentContentSummaryLoader} from "../../content/resource/FragmentContentSummaryLoader";
+import {ContentSummary} from "../../content/ContentSummary";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ShowWarningLiveEditEvent} from "../ShowWarningLiveEditEvent";
+import {LayoutItemType} from "../layout/LayoutItemType";
+import {FragmentComponentView} from "./FragmentComponentView";
 
-    import ContentTypeName = api.schema.content.ContentTypeName;
-    import FragmentComponent = api.content.page.region.FragmentComponent;
-    import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
-    import Content = api.content.Content;
-    import LayoutComponentType = api.content.page.region.LayoutComponentType;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import ValueExpr = api.query.expr.ValueExpr;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-
-    export class FragmentPlaceholder extends api.liveedit.ItemViewPlaceholder {
+export class FragmentPlaceholder extends ItemViewPlaceholder {
 
         private fragmentComponentView: FragmentComponentView;
 
-        private comboBox: api.content.ContentComboBox;
+        private comboBox: ContentComboBox;
 
-        private comboboxWrapper: api.dom.DivEl;
+        private comboboxWrapper: DivEl;
 
         constructor(fragmentView: FragmentComponentView) {
             super();
             this.addClassEx("fragment-placeholder");
             this.fragmentComponentView = fragmentView;
 
-            this.comboboxWrapper = new api.dom.DivEl('rich-combobox-wrapper');
+            this.comboboxWrapper = new DivEl('rich-combobox-wrapper');
 
             var sitePath = this.fragmentComponentView.getLiveEditModel().getSiteModel().getSite().getPath().toString();
-            var loader = new api.content.resource.FragmentContentSummaryLoader().setParentSitePath(sitePath);
+            var loader = new FragmentContentSummaryLoader().setParentSitePath(sitePath);
             
-            this.comboBox = api.content.ContentComboBox.create().setMaximumOccurrences(1).setLoader(loader).setMinWidth(270).build();
+            this.comboBox = ContentComboBox.create().setMaximumOccurrences(1).setLoader(loader).setMinWidth(270).build();
 
             this.comboboxWrapper.appendChildren(this.comboBox);
             this.appendChild(this.comboboxWrapper);
 
-            this.comboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+            this.comboBox.onOptionSelected((event: SelectedOptionEvent<ContentSummary>) => {
 
                 var component: FragmentComponent = this.fragmentComponentView.getComponent();
                 var fragmentContent = event.getSelectedOption().getOption().displayValue;
@@ -42,9 +49,9 @@ module api.liveedit.fragment {
                     new GetContentByIdRequest(fragmentContent.getContentId()).sendAndParse().done((content: Content) => {
                         let fragmentComponent = content.getPage() ? content.getPage().getFragment() : null;
                         
-                        if (fragmentComponent && api.ObjectHelper.iFrameSafeInstanceOf(fragmentComponent.getType(), LayoutComponentType)) {
+                        if (fragmentComponent && ObjectHelper.iFrameSafeInstanceOf(fragmentComponent.getType(), LayoutComponentType)) {
                             this.comboBox.clearSelection();
-                            new api.liveedit.ShowWarningLiveEditEvent("Layout within layout not allowed").fire();
+                            new ShowWarningLiveEditEvent("Layout within layout not allowed").fire();
                             
                         } else {
                             component.setFragment(fragmentContent.getContentId(), fragmentContent.getDisplayName());
@@ -67,7 +74,7 @@ module api.liveedit.fragment {
             if (!parent) {
                 return false;
             }
-            return api.ObjectHelper.iFrameSafeInstanceOf(parent.getType(), api.liveedit.layout.LayoutItemType);
+            return ObjectHelper.iFrameSafeInstanceOf(parent.getType(), LayoutItemType);
         }
 
         select() {
@@ -79,4 +86,3 @@ module api.liveedit.fragment {
             this.comboboxWrapper.hide();
         }
     }
-}

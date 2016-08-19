@@ -1,4 +1,6 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {CookieHelper} from "../../../../../common/js/util/CookieHelper";
+
 import {NewContentEvent} from "./NewContentEvent";
 
 NewContentEvent.on((event: NewContentEvent) => {
@@ -22,7 +24,7 @@ export class RecentItems {
         return RecentItems.INSTANCE;
     }
 
-    public addItemName(contentType: api.schema.content.ContentTypeSummary) {
+    public addItemName(contentType: ContentTypeSummary) {
         var itemsNames = this.getRecentItemsNames();
         var name = contentType.getName();
 
@@ -30,11 +32,11 @@ export class RecentItems {
         itemsNames.unshift(name);
         itemsNames = itemsNames.slice(0, this.maximum);
 
-        api.util.CookieHelper.setCookie(this.cookieKey, itemsNames.join(this.valueSeparator), this.cookieExpire);
+        CookieHelper.setCookie(this.cookieKey, itemsNames.join(this.valueSeparator), this.cookieExpire);
     }
 
     public getRecentItemsNames(): string[] {
-        var cookies = api.util.CookieHelper.getCookie(this.cookieKey);
+        var cookies = CookieHelper.getCookie(this.cookieKey);
         return cookies ? cookies.split(this.valueSeparator) : [];
     }
 

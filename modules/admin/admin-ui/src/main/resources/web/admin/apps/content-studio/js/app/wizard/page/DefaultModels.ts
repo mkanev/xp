@@ -1,7 +1,5 @@
-import "../../../api.ts";
-
-import PageTemplate = api.content.page.PageTemplate;
-import PageDescriptor = api.content.page.PageDescriptor;
+import {PageTemplate} from "../../../../../../common/js/content/page/PageTemplate";
+import {PageDescriptor} from "../../../../../../common/js/content/page/PageDescriptor";
 
 export class DefaultModels {
 

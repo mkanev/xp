@@ -1,10 +1,12 @@
-module api.liveedit {
+import {Element} from "../dom/Element";
+import {DivEl} from "../dom/DivEl";
+import {Body} from "../dom/Body";
+import {StyleHelper} from "../StyleHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {WindowDOM} from "../dom/WindowDOM";
+import {PageView} from "./PageView";
 
-    import Element = api.dom.Element;
-    import DivEl = api.dom.DivEl;
-    import Body = api.dom.Body;
-
-    export class Shader {
+export class Shader {
 
         private static CLS_NAME: string = "shader";
 
@@ -66,7 +68,7 @@ module api.liveedit {
         }
 
         private createShaderDiv(cls: string): DivEl {
-            return new DivEl(Shader.CLS_NAME + " " + cls, api.StyleHelper.getCurrentPrefix())
+            return new DivEl(Shader.CLS_NAME + " " + cls, StyleHelper.getCurrentPrefix())
         }
 
         public static get(): Shader {
@@ -87,7 +89,7 @@ module api.liveedit {
                 return;
             }
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(element, PageView)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(element, PageView)) {
                 this.resizeToPage();
             } else {
                 this.resizeToElement(element);
@@ -220,8 +222,8 @@ module api.liveedit {
 
             this.target = element;
 
-            var win = api.dom.WindowDOM.get(),
-                bodyEl = api.dom.Body.get().getEl(),
+            var win = WindowDOM.get(),
+                bodyEl = Body.get().getEl(),
             // check if body is bigger than window to account for scroll
                 documentWidth = Math.max(win.getWidth(), bodyEl.getWidth()),
                 documentHeight = Math.max(win.getHeight(), bodyEl.getHeight());
@@ -242,4 +244,3 @@ module api.liveedit {
             this.showShaderIfNecessary(this.westShader, 0, y1, x1, y2 - y1);
         }
     }
-}

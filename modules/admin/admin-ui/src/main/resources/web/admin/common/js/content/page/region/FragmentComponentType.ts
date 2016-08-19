@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentType} from "./ComponentType";
+import {FragmentComponentBuilder} from "./FragmentComponent";
 
-    export class FragmentComponentType extends ComponentType {
+export class FragmentComponentType extends ComponentType {
 
         private static INSTANCE = new FragmentComponentType();
 
@@ -17,4 +18,3 @@ module api.content.page.region {
         }
     }
 
-}

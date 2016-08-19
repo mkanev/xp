@@ -1,24 +1,28 @@
-module api.content.page.region {
+import {Application} from "../../../application/Application";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {ApplicationCaches} from "../../../application/ApplicationCaches";
+import {ApplicationBasedCache} from "../../../application/ApplicationBasedCache";
+import {DescriptorKey} from "../DescriptorKey";
+import {WindowDOM} from "../../../dom/WindowDOM";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {assertNotNull} from "../../../util/Assert";
+import {Cache} from "../../../cache/Cache";
+import {GetLayoutDescriptorsByApplicationRequest} from "./GetLayoutDescriptorsByApplicationRequest";
+import {LayoutDescriptor} from "./LayoutDescriptor";
 
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationCaches = api.application.ApplicationCaches;
-    import ApplicationBasedCache = api.application.ApplicationBasedCache;
-    import DescriptorKey = api.content.page.DescriptorKey;
-
-    export class LayoutDescriptorCache extends ApplicationBasedCache<LayoutDescriptorApplicationCache,LayoutDescriptor,DescriptorKey> {
+export class LayoutDescriptorCache extends ApplicationBasedCache<LayoutDescriptorApplicationCache,LayoutDescriptor,DescriptorKey> {
 
         private static instance: LayoutDescriptorCache;
 
         static get(): LayoutDescriptorCache {
 
-            var w = api.dom.WindowDOM.get();
+            var w = WindowDOM.get();
             var topWindow: any = w.getTopParent() == null ? w.asWindow() : w.getTopParent().asWindow();
 
-            if (!topWindow.api.content.page.region.LayoutDescriptorCache.instance) {
-                topWindow.api.content.page.region.LayoutDescriptorCache.instance = new LayoutDescriptorCache();
+            if (!topWindow.LayoutDescriptorCache.instance) {
+                topWindow.LayoutDescriptorCache.instance = new LayoutDescriptorCache();
             }
-            return topWindow.api.content.page.region.LayoutDescriptorCache.instance;
+            return topWindow.LayoutDescriptorCache.instance;
         }
 
         constructor() {
@@ -30,12 +34,12 @@ module api.content.page.region {
 
         loadByApplication(applicationKey: ApplicationKey) {
             new GetLayoutDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
         }
 
         put(descriptor: LayoutDescriptor) {
-            api.util.assertNotNull(descriptor, "a LayoutDescriptor must be given");
+            assertNotNull(descriptor, "a LayoutDescriptor must be given");
 
             super.put(descriptor, descriptor.getKey().getApplicationKey());
         }
@@ -49,7 +53,7 @@ module api.content.page.region {
         }
     }
 
-    export class LayoutDescriptorApplicationCache extends api.cache.Cache<LayoutDescriptor, DescriptorKey> {
+    export class LayoutDescriptorApplicationCache extends Cache<LayoutDescriptor, DescriptorKey> {
 
         copy(object: LayoutDescriptor): LayoutDescriptor {
             return object.clone();
@@ -63,4 +67,3 @@ module api.content.page.region {
             return key.toString();
         }
     }
-}

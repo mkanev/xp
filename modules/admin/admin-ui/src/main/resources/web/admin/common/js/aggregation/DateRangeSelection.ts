@@ -1,6 +1,6 @@
-module api.aggregation {
 
-    export class DateRangeSelection {
+
+export class DateRangeSelection {
 
         private from: Date;
         private to: Date;
@@ -10,4 +10,3 @@ module api.aggregation {
             this.to = to;
         }
     }
-}

@@ -1,14 +1,15 @@
-module api.app.wizard {
+import {ButtonEl} from "../../dom/ButtonEl";
+import {ImgEl} from "../../dom/ImgEl";
 
-    export class FormIcon extends api.dom.ButtonEl {
+export class FormIcon extends ButtonEl {
 
-        private img: api.dom.ImgEl;
+        private img: ImgEl;
 
         constructor(iconUrl: string, className?: string) {
             super("form-icon" + (className ? " " + className : ""));
             var el = this.getEl();
 
-            this.img = new api.dom.ImgEl(iconUrl);
+            this.img = new ImgEl(iconUrl);
 
             el.appendChild(this.img.getHTMLElement());
         }
@@ -18,4 +19,3 @@ module api.app.wizard {
         }
     }
 
-}

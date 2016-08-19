@@ -1,6 +1,8 @@
-module api.util.htmlarea.dialog {
+import {Viewer} from "../../../ui/Viewer";
+import {ImageCroppingNameView} from "./ImageCroppingNameView";
+import {ImageCroppingOption} from "./ImageCroppingOption";
 
-    export class ImageCroppingOptionViewer extends api.ui.Viewer<ImageCroppingOption> {
+export class ImageCroppingOptionViewer extends Viewer<ImageCroppingOption> {
 
         private nameView: ImageCroppingNameView;
 
@@ -21,4 +23,3 @@ module api.util.htmlarea.dialog {
             return 26;
         }
     }
-}

@@ -1,16 +1,18 @@
-module api.liveedit {
+import {Element} from "../dom/Element";
+import {ItemView} from "./ItemView";
+import {ItemViewIdProducer} from "./ItemViewIdProducer";
 
-    export class CreateItemViewConfig<PARENT extends ItemView, DATA> {
+export class CreateItemViewConfig<PARENT extends ItemView, DATA> {
 
         itemViewProducer: ItemViewIdProducer;
 
         parentView: PARENT;
 
-        parentElement: api.dom.Element;
+        parentElement: Element;
 
         data: DATA;
 
-        element: api.dom.Element;
+        element: Element;
 
         positionIndex: number = -1;
 
@@ -27,7 +29,7 @@ module api.liveedit {
             return this;
         }
 
-        setParentElement(value: api.dom.Element): CreateItemViewConfig<PARENT,DATA> {
+        setParentElement(value: Element): CreateItemViewConfig<PARENT,DATA> {
             this.parentElement = value;
             return this;
         }
@@ -37,7 +39,7 @@ module api.liveedit {
             return this;
         }
 
-        setElement(value: api.dom.Element): CreateItemViewConfig<PARENT,DATA> {
+        setElement(value: Element): CreateItemViewConfig<PARENT,DATA> {
             this.element = value;
             return this;
         }
@@ -50,4 +52,3 @@ module api.liveedit {
             return this;
         }
     }
-}

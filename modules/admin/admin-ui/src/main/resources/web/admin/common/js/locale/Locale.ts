@@ -1,6 +1,8 @@
-module api.locale {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {LocaleJson} from "./json/LocaleJson";
 
-    export class Locale implements api.Equitable {
+export class Locale implements Equitable {
 
         private tag: string;
         private displayName: string;
@@ -15,8 +17,8 @@ module api.locale {
 
         }
 
-        equals(other: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(other, Locale)) {
+        equals(other: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(other, Locale)) {
                 return false;
             }
             var o = <Locale> other;
@@ -30,7 +32,7 @@ module api.locale {
                    this.displayCountry == o.displayCountry;
         }
 
-        public static fromJson(json: api.locale.json.LocaleJson): Locale {
+        public static fromJson(json: LocaleJson): Locale {
             var l = new Locale();
             l.tag = json.tag;
             l.displayName = json.displayName;
@@ -77,4 +79,3 @@ module api.locale {
 
     }
 
-}

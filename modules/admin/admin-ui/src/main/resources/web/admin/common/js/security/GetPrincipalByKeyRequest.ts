@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {Principal} from "./Principal";
+import {PrincipalJson} from "./PrincipalJson";
+import {PrincipalKey} from "./PrincipalKey";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
 
-    export class GetPrincipalByKeyRequest extends SecurityResourceRequest<PrincipalJson, Principal> {
+export class GetPrincipalByKeyRequest extends SecurityResourceRequest<PrincipalJson, Principal> {
 
         private principalKey: PrincipalKey;
 
@@ -24,16 +29,15 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals', this.principalKey.toString());
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals', this.principalKey.toString());
         }
 
         sendAndParse(): wemQ.Promise<Principal> {
 
-            return this.send().then((response: api.rest.JsonResponse<PrincipalJson>) => {
+            return this.send().then((response: JsonResponse<PrincipalJson>) => {
                 return this.fromJsonToPrincipal(response.getResult());
             });
         }
 
     }
-}

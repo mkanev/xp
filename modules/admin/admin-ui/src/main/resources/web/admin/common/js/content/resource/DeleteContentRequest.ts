@@ -1,9 +1,11 @@
-module api.content.resource {
+import {DeleteContentResultJson} from "../json/DeleteContentResultJson";
+import {DeleteContentResult} from "./result/DeleteContentResult";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentPath} from "../ContentPath";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import DeleteContentResultJson = api.content.json.DeleteContentResultJson;
-    import DeleteContentResult = api.content.resource.result.DeleteContentResult;
-
-    export class DeleteContentRequest extends ContentResourceRequest<DeleteContentResultJson, DeleteContentResult> {
+export class DeleteContentRequest extends ContentResourceRequest<DeleteContentResultJson, DeleteContentResult> {
 
         private contentPaths: ContentPath[] = [];
 
@@ -42,17 +44,16 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "delete");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "delete");
         }
 
         sendAndParse(): wemQ.Promise<DeleteContentResult> {
 
-            return this.send().then((response: api.rest.JsonResponse<DeleteContentResultJson>) => {
+            return this.send().then((response: JsonResponse<DeleteContentResultJson>) => {
 
                 return DeleteContentResult.fromJson(response.getResult());
 
             });
         }
     }
-}

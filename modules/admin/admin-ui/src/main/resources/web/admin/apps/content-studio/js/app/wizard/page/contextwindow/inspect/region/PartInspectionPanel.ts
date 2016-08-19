@@ -1,26 +1,28 @@
-import "../../../../../../api.ts";
+import {SiteModel} from "../../../../../../../../../common/js/content/site/SiteModel";
+import {PartDescriptor} from "../../../../../../../../../common/js/content/page/region/PartDescriptor";
+import {PartDescriptorLoader} from "../../../../../../../../../common/js/content/page/region/PartDescriptorLoader";
+import {GetPartDescriptorsByApplicationsRequest} from "../../../../../../../../../common/js/content/page/region/GetPartDescriptorsByApplicationsRequest";
+import {GetPartDescriptorByKeyRequest} from "../../../../../../../../../common/js/content/page/region/GetPartDescriptorByKeyRequest";
+import {PartComponent} from "../../../../../../../../../common/js/content/page/region/PartComponent";
+import {PartDescriptorDropdown} from "../../../../../../../../../common/js/content/page/region/PartDescriptorDropdown";
+import {DescriptorBasedComponent} from "../../../../../../../../../common/js/content/page/region/DescriptorBasedComponent";
+import {ComponentPropertyChangedEvent} from "../../../../../../../../../common/js/content/page/region/ComponentPropertyChangedEvent";
+import {DescriptorKey} from "../../../../../../../../../common/js/content/page/DescriptorKey";
+import {Descriptor} from "../../../../../../../../../common/js/content/page/Descriptor";
+import {PartComponentView} from "../../../../../../../../../common/js/liveedit/part/PartComponentView";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {SelectedOption} from "../../../../../../../../../common/js/ui/selector/combobox/SelectedOption";
+import {OptionSelectedEvent} from "../../../../../../../../../common/js/ui/selector/OptionSelectedEvent";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
+import {DescriptorByDisplayNameComparator} from "../../../../../../../../../common/js/content/page/DescriptorByDisplayNameComparator";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+
 import {
     DescriptorBasedComponentInspectionPanel,
     DescriptorBasedComponentInspectionPanelConfig
 } from "./DescriptorBasedComponentInspectionPanel";
 import {DescriptorBasedDropdownForm} from "./DescriptorBasedDropdownForm";
-
-import SiteModel = api.content.site.SiteModel;
-import PartDescriptor = api.content.page.region.PartDescriptor;
-import PartDescriptorLoader = api.content.page.region.PartDescriptorLoader;
-import GetPartDescriptorsByApplicationsRequest = api.content.page.region.GetPartDescriptorsByApplicationsRequest;
-import GetPartDescriptorByKeyRequest = api.content.page.region.GetPartDescriptorByKeyRequest;
-import PartComponent = api.content.page.region.PartComponent;
-import PartDescriptorDropdown = api.content.page.region.PartDescriptorDropdown;
-import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
-import DescriptorKey = api.content.page.DescriptorKey;
-import Descriptor = api.content.page.Descriptor;
-import PartComponentView = api.liveedit.part.PartComponentView;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import Option = api.ui.selector.Option;
-import SelectedOption = api.ui.selector.combobox.SelectedOption;
-import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
 
 export class PartInspectionPanel extends DescriptorBasedComponentInspectionPanel<PartComponent, PartDescriptor> {
 
@@ -36,7 +38,7 @@ export class PartInspectionPanel extends DescriptorBasedComponentInspectionPanel
 
     constructor() {
         super(<DescriptorBasedComponentInspectionPanelConfig>{
-            iconClass: api.liveedit.ItemViewIconClassResolver.resolveByType("part", "icon-xlarge")
+            iconClass: ItemViewIconClassResolver.resolveByType("part", "icon-xlarge")
         });
     }
 
@@ -46,7 +48,7 @@ export class PartInspectionPanel extends DescriptorBasedComponentInspectionPanel
 
         var descriptorsRequest = new GetPartDescriptorsByApplicationsRequest(this.liveEditModel.getSiteModel().getApplicationKeys());
         var loader = new PartDescriptorLoader(descriptorsRequest);
-        loader.setComparator(new api.content.page.DescriptorByDisplayNameComparator());
+        loader.setComparator(new DescriptorByDisplayNameComparator());
 
         this.selector = new PartDescriptorDropdown("", loader);
         this.partForm = new DescriptorBasedDropdownForm(this.selector, "Part");
@@ -122,7 +124,7 @@ export class PartInspectionPanel extends DescriptorBasedComponentInspectionPanel
                     if (this.isNotFoundError(reason)) {
                         this.setSelectorValue(null);
                     } else {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }
                 }).done();
             }

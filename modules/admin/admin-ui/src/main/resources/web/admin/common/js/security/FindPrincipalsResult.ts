@@ -1,8 +1,8 @@
-module api.security {
+import {ContentMetadata} from "../content/ContentMetadata";
+import {FindPrincipalsResultJson} from "./FindPrincipalsResultJson";
+import {Principal} from "./Principal";
 
-    import ContentMetadata = api.content.ContentMetadata;
-
-    export class FindPrincipalsResult {
+export class FindPrincipalsResult {
 
         private principals: Principal[];
 
@@ -27,4 +27,3 @@ module api.security {
         }
     }
 
-}

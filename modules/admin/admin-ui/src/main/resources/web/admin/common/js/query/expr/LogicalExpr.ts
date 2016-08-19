@@ -1,6 +1,7 @@
-module api.query.expr {
+import {ConstraintExpr} from "./ConstraintExpr";
+import {LogicalOperator} from "./LogicalOperator";
 
-    export class LogicalExpr implements ConstraintExpr {
+export class LogicalExpr implements ConstraintExpr {
 
         private left: ConstraintExpr;
         private right: ConstraintExpr;
@@ -47,4 +48,3 @@ module api.query.expr {
             }
         }
     }
-}

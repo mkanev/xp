@@ -1,6 +1,14 @@
-module api.content.page.region {
+import {Descriptor} from "../Descriptor";
+import {Cloneable} from "../../../Cloneable";
+import {DescriptorBuilder} from "../Descriptor";
+import {DescriptorKey} from "../DescriptorKey";
+import {DescriptorName} from "../DescriptorName";
+import {Form} from "../../../form/Form";
+import {LayoutDescriptorJson} from "./LayoutDescriptorJson";
+import {RegionDescriptor} from "./RegionDescriptor";
+import {RegionDescriptorBuilder} from "./RegionDescriptor";
 
-    export class LayoutDescriptor extends api.content.page.Descriptor implements api.Cloneable {
+export class LayoutDescriptor extends Descriptor implements Cloneable {
         private regions: RegionDescriptor[];
 
         constructor(builder: LayoutDescriptorBuilder) {
@@ -17,7 +25,7 @@ module api.content.page.region {
         }
     }
 
-    export class LayoutDescriptorBuilder extends api.content.page.DescriptorBuilder {
+    export class LayoutDescriptorBuilder extends DescriptorBuilder {
 
         regions: RegionDescriptor[] = [];
 
@@ -30,10 +38,10 @@ module api.content.page.region {
 
         public fromJson(json: LayoutDescriptorJson): LayoutDescriptorBuilder {
 
-            this.setKey(api.content.page.DescriptorKey.fromString(json.key));
-            this.setName(new api.content.page.DescriptorName(json.name));
+            this.setKey(DescriptorKey.fromString(json.key));
+            this.setName(new DescriptorName(json.name));
             this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
+            this.setConfig(json.config != null ? Form.fromJson(json.config) : null);
             for (var i = 0; i < json.regions.length; i++) {
                 var region = new RegionDescriptorBuilder().fromJson(json.regions[i]).build();
                 this.regions.push(region);
@@ -42,12 +50,12 @@ module api.content.page.region {
             return this;
         }
 
-        public setKey(value: api.content.page.DescriptorKey): LayoutDescriptorBuilder {
+        public setKey(value: DescriptorKey): LayoutDescriptorBuilder {
             this.key = value;
             return this;
         }
 
-        public setName(value: api.content.page.DescriptorName): LayoutDescriptorBuilder {
+        public setName(value: DescriptorName): LayoutDescriptorBuilder {
             this.name = value;
             return this;
         }
@@ -57,7 +65,7 @@ module api.content.page.region {
             return this;
         }
 
-        public setConfig(value: api.form.Form): LayoutDescriptorBuilder {
+        public setConfig(value: Form): LayoutDescriptorBuilder {
             this.config = value;
             return this;
         }
@@ -71,4 +79,3 @@ module api.content.page.region {
             return new LayoutDescriptor(this);
         }
     }
-}

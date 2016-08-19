@@ -1,8 +1,7 @@
-module api.rest {
+import {ExceptionType} from "../Exception";
+import {Exception} from "../Exception";
 
-    import ExceptionType = api.ExceptionType;
-
-    export class RequestError extends api.Exception {
+export class RequestError extends Exception {
 
         private statusCode: number;
 
@@ -19,4 +18,3 @@ module api.rest {
             return this.statusCode;
         }
     }
-}

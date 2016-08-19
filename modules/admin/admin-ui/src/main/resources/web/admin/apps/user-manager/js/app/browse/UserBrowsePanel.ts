@@ -1,7 +1,10 @@
-import "../../api.ts";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {BrowsePanel} from "../../../../../common/js/app/browse/BrowsePanel";
+import {UserItemCreatedEvent} from "../../../../../common/js/security/UserItemCreatedEvent";
+import {UserItemUpdatedEvent} from "../../../../../common/js/security/UserItemUpdatedEvent";
+import {UserItemDeletedEvent} from "../../../../../common/js/security/UserItemDeletedEvent";
 
-import TreeNode = api.ui.treegrid.TreeNode;
-import BrowseItem = api.app.browse.BrowseItem;
 import {UserItemsTreeGrid} from "./UserItemsTreeGrid";
 import {UserBrowseToolbar} from "./UserBrowseToolbar";
 import {UserTreeGridItem, UserTreeGridItemType} from "./UserTreeGridItem";
@@ -10,7 +13,7 @@ import {UserTreeGridActions} from "./UserTreeGridActions";
 import {PrincipalBrowseFilterPanel} from "./filter/PrincipalBrowseFilterPanel";
 import {Router} from "../Router";
 
-export class UserBrowsePanel extends api.app.browse.BrowsePanel<UserTreeGridItem> {
+export class UserBrowsePanel extends BrowsePanel<UserTreeGridItem> {
 
     private browseActions: UserTreeGridActions;
 
@@ -36,16 +39,16 @@ export class UserBrowsePanel extends api.app.browse.BrowsePanel<UserTreeGridItem
             filterPanel: this.userFilterPanel
         });
 
-        api.security.UserItemCreatedEvent.on((event) => {
+        UserItemCreatedEvent.on((event) => {
             this.userTreeGrid.appendUserNode(event.getPrincipal(), event.getUserStore(), event.isParentOfSameType());
             this.setRefreshOfFilterRequired();
         });
 
-        api.security.UserItemUpdatedEvent.on((event) => {
+        UserItemUpdatedEvent.on((event) => {
             this.userTreeGrid.updateUserNode(event.getPrincipal(), event.getUserStore());
         });
 
-        api.security.UserItemDeletedEvent.on((event) => {
+        UserItemDeletedEvent.on((event) => {
             this.setRefreshOfFilterRequired();
             /*
              Deleting content won't trigger browsePanel.onShow event,

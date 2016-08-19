@@ -1,11 +1,10 @@
-module api.content.json {
+import {PropertyArrayJson} from "../../data/PropertyArrayJson";
 
-    export interface ExtraDataJson {
+export interface ExtraDataJson {
 
         name: string;
 
-        data: api.data.PropertyArrayJson[];
+        data: PropertyArrayJson[];
 
     }
 
-}

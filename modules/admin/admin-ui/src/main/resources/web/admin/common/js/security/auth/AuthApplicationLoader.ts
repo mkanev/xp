@@ -1,13 +1,15 @@
-module api.security.auth {
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {ApplicationListResult} from "../../application/ApplicationListResult";
+import {Application} from "../../application/Application";
+import {ListAuthApplicationsRequest} from "../../application/ListAuthApplicationsRequest";
 
-    export class AuthApplicationLoader extends api.util.loader.BaseLoader<api.application.ApplicationListResult, api.application.Application> {
+export class AuthApplicationLoader extends BaseLoader<ApplicationListResult, Application> {
 
         constructor() {
-            super(new api.application.ListAuthApplicationsRequest());
+            super(new ListAuthApplicationsRequest());
         }
 
-        filterFn(application: api.application.Application) {
+        filterFn(application: Application) {
             return application.getDisplayName().toString().toLowerCase().indexOf(this.getSearchString().toLowerCase()) != -1;
         }
     }
-}

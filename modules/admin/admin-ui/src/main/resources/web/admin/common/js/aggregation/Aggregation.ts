@@ -1,7 +1,8 @@
+import {AggregationFactory} from "./AggregationFactory";
+import {AggregationTypeWrapperJson} from "./AggregationTypeWrapperJson";
 
-module api.aggregation {
 
-    export class Aggregation {
+export class Aggregation {
 
         private name: string;
 
@@ -25,4 +26,3 @@ module api.aggregation {
         }
 
     }
-}

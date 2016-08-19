@@ -1,4 +1,5 @@
-import Action = api.ui.Action;
+import {Action} from "../../../../../../common/js/ui/Action";
+
 import {ContentBrowseItemsSelectionPanel} from "../ContentBrowseItemsSelectionPanel";
 import {ContentTreeGrid} from "../ContentTreeGrid";
 

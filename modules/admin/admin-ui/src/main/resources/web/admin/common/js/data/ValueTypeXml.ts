@@ -1,6 +1,8 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeXml extends ValueType {
+export class ValueTypeXml extends ValueType {
 
         constructor() {
             super("Xml");
@@ -11,7 +13,7 @@ module api.data {
         }
 
         valueEquals(a: string, b: string): boolean {
-            return api.ObjectHelper.stringEquals(a, b);
+            return ObjectHelper.stringEquals(a, b);
         }
 
         newValue(value: string): Value {
@@ -25,4 +27,3 @@ module api.data {
             return value.getString() ? value.getObject() : null;
         }
     }
-}

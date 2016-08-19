@@ -1,10 +1,9 @@
-module api.rendering {
 
-    export enum RenderingMode {
+
+export enum RenderingMode {
         EDIT,
         PREVIEW,
         LIVE,
         ADMIN
     }
 
-}

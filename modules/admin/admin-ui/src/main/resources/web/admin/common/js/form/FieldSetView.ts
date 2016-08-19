@@ -1,8 +1,20 @@
-module api.form {
+import {PropertySet} from "../data/PropertySet";
+import {DivEl} from "../dom/DivEl";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {ContentSummary} from "../content/ContentSummary";
+import {FieldSet} from "./FieldSet";
+import {FieldSetLabel} from "./FieldSetLabel";
+import {FormContext} from "./FormContext";
+import {FormItemLayer} from "./FormItemLayer";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {FormItemView} from "./FormItemView";
+import {InputView} from "./InputView";
+import {LayoutViewConfig} from "./LayoutView";
+import {LayoutView} from "./LayoutView";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
 
-    import PropertySet = api.data.PropertySet;
-
-    export interface FieldSetViewConfig {
+export interface FieldSetViewConfig {
 
         context: FormContext;
 
@@ -59,7 +71,7 @@ module api.form {
             var label = new FieldSetLabel(this.fieldSet);
             this.appendChild(label);
 
-            var wrappingDiv = new api.dom.DivEl("field-set-container");
+            var wrappingDiv = new DivEl("field-set-container");
             this.appendChild(wrappingDiv);
 
             var layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.
@@ -74,7 +86,7 @@ module api.form {
             }).catch((reason: any) => {
                 var fieldSetValue = this.fieldSet ? this.fieldSet.toFieldSetJson() : {};
                 console.error('Could not render FieldSet view: ' + reason + '\r\n FieldSet value:', JSON.stringify(fieldSetValue));
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
             return deferred.promise;
@@ -89,14 +101,14 @@ module api.form {
             return this.formItemLayer.update(propertySet, unchangedOnly);
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(listener: (content: ContentSummary) => void) {
             super.onEditContentRequest(listener);
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.onEditContentRequest(listener);
             });
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(listener: (content: ContentSummary) => void) {
             super.unEditContentRequest(listener);
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.unEditContentRequest(listener);
@@ -190,4 +202,3 @@ module api.form {
             });
         }
     }
-}

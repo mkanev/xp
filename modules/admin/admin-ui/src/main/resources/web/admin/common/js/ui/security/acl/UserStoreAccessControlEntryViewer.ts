@@ -1,9 +1,8 @@
-module api.ui.security.acl {
+import {UserStoreAccessControlEntry} from "../../../security/acl/UserStoreAccessControlEntry";
+import {PrincipalType} from "../../../security/PrincipalType";
+import {NamesAndIconViewer} from "../../NamesAndIconViewer";
 
-    import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
-    import PrincipalType = api.security.PrincipalType;
-
-    export class UserStoreAccessControlEntryViewer extends api.ui.NamesAndIconViewer<UserStoreAccessControlEntry> {
+export class UserStoreAccessControlEntryViewer extends NamesAndIconViewer<UserStoreAccessControlEntry> {
 
         constructor() {
             super();
@@ -35,4 +34,3 @@ module api.ui.security.acl {
         }
     }
 
-}

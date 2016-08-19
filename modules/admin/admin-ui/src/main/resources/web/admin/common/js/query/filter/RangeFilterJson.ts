@@ -1,6 +1,6 @@
-module api.query.filter {
 
-    export interface RangeFilterJson {
+
+export interface RangeFilterJson {
 
         from: string;
         to: string;
@@ -8,6 +8,4 @@ module api.query.filter {
 
     }
 
-
-}
 

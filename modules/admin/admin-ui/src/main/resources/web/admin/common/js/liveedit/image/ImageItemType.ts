@@ -1,12 +1,13 @@
-module api.liveedit.image {
+import {ImageComponent} from "../../content/page/region/ImageComponent";
+import {ItemType} from "../ItemType";
+import {ItemTypeConfigJson} from "../ItemTypeConfig";
+import {ComponentItemType} from "../ComponentItemType";
+import {RegionView} from "../RegionView";
+import {CreateItemViewConfig} from "../CreateItemViewConfig";
+import {ImageComponentViewBuilder} from "./ImageComponentView";
+import {ImageComponentView} from "./ImageComponentView";
 
-    import ImageComponent = api.content.page.region.ImageComponent;
-    import ItemType = api.liveedit.ItemType;
-    import ItemTypeConfigJson = api.liveedit.ItemTypeConfigJson;
-    import ComponentItemType = api.liveedit.ComponentItemType;
-    import RegionView = api.liveedit.RegionView;
-
-    export class ImageItemType extends ComponentItemType {
+export class ImageItemType extends ComponentItemType {
 
         private static INSTANCE = new ImageItemType();
 
@@ -34,4 +35,3 @@ module api.liveedit.image {
     }
 
     ImageItemType.get();
-}

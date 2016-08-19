@@ -1,10 +1,15 @@
-module api.content.resource {
+import {ContentJson} from "../json/ContentJson";
+import {AccessControlList} from "../../security/acl/AccessControlList";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Content} from "../Content";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class ApplyContentPermissionsRequest extends ContentResourceRequest<api.content.json.ContentJson, Content> {
+export class ApplyContentPermissionsRequest extends ContentResourceRequest<ContentJson, Content> {
 
         private id: string;
 
-        private permissions: api.security.acl.AccessControlList;
+        private permissions: AccessControlList;
 
         private inheritPermissions: boolean;
 
@@ -22,7 +27,7 @@ module api.content.resource {
             return this;
         }
 
-        setPermissions(permissions: api.security.acl.AccessControlList): ApplyContentPermissionsRequest {
+        setPermissions(permissions: AccessControlList): ApplyContentPermissionsRequest {
             this.permissions = permissions;
             return this;
         }
@@ -46,17 +51,16 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "applyPermissions");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "applyPermissions");
         }
 
         sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
                 return this.fromJsonToContent(response.getResult());
             });
         }
 
     }
 
-}

@@ -1,6 +1,6 @@
-module api.ui {
+import {KeyBinding} from "./KeyBinding";
 
-    export class Mnemonic {
+export class Mnemonic {
 
         private value: string;
 
@@ -38,4 +38,3 @@ module api.ui {
             return result;
         }
     }
-}

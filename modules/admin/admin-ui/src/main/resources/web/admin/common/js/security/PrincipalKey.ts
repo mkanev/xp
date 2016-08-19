@@ -1,6 +1,13 @@
-module api.security {
+import {Equitable} from "../Equitable";
+import {assert} from "../util/Assert";
+import {assertNotNull} from "../util/Assert";
+import {StringHelper} from "../util/StringHelper";
+import {ObjectHelper} from "../ObjectHelper";
+import {Principal} from "./Principal";
+import {PrincipalType} from "./PrincipalType";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class PrincipalKey implements api.Equitable {
+export class PrincipalKey implements Equitable {
 
         private static SEPARATOR = ":";
 
@@ -45,9 +52,9 @@ module api.security {
         }
 
         constructor(userStore: UserStoreKey, type: PrincipalType, principalId: string) {
-            api.util.assert(( type === PrincipalType.ROLE ) || (!!userStore), "Principal user store cannot be null");
-            api.util.assertNotNull(type, "Principal type cannot be null");
-            api.util.assert(!api.util.StringHelper.isBlank(principalId), "Principal id cannot be null or empty");
+            assert(( type === PrincipalType.ROLE ) || (!!userStore), "Principal user store cannot be null");
+            assertNotNull(type, "Principal type cannot be null");
+            assert(!StringHelper.isBlank(principalId), "Principal id cannot be null or empty");
             this.userStore = userStore;
             this.type = type;
             this.principalId = principalId;
@@ -94,7 +101,7 @@ module api.security {
 
         toPath(toParent: boolean = false): string {
             var path = this.isRole() ? "/roles/" :
-                api.util.StringHelper.format("/{0}/{1}/", this.getUserStore().toString(),
+                StringHelper.format("/{0}/{1}/", this.getUserStore().toString(),
                     PrincipalType[this.getType()].toLowerCase().replace(/(group|user)/g, "$&s"));
 
             if (!toParent) {
@@ -104,13 +111,13 @@ module api.security {
             return path;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PrincipalKey)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PrincipalKey)) {
                 return false;
             }
 
             var other = <PrincipalKey>o;
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
             return true;
@@ -132,4 +139,3 @@ module api.security {
             return new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.ROLE, roleId);
         }
     }
-}

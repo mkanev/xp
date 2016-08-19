@@ -1,7 +1,16 @@
-module api.form {
+import {FormJson} from "./json/FormJson";
+import {FormItemJson} from "./json/FormItemJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {FieldSet} from "./FieldSet";
+import {FormItem} from "./FormItem";
+import {FormItemContainer} from "./FormItemContainer";
+import {FormItemFactory} from "./FormItemFactory";
+import {FormItemSet} from "./FormItemSet";
+import {Input} from "./Input";
+import {Layout} from "./Layout";
 
-    import FormJson = api.form.json.FormJson;
-    export class FormBuilder {
+export class FormBuilder {
 
         formItems: FormItem[] = [];
 
@@ -18,7 +27,7 @@ module api.form {
         }
 
         fromJson(json: FormJson): FormBuilder {
-            json.formItems.forEach((formItemJson: api.form.json.FormItemJson) => {
+            json.formItems.forEach((formItemJson: FormItemJson) => {
                 var formItem = FormItemFactory.createFormItem(formItemJson);
                 if (formItem) {
                     this.addFormItem(formItem);
@@ -40,7 +49,7 @@ module api.form {
      * * A [[FormItemSet]] groups a set of [[FormItem]]s, both visually and the data.
      * * A [[FieldSet]] is a [[Layout]] which only visually groups [[FormItem]]s.
      */
-    export class Form implements api.Equitable, FormItemContainer {
+    export class Form implements Equitable, FormItemContainer {
 
         private formItems: FormItem[] = [];
 
@@ -78,16 +87,16 @@ module api.form {
             return <Input>this.formItemByName[name];
         }
 
-        toJson(): api.form.json.FormJson {
+        toJson(): FormJson {
 
-            return <api.form.json.FormJson>{
+            return <FormJson>{
                 formItems: FormItem.formItemsToJson(this.getFormItems())
             }
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(o, Form))) {
+            if (!(ObjectHelper.iFrameSafeInstanceOf(o, Form))) {
                 return false;
             }
 
@@ -106,4 +115,3 @@ module api.form {
             return true;
         }
     }
-}

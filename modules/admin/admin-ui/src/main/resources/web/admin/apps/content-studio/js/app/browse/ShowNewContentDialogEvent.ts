@@ -1,24 +1,27 @@
-import "../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
+
 import {BaseContentModelEvent} from "./BaseContentModelEvent";
 
 export class ShowNewContentDialogEvent extends BaseContentModelEvent {
 
-    private parentContent: api.content.ContentSummaryAndCompareStatus;
+    private parentContent: ContentSummaryAndCompareStatus;
 
-    constructor(parentContent: api.content.ContentSummaryAndCompareStatus) {
+    constructor(parentContent: ContentSummaryAndCompareStatus) {
         super([parentContent]);
         this.parentContent = parentContent;
     }
 
-    getParentContent(): api.content.ContentSummaryAndCompareStatus {
+    getParentContent(): ContentSummaryAndCompareStatus {
         return this.parentContent;
     }
 
     static on(handler: (event: ShowNewContentDialogEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ShowNewContentDialogEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

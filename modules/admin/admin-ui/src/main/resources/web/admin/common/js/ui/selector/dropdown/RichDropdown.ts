@@ -1,12 +1,15 @@
-module api.ui.selector.dropdown {
+import {LoadedDataEvent} from "../../../util/loader/event/LoadedDataEvent";
+import {BaseLoader} from "../../../util/loader/BaseLoader";
+import {LoadingDataEvent} from "../../../util/loader/event/LoadingDataEvent";
+import {Option} from "../Option";
+import {DropdownConfig} from "./DropdownInput";
+import {DropdownInput} from "./DropdownInput";
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
+export class RichDropdown<OPTION_DISPLAY_VALUE> extends DropdownInput<OPTION_DISPLAY_VALUE> {
 
-    export class RichDropdown<OPTION_DISPLAY_VALUE> extends DropdownInput<OPTION_DISPLAY_VALUE> {
+        private loader: BaseLoader<any, OPTION_DISPLAY_VALUE>;
 
-        private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
-
-        constructor(name: string, loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>,
+        constructor(name: string, loader: BaseLoader<any, OPTION_DISPLAY_VALUE>,
                     dropdownConfig: DropdownConfig<OPTION_DISPLAY_VALUE>) {
             super(name, dropdownConfig);
 
@@ -18,7 +21,7 @@ module api.ui.selector.dropdown {
         private initLoaderListeners() {
             this.loader.onLoadedData(this.handleLoadedData.bind(this));
 
-            this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
+            this.loader.onLoadingData((event: LoadingDataEvent) => {
                 this.setEmptyDropdownText("Searching...");
             });
         }
@@ -27,7 +30,7 @@ module api.ui.selector.dropdown {
             this.loader.load();
         }
 
-        getLoader(): api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE> {
+        getLoader(): BaseLoader<any, OPTION_DISPLAY_VALUE> {
             return this.loader;
         }
 
@@ -55,4 +58,3 @@ module api.ui.selector.dropdown {
         }
 
     }
-}

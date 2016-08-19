@@ -1,23 +1,25 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-export class SaveSortedContentEvent extends api.event.Event {
+export class SaveSortedContentEvent extends Event {
 
-    private content: api.content.ContentSummary;
+    private content: ContentSummary;
 
-    constructor(content: api.content.ContentSummary) {
+    constructor(content: ContentSummary) {
         this.content = content;
         super();
     }
 
-    getContent(): api.content.ContentSummary {
+    getContent(): ContentSummary {
         return this.content;
     }
 
     static on(handler: (event: SaveSortedContentEvent) => void, contextWindow: Window = window) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+        Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 
     static un(handler?: (event: SaveSortedContentEvent) => void, contextWindow: Window = window) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+        Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
     }
 }

@@ -1,6 +1,6 @@
-module api.util {
 
-    export class NumberHelper {
+
+export class NumberHelper {
 
         private static MAX_SAFE_INTEGER: number = 9007199254740991;
 
@@ -19,4 +19,3 @@ module api.util {
             return from + Math.round(Math.random() * (to - from));
         }
     }
-}

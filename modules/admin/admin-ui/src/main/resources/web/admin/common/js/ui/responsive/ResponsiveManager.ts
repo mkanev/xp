@@ -1,13 +1,17 @@
-module api.ui.responsive {
+import {WindowDOM} from "../../dom/WindowDOM";
+import {Element} from "../../dom/Element";
+import {Body} from "../../dom/Body";
+import {ResponsiveItem} from "./ResponsiveItem";
+import {ResponsiveListener} from "./ResponsiveListener";
 
-    export class ResponsiveManager {
+export class ResponsiveManager {
 
-        private static window = api.dom.WindowDOM.get();
+        private static window = WindowDOM.get();
 
         private static responsiveListeners: ResponsiveListener[] = [];
 
         // Custom handler will be executed in addition on element update
-        static onAvailableSizeChanged(el: api.dom.Element, handler: (item: ResponsiveItem) => void = (item: ResponsiveItem) => {
+        static onAvailableSizeChanged(el: Element, handler: (item: ResponsiveItem) => void = (item: ResponsiveItem) => {
         }): ResponsiveItem {
             var responsiveItem: ResponsiveItem = new ResponsiveItem(el, handler),
                 listener = () => {
@@ -27,7 +31,7 @@ module api.ui.responsive {
             return responsiveItem;
         }
 
-        private static updateItemOnShown(el: api.dom.Element, responsiveItem: ResponsiveItem) {
+        private static updateItemOnShown(el: Element, responsiveItem: ResponsiveItem) {
             if (el.isVisible()) {
                 responsiveItem.update();
             } else {
@@ -39,7 +43,7 @@ module api.ui.responsive {
             }
         }
 
-        static unAvailableSizeChanged(el: api.dom.Element) {
+        static unAvailableSizeChanged(el: Element) {
 
             ResponsiveManager.responsiveListeners =
                 ResponsiveManager.responsiveListeners.filter((curr) => {
@@ -74,10 +78,9 @@ module api.ui.responsive {
             ResponsiveManager.window.getHTMLElement().dispatchEvent(customEvent);
         }
 
-        static getWindow(): api.dom.WindowDOM {
+        static getWindow(): WindowDOM {
             return ResponsiveManager.window;
         }
     }
 
-    ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get());
-}
+    ResponsiveManager.onAvailableSizeChanged(Body.get());

@@ -1,8 +1,11 @@
-module api.thumb {
+import {Equitable} from "../Equitable";
+import {BinaryReference} from "../util/BinaryReference";
+import {ObjectHelper} from "../ObjectHelper";
+import {ThumbnailJson} from "./ThumbnailJson";
 
-    export class Thumbnail implements api.Equitable {
+export class Thumbnail implements Equitable {
 
-        private binaryReference: api.util.BinaryReference;
+        private binaryReference: BinaryReference;
 
         private mimeType: string;
 
@@ -14,7 +17,7 @@ module api.thumb {
             this.size = builder.size;
         }
 
-        getBinaryReference(): api.util.BinaryReference {
+        getBinaryReference(): BinaryReference {
             return this.binaryReference;
         }
 
@@ -35,21 +38,21 @@ module api.thumb {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Thumbnail)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Thumbnail)) {
                 return false;
             }
 
             var other = <Thumbnail>o;
 
-            if (!api.ObjectHelper.equals(this.binaryReference, other.binaryReference)) {
+            if (!ObjectHelper.equals(this.binaryReference, other.binaryReference)) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
+            if (!ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
                 return false;
             }
-            if (!api.ObjectHelper.numberEquals(this.size, other.size)) {
+            if (!ObjectHelper.numberEquals(this.size, other.size)) {
                 return false;
             }
             return true;
@@ -63,20 +66,20 @@ module api.thumb {
 
     export class ThumbnailBuilder {
 
-        binaryReference: api.util.BinaryReference;
+        binaryReference: BinaryReference;
 
         mimeType: string;
 
         size: number;
 
         public fromJson(json: ThumbnailJson): ThumbnailBuilder {
-            this.binaryReference = new api.util.BinaryReference(json.binaryReference);
+            this.binaryReference = new BinaryReference(json.binaryReference);
             this.mimeType = json.mimeType;
             this.size = json.size;
             return this;
         }
 
-        public setBinaryReference(value: api.util.BinaryReference): ThumbnailBuilder {
+        public setBinaryReference(value: BinaryReference): ThumbnailBuilder {
             this.binaryReference = value;
             return this;
         }
@@ -95,4 +98,3 @@ module api.thumb {
             return new Thumbnail(this);
         }
     }
-}

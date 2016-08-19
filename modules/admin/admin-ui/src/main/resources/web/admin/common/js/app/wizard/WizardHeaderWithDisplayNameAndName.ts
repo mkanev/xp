@@ -1,6 +1,16 @@
-module api.app.wizard {
+import {TextInput} from "../../ui/text/TextInput";
+import {SpanEl} from "../../dom/SpanEl";
+import {AutosizeTextInput} from "../../ui/text/AutosizeTextInput";
+import {QueryField} from "../../query/QueryField";
+import {ValueChangedEvent} from "../../ValueChangedEvent";
+import {StringHelper} from "../../util/StringHelper";
+import {WindowDOM} from "../../dom/WindowDOM";
+import {NamePrettyfier} from "../../NamePrettyfier";
+import {Name} from "../../Name";
+import {DisplayNameGenerator} from "./DisplayNameGenerator";
+import {WizardHeader} from "./WizardHeader";
 
-    export class WizardHeaderWithDisplayNameAndNameBuilder {
+export class WizardHeaderWithDisplayNameAndNameBuilder {
 
         displayNameGenerator: DisplayNameGenerator;
 
@@ -21,13 +31,13 @@ module api.app.wizard {
 
         private forbiddenChars: RegExp = /[\/\\]+/ig;
 
-        private displayNameEl: api.ui.text.TextInput;
+        private displayNameEl: TextInput;
 
         private displayNameProgrammaticallySet: boolean;
 
-        private pathEl: api.dom.SpanEl;
+        private pathEl: SpanEl;
 
-        private nameEl: api.ui.text.TextInput;
+        private nameEl: TextInput;
 
         private autoGenerateName: boolean = false;
 
@@ -43,25 +53,25 @@ module api.app.wizard {
             this.displayNameGenerator = builder.displayNameGenerator;
             this.displayNameProgrammaticallySet = this.displayNameGenerator != null;
 
-            this.displayNameEl = api.ui.text.AutosizeTextInput.large();
-            this.displayNameEl.setPlaceholder("<Display Name>").setName(api.query.QueryField.DISPLAY_NAME);
-            this.displayNameEl.onValueChanged((event: api.ValueChangedEvent) => {
-                this.notifyPropertyChanged(api.query.QueryField.DISPLAY_NAME, event.getOldValue(), event.getNewValue());
+            this.displayNameEl = AutosizeTextInput.large();
+            this.displayNameEl.setPlaceholder("<Display Name>").setName(QueryField.DISPLAY_NAME);
+            this.displayNameEl.onValueChanged((event: ValueChangedEvent) => {
+                this.notifyPropertyChanged(QueryField.DISPLAY_NAME, event.getOldValue(), event.getNewValue());
             });
             this.appendChild(this.displayNameEl);
 
-            this.pathEl = new api.dom.SpanEl('path');
+            this.pathEl = new SpanEl('path');
             this.pathEl.hide();
             this.appendChild(this.pathEl);
 
-            this.nameEl = api.ui.text.AutosizeTextInput.middle().setForbiddenCharsRe(this.forbiddenChars);
+            this.nameEl = AutosizeTextInput.middle().setForbiddenCharsRe(this.forbiddenChars);
             this.nameEl.setPlaceholder("<name>").setName('name');
-            this.nameEl.onValueChanged((event: api.ValueChangedEvent) => {
+            this.nameEl.onValueChanged((event: ValueChangedEvent) => {
                 this.notifyPropertyChanged("name", event.getOldValue(), event.getNewValue());
             });
             this.appendChild(this.nameEl);
 
-            this.displayNameEl.onValueChanged((event: api.ValueChangedEvent) => {
+            this.displayNameEl.onValueChanged((event: ValueChangedEvent) => {
 
                 this.displayNameEl.removeClass("generated");
 
@@ -73,7 +83,7 @@ module api.app.wizard {
                     this.displayNameProgrammaticallySet =
                     generatedDisplayName.toLowerCase() === currentDisplayName.toLowerCase() ||
                     generatedDisplayName.trim().toLowerCase() === currentDisplayName.toLowerCase() ||
-                    api.util.StringHelper.isEmpty(currentDisplayName);
+                    StringHelper.isEmpty(currentDisplayName);
 
                     if (this.displayNameProgrammaticallySet) {
                         this.displayNameEl.addClass("generated");
@@ -82,7 +92,7 @@ module api.app.wizard {
                 this.doAutoGenerateName(currentDisplayName);
             });
 
-            this.nameEl.onValueChanged((event: api.ValueChangedEvent) => {
+            this.nameEl.onValueChanged((event: ValueChangedEvent) => {
                 var currentName = event.getNewValue() || "";
                 var displayName = this.getDisplayName() || "";
 
@@ -92,12 +102,12 @@ module api.app.wizard {
             });
 
             this.onShown((event) => this.updatePathAndNameWidth());
-            api.dom.WindowDOM.get().onResized((event: UIEvent) => this.updatePathAndNameWidth(), this);
+            WindowDOM.get().onResized((event: UIEvent) => this.updatePathAndNameWidth(), this);
 
         }
 
         private checkAutoGenerateName(name: string, displayName: string): boolean {
-            return api.util.StringHelper.isEmpty(name) ||
+            return StringHelper.isEmpty(name) ||
                    displayName.toLowerCase() === name.toLowerCase() ||
                    name.toLowerCase() === this.generateName(displayName).toLowerCase();
         }
@@ -193,7 +203,7 @@ module api.app.wizard {
             if (this.simplifiedNameGeneration) {
                 generated = possibleInvalidName.replace(Name.SIMPLIFIED_FORBIDDEN_CHARS, '').toLowerCase();
             } else {
-                generated = api.NamePrettyfier.prettify(possibleInvalidName);
+                generated = NamePrettyfier.prettify(possibleInvalidName);
             }
             return (generated || '');
         }
@@ -241,4 +251,3 @@ module api.app.wizard {
         }
 
     }
-}

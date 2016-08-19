@@ -1,4 +1,25 @@
-import "../../api.ts";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {UserStoreNamedEvent} from "../../../../../common/js/security/UserStoreNamedEvent";
+import {CreateUserStoreRequest} from "../../../../../common/js/security/CreateUserStoreRequest";
+import {UpdateUserStoreRequest} from "../../../../../common/js/security/UpdateUserStoreRequest";
+import {UserStoreBuilder} from "../../../../../common/js/security/UserStore";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {FormIcon} from "../../../../../common/js/app/wizard/FormIcon";
+import {WizardHeaderWithDisplayNameAndName} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardHeaderWithDisplayNameAndNameBuilder} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
+import {ImgEl} from "../../../../../common/js/dom/ImgEl";
+import {PropertyChangedEvent} from "../../../../../common/js/PropertyChangedEvent";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {UserItemCreatedEvent} from "../../../../../common/js/security/UserItemCreatedEvent";
+import {UserItemUpdatedEvent} from "../../../../../common/js/security/UserItemUpdatedEvent";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {UserItemDeletedEvent} from "../../../../../common/js/security/UserItemDeletedEvent";
+
 import {UserItemWizardPanel} from "./UserItemWizardPanel";
 import {SecurityWizardStepForm} from "./SecurityWizardStepForm";
 import {UserStoreWizardPanelParams} from "./UserStoreWizardPanelParams";
@@ -7,21 +28,6 @@ import {UserStoreWizardToolbar} from "./UserStoreWizardToolbar";
 import {UserStoreWizardStepForm} from "./UserStoreWizardStepForm";
 import {Router} from "../Router";
 import {UserStoreWizardDataLoader} from "./UserStoreWizardDataLoader";
-
-import UserStore = api.security.UserStore;
-import UserStoreKey = api.security.UserStoreKey;
-import UserStoreNamedEvent = api.security.UserStoreNamedEvent;
-import CreateUserStoreRequest = api.security.CreateUserStoreRequest;
-import UpdateUserStoreRequest = api.security.UpdateUserStoreRequest;
-import UserStoreBuilder = api.security.UserStoreBuilder;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import WizardStep = api.app.wizard.WizardStep;
-import FormIcon = api.app.wizard.FormIcon;
-import WizardHeaderWithDisplayNameAndName = api.app.wizard.WizardHeaderWithDisplayNameAndName;
-import WizardHeaderWithDisplayNameAndNameBuilder = api.app.wizard.WizardHeaderWithDisplayNameAndNameBuilder;
 
 export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
 
@@ -82,18 +88,18 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
         });
     }
 
-    public getMainToolbar(): api.ui.toolbar.Toolbar {
+    public getMainToolbar(): Toolbar {
         return <UserStoreWizardToolbar>super.getMainToolbar();
     }
 
-    protected createFormIcon(): api.app.wizard.FormIcon {
-        var iconUrl = api.dom.ImgEl.PLACEHOLDER;
+    protected createFormIcon(): FormIcon {
+        var iconUrl = ImgEl.PLACEHOLDER;
         let formIcon = new FormIcon(iconUrl, "icon");
         formIcon.addClass("icon-xlarge icon-address-book");
         return formIcon
     }
 
-    protected createWizardHeader(): api.app.wizard.WizardHeaderWithDisplayNameAndName {
+    protected createWizardHeader(): WizardHeaderWithDisplayNameAndName {
         var wizardHeader = new WizardHeaderWithDisplayNameAndNameBuilder().build();
 
 
@@ -111,7 +117,7 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
             displayName = "";
             name = "";
 
-            wizardHeader.onPropertyChanged((event: api.PropertyChangedEvent) => {
+            wizardHeader.onPropertyChanged((event: PropertyChangedEvent) => {
                 var updateStatus = event.getPropertyName() === "name" ||
                                    (wizardHeader.isAutoGenerationEnabled()
                                     && event.getPropertyName() === "displayName");
@@ -188,8 +194,8 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
     persistNewItem(): wemQ.Promise<UserStore> {
         return this.produceCreateUserStoreRequest().sendAndParse().then((userStore: UserStore) => {
 
-            api.notify.showFeedback('UserStore was created!');
-            new api.security.UserItemCreatedEvent(null, userStore).fire();
+            showFeedback('UserStore was created!');
+            new UserItemCreatedEvent(null, userStore).fire();
 
             return userStore;
         });
@@ -206,8 +212,8 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
             if (!this.getPersistedItem().getDisplayName() && !!userStore.getDisplayName()) {
                 this.notifyUserStoreNamed(userStore);
             }
-            api.notify.showFeedback('UserStore was updated!');
-            new api.security.UserItemUpdatedEvent(null, userStore).fire();
+            showFeedback('UserStore was updated!');
+            new UserItemUpdatedEvent(null, userStore).fire();
 
             return userStore;
         });
@@ -229,7 +235,7 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
 
     resolveUserStoreNameForUpdateRequest(): string {
         let wizardHeader = this.getWizardHeader();
-        if (api.util.StringHelper.isEmpty(wizardHeader.getName())) {
+        if (StringHelper.isEmpty(wizardHeader.getName())) {
             return this.getPersistedItem().getDisplayName();
         } else {
             return wizardHeader.getName();
@@ -286,7 +292,7 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
 
     private listenToUserItemEvents() {
 
-        var principalCreatedHandler = (event: api.security.UserItemCreatedEvent) => {
+        var principalCreatedHandler = (event: UserItemCreatedEvent) => {
             if (!this.getPersistedItem()) { // skip if user store is not persisted yet
                 return;
             }
@@ -300,7 +306,7 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
             }
         };
 
-        var principalDeletedHandler = (event: api.security.UserItemDeletedEvent) => {
+        var principalDeletedHandler = (event: UserItemDeletedEvent) => {
             if (!this.getPersistedItem() || !event.getPrincipals()) { // skip if user store is not persisted yet or if anything except users or roles was deleted
                 return;
             }
@@ -310,12 +316,12 @@ export class UserStoreWizardPanel extends UserItemWizardPanel<UserStore> {
             })
         };
 
-        api.security.UserItemCreatedEvent.on(principalCreatedHandler);
-        api.security.UserItemDeletedEvent.on(principalDeletedHandler);
+        UserItemCreatedEvent.on(principalCreatedHandler);
+        UserItemDeletedEvent.on(principalDeletedHandler);
 
         this.onClosed(() => {
-            api.security.UserItemCreatedEvent.un(principalCreatedHandler);
-            api.security.UserItemDeletedEvent.un(principalDeletedHandler);
+            UserItemCreatedEvent.un(principalCreatedHandler);
+            UserItemDeletedEvent.un(principalDeletedHandler);
         });
 
     }

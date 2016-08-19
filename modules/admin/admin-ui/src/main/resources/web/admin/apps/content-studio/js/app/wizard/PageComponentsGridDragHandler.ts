@@ -1,19 +1,22 @@
-import "../../api.ts";
-
-import GridDragHandler = api.ui.grid.GridDragHandler;
-import TreeNode = api.ui.treegrid.TreeNode;
-import DragEventData = api.ui.grid.DragEventData;
-import RegionView = api.liveedit.RegionView;
-import ItemView = api.liveedit.ItemView;
-import PageView = api.liveedit.PageView;
-import ComponentView = api.liveedit.ComponentView;
-import LayoutComponentView = api.liveedit.layout.LayoutComponentView;
-import FragmentComponentView = api.liveedit.fragment.FragmentComponentView;
-import Component = api.content.page.region.Component;
-
-import DragHelper = api.ui.DragHelper;
-import ElementHelper = api.dom.ElementHelper;
-import Element = api.dom.Element;
+import {GridDragHandler} from "../../../../../common/js/ui/grid/GridDragHandler";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {DragEventData} from "../../../../../common/js/ui/grid/GridDragHandler";
+import {RegionView} from "../../../../../common/js/liveedit/RegionView";
+import {ItemView} from "../../../../../common/js/liveedit/ItemView";
+import {PageView} from "../../../../../common/js/liveedit/PageView";
+import {ComponentView} from "../../../../../common/js/liveedit/ComponentView";
+import {LayoutComponentView} from "../../../../../common/js/liveedit/layout/LayoutComponentView";
+import {FragmentComponentView} from "../../../../../common/js/liveedit/fragment/FragmentComponentView";
+import {Component} from "../../../../../common/js/content/page/region/Component";
+import {DragHelper} from "../../../../../common/js/ui/DragHelper";
+import {ElementHelper} from "../../../../../common/js/dom/ElementHelper";
+import {Element} from "../../../../../common/js/dom/Element";
+import {BrowserHelper} from "../../../../../common/js/BrowserHelper";
+import {Highlighter} from "../../../../../common/js/liveedit/Highlighter";
+import {Body} from "../../../../../common/js/dom/Body";
+import {ItemViewContextMenuPosition} from "../../../../../common/js/liveedit/ItemViewContextMenuPosition";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
 
 export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
 
@@ -22,7 +25,7 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
             nodes = this.contentGrid.getRoot().getCurrentRoot().treeToList(),
             draggedNode = nodes[row.getSiblingIndex()];
 
-        if (draggedNode.getData().isDraggableView() && !api.BrowserHelper.isMobile()) { // prevent the grid from cancelling drag'n'drop by default
+        if (draggedNode.getData().isDraggableView() && !BrowserHelper.isMobile()) { // prevent the grid from cancelling drag'n'drop by default
             e.stopImmediatePropagation();
         }
     }
@@ -30,15 +33,15 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
     protected handleDragStart() {
         super.handleDragStart();
 
-        api.liveedit.Highlighter.get().hide();
-        this.getDraggableItem().getChildren().forEach((childEl: api.dom.Element) => {
+        Highlighter.get().hide();
+        this.getDraggableItem().getChildren().forEach((childEl: Element) => {
             childEl.removeClass("selected");
         });
 
         DragHelper.get().setDropAllowed(true);
 
-        api.dom.Body.get().appendChild(DragHelper.get());
-        api.dom.Body.get().onMouseMove(this.handleHelperMove);
+        Body.get().appendChild(DragHelper.get());
+        Body.get().onMouseMove(this.handleHelperMove);
 
         this.contentGrid.onMouseLeave(this.handleMouseLeave);
         this.contentGrid.onMouseEnter(this.handleMouseEnter);
@@ -46,8 +49,8 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
 
 
     protected handleDragEnd(event: Event, data) {
-        api.dom.Body.get().unMouseMove(this.handleHelperMove);
-        api.dom.Body.get().removeChild(DragHelper.get());
+        Body.get().unMouseMove(this.handleHelperMove);
+        Body.get().removeChild(DragHelper.get());
 
         this.contentGrid.unMouseLeave(this.handleMouseLeave);
         this.contentGrid.unMouseEnter(this.handleMouseEnter);
@@ -72,7 +75,7 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
         return true;
     }
 
-    protected handleMoveRows(event: Event, args: api.ui.grid.DragEventData) {
+    protected handleMoveRows(event: Event, args: DragEventData) {
         if (DragHelper.get().isDropAllowed()) {
             super.handleMoveRows(event, args);
         }
@@ -119,7 +122,7 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
 
         (<ComponentView<Component>>item.getData()).moveToRegion(<RegionView>newParent.getData(), insertIndex);
 
-        item.getData().select(null, api.liveedit.ItemViewContextMenuPosition.NONE);
+        item.getData().select(null, ItemViewContextMenuPosition.NONE);
         this.contentGrid.refresh();
 
 
@@ -137,17 +140,17 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
 
         if (parentComponentView) {
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(draggableComponentView, LayoutComponentView)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(draggableComponentView, LayoutComponentView)) {
                 if (parentComponentView.getName() != "main") {
                     DragHelper.get().setDropAllowed(false);
                     return;
                 }
             }
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(parentComponentView, RegionView)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(parentComponentView, RegionView)) {
 
-                if (api.ObjectHelper.iFrameSafeInstanceOf(draggableComponentView, FragmentComponentView)) {
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(parentComponentView.getParentItemView(), LayoutComponentView)) {
+                if (ObjectHelper.iFrameSafeInstanceOf(draggableComponentView, FragmentComponentView)) {
+                    if (ObjectHelper.iFrameSafeInstanceOf(parentComponentView.getParentItemView(), LayoutComponentView)) {
                         if ((<FragmentComponentView> draggableComponentView).containsLayout()) {
                             // Fragment with layout over Layout region
                             DragHelper.get().setDropAllowed(false);
@@ -169,7 +172,7 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
     }
 
     private updateDraggableItemPosition(draggableItem: Element, parentLevel: number) {
-        var margin = parentLevel * api.ui.treegrid.TreeGrid.LEVEL_STEP_INDENT;
+        var margin = parentLevel * TreeGrid.LEVEL_STEP_INDENT;
         var nodes = draggableItem.getEl().getElementsByClassName("toggle icon");
 
         if (nodes.length == 1) {
@@ -191,7 +194,7 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
         var isFirstChildPosition = ( data[insertBeforePos]
                 ? data[insertBeforePos - 1].calcLevel() < data[insertBeforePos].calcLevel()
                 : false) ||
-                                   (api.ObjectHelper.iFrameSafeInstanceOf(data[insertBeforePos - 1].getData(), RegionView));
+                                   (ObjectHelper.iFrameSafeInstanceOf(data[insertBeforePos - 1].getData(), RegionView));
 
         do {
 
@@ -206,12 +209,12 @@ export class PageComponentsGridDragHandler extends GridDragHandler<ItemView> {
             }
 
 
-        } while (!(api.ObjectHelper.iFrameSafeInstanceOf(parentComponentView, RegionView) ||
+        } while (!(ObjectHelper.iFrameSafeInstanceOf(parentComponentView, RegionView) ||
 
-                 ( api.ObjectHelper.iFrameSafeInstanceOf(parentComponentView, LayoutComponentView) &&  // lets drag items inside the 'main' region between layouts
+                 ( ObjectHelper.iFrameSafeInstanceOf(parentComponentView, LayoutComponentView) &&  // lets drag items inside the 'main' region between layouts
                    (parentComponentNode.isExpanded() && parentComponentNode.getChildren().length > 0) ) ||
 
-                 api.ObjectHelper.iFrameSafeInstanceOf(parentComponentView, PageView))
+                 ObjectHelper.iFrameSafeInstanceOf(parentComponentView, PageView))
 
                  || (parentComponentNode.calcLevel() >= calcLevel && !isFirstChildPosition));
 

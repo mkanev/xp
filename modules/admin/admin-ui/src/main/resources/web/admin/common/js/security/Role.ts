@@ -1,12 +1,18 @@
-module api.security {
+import {assert} from "../util/Assert";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {RoleJson} from "./RoleJson";
+import {Principal} from "./Principal";
+import {PrincipalBuilder} from "./Principal";
+import {PrincipalKey} from "./PrincipalKey";
 
-    export class Role extends Principal {
+export class Role extends Principal {
 
         private members: PrincipalKey[];
 
         constructor(builder: RoleBuilder) {
             super(builder);
-            api.util.assert(builder.key.isRole(), 'Expected PrincipalKey of type Role');
+            assert(builder.key.isRole(), 'Expected PrincipalKey of type Role');
             this.members = builder.members || [];
         }
 
@@ -14,13 +20,13 @@ module api.security {
             return this.members;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Role)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Role)) {
                 return false;
             }
 
             var other = <Role> o;
-            return super.equals(o) && api.ObjectHelper.arrayEquals(this.members, other.getMembers());
+            return super.equals(o) && ObjectHelper.arrayEquals(this.members, other.getMembers());
         }
 
         clone(): Role {
@@ -35,7 +41,7 @@ module api.security {
             return new RoleBuilder();
         }
 
-        static fromJson(json: api.security.RoleJson): Role {
+        static fromJson(json: RoleJson): Role {
             return new RoleBuilder().fromJson(json).build();
         }
     }
@@ -53,7 +59,7 @@ module api.security {
             }
         }
 
-        fromJson(json: api.security.RoleJson): RoleBuilder {
+        fromJson(json: RoleJson): RoleBuilder {
             super.fromJson(json);
 
             if (json.members) {
@@ -71,4 +77,3 @@ module api.security {
             return new Role(this);
         }
     }
-}

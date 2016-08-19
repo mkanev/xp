@@ -1,13 +1,35 @@
-module api.ui.selector.combobox {
+import {Option} from "../Option";
+import {OptionFilterInputValueChangedEvent} from "../OptionFilterInputValueChangedEvent";
+import {DropdownHandle} from "../../button/DropdownHandle";
+import {Viewer} from "../../Viewer";
+import {DelayedFunctionCall} from "../../../util/DelayedFunctionCall";
+import {Button} from "../../button/Button";
+import {FormInputEl} from "../../../dom/FormInputEl";
+import {ImgEl} from "../../../dom/ImgEl";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {DropdownExpandedEvent} from "../DropdownExpandedEvent";
+import {StyleHelper} from "../../../StyleHelper";
+import {ElementRenderedEvent} from "../../../dom/ElementRenderedEvent";
+import {PromiseHelper} from "../../../util/PromiseHelper";
+import {ContentsExistRequest} from "../../../content/resource/ContentsExistRequest";
+import {ContentsExistResult} from "../../../content/resource/result/ContentsExistResult";
+import {StringHelper} from "../../../util/StringHelper";
+import {assertNotNull} from "../../../util/Assert";
+import {FormEl} from "../../../dom/FormEl";
+import {assert} from "../../../util/Assert";
+import {AppHelper} from "../../../util/AppHelper";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {DropdownGridMultipleSelectionEvent} from "../DropdownGridMultipleSelectionEvent";
+import {DropdownGridRowSelectedEvent} from "../DropdownGridRowSelectedEvent";
+import {BaseSelectedOptionsView} from "./BaseSelectedOptionsView";
+import {ComboBoxDropdownConfig} from "./ComboBoxDropdown";
+import {ComboBoxDropdown} from "./ComboBoxDropdown";
+import {ComboBoxOptionFilterInput} from "./ComboBoxOptionFilterInput";
+import {SelectedOption} from "./SelectedOption";
+import {SelectedOptionEvent} from "./SelectedOptionEvent";
+import {SelectedOptionsView} from "./SelectedOptionsView";
 
-    import Option = api.ui.selector.Option;
-    import OptionFilterInputValueChangedEvent = api.ui.selector.OptionFilterInputValueChangedEvent;
-    import DropdownHandle = api.ui.button.DropdownHandle;
-    import Viewer = api.ui.Viewer;
-    import DelayedFunctionCall = api.util.DelayedFunctionCall;
-    import Button = api.ui.button.Button;
-
-    export interface ComboBoxConfig<T> {
+export interface ComboBoxConfig<T> {
 
         iconUrl?: string;
 
@@ -40,9 +62,9 @@ module api.ui.selector.combobox {
         removeMissingSelectedOptions?: boolean
     }
 
-    export class ComboBox<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
+    export class ComboBox<OPTION_DISPLAY_VALUE> extends FormInputEl {
 
-        private icon: api.dom.ImgEl;
+        private icon: ImgEl;
 
         private dropdownHandle: DropdownHandle;
 
@@ -54,7 +76,7 @@ module api.ui.selector.combobox {
 
         private delayedHandleInputValueChangedFnCall: DelayedFunctionCall;
 
-        private preservedInputValueChangedEvent: api.ValueChangedEvent;
+        private preservedInputValueChangedEvent: ValueChangedEvent;
 
         private selectedOptionsView: SelectedOptionsView<OPTION_DISPLAY_VALUE>;
 
@@ -70,7 +92,7 @@ module api.ui.selector.combobox {
 
         private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>):void}[] = [];
 
-        private expandedListeners: {(event: api.ui.selector.DropdownExpandedEvent): void}[] = [];
+        private expandedListeners: {(event: DropdownExpandedEvent): void}[] = [];
 
         private contentMissingListeners: {(ids: string[]): void}[] = [];
 
@@ -91,7 +113,7 @@ module api.ui.selector.combobox {
         private active: boolean = false;
 
         constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
-            super("div", "combobox", api.StyleHelper.COMMON_PREFIX, config.value);
+            super("div", "combobox", StyleHelper.COMMON_PREFIX, config.value);
             this.getEl().setAttribute("name", name);
 
             this.hideComboBoxWhenMaxReached = config.hideComboBoxWhenMaxReached;
@@ -103,7 +125,7 @@ module api.ui.selector.combobox {
                 this.selectedOptionsView.setMaximumOccurrences(config.maximumOccurrences != null ? config.maximumOccurrences : 0);
             }
             if (config.iconUrl) {
-                this.icon = new api.dom.ImgEl(config.iconUrl, "input-icon");
+                this.icon = new ImgEl(config.iconUrl, "input-icon");
                 this.appendChild(this.icon);
             }
 
@@ -152,7 +174,7 @@ module api.ui.selector.combobox {
 
             this.setupListeners();
 
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
+            this.onRendered((event: ElementRenderedEvent) => {
 
                 this.doUpdateDropdownTopPositionAndWidth();
             });
@@ -239,7 +261,7 @@ module api.ui.selector.combobox {
          */
         loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
 
-            return api.util.PromiseHelper.newResolvedVoidPromise();
+            return PromiseHelper.newResolvedVoidPromise();
         }
 
         hasOptions(): boolean {
@@ -308,8 +330,8 @@ module api.ui.selector.combobox {
                 return;
             }
 
-            new api.content.resource.ContentsExistRequest(missingOptionIds).sendAndParse().then(
-                (result: api.content.resource.result.ContentsExistResult) => {
+            new ContentsExistRequest(missingOptionIds).sendAndParse().then(
+                (result: ContentsExistResult) => {
                 optionIds.forEach((val) => {
                     var option = this.getOptionByValue(val);
                     if (option != null) {
@@ -344,7 +366,7 @@ module api.ui.selector.combobox {
             var result: string[] = [];
             values.forEach((val) => {
                 var option = this.getOptionByValue(val);
-                if (option == null && !api.util.StringHelper.isBlank(val)) {
+                if (option == null && !StringHelper.isBlank(val)) {
                     result.push(val);
                 }
             });
@@ -405,7 +427,7 @@ module api.ui.selector.combobox {
         }
 
         selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
-            api.util.assertNotNull(option, "option cannot be null");
+            assertNotNull(option, "option cannot be null");
             if (this.isOptionSelected(option)) {
                 return;
             }
@@ -422,7 +444,7 @@ module api.ui.selector.combobox {
             if (this.maximumOccurrencesReached()) {
                 this.input.setMaximumReached();
                 if (this.setNextInputFocusWhenMaxReached && !this.ignoreNextFocus) {
-                    api.dom.FormEl.moveFocusToNextFocusable(this.input);
+                    FormEl.moveFocusToNextFocusable(this.input);
                 }
                 this.dropdownHandle.setEnabled(false);
             }
@@ -438,7 +460,7 @@ module api.ui.selector.combobox {
         }
 
         deselectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
-            api.util.assertNotNull(option, "option cannot be null");
+            assertNotNull(option, "option cannot be null");
             if (!this.isOptionSelected(option)) {
                 return;
             }
@@ -531,7 +553,7 @@ module api.ui.selector.combobox {
 
         // Checks added occurrences
         maximumOccurrencesReached(): boolean {
-            api.util.assert(this.selectedOptionsView != null,
+            assert(this.selectedOptionsView != null,
                 "No point of calling maximumOccurrencesReached when no multiple selections are enabled");
 
             return this.selectedOptionsView.maximumOccurrencesReached();
@@ -554,7 +576,7 @@ module api.ui.selector.combobox {
 
         setInputIconUrl(iconUrl: string) {
             if (!this.icon) {
-                this.icon = new api.dom.ImgEl();
+                this.icon = new ImgEl();
                 this.icon.addClass("input-icon");
                 this.icon.insertBeforeEl(this.input);
             }
@@ -568,7 +590,7 @@ module api.ui.selector.combobox {
 
         private setupListeners() {
 
-            api.util.AppHelper.focusInOut(this, () => {
+            AppHelper.focusInOut(this, () => {
                 this.hideDropdown();
                 this.active = false;
             });
@@ -602,7 +624,7 @@ module api.ui.selector.combobox {
                         this.showDropdown();
                         this.giveInputFocus();
                         this.loadOptionsAfterShowDropdown().catch((reason: any) => {
-                            api.DefaultErrorHandler.handle(reason);
+                            DefaultErrorHandler.handle(reason);
                         });
 
                     }
@@ -614,7 +636,7 @@ module api.ui.selector.combobox {
                 this.comboBoxDropdown.onMultipleSelection(this.handleMultipleSelectionChanged.bind(this));
             }
 
-            this.input.onValueChanged((event: api.ValueChangedEvent) => {
+            this.input.onValueChanged((event: ValueChangedEvent) => {
 
                 this.preservedInputValueChangedEvent = event;
                 if (this.delayedInputValueChangedHandling == 0) {
@@ -634,7 +656,7 @@ module api.ui.selector.combobox {
                     this.loadOptionsAfterShowDropdown().then(() => {
                         this.comboBoxDropdown.navigateToRowIfNotActive();
                     }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }).done();
                     this.input.setReadOnly(false);
                 }
@@ -689,7 +711,7 @@ module api.ui.selector.combobox {
                         this.input.setReadOnly(true);
 
                     }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }).done();
 
                 } else {
@@ -843,13 +865,13 @@ module api.ui.selector.combobox {
             });
         }
 
-        onExpanded(listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) {
+        onExpanded(listener: (event: DropdownExpandedEvent)=>void) {
             this.expandedListeners.push(listener);
         }
 
         private notifyExpanded(expanded: boolean) {
-            var event = new api.ui.selector.DropdownExpandedEvent(this.comboBoxDropdown.getDropdownGrid().getElement(), expanded);
-            this.expandedListeners.forEach((listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) => {
+            var event = new DropdownExpandedEvent(this.comboBoxDropdown.getDropdownGrid().getElement(), expanded);
+            this.expandedListeners.forEach((listener: (event: DropdownExpandedEvent)=>void) => {
                 listener(event);
             });
         }
@@ -911,4 +933,3 @@ module api.ui.selector.combobox {
         }
     }
 
-}

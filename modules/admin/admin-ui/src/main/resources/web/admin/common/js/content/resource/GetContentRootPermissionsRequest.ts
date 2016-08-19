@@ -1,8 +1,10 @@
-module api.content.resource {
+import {AccessControlList} from "../../security/acl/AccessControlList";
+import {PermissionsJson} from "../json/PermissionsJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import AccessControlList = api.security.acl.AccessControlList;
-    import PermissionsJson = api.content.json.PermissionsJson;
-    export class GetContentRootPermissionsRequest extends ContentResourceRequest<PermissionsJson, AccessControlList> {
+export class GetContentRootPermissionsRequest extends ContentResourceRequest<PermissionsJson, AccessControlList> {
 
         constructor() {
             super();
@@ -13,15 +15,14 @@ module api.content.resource {
             return {};
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "rootPermissions");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "rootPermissions");
         }
 
         sendAndParse(): wemQ.Promise<AccessControlList> {
 
-            return this.send().then((response: api.rest.JsonResponse<PermissionsJson>) => {
+            return this.send().then((response: JsonResponse<PermissionsJson>) => {
                 return AccessControlList.fromJson(response.getResult());
             });
         }
     }
-}

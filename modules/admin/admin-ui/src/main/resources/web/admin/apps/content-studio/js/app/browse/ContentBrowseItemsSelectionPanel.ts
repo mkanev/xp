@@ -1,15 +1,14 @@
-import "../../api.ts";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {BrowseItemsSelectionPanel} from "../../../../../common/js/app/browse/BrowseItemsSelectionPanel";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ContentSummaryAndCompareStatusViewer} from "../../../../../common/js/content/ContentSummaryAndCompareStatusViewer";
+import {ContentSummaryViewer} from "../../../../../common/js/content/ContentSummaryViewer";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
+import {BrowseItemsChanges} from "../../../../../common/js/app/browse/BrowseItemsChanges";
+
 import {ContentBrowseItem} from "./ContentBrowseItem";
 import {ContentTreeGrid} from "./ContentTreeGrid";
 import {ShowAllAction} from "./action/ShowAllAction";
-
-import BrowseItem = api.app.browse.BrowseItem;
-import BrowseItemsSelectionPanel = api.app.browse.BrowseItemsSelectionPanel;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import ContentSummaryAndCompareStatusViewer = api.content.ContentSummaryAndCompareStatusViewer;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-import Toolbar = api.ui.toolbar.Toolbar;
-import BrowseItemsChanges = api.app.browse.BrowseItemsChanges;
 
 export class ContentBrowseItemsSelectionPanel extends BrowseItemsSelectionPanel<ContentSummaryAndCompareStatus> {
 

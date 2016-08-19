@@ -1,6 +1,8 @@
-module api.query.expr {
+import {ConstraintExpr} from "./ConstraintExpr";
+import {Expression} from "./Expression";
+import {OrderExpr} from "./OrderExpr";
 
-    export class QueryExpr implements Expression {
+export class QueryExpr implements Expression {
 
         private constraint: ConstraintExpr;
         private orderList: OrderExpr[] = [];
@@ -40,4 +42,3 @@ module api.query.expr {
             return result;
         }
     }
-}

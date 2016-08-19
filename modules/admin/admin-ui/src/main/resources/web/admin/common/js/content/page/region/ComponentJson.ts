@@ -1,7 +1,6 @@
-module api.content.page.region {
 
-    export interface ComponentJson {
+
+export interface ComponentJson {
 
         name:string;
     }
-}

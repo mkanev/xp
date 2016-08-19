@@ -1,20 +1,21 @@
-import "../../api.ts";
+import {User} from "../../../../../common/js/security/User";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PasswordGenerator} from "../../../../../common/js/ui/text/PasswordGenerator";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {Validators} from "../../../../../common/js/ui/form/Validators";
+import {FormItem} from "../../../../../common/js/ui/form/FormItem";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Button} from "../../../../../common/js/ui/button/Button";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {Form} from "../../../../../common/js/ui/form/Form";
+import {ValidityChangedEvent} from "../../../../../common/js/ValidityChangedEvent";
+import {WizardStepValidityChangedEvent} from "../../../../../common/js/app/wizard/WizardStepValidityChangedEvent";
 
-import User = api.security.User;
-import Principal = api.security.Principal;
-
-import PasswordGenerator = api.ui.text.PasswordGenerator;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-import Validators = api.ui.form.Validators;
-import FormItem = api.ui.form.FormItem;
-import Fieldset = api.ui.form.Fieldset;
-import Button = api.ui.button.Button;
 import {OpenChangePasswordDialogEvent} from "./OpenChangePasswordDialogEvent";
 
-export class UserPasswordWizardStepForm extends api.app.wizard.WizardStepForm {
+export class UserPasswordWizardStepForm extends WizardStepForm {
 
     private password: PasswordGenerator;
 
@@ -45,10 +46,10 @@ export class UserPasswordWizardStepForm extends api.app.wizard.WizardStepForm {
         this.fieldSet.add(this.createPasswordFormItem);
         this.fieldSet.add(this.updatePasswordFormItem);
 
-        var passwordForm = new api.ui.form.Form().add(this.fieldSet);
+        var passwordForm = new Form().add(this.fieldSet);
 
-        passwordForm.onValidityChanged((event: api.ValidityChangedEvent) => {
-            this.notifyValidityChanged(new api.app.wizard.WizardStepValidityChangedEvent(event.isValid()));
+        passwordForm.onValidityChanged((event: ValidityChangedEvent) => {
+            this.notifyValidityChanged(new WizardStepValidityChangedEvent(event.isValid()));
         });
 
         this.changePasswordButton.onClicked(() => {

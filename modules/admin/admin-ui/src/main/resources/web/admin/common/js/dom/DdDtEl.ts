@@ -1,6 +1,7 @@
-module api.dom {
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
 
-    export class DdDtEl extends Element {
+export class DdDtEl extends Element {
 
         constructor(tag: string, className?: string) {
             super(this.getElementBuilder(tag).setClassName(className));
@@ -15,4 +16,3 @@ module api.dom {
             return builder;
         }
     }
-}

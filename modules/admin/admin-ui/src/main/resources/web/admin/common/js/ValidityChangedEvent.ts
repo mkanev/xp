@@ -1,6 +1,6 @@
-module api {
 
-    export class ValidityChangedEvent {
+
+export class ValidityChangedEvent {
 
         private valid: boolean;
 
@@ -13,4 +13,3 @@ module api {
         }
 
     }
-}

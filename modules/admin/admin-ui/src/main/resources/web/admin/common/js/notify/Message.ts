@@ -1,6 +1,6 @@
-module api.notify {
 
-    export enum Type {
+
+export enum Type {
         INFO,
         ERROR,
         WARNING,
@@ -79,4 +79,3 @@ module api.notify {
             return new Message(Type.ACTION, text, autoHide);
         }
     }
-}

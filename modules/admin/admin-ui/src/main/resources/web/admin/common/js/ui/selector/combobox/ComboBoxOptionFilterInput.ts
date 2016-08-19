@@ -1,6 +1,6 @@
-module api.ui.selector.combobox {
+import {OptionFilterInput} from "../OptionFilterInput";
 
-    export class ComboBoxOptionFilterInput extends api.ui.selector.OptionFilterInput {
+export class ComboBoxOptionFilterInput extends OptionFilterInput {
 
         constructor(placeholderText?: string) {
             super(placeholderText);
@@ -16,4 +16,3 @@ module api.ui.selector.combobox {
         }
     }
 
-}

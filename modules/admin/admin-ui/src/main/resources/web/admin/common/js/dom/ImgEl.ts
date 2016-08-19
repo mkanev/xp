@@ -1,6 +1,8 @@
-module api.dom {
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
+import {ImgHelper} from "./ImgElHelper";
 
-    export class ImgEl extends Element {
+export class ImgEl extends Element {
 
         private loaded: boolean;
 
@@ -100,4 +102,3 @@ module api.dom {
             return this.getCurrentSrc() == ImgEl.PLACEHOLDER;
         }
     }
-}

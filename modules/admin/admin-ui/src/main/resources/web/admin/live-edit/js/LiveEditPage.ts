@@ -1,35 +1,44 @@
-import "./api.ts";
-
-import Component = api.content.page.region.Component;
-import Page = api.content.page.Page;
-import Regions = api.content.page.region.Regions;
-import Region = api.content.page.region.Region;
-import ComponentType = api.content.page.region.ComponentType;
-import ComponentName = api.content.page.region.ComponentName;
-import DescriptorBasedComponentBuilder = api.content.page.region.DescriptorBasedComponentBuilder;
-import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-import ComponentView = api.liveedit.ComponentView;
-import PageView = api.liveedit.PageView;
-import PageViewBuilder = api.liveedit.PageViewBuilder;
-import ItemView = api.liveedit.ItemView;
-import RegionView = api.liveedit.RegionView;
-import ItemViewId = api.liveedit.ItemViewId;
-import LayoutComponentView = api.liveedit.layout.LayoutComponentView;
-import TextComponentView = api.liveedit.text.TextComponentView;
-import ComponentViewDragStartedEvent = api.liveedit.ComponentViewDragStartedEvent;
-import ComponentViewDragStoppedEvent = api.liveedit.ComponentViewDragStoppedEvent;
-import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
-import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
-import ComponentRemoveEvent = api.liveedit.LiveComponentRemovedEvent;
-import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
-import ComponentResetEvent = api.liveedit.LiveComponentResetEvent;
-import ItemViewIdProducer = api.liveedit.ItemViewIdProducer;
-import Shader = api.liveedit.Shader;
-import Highlighter = api.liveedit.Highlighter;
-import SelectedHighlighter = api.liveedit.SelectedHighlighter;
-import Cursor = api.liveedit.Cursor;
-import DragAndDrop = api.liveedit.DragAndDrop;
-import Exception = api.Exception;
+import {Component} from "../../common/js/content/page/region/Component";
+import {Page} from "../../common/js/content/page/Page";
+import {Regions} from "../../common/js/content/page/region/Regions";
+import {Region} from "../../common/js/content/page/region/Region";
+import {ComponentType} from "../../common/js/content/page/region/ComponentType";
+import {ComponentName} from "../../common/js/content/page/region/ComponentName";
+import {DescriptorBasedComponentBuilder} from "../../common/js/content/page/region/DescriptorBasedComponent";
+import {DescriptorBasedComponent} from "../../common/js/content/page/region/DescriptorBasedComponent";
+import {ComponentView} from "../../common/js/liveedit/ComponentView";
+import {PageView} from "../../common/js/liveedit/PageView";
+import {PageViewBuilder} from "../../common/js/liveedit/PageView";
+import {ItemView} from "../../common/js/liveedit/ItemView";
+import {RegionView} from "../../common/js/liveedit/RegionView";
+import {ItemViewId} from "../../common/js/liveedit/ItemViewId";
+import {LayoutComponentView} from "../../common/js/liveedit/layout/LayoutComponentView";
+import {TextComponentView} from "../../common/js/liveedit/text/TextComponentView";
+import {ComponentViewDragStartedEvent} from "../../common/js/liveedit/ComponentViewDragStartedEvent";
+import {ComponentViewDragStoppedEvent} from "../../common/js/liveedit/ComponentViewDraggingStoppedEvent";
+import {LiveComponentAddedEvent as ComponentAddedEvent} from "../../common/js/liveedit/LiveComponentAddedEvent";
+import {ItemViewDeselectedEvent} from "../../common/js/liveedit/ItemViewDeselectedEvent";
+import {LiveComponentRemovedEvent as ComponentRemoveEvent} from "../../common/js/liveedit/LiveComponentRemovedEvent";
+import {ItemViewSelectedEvent} from "../../common/js/liveedit/ItemViewSelectedEvent";
+import {LiveComponentResetEvent as ComponentResetEvent} from "../../common/js/liveedit/LiveComponentResetEvent";
+import {ItemViewIdProducer} from "../../common/js/liveedit/ItemViewIdProducer";
+import {Shader} from "../../common/js/liveedit/Shader";
+import {Highlighter} from "../../common/js/liveedit/Highlighter";
+import {SelectedHighlighter} from "../../common/js/liveedit/SelectedHighlighter";
+import {Cursor} from "../../common/js/liveedit/Cursor";
+import {DragAndDrop} from "../../common/js/liveedit/DragAndDrop";
+import {Exception} from "../../common/js/Exception";
+import {SkipLiveEditReloadConfirmationEvent} from "../../common/js/liveedit/SkipLiveEditReloadConfirmationEvent";
+import {InitializeLiveEditEvent} from "../../common/js/liveedit/InitializeLiveEditEvent";
+import {Body} from "../../common/js/dom/Body";
+import {ObjectHelper} from "../../common/js/ObjectHelper";
+import {LiveEditPageInitializationErrorEvent} from "../../common/js/liveedit/LiveEditPageInitializationErrorEvent";
+import {Tooltip} from "../../common/js/ui/Tooltip";
+import {LiveEditPageViewReadyEvent} from "../../common/js/liveedit/LiveEditPageViewReadyEvent";
+import {WindowDOM} from "../../common/js/dom/WindowDOM";
+import {PageUnloadedEvent} from "../../common/js/liveedit/PageUnloadedEvent";
+import {ComponentLoadedEvent} from "../../common/js/liveedit/ComponentLoadedEvent";
+import {LayoutItemType} from "../../common/js/liveedit/layout/LayoutItemType";
 
 export class LiveEditPage {
 
@@ -39,25 +48,25 @@ export class LiveEditPage {
 
     constructor() {
 
-        api.liveedit.SkipLiveEditReloadConfirmationEvent.on((event: api.liveedit.SkipLiveEditReloadConfirmationEvent) => {
+        SkipLiveEditReloadConfirmationEvent.on((event: SkipLiveEditReloadConfirmationEvent) => {
             this.skipNextReloadConfirmation = event.isSkip();
         });
 
-        api.liveedit.InitializeLiveEditEvent.on((event: api.liveedit.InitializeLiveEditEvent) => {
+        InitializeLiveEditEvent.on((event: InitializeLiveEditEvent) => {
 
             var liveEditModel = event.getLiveEditModel();
 
-            var body = api.dom.Body.get().loadExistingChildren();
+            var body = Body.get().loadExistingChildren();
             try {
                 this.pageView =
                     new PageViewBuilder().setItemViewProducer(new ItemViewIdProducer()).setLiveEditModel(liveEditModel).setElement(
                         body).build();
             } catch (error) {
-                if (api.ObjectHelper.iFrameSafeInstanceOf(error, Exception)) {
-                    new api.liveedit.LiveEditPageInitializationErrorEvent('The Live edit page could not be initialized. ' +
+                if (ObjectHelper.iFrameSafeInstanceOf(error, Exception)) {
+                    new LiveEditPageInitializationErrorEvent('The Live edit page could not be initialized. ' +
                                                                           error.getMessage()).fire();
                 } else {
-                    new api.liveedit.LiveEditPageInitializationErrorEvent('The Live edit page could not be initialized. ' +
+                    new LiveEditPageInitializationErrorEvent('The Live edit page could not be initialized. ' +
                                                                           error).fire();
                 }
                 return;
@@ -65,18 +74,18 @@ export class LiveEditPage {
 
             DragAndDrop.init(this.pageView);
 
-            api.ui.Tooltip.allowMultipleInstances(false);
+            Tooltip.allowMultipleInstances(false);
 
             this.registerGlobalListeners();
 
-            new api.liveedit.LiveEditPageViewReadyEvent(this.pageView).fire();
+            new LiveEditPageViewReadyEvent(this.pageView).fire();
         });
     }
 
 
     private registerGlobalListeners(): void {
 
-        api.dom.WindowDOM.get().onBeforeUnload((event) => {
+        WindowDOM.get().onBeforeUnload((event) => {
             if (!this.skipNextReloadConfirmation) {
                 var message = "This will close this wizard!";
                 (event || window.event)['returnValue'] = message;
@@ -84,10 +93,10 @@ export class LiveEditPage {
             }
         });
 
-        api.dom.WindowDOM.get().onUnload((event) => {
+        WindowDOM.get().onUnload((event) => {
 
             if (!this.skipNextReloadConfirmation) {
-                new api.liveedit.PageUnloadedEvent(this.pageView).fire();
+                new PageUnloadedEvent(this.pageView).fire();
                 // do remove to trigger model unbinding
             } else {
                 this.skipNextReloadConfirmation = false;
@@ -95,9 +104,9 @@ export class LiveEditPage {
             this.pageView.remove();
         });
 
-        api.liveedit.ComponentLoadedEvent.on((event: api.liveedit.ComponentLoadedEvent) => {
+        ComponentLoadedEvent.on((event: ComponentLoadedEvent) => {
 
-            if (api.liveedit.layout.LayoutItemType.get().equals(event.getNewComponentView().getType())) {
+            if (LayoutItemType.get().equals(event.getNewComponentView().getType())) {
                 DragAndDrop.get().createSortableLayout(event.getNewComponentView());
             } else {
                 DragAndDrop.get().refreshSortable();

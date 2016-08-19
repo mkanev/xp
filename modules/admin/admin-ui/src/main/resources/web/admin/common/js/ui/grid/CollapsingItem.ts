@@ -1,6 +1,6 @@
-module api.ui.grid {
 
-    export class CollapsingItem<T>  {
+
+export class CollapsingItem<T>  {
 
         private actualItem:T;
 
@@ -8,4 +8,3 @@ module api.ui.grid {
             this.actualItem = actualItem;
         }
     }
-}

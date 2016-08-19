@@ -1,6 +1,10 @@
-module api.content.attachment {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {Attachment} from "./Attachment";
+import {AttachmentBuilder} from "./Attachment";
+import {AttachmentJson} from "./AttachmentJson";
 
-    export class Attachments implements api.Equitable {
+export class Attachments implements Equitable {
 
         private attachmentByName: {[s:string] : Attachment;} = {};
 
@@ -44,14 +48,14 @@ module api.content.attachment {
             return this.size;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Attachments)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Attachments)) {
                 return false;
             }
 
             var other = <Attachments>o;
 
-            if (!api.ObjectHelper.arrayEquals(this.attachments, other.attachments)) {
+            if (!ObjectHelper.arrayEquals(this.attachments, other.attachments)) {
                 return false;
             }
 
@@ -90,4 +94,3 @@ module api.content.attachment {
             return new Attachments(this);
         }
     }
-}

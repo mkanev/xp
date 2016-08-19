@@ -1,6 +1,15 @@
-module api.content.page.region {
+import {FragmentComponent} from "./FragmentComponent";
+import {FragmentComponentJson} from "./FragmentComponentJson";
+import {ImageComponent} from "./ImageComponent";
+import {ImageComponentJson} from "./ImageComponentJson";
+import {LayoutComponent} from "./LayoutComponent";
+import {LayoutComponentJson} from "./LayoutComponentJson";
+import {PartComponent} from "./PartComponent";
+import {PartComponentJson} from "./PartComponentJson";
+import {TextComponent} from "./TextComponent";
+import {TextComponentJson} from "./TextComponentJson";
 
-    export interface ComponentTypeWrapperJson {
+export interface ComponentTypeWrapperJson {
 
         ImageComponent?:ImageComponentJson;
 
@@ -12,4 +21,3 @@ module api.content.page.region {
 
         FragmentComponent?:FragmentComponentJson;
     }
-}

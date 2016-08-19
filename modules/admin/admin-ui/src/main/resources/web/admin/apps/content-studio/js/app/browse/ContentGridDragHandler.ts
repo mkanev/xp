@@ -1,10 +1,8 @@
-import "../../api.ts";
-
-import GridDragHandler = api.ui.grid.GridDragHandler;
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import OrderChildMovement = api.content.order.OrderChildMovement;
-import OrderChildMovements = api.content.order.OrderChildMovements;
+import {GridDragHandler} from "../../../../../common/js/ui/grid/GridDragHandler";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {OrderChildMovement} from "../../../../../common/js/content/order/OrderChildMovement";
+import {OrderChildMovements} from "../../../../../common/js/content/order/OrderChildMovements";
 
 export class ContentGridDragHandler extends GridDragHandler<ContentSummaryAndCompareStatus> {
 

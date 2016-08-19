@@ -1,6 +1,6 @@
-module api.app.wizard {
 
-    export class WizardStepValidityChangedEvent {
+
+export class WizardStepValidityChangedEvent {
 
         private valid: boolean;
 
@@ -12,4 +12,3 @@ module api.app.wizard {
             return this.valid;
         }
     }
-}

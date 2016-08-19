@@ -1,7 +1,7 @@
-module api.ui.button {
+import {Button} from "./Button";
+import {Action} from "../Action";
 
-
-    export class CycleButton extends api.ui.button.Button {
+export class CycleButton extends Button {
 
         private actionList: Action[];
 
@@ -87,4 +87,3 @@ module api.ui.button {
         }
 
     }
-}

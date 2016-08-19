@@ -1,4 +1,96 @@
-import "../../api.ts";
+import {PropertyTree} from "../../../../../common/js/data/PropertyTree";
+import {FormView} from "../../../../../common/js/form/FormView";
+import {FormContextBuilder} from "../../../../../common/js/form/FormContext";
+import {ContentFormContext} from "../../../../../common/js/content/form/ContentFormContext";
+import {Content} from "../../../../../common/js/content/Content";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {ContentPath} from "../../../../../common/js/content/ContentPath";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentBuilder} from "../../../../../common/js/content/Content";
+import {Thumbnail} from "../../../../../common/js/thumb/Thumbnail";
+import {ContentName} from "../../../../../common/js/content/ContentName";
+import {ContentUnnamed} from "../../../../../common/js/content/ContentUnnamed";
+import {CreateContentRequest} from "../../../../../common/js/content/resource/CreateContentRequest";
+import {UpdateContentRequest} from "../../../../../common/js/content/resource/UpdateContentRequest";
+import {GetContentByIdRequest} from "../../../../../common/js/content/resource/GetContentByIdRequest";
+import {ExtraData} from "../../../../../common/js/content/ExtraData";
+import {Page} from "../../../../../common/js/content/page/Page";
+import {Site} from "../../../../../common/js/content/site/Site";
+import {SiteModel} from "../../../../../common/js/content/site/SiteModel";
+import {LiveEditModel} from "../../../../../common/js/liveedit/LiveEditModel";
+import {ContentType} from "../../../../../common/js/schema/content/ContentType";
+import {PageTemplate} from "../../../../../common/js/content/page/PageTemplate";
+import {PageDescriptor} from "../../../../../common/js/content/page/PageDescriptor";
+import {AccessControlList} from "../../../../../common/js/security/acl/AccessControlList";
+import {AccessControlEntry} from "../../../../../common/js/security/acl/AccessControlEntry";
+import {GetPageTemplateByKeyRequest} from "../../../../../common/js/content/page/GetPageTemplateByKeyRequest";
+import {GetPageDescriptorByKeyRequest} from "../../../../../common/js/content/page/GetPageDescriptorByKeyRequest";
+import {IsRenderableRequest} from "../../../../../common/js/content/page/IsRenderableRequest";
+import {GetNearestSiteRequest} from "../../../../../common/js/content/resource/GetNearestSiteRequest";
+import {GetPageDescriptorsByApplicationsRequest} from "../../../../../common/js/content/page/GetPageDescriptorsByApplicationsRequest";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveRanges} from "../../../../../common/js/ui/responsive/ResponsiveRanges";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {FormIcon} from "../../../../../common/js/app/wizard/FormIcon";
+import {FileUploadCompleteEvent} from "../../../../../common/js/ui/uploader/FileUploadCompleteEvent";
+import {TogglerButton} from "../../../../../common/js/ui/button/TogglerButton";
+import {WizardHeaderWithDisplayNameAndName} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardHeaderWithDisplayNameAndNameBuilder} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {WizardStepValidityChangedEvent} from "../../../../../common/js/app/wizard/WizardStepValidityChangedEvent";
+import {ContentRequiresSaveEvent} from "../../../../../common/js/content/event/ContentRequiresSaveEvent";
+import {ImageErrorEvent} from "../../../../../common/js/content/image/ImageErrorEvent";
+import {Application} from "../../../../../common/js/application/Application";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {ApplicationEvent} from "../../../../../common/js/application/ApplicationEvent";
+import {ApplicationEventType} from "../../../../../common/js/application/ApplicationEvent";
+import {Mixin} from "../../../../../common/js/schema/mixin/Mixin";
+import {MixinName} from "../../../../../common/js/schema/mixin/MixinName";
+import {MixinNames} from "../../../../../common/js/schema/mixin/MixinNames";
+import {GetMixinByQualifiedNameRequest} from "../../../../../common/js/schema/mixin/GetMixinByQualifiedNameRequest";
+import {ContentDeletedEvent} from "../../../../../common/js/content/event/ContentDeletedEvent";
+import {ContentUpdatedEvent} from "../../../../../common/js/content/event/ContentUpdatedEvent";
+import {ContentNamedEvent} from "../../../../../common/js/content/event/ContentNamedEvent";
+import {ActiveContentVersionSetEvent} from "../../../../../common/js/content/event/ActiveContentVersionSetEvent";
+import {ContentServerEventsHandler} from "../../../../../common/js/content/event/ContentServerEventsHandler";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
+import {CycleButton} from "../../../../../common/js/ui/button/CycleButton";
+import {WizardPanel} from "../../../../../common/js/app/wizard/WizardPanel";
+import {ApplicationAddedEvent} from "../../../../../common/js/content/site/ApplicationAddedEvent";
+import {ApplicationRemovedEvent} from "../../../../../common/js/content/site/ApplicationRemovedEvent";
+import {showWarning} from "../../../../../common/js/notify/MessageBus";
+import {GetApplicationRequest} from "../../../../../common/js/application/GetApplicationRequest";
+import {MaskContentWizardPanelEvent} from "../../../../../common/js/app/wizard/MaskContentWizardPanelEvent";
+import {WizardHeader} from "../../../../../common/js/app/wizard/WizardHeader";
+import {Panel} from "../../../../../common/js/ui/panel/Panel";
+import {ValidityChangedEvent} from "../../../../../common/js/ValidityChangedEvent";
+import {FileUploadedEvent} from "../../../../../common/js/ui/uploader/FileUploadedEvent";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {IsAuthenticatedRequest} from "../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {LoginResult} from "../../../../../common/js/security/auth/LoginResult";
+import {Exception} from "../../../../../common/js/Exception";
+import {ExceptionType} from "../../../../../common/js/Exception";
+import {ValueTypes} from "../../../../../common/js/data/ValueTypes";
+import {FormItemContainer} from "../../../../../common/js/form/FormItemContainer";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {FieldSet} from "../../../../../common/js/form/FieldSet";
+import {FormItemSet} from "../../../../../common/js/form/FormItemSet";
+import {Input} from "../../../../../common/js/form/Input";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {PropertyTreeComparator} from "../../../../../common/js/data/PropertyTreeComparator";
+import {ContentIconUrlResolver} from "../../../../../common/js/content/util/ContentIconUrlResolver";
+import {FormBuilder} from "../../../../../common/js/form/Form";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {Action} from "../../../../../common/js/ui/Action";
+import {Permission} from "../../../../../common/js/security/acl/Permission";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {RoleKeys} from "../../../../../common/js/security/RoleKeys";
+import {CompareStatusFormatter} from "../../../../../common/js/content/CompareStatus";
+
 import {DefaultModels} from "./page/DefaultModels";
 import {ContentWizardStepForm} from "./ContentWizardStepForm";
 import {SettingsWizardStepForm} from "./SettingsWizardStepForm";
@@ -16,74 +108,7 @@ import {UpdatePersistedContentRoutine} from "./UpdatePersistedContentRoutine";
 import {ContentWizardDataLoader} from "./ContentWizardDataLoader";
 import {ThumbnailUploaderEl} from "./ThumbnailUploaderEl";
 
-import PropertyTree = api.data.PropertyTree;
-import FormView = api.form.FormView;
-import FormContextBuilder = api.form.FormContextBuilder;
-import ContentFormContext = api.content.form.ContentFormContext;
-import Content = api.content.Content;
-import ContentId = api.content.ContentId;
-import ContentPath = api.content.ContentPath;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
-import ContentBuilder = api.content.ContentBuilder;
-import Thumbnail = api.thumb.Thumbnail;
-import ContentName = api.content.ContentName;
-import ContentUnnamed = api.content.ContentUnnamed;
-import CreateContentRequest = api.content.resource.CreateContentRequest;
-import UpdateContentRequest = api.content.resource.UpdateContentRequest;
-import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
-import ExtraData = api.content.ExtraData;
-import Page = api.content.page.Page;
-import Site = api.content.site.Site;
-import SiteModel = api.content.site.SiteModel;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import ContentType = api.schema.content.ContentType;
-import PageTemplate = api.content.page.PageTemplate;
-import PageDescriptor = api.content.page.PageDescriptor;
-import AccessControlList = api.security.acl.AccessControlList;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import GetPageTemplateByKeyRequest = api.content.page.GetPageTemplateByKeyRequest;
-import GetPageDescriptorByKeyRequest = api.content.page.GetPageDescriptorByKeyRequest;
-import IsRenderableRequest = api.content.page.IsRenderableRequest;
-import GetNearestSiteRequest = api.content.resource.GetNearestSiteRequest;
-import GetPageDescriptorsByApplicationsRequest = api.content.page.GetPageDescriptorsByApplicationsRequest;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import FormIcon = api.app.wizard.FormIcon;
-import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
-import TogglerButton = api.ui.button.TogglerButton;
-import WizardHeaderWithDisplayNameAndName = api.app.wizard.WizardHeaderWithDisplayNameAndName;
-import WizardHeaderWithDisplayNameAndNameBuilder = api.app.wizard.WizardHeaderWithDisplayNameAndNameBuilder;
-import WizardStep = api.app.wizard.WizardStep;
-import WizardStepValidityChangedEvent = api.app.wizard.WizardStepValidityChangedEvent;
-import ContentRequiresSaveEvent = api.content.event.ContentRequiresSaveEvent;
-import ImageErrorEvent = api.content.image.ImageErrorEvent;
-
-import Application = api.application.Application;
-import ApplicationKey = api.application.ApplicationKey;
-import ApplicationEvent = api.application.ApplicationEvent;
-import ApplicationEventType = api.application.ApplicationEventType;
-import Mixin = api.schema.mixin.Mixin;
-import MixinName = api.schema.mixin.MixinName;
-import MixinNames = api.schema.mixin.MixinNames;
-import GetMixinByQualifiedNameRequest = api.schema.mixin.GetMixinByQualifiedNameRequest;
-
-import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
-import ContentUpdatedEvent = api.content.event.ContentUpdatedEvent;
-import ContentNamedEvent = api.content.event.ContentNamedEvent;
-import ActiveContentVersionSetEvent = api.content.event.ActiveContentVersionSetEvent;
-import ContentServerEventsHandler = api.content.event.ContentServerEventsHandler;
-
-import DialogButton = api.ui.dialog.DialogButton;
-
-import Toolbar = api.ui.toolbar.Toolbar;
-import CycleButton = api.ui.button.CycleButton;
-
-
-export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
+export class ContentWizardPanel extends WizardPanel<Content> {
 
     private contentParams: ContentWizardPanelParams;
 
@@ -123,7 +148,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
     private isSecurityWizardStepFormAllowed: boolean;
 
-    private publishButtonForMobile: api.ui.dialog.DialogButton;
+    private publishButtonForMobile: DialogButton;
 
     private inMobileViewMode: boolean;
 
@@ -133,9 +158,9 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
     private dataChangedListener: () => void;
 
-    private applicationAddedListener: (event: api.content.site.ApplicationAddedEvent) => void;
+    private applicationAddedListener: (event: ApplicationAddedEvent) => void;
 
-    private applicationRemovedListener: (event: api.content.site.ApplicationRemovedEvent) => void;
+    private applicationRemovedListener: (event: ApplicationRemovedEvent) => void;
 
     private applicationUnavailableListener: (event: ApplicationEvent) => void;
 
@@ -209,11 +234,11 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
             }
         };
 
-        this.applicationAddedListener = (event: api.content.site.ApplicationAddedEvent) => {
+        this.applicationAddedListener = (event: ApplicationAddedEvent) => {
             this.addMetadataStepForms(event.getApplicationKey());
         };
 
-        this.applicationRemovedListener = (event: api.content.site.ApplicationRemovedEvent) => {
+        this.applicationRemovedListener = (event: ApplicationRemovedEvent) => {
             this.removeMetadataStepForms();
         };
 
@@ -226,19 +251,19 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                 let message = "Required application " + event.getApplicationKey().toString() + " not available.";
 
                 if (this.isVisible()) {
-                    api.notify.showWarning(message);
+                    showWarning(message);
                 }
                 else {
                     let shownHandler = () => {
-                        new api.application.GetApplicationRequest(event.getApplicationKey()).sendAndParse()
+                        new GetApplicationRequest(event.getApplicationKey()).sendAndParse()
                             .then(
                                 (application: Application) => {
                                     if (application.getState() == "stopped") {
-                                        api.notify.showWarning(message);
+                                        showWarning(message);
                                     }
                                 })
                             .catch((reason: any) => { //app was uninstalled
-                                api.notify.showWarning(message);
+                                showWarning(message);
                             });
 
                         this.unShown(shownHandler);
@@ -252,7 +277,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
         };
 
-        api.app.wizard.MaskContentWizardPanelEvent.on(event => {
+        MaskContentWizardPanelEvent.on(event => {
             if (this.getPersistedItem().getContentId().equals(event.getContentId())) {
                 this.params.actions.suspendActions(event.isMask());
             }
@@ -261,7 +286,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         ContentPermissionsAppliedEvent.on((event) => this.contentPermissionsUpdated(event.getContent()));
     }
 
-    protected doLoadData(): Q.Promise<api.content.Content> {
+    protected doLoadData(): Q.Promise<Content> {
         if (ContentWizardPanel.debug) {
             console.debug("ContentWizardPanel.doLoadData");
         }
@@ -321,7 +346,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return <ContentWizardToolbar> super.getMainToolbar();
     }
 
-    protected createWizardHeader(): api.app.wizard.WizardHeader {
+    protected createWizardHeader(): WizardHeader {
         var header = new WizardHeaderWithDisplayNameAndNameBuilder()
             .setDisplayNameGenerator(this.displayNameScriptExecutor)
             .build();
@@ -344,7 +369,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return <WizardHeaderWithDisplayNameAndName> super.getWizardHeader();
     }
 
-    protected createLivePanel(): api.ui.panel.Panel {
+    protected createLivePanel(): Panel {
         var liveFormPanel;
         var isSiteOrWithinSite = !!this.site || this.contentParams.createSite;
         var isPageTemplate = this.contentType.isPageTemplate();
@@ -388,7 +413,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                 ResponsiveManager.unAvailableSizeChanged(this);
             });
 
-            this.onValidityChanged((event: api.ValidityChangedEvent) => {
+            this.onValidityChanged((event: ValidityChangedEvent) => {
                 let isThisValid = event.isValid() && this.isValid(); // event.isValid() = false will prevent the call to this.isValid()
                 this.isContentFormValid = isThisValid;
                 var thumbnailUploader = this.getFormIcon();
@@ -432,14 +457,14 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         }
     }
 
-    private onFileUploaded(event: api.ui.uploader.FileUploadedEvent<api.content.Content>) {
+    private onFileUploaded(event: FileUploadedEvent<Content>) {
         var newPersistedContent: Content = event.getUploadItem().getModel();
         this.setPersistedItem(newPersistedContent);
         this.updateMetadataAndMetadataStepForms(newPersistedContent);
         this.updateThumbnailWithContent(newPersistedContent);
         var contentToDisplay = (newPersistedContent.getDisplayName() && newPersistedContent.getDisplayName().length > 0) ?
                                '\"' + newPersistedContent.getDisplayName() + '\"' : "Content";
-        api.notify.showFeedback(contentToDisplay + ' saved');
+        showFeedback(contentToDisplay + ' saved');
     }
 
     private handleSiteConfigApply() {
@@ -494,7 +519,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         var applicationKeys = this.site ? this.site.getApplicationKeys() : [];
         var applicationPromises = applicationKeys.map((key: ApplicationKey) => this.fetchApplication(key));
 
-        return new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
+        return new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
             this.checkSecurityWizardStepFormAllowed(loginResult);
             this.enablePublishIfAllowed(loginResult);
             return wemQ.all(applicationPromises);
@@ -503,10 +528,10 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                 var app = applications[i];
                 if (!app.isStarted()) {
                     var deferred = wemQ.defer<Mixin[]>();
-                    deferred.reject(new api.Exception("Application '" + app.getDisplayName() +
+                    deferred.reject(new Exception("Application '" + app.getDisplayName() +
                                                       "' required by the site is not available. " +
                                                       "Make sure all applications specified in the site configuration are installed and started.",
-                        api.ExceptionType.WARNING));
+                        ExceptionType.WARNING));
                     return deferred.promise;
                 }
             }
@@ -567,19 +592,19 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         new GetMixinByQualifiedNameRequest(name).sendAndParse().then((mixin) => {
             deferred.resolve(mixin);
         }).catch((reason) => {
-            deferred.reject(new api.Exception("Content cannot be opened. Required mixin '" + name.toString() + "' not found.",
-                api.ExceptionType.WARNING));
+            deferred.reject(new Exception("Content cannot be opened. Required mixin '" + name.toString() + "' not found.",
+                ExceptionType.WARNING));
         }).done();
         return deferred.promise;
     }
 
     private fetchApplication(key: ApplicationKey): wemQ.Promise<Application> {
         var deferred = wemQ.defer<Application>();
-        new api.application.GetApplicationRequest(key).sendAndParse().then((mod) => {
+        new GetApplicationRequest(key).sendAndParse().then((mod) => {
             deferred.resolve(mod);
         }).catch((reason) => {
-            deferred.reject(new api.Exception("Content cannot be opened. Required application '" + key.toString() + "' not found.",
-                api.ExceptionType.WARNING));
+            deferred.reject(new Exception("Content cannot be opened. Required application '" + key.toString() + "' not found.",
+                ExceptionType.WARNING));
         }).done();
         return deferred.promise;
     }
@@ -593,7 +618,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return super.saveChanges();
     }
 
-    private isCurrentContentId(id: api.content.ContentId): boolean {
+    private isCurrentContentId(id: ContentId): boolean {
         return this.getPersistedItem() && id && this.getPersistedItem().getContentId().equals(id);
     }
 
@@ -611,9 +636,9 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
     private listenToContentEvents() {
 
-        let serverEvents = api.content.event.ContentServerEventsHandler.getInstance();
+        let serverEvents = ContentServerEventsHandler.getInstance();
 
-        var deleteHandler = (event: api.content.event.ContentDeletedEvent) => {
+        var deleteHandler = (event: ContentDeletedEvent) => {
             if (this.getPersistedItem()) {
                 event.getDeletedItems().filter((deletedItem) => {
                     return !!deletedItem;
@@ -747,26 +772,26 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     }
 
     private doAreasContainId(areas: string[], id: string): boolean {
-        var data: api.data.PropertyTree = this.getPersistedItem().getContentData();
+        var data: PropertyTree = this.getPersistedItem().getContentData();
 
         return areas.some((area) => {
             var property = data.getProperty(area);
-            if (property && property.hasNonNullValue() && property.getType().equals(api.data.ValueTypes.STRING)) {
+            if (property && property.hasNonNullValue() && property.getType().equals(ValueTypes.STRING)) {
                 return property.getString().indexOf(id) >= 0
             }
         });
     }
 
-    private getHtmlAreasInForm(formItemContainer: api.form.FormItemContainer): string[] {
+    private getHtmlAreasInForm(formItemContainer: FormItemContainer): string[] {
         var result: string[] = [];
 
         formItemContainer.getFormItems().forEach((item) => {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(item, api.form.FieldSet)) {
-                result = result.concat(this.getHtmlAreasInForm(<api.form.FieldSet> item));
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(item, api.form.FormItemSet)) {
-                result = result.concat(this.getHtmlAreasInForm(<api.form.FormItemSet> item));
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(item, api.form.Input)) {
-                var input = <api.form.Input> item;
+            if (ObjectHelper.iFrameSafeInstanceOf(item, FieldSet)) {
+                result = result.concat(this.getHtmlAreasInForm(<FieldSet> item));
+            } else if (ObjectHelper.iFrameSafeInstanceOf(item, FormItemSet)) {
+                result = result.concat(this.getHtmlAreasInForm(<FormItemSet> item));
+            } else if (ObjectHelper.iFrameSafeInstanceOf(item, Input)) {
+                var input = <Input> item;
                 if (input.getInputType().getName() === "HtmlArea") {
                     result.push(input.getPath().toString());
                 }
@@ -789,7 +814,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
             var publishControls = this.getContentWizardToolbarPublishControls();
             let wizardHeader = this.getWizardHeader();
 
-            api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchByContent(persistedContent).then((summaryAndStatus) => {
+            ContentSummaryAndCompareStatusFetcher.fetchByContent(persistedContent).then((summaryAndStatus) => {
                 this.contentCompareStatus = summaryAndStatus.getCompareStatus();
 
                 wizardHeader.disableNameGeneration(this.contentCompareStatus !== CompareStatus.NEW);
@@ -821,25 +846,25 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                         console.warn(" inequality found in Content.data");
                         if (persistedContent.getContentData() && viewedContent.getContentData()) {
                             console.warn(" comparing persistedContent.data against viewedContent.data:");
-                            new api.data.PropertyTreeComparator().compareTree(persistedContent.getContentData(),
+                            new PropertyTreeComparator().compareTree(persistedContent.getContentData(),
                                 viewedContent.getContentData());
                         }
                     }
-                    if (!api.ObjectHelper.equals(viewedContent.getPage(), persistedContent.getPage())) {
+                    if (!ObjectHelper.equals(viewedContent.getPage(), persistedContent.getPage())) {
                         console.warn(" inequality found in Content.page");
                         if (persistedContent.getPage() && viewedContent.getPage()) {
                             console.warn(" comparing persistedContent.page.config against viewedContent.page.config:");
-                            new api.data.PropertyTreeComparator().compareTree(persistedContent.getPage().getConfig(),
+                            new PropertyTreeComparator().compareTree(persistedContent.getPage().getConfig(),
                                 viewedContent.getPage().getConfig());
                         }
                     }
-                    if (!api.ObjectHelper.arrayEquals(viewedContent.getAllExtraData(), persistedContent.getAllExtraData())) {
+                    if (!ObjectHelper.arrayEquals(viewedContent.getAllExtraData(), persistedContent.getAllExtraData())) {
                         console.warn(" inequality found in Content.meta");
                     }
-                    if (!api.ObjectHelper.equals(viewedContent.getAttachments(), persistedContent.getAttachments())) {
+                    if (!ObjectHelper.equals(viewedContent.getAttachments(), persistedContent.getAttachments())) {
                         console.warn(" inequality found in Content.attachments");
                     }
-                    if (!api.ObjectHelper.equals(viewedContent.getPermissions(), persistedContent.getPermissions())) {
+                    if (!ObjectHelper.equals(viewedContent.getPermissions(), persistedContent.getPermissions())) {
                         console.warn(" inequality found in Content.permissions");
                     }
                     console.warn(" viewedContent: ", viewedContent);
@@ -881,7 +906,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                 id: content.getContentId().toString()
             })
             .setEnabled(!content.isImage())
-            .setValue(new api.content.util.ContentIconUrlResolver().setContent(content).resolve());
+            .setValue(new ContentIconUrlResolver().setContent(content).resolve());
 
         thumbnailUploader.toggleClass("invalid", !content.isValid());
     }
@@ -927,7 +952,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
                     content.getAllExtraData().push(extraData);
                 }
                 var metadataFormView = this.metadataStepFormByName[schema.getMixinName().toString()];
-                var metadataForm = new api.form.FormBuilder().addFormItems(schema.getFormItems()).build();
+                var metadataForm = new FormBuilder().addFormItems(schema.getFormItems()).build();
 
                 var data = extraData.getData();
                 data.onChanged(this.dataChangedListener);
@@ -1007,7 +1032,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     private removeMetadataStepForms() {
         var applicationKeys = this.siteModel.getApplicationKeys();
         var applicationPromises = applicationKeys.map(
-            (key: ApplicationKey) => new api.application.GetApplicationRequest(key).sendAndParse());
+            (key: ApplicationKey) => new GetApplicationRequest(key).sendAndParse());
 
         return wemQ.all(applicationPromises).then((applications: Application[]) => {
             var metadataMixinPromises: wemQ.Promise<Mixin>[] = [];
@@ -1022,7 +1047,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
             return wemQ.all(metadataMixinPromises);
         }).then((mixins: Mixin[]) => {
-            var activeMixinsNames = api.schema.mixin.MixinNames.create().fromMixins(mixins).build();
+            var activeMixinsNames = MixinNames.create().fromMixins(mixins).build();
 
             var panelNamesToRemoveBuilder = MixinNames.create();
 
@@ -1040,12 +1065,12 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
             return mixins;
         }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
     private addMetadataStepForms(applicationKey: ApplicationKey) {
-        new api.application.GetApplicationRequest(applicationKey).sendAndParse().then((currentApplication: Application) => {
+        new GetApplicationRequest(applicationKey).sendAndParse().then((currentApplication: Application) => {
 
             var mixinNames = currentApplication.getMetaSteps();
 
@@ -1076,7 +1101,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
             return mixins;
         }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
@@ -1091,7 +1116,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     persistNewItem(): wemQ.Promise<Content> {
         return new PersistNewContentRoutine(this).setCreateContentRequestProducer(this.produceCreateContentRequest).execute().then(
             (content: Content) => {
-                api.notify.showFeedback('Content created');
+                showFeedback('Content created');
                 return content;
             });
     }
@@ -1108,7 +1133,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     private produceCreateContentRequest(): wemQ.Promise<CreateContentRequest> {
         var deferred = wemQ.defer<CreateContentRequest>();
 
-        var parentPath = this.parentContent != null ? this.parentContent.getPath() : api.content.ContentPath.ROOT;
+        var parentPath = this.parentContent != null ? this.parentContent.getPath() : ContentPath.ROOT;
 
         if (this.contentType.getContentTypeName().isMedia()) {
             deferred.resolve(null);
@@ -1116,7 +1141,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
             deferred.resolve(
                 new CreateContentRequest()
                     .setRequireValid(this.requireValid)
-                    .setName(api.content.ContentUnnamed.newUnnamed())
+                    .setName(ContentUnnamed.newUnnamed())
                     .setParent(parentPath)
                     .setContentType(this.contentType.getContentTypeName())
                     .setDisplayName("")     // new content is created on wizard open so display name is always empty
@@ -1141,7 +1166,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
             }
             var contentToDisplay = (content.getDisplayName() && content.getDisplayName().length > 0) ?
                                    '\"' + content.getDisplayName() + '\"' : "Content";
-            api.notify.showFeedback(contentToDisplay + ' saved');
+            showFeedback(contentToDisplay + ' saved');
 
             return content;
         });
@@ -1212,7 +1237,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     }
 
     private resolveContentNameForUpdateRequest(): ContentName {
-        if (api.util.StringHelper.isEmpty(this.getWizardHeader().getName())) {
+        if (StringHelper.isEmpty(this.getWizardHeader().getName())) {
             if (this.getPersistedItem().getName().isUnnamed()) {
                 return this.getPersistedItem().getName();
             } else {
@@ -1317,7 +1342,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return this.getMainToolbar().getCycleViewModeButton();
     }
 
-    getCloseAction(): api.ui.Action {
+    getCloseAction(): Action {
         return this.wizardActions.getCloseAction();
     }
 
@@ -1336,7 +1361,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return this.contentCompareStatus;
     }
 
-    private notifyContentNamed(content: api.content.Content) {
+    private notifyContentNamed(content: Content) {
         this.contentNamedListeners.forEach((listener: (event: ContentNamedEvent)=>void)=> {
             listener.call(this, new ContentNamedEvent(this, content));
         });
@@ -1361,14 +1386,14 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         return formContext;
     }
 
-    private checkSecurityWizardStepFormAllowed(loginResult: api.security.auth.LoginResult) {
+    private checkSecurityWizardStepFormAllowed(loginResult: LoginResult) {
 
-        if (this.getPersistedItem().isAnyPrincipalAllowed(loginResult.getPrincipals(), api.security.acl.Permission.WRITE_PERMISSIONS)) {
+        if (this.getPersistedItem().isAnyPrincipalAllowed(loginResult.getPrincipals(), Permission.WRITE_PERMISSIONS)) {
             this.isSecurityWizardStepFormAllowed = true;
         }
     }
 
-    private isPrincipalPresent(principalKey: api.security.PrincipalKey,
+    private isPrincipalPresent(principalKey: PrincipalKey,
                                accessEntriesToCheck: AccessControlEntry[]): boolean {
 
         return accessEntriesToCheck.some((entry: AccessControlEntry) => {
@@ -1383,14 +1408,14 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
      * for at least one of user's principals or if user contains Admin principal.
      * @param loginResult - user's authorisation state
      */
-    private enablePublishIfAllowed(loginResult: api.security.auth.LoginResult) {
+    private enablePublishIfAllowed(loginResult: LoginResult) {
         var entries = this.getPersistedItem().getPermissions().getEntries();
         var accessEntriesWithPublishPermissions: AccessControlEntry[] = entries.filter((item: AccessControlEntry) => {
-            return item.isAllowed(api.security.acl.Permission.PUBLISH);
+            return item.isAllowed(Permission.PUBLISH);
         });
 
-        loginResult.getPrincipals().some((principalKey: api.security.PrincipalKey) => {
-            if (api.security.RoleKeys.ADMIN.equals(principalKey) ||
+        loginResult.getPrincipals().some((principalKey: PrincipalKey) => {
+            if (RoleKeys.ADMIN.equals(principalKey) ||
                 this.isPrincipalPresent(principalKey, accessEntriesWithPublishPermissions)) {
                 this.wizardActions.getPublishAction().setEnabled(true);
                 return true;
@@ -1461,7 +1486,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
 
     private initPublishButtonForMobile() {
 
-        var action: api.ui.Action = new api.ui.Action("Publish");
+        var action: Action = new Action("Publish");
         action.setIconClass("publish-action");
         action.onExecuted(() => {
             this.wizardActions.getPublishAction().execute();
@@ -1478,7 +1503,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
     private managePublishButtonStateForMobile(compareStatus: CompareStatus) {
         var canBeShown = compareStatus !== CompareStatus.EQUAL;
         this.publishButtonForMobile.toggleClass("visible", canBeShown);
-        this.publishButtonForMobile.setLabel("Publish " + api.content.CompareStatusFormatter.formatStatus(compareStatus) + " item");
+        this.publishButtonForMobile.setLabel("Publish " + CompareStatusFormatter.formatStatus(compareStatus) + " item");
     }
 
     private subscribePublishButtonForMobileToPublishEvents() {
@@ -1492,7 +1517,7 @@ export class ContentWizardPanel extends api.app.wizard.WizardPanel<Content> {
         };
 
 
-        let serverEvents = api.content.event.ContentServerEventsHandler.getInstance();
+        let serverEvents = ContentServerEventsHandler.getInstance();
         serverEvents.onContentPublished(serverPublishOrUnpublishHandler);
         serverEvents.onContentUnpublished(serverPublishOrUnpublishHandler);
 

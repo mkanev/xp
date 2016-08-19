@@ -1,6 +1,11 @@
-module api.content.resource {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentVersionJson} from "../json/ContentVersionJson";
+import {ContentId} from "../ContentId";
+import {ContentVersion} from "../ContentVersion";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class GetContentVersionsRequest extends ContentResourceRequest<json.GetContentVersionsResultsJson, ContentVersion[]> {
+export class GetContentVersionsRequest extends ContentResourceRequest<json.GetContentVersionsResultsJson, ContentVersion[]> {
 
         private contentId: ContentId;
         private from: number;
@@ -30,21 +35,21 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'getVersions');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'getVersions');
         }
 
         sendAndParse(): wemQ.Promise<ContentVersion[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<json.GetContentVersionsResultsJson>) => {
+            return this.send().then((response: JsonResponse<json.GetContentVersionsResultsJson>) => {
                 return this.fromJsonToContentVersions(response.getResult().contentVersions);
             });
         }
 
-        private fromJsonToContentVersions(json: api.content.json.ContentVersionJson[]): ContentVersion[] {
+        private fromJsonToContentVersions(json: ContentVersionJson[]): ContentVersion[] {
 
             var contentVersions: ContentVersion[] = [];
-            json.forEach((contentVersionJson: api.content.json.ContentVersionJson) => {
+            json.forEach((contentVersionJson: ContentVersionJson) => {
                 contentVersions.push(ContentVersion.fromJson(contentVersionJson));
             });
 
@@ -52,4 +57,3 @@ module api.content.resource {
         }
 
     }
-}

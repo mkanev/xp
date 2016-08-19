@@ -1,6 +1,8 @@
-module api.schema.content {
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {ContentTypeIconUrlResolver} from "./ContentTypeIconUrlResolver";
+import {ContentTypeSummary} from "./ContentTypeSummary";
 
-    export class ContentTypeSummaryViewer extends api.ui.NamesAndIconViewer<ContentTypeSummary> {
+export class ContentTypeSummaryViewer extends NamesAndIconViewer<ContentTypeSummary> {
 
         private contentTypeIconUrlResolver: ContentTypeIconUrlResolver;
 
@@ -21,4 +23,3 @@ module api.schema.content {
             return this.contentTypeIconUrlResolver.resolve(object);
         }
     }
-}

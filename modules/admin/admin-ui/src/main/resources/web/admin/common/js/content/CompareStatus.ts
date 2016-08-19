@@ -1,6 +1,6 @@
-module api.content {
 
-    export enum CompareStatus {
+
+export enum CompareStatus {
         NEW,
         NEW_TARGET,
         NEWER,
@@ -58,4 +58,3 @@ module api.content {
             return status;
         }
     }
-}

@@ -1,23 +1,24 @@
-module api.liveedit {
+import {PropertyTree} from "../data/PropertyTree";
+import {Content} from "../content/Content";
+import {Descriptor} from "../content/page/Descriptor";
+import {DescriptorKey} from "../content/page/DescriptorKey";
+import {GetPageDescriptorByKeyRequest} from "../content/page/GetPageDescriptorByKeyRequest";
+import {SetTemplate} from "../content/page/PageModel";
+import {PageModel} from "../content/page/PageModel";
+import {SetController} from "../content/page/PageModel";
+import {Regions} from "../content/page/region/Regions";
+import {PageMode} from "../content/page/PageMode";
+import {PageTemplate} from "../content/page/PageTemplate";
+import {PageDescriptor} from "../content/page/PageDescriptor";
+import {PageTemplateKey} from "../content/page/PageTemplateKey";
+import {GetPageTemplateByKeyRequest} from "../content/page/GetPageTemplateByKeyRequest";
+import {SiteModel} from "../content/site/SiteModel";
+import {ContentFormContext} from "../content/form/ContentFormContext";
+import {Page} from "../content/page/Page";
+import {Exception} from "../Exception";
+import {ExceptionType} from "../Exception";
 
-    import PropertyTree = api.data.PropertyTree;
-    import Content = api.content.Content;
-    import Descriptor = api.content.page.Descriptor;
-    import DescriptorKey = api.content.page.DescriptorKey;
-    import GetPageDescriptorByKeyRequest = api.content.page.GetPageDescriptorByKeyRequest;
-    import SetTemplate = api.content.page.SetTemplate;
-    import PageModel = api.content.page.PageModel;
-    import SetController = api.content.page.SetController;
-    import Regions = api.content.page.region.Regions;
-    import PageMode = api.content.page.PageMode;
-    import PageTemplate = api.content.page.PageTemplate;
-    import PageDescriptor = api.content.page.PageDescriptor;
-    import PageTemplateKey = api.content.page.PageTemplateKey;
-    import GetPageTemplateByKeyRequest = api.content.page.GetPageTemplateByKeyRequest;
-    import SiteModel = api.content.site.SiteModel;
-    import ContentFormContext = api.content.form.ContentFormContext;
-
-    export class LiveEditModel {
+export class LiveEditModel {
 
         private siteModel: SiteModel;
 
@@ -46,7 +47,7 @@ module api.liveedit {
 
         isPageRenderable(): boolean {
             return !!this.pageModel && (this.pageModel.hasController() ||
-                                        this.pageModel.getMode() != api.content.page.PageMode.NO_CONTROLLER);
+                                        this.pageModel.getMode() != PageMode.NO_CONTROLLER);
         }
 
         setContent(value: Content) {
@@ -203,7 +204,7 @@ module api.liveedit {
             pageModel.initController(setController);
         }
 
-        private static initForcedTemplatePage(content: Content, page: api.content.page.Page, pageModel: PageModel,
+        private static initForcedTemplatePage(content: Content, page: Page, pageModel: PageModel,
                                               promises: wemQ.Promise<any>[]) {
             var pageTemplateKey = page.getTemplate(),
                 pageTemplatePromise: wemQ.Promise<PageTemplate> = this.loadPageTemplate(pageTemplateKey),
@@ -235,7 +236,7 @@ module api.liveedit {
             promises.push(pageTemplatePromise);
         }
 
-        private static initForcedControllerPage(page: api.content.page.Page, pageModel: PageModel, promises: wemQ.Promise<any>[]) {
+        private static initForcedControllerPage(page: Page, pageModel: PageModel, promises: wemQ.Promise<any>[]) {
             var pageDescriptorKey = page.getController();
 
             if (pageDescriptorKey) {
@@ -262,7 +263,7 @@ module api.liveedit {
             pageModel.initController(setController);
         }
 
-        private static initPageController(page: api.content.page.Page, pageModel: PageModel, pageDescriptor: PageDescriptor) {
+        private static initPageController(page: Page, pageModel: PageModel, pageDescriptor: PageDescriptor) {
 
             var config = page.hasConfig() ?
                          page.getConfig().copy() :
@@ -281,29 +282,29 @@ module api.liveedit {
         }
 
 
-        private static getPageMode(content: Content, defaultTemplatePresents: boolean): api.content.page.PageMode {
+        private static getPageMode(content: Content, defaultTemplatePresents: boolean): PageMode {
             if (content.getType().isFragment()) {
-                return api.content.page.PageMode.FRAGMENT;
+                return PageMode.FRAGMENT;
 
             } else if (content.isPage()) {
                 if (content.getPage().hasTemplate()) {
                     //in case content's template was deleted or updated to not support content's type
                     if (defaultTemplatePresents) {
-                        return api.content.page.PageMode.FORCED_TEMPLATE;
+                        return PageMode.FORCED_TEMPLATE;
                     }
                     else {
-                        return api.content.page.PageMode.NO_CONTROLLER;
+                        return PageMode.NO_CONTROLLER;
                     }
                 }
                 else {
-                    return api.content.page.PageMode.FORCED_CONTROLLER;
+                    return PageMode.FORCED_CONTROLLER;
                 }
             }
             else if (defaultTemplatePresents) {
-                return api.content.page.PageMode.AUTOMATIC;
+                return PageMode.AUTOMATIC;
             }
             else {
-                return api.content.page.PageMode.NO_CONTROLLER;
+                return PageMode.NO_CONTROLLER;
             }
         }
 
@@ -313,7 +314,7 @@ module api.liveedit {
                 then((pageTemplate: PageTemplate) => {
                     deferred.resolve(pageTemplate);
                 }).catch((reason) => {
-                    deferred.reject(new api.Exception("Page template '" + key + "' not found.", api.ExceptionType.WARNING));
+                    deferred.reject(new Exception("Page template '" + key + "' not found.", ExceptionType.WARNING));
                 }).done();
             return deferred.promise;
         }
@@ -324,7 +325,7 @@ module api.liveedit {
                 then((pageDescriptor: PageDescriptor) => {
                     deferred.resolve(pageDescriptor);
                 }).catch((reason) => {
-                    deferred.reject(new api.Exception("Page descriptor '" + key + "' not found.", api.ExceptionType.WARNING));
+                    deferred.reject(new Exception("Page descriptor '" + key + "' not found.", ExceptionType.WARNING));
                 }).done();
             return deferred.promise;
         }
@@ -346,4 +347,3 @@ module api.liveedit {
             return deferred.promise;
         }
     }
-}

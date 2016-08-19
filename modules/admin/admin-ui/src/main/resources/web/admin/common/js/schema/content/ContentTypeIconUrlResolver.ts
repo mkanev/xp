@@ -1,10 +1,11 @@
-module api.schema.content {
+import {SchemaIconUrlResolver} from "../SchemaIconUrlResolver";
+import {UriHelper} from "../../util/UriHelper";
+import {Path} from "../../rest/Path";
 
-    export class ContentTypeIconUrlResolver extends api.schema.SchemaIconUrlResolver {
+export class ContentTypeIconUrlResolver extends SchemaIconUrlResolver {
 
         static default(): string {
-            return api.util.UriHelper.getRestUri(api.rest.Path.fromParent(api.schema.SchemaIconUrlResolver.getResourcePath(),
+            return UriHelper.getRestUri(Path.fromParent(SchemaIconUrlResolver.getResourcePath(),
                 "base:structured").toString());
         }
     }
-}

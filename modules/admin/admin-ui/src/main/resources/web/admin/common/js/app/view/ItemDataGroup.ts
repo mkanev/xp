@@ -1,14 +1,17 @@
-module api.app.view {
+import {DivEl} from "../../dom/DivEl";
+import {H2El} from "../../dom/H2El";
+import {UlEl} from "../../dom/UlEl";
+import {LiEl} from "../../dom/LiEl";
 
-    export class ItemDataGroup extends api.dom.DivEl {
+export class ItemDataGroup extends DivEl {
 
-        private header: api.dom.H2El;
+        private header: H2El;
 
         private empty: boolean;
 
         constructor(title: string, className?: string) {
             super(!!className ? className + " item-data-group" : "item-data-group");
-            this.header = new api.dom.H2El();
+            this.header = new H2El();
             this.header.getEl().setInnerHtml(title);
             this.appendChild(this.header);
 
@@ -20,10 +23,10 @@ module api.app.view {
         }
 
         addDataArray(header: string, datas: string[]) {
-            var dataList = new api.dom.UlEl("data-list");
+            var dataList = new UlEl("data-list");
 
             if (header) {
-                var headerElement = new api.dom.LiEl();
+                var headerElement = new LiEl();
                 headerElement.addClass("list-header");
 
                 headerElement.getEl().setInnerHtml(header, false);
@@ -31,7 +34,7 @@ module api.app.view {
             }
 
             datas.forEach((data) => {
-                var dataElement = new api.dom.LiEl();
+                var dataElement = new LiEl();
                 dataElement.getEl().setInnerHtml(data, false);
                 dataList.appendChild(dataElement);
                 this.empty = false;
@@ -44,4 +47,3 @@ module api.app.view {
             return this.empty;
         }
     }
-}

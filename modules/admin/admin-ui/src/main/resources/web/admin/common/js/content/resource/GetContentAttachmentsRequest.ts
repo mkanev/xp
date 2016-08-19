@@ -1,9 +1,11 @@
-module api.content.resource {
+import {Attachments} from "../attachment/Attachments";
+import {AttachmentJson} from "../attachment/AttachmentJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import Attachments = api.content.attachment.Attachments;
-    import AttachmentJson = api.content.attachment.AttachmentJson;
-
-    export class GetContentAttachmentsRequest extends ContentResourceRequest<any, any> {
+export class GetContentAttachmentsRequest extends ContentResourceRequest<any, any> {
 
         private contentId: ContentId;
 
@@ -19,15 +21,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'getAttachments');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'getAttachments');
         }
 
         sendAndParse(): wemQ.Promise<any> {
-            return this.send().then((response: api.rest.JsonResponse<AttachmentJson[]>) => {
+            return this.send().then((response: JsonResponse<AttachmentJson[]>) => {
                 return response.getResult().length > 0 ? Attachments.create().fromJson(response.getResult()).build() : null;
             });
         }
 
     }
-}

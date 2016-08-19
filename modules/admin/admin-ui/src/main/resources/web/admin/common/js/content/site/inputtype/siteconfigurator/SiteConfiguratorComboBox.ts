@@ -1,31 +1,33 @@
-module api.content.site.inputtype.siteconfigurator {
+import {Property} from "../../../../data/Property";
+import {PropertyTree} from "../../../../data/PropertyTree";
+import {Application} from "../../../../application/Application";
+import {ApplicationKey} from "../../../../application/ApplicationKey";
+import {ApplicationViewer} from "../../../../application/ApplicationViewer";
+import {ApplicationLoader} from "../../../../application/ApplicationLoader";
+import {FormView} from "../../../../form/FormView";
+import {Option} from "../../../../ui/selector/Option";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {SelectedOptionView} from "../../../../ui/selector/combobox/SelectedOptionView";
+import {RichComboBox} from "../../../../ui/selector/combobox/RichComboBox";
+import {ContentFormContext} from "../../../form/ContentFormContext";
+import {RichComboBoxBuilder} from "../../../../ui/selector/combobox/RichComboBox";
+import {SiteConfigProvider} from "./SiteConfigProvider";
+import {SiteConfiguratorSelectedOptionsView} from "./SiteConfiguratorSelectedOptionsView";
+import {SiteConfiguratorSelectedOptionView} from "./SiteConfiguratorSelectedOptionView";
 
-    import Property = api.data.Property;
-    import PropertyTree = api.data.PropertyTree;
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-
-    import ApplicationViewer = api.application.ApplicationViewer;
-    import ApplicationLoader = api.application.ApplicationLoader;
-    import FormView = api.form.FormView;
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
-
-
-    export class SiteConfiguratorComboBox extends api.ui.selector.combobox.RichComboBox<Application> {
+export class SiteConfiguratorComboBox extends RichComboBox<Application> {
 
         private siteConfiguratorSelectedOptionsView: SiteConfiguratorSelectedOptionsView;
 
         constructor(maxOccurrences: number, siteConfigProvider: SiteConfigProvider,
-                    formContext: api.content.form.ContentFormContext, value?: string) {
+                    formContext: ContentFormContext, value?: string) {
 
             var filterObject = {
                 state: Application.STATE_STARTED
             };
 
             this.siteConfiguratorSelectedOptionsView = new SiteConfiguratorSelectedOptionsView(siteConfigProvider, formContext);
-            var builder = new api.ui.selector.combobox.RichComboBoxBuilder<Application>();
+            var builder = new RichComboBoxBuilder<Application>();
             builder.
                 setMaximumOccurrences(maxOccurrences).
                 setIdentifierMethod('getApplicationKey').
@@ -57,4 +59,3 @@ module api.content.site.inputtype.siteconfigurator {
 
     }
 
-}

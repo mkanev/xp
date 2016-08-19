@@ -1,16 +1,14 @@
-module api.content.page.region {
+import {DropdownInput} from "../../../ui/selector/dropdown/DropdownInput";
+import {DropdownConfig} from "../../../ui/selector/dropdown/DropdownInput";
+import {Option} from "../../../ui/selector/Option";
+import {LoadedDataEvent} from "../../../util/loader/event/LoadedDataEvent";
+import {ContentSummary} from "../../ContentSummary";
+import {ContentSummaryLoader} from "../../resource/ContentSummaryLoader";
+import {RichDropdown} from "../../../ui/selector/dropdown/RichDropdown";
+import {ContentId} from "../../ContentId";
+import {ContentSummaryViewer} from "../../ContentSummaryViewer";
 
-    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-    import Option = api.ui.selector.Option;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-
-    import ContentSummary = api.content.ContentSummary;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-
-    import RichDropdown = api.ui.selector.dropdown.RichDropdown;
-
-    export class FragmentDropdown extends RichDropdown<ContentSummary> {
+export class FragmentDropdown extends RichDropdown<ContentSummary> {
 
         constructor(name: string, loader: ContentSummaryLoader) {
 
@@ -61,4 +59,3 @@ module api.content.page.region {
             return null;
         }
     }
-}

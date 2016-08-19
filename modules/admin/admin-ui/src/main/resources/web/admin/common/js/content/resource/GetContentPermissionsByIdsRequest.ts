@@ -1,10 +1,12 @@
-module api.content.resource {
+import {AccessControlList} from "../../security/acl/AccessControlList";
+import {ContentPermissionsJson as ContentsPermissionsEntryJson} from "../json/ContentPermissionsJson";
+import {ContentAccessControlList} from "../../security/acl/ContentAccessControlList";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import AccessControlList = api.security.acl.AccessControlList;
-    import ContentsPermissionsEntryJson = api.content.json.ContentPermissionsJson;
-    import ContentAccessControlList = api.security.acl.ContentAccessControlList;
-
-    export class GetContentPermissionsByIdsRequest extends ContentResourceRequest<ContentsPermissionsEntryJson[], ContentAccessControlList[]> {
+export class GetContentPermissionsByIdsRequest extends ContentResourceRequest<ContentsPermissionsEntryJson[], ContentAccessControlList[]> {
 
         private contentIds: ContentId[];
 
@@ -23,13 +25,13 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "contentPermissionsByIds");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "contentPermissionsByIds");
         }
 
         sendAndParse(): wemQ.Promise<ContentAccessControlList[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<ContentsPermissionsEntryJson[]>) => {
+            return this.send().then((response: JsonResponse<ContentsPermissionsEntryJson[]>) => {
                 let result = [];
 
                 response.getResult().forEach((entry: ContentsPermissionsEntryJson) => {
@@ -40,4 +42,3 @@ module api.content.resource {
             });
         }
     }
-}

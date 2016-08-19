@@ -1,10 +1,18 @@
-module api.content.page {
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {Property} from "../../data/Property";
+import {PropertyTree} from "../../data/PropertyTree";
+import {Content} from "../Content";
+import {Equitable} from "../../Equitable";
+import {PageMode} from "./PageMode";
+import {Regions} from "./region/Regions";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ContentBuilder} from "../Content";
+import {ContentJson} from "../json/ContentJson";
+import {DescriptorKey} from "./DescriptorKey";
+import {Page} from "./Page";
+import {PageTemplateKey} from "./PageTemplateKey";
 
-    import ContentTypeName = api.schema.content.ContentTypeName;
-    import Property = api.data.Property;
-    import PropertyTree = api.data.PropertyTree;
-
-    export class PageTemplate extends api.content.Content implements api.Equitable {
+export class PageTemplate extends Content implements Equitable {
 
         private canRender: ContentTypeName[];
 
@@ -23,18 +31,18 @@ module api.content.page {
             return <PageTemplateKey>this.getContentId();
         }
 
-        getPageMode(): api.content.page.PageMode {
+        getPageMode(): PageMode {
 
             if (this.isPage()) {
                 if (this.getPage().hasController()) {
-                    return api.content.page.PageMode.FORCED_CONTROLLER;
+                    return PageMode.FORCED_CONTROLLER;
                 }
                 else {
                     throw new Error("Illegal state: A PageTemplate's Page must a controller set");
                 }
             }
             else {
-                return api.content.page.PageMode.NO_CONTROLLER;
+                return PageMode.NO_CONTROLLER;
             }
         }
 
@@ -61,7 +69,7 @@ module api.content.page {
             return this.getPage().hasRegions();
         }
 
-        getRegions(): api.content.page.region.Regions {
+        getRegions(): Regions {
             if (!this.isPage()) {
                 return null;
             }
@@ -82,9 +90,9 @@ module api.content.page {
             return this.getPage().getConfig();
         }
 
-        equals(o: api.Equitable, ignoreEmptyValues: boolean = false): boolean {
+        equals(o: Equitable, ignoreEmptyValues: boolean = false): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PageTemplate)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PageTemplate)) {
                 return false;
             }
 
@@ -101,13 +109,13 @@ module api.content.page {
         }
     }
 
-    export class PageTemplateBuilder extends api.content.ContentBuilder {
+    export class PageTemplateBuilder extends ContentBuilder {
 
         constructor(source?: PageTemplate) {
             super(source);
         }
 
-        fromContentJson(contentJson: api.content.json.ContentJson): PageTemplateBuilder {
+        fromContentJson(contentJson: ContentJson): PageTemplateBuilder {
             super.fromContentJson(contentJson);
             return this;
         }
@@ -117,4 +125,3 @@ module api.content.page {
             return new PageTemplate(this);
         }
     }
-}

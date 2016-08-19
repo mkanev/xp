@@ -1,13 +1,22 @@
-module api.ui.selector.combobox {
+import {OptionFilterInputValueChangedEvent} from "../OptionFilterInputValueChangedEvent";
+import {Viewer} from "../../Viewer";
+import {SelectedOption} from "./SelectedOption";
+import {Option} from "../Option";
+import {CompositeFormInputEl} from "../../../dom/CompositeFormInputEl";
+import {BaseLoader} from "../../../util/loader/BaseLoader";
+import {StringHelper} from "../../../util/StringHelper";
+import {ElementHelper} from "../../../dom/ElementHelper";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {LoadingDataEvent} from "../../../util/loader/event/LoadingDataEvent";
+import {LoadedDataEvent} from "../../../util/loader/event/LoadedDataEvent";
+import {ComboBoxConfig} from "./ComboBox";
+import {ComboBox} from "./ComboBox";
+import {SelectedOptionEvent} from "./SelectedOptionEvent";
+import {SelectedOptionsView} from "./SelectedOptionsView";
 
-    import OptionFilterInputValueChangedEvent = api.ui.selector.OptionFilterInputValueChangedEvent;
-    import Viewer = api.ui.Viewer;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
+export class RichComboBox<OPTION_DISPLAY_VALUE> extends CompositeFormInputEl {
 
-    export class RichComboBox<OPTION_DISPLAY_VALUE> extends api.dom.CompositeFormInputEl {
-
-        private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
+        private loader: BaseLoader<any, OPTION_DISPLAY_VALUE>;
 
         private selectedOptionsView: SelectedOptionsView<OPTION_DISPLAY_VALUE>;
 
@@ -58,10 +67,10 @@ module api.ui.selector.combobox {
 
             super(this.comboBox, this.selectedOptionsView);
 
-            if (!api.util.StringHelper.isBlank(builder.comboBoxName)) {
+            if (!StringHelper.isBlank(builder.comboBoxName)) {
                 this.setName(builder.comboBoxName);
             }
-            if (!api.util.StringHelper.isBlank(builder.value)) {
+            if (!StringHelper.isBlank(builder.value)) {
                 // do not move focus when setting original value
                 this.setIgnoreNextFocus(true);
             }
@@ -79,8 +88,8 @@ module api.ui.selector.combobox {
                 this.interval = setInterval(() => {
                     grid = this.getComboBox().getComboBoxDropdownGrid().getElement();
                     let canvas = grid.getCanvasNode();
-                    let canvasEl = new api.dom.ElementHelper(canvas);
-                    let viewportEl = new api.dom.ElementHelper(canvas.parentElement);
+                    let canvasEl = new ElementHelper(canvas);
+                    let viewportEl = new ElementHelper(canvas.parentElement);
 
                     let isLastRange = viewportEl.getScrollTop() >= canvasEl.getHeight() - 3 * viewportEl.getHeight();
 
@@ -230,19 +239,19 @@ module api.ui.selector.combobox {
                     then((result: OPTION_DISPLAY_VALUE[]) => {
                         return result;
                     }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }).done();
 
             });
 
-            this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
+            this.loader.onLoadingData((event: LoadingDataEvent) => {
                 if (!event.isPostLoad()) {
                     this.comboBox.setEmptyDropdownText("Searching...");
                 }
                 this.notifyLoading();
             });
 
-            this.loader.onLoadedData((event: api.util.loader.event.LoadedDataEvent<OPTION_DISPLAY_VALUE>) => {
+            this.loader.onLoadedData((event: LoadedDataEvent<OPTION_DISPLAY_VALUE>) => {
                 var options = this.createOptions(event.getData());
                 // check if postLoad and save selection
                 this.comboBox.setOptions(options, event.isPostLoaded());
@@ -250,7 +259,7 @@ module api.ui.selector.combobox {
             });
         }
 
-        private createOptions(items: Object[]): api.ui.selector.Option<OPTION_DISPLAY_VALUE>[] {
+        private createOptions(items: Object[]): Option<OPTION_DISPLAY_VALUE>[] {
             var options = [];
             items.forEach((itemInst: Object) => {
                 options.push(this.createOption(itemInst));
@@ -258,7 +267,7 @@ module api.ui.selector.combobox {
             return options;
         }
 
-        getLoader(): api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE> {
+        getLoader(): BaseLoader<any, OPTION_DISPLAY_VALUE> {
             return this.loader;
         }
 
@@ -345,14 +354,14 @@ module api.ui.selector.combobox {
 
     class RichComboBoxComboBox<OPTION_DISPLAY_VALUE> extends ComboBox<OPTION_DISPLAY_VALUE> {
 
-        private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
+        private loader: BaseLoader<any, OPTION_DISPLAY_VALUE>;
 
         private tempValue: string;
 
         public static debug: boolean = false;
 
         constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>,
-                    loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>) {
+                    loader: BaseLoader<any, OPTION_DISPLAY_VALUE>) {
             super(name, config);
             this.loader = loader;
         }
@@ -388,7 +397,7 @@ module api.ui.selector.combobox {
 
         private doWhenLoaded(callback: Function, value: string) {
             if (this.loader.isLoaded()) {
-                var optionsMissing = !api.util.StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
+                var optionsMissing = !StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
                         return !this.getOptionByValue(val);
                     });
                 if (optionsMissing) { // option needs loading
@@ -410,7 +419,7 @@ module api.ui.selector.combobox {
                     this.loader.unLoadedData(singleLoadListener);
                 };
                 this.loader.onLoadedData(singleLoadListener);
-                if (!api.util.StringHelper.isEmpty(value) && this.loader.isNotStarted()) {
+                if (!StringHelper.isEmpty(value) && this.loader.isNotStarted()) {
                     this.loader.preLoad(value);
                 }
             }
@@ -423,7 +432,7 @@ module api.ui.selector.combobox {
 
                 deferred.resolve(null);
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
             return deferred.promise;
@@ -434,7 +443,7 @@ module api.ui.selector.combobox {
 
         comboBoxName: string;
 
-        loader: api.util.loader.BaseLoader<any, T>;
+        loader: BaseLoader<any, T>;
 
         selectedOptionsView: SelectedOptionsView<T>;
 
@@ -472,7 +481,7 @@ module api.ui.selector.combobox {
             return this;
         }
 
-        setLoader(loader: api.util.loader.BaseLoader<any, T>): RichComboBoxBuilder<T> {
+        setLoader(loader: BaseLoader<any, T>): RichComboBoxBuilder<T> {
             this.loader = loader;
             return this;
         }
@@ -543,4 +552,3 @@ module api.ui.selector.combobox {
     }
 
 
-}

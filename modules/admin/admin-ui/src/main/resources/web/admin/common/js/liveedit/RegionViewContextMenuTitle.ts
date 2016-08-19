@@ -1,11 +1,12 @@
-module api.liveedit {
+import {Region} from "../content/page/region/Region";
+import {ItemViewContextMenuTitle} from "./ItemViewContextMenuTitle";
+import {RegionItemType} from "./RegionItemType";
 
-    export class RegionViewContextMenuTitle extends ItemViewContextMenuTitle {
+export class RegionViewContextMenuTitle extends ItemViewContextMenuTitle {
 
-        constructor(region: api.content.page.region.Region) {
+        constructor(region: Region) {
             super(region.getName(), RegionItemType.get().getConfig().getIconCls());
         }
 
     }
 
-}

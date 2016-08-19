@@ -1,10 +1,9 @@
-module api.content.page.region {
+import {PropertyArrayJson} from "../../../data/PropertyArrayJson";
+import {ComponentJson} from "./ComponentJson";
 
-
-    export interface FragmentComponentJson extends ComponentJson {
+export interface FragmentComponentJson extends ComponentJson {
 
         fragment:string;
 
-        config: api.data.PropertyArrayJson[];
+        config: PropertyArrayJson[];
     }
-}

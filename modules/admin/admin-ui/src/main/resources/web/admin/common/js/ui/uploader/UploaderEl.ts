@@ -1,12 +1,27 @@
+import {Button} from "../button/Button";
+import {CloseButton} from "../button/CloseButton";
+import {Element} from "../../dom/Element";
+import {Equitable} from "../../Equitable";
+import {FormInputEl} from "../../dom/FormInputEl";
+import {AEl} from "../../dom/AEl";
+import {DivEl} from "../../dom/DivEl";
+import {ProgressBar} from "../ProgressBar";
+import {AppHelper} from "../../util/AppHelper";
+import {RequestError} from "../../rest/RequestError";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {NotifyManager} from "../../notify/NotifyManager";
+import {KeyBinding} from "../KeyBinding";
+import {KeyBindings} from "../KeyBindings";
+import {FileUploadCompleteEvent} from "./FileUploadCompleteEvent";
+import {FileUploadedEvent} from "./FileUploadedEvent";
+import {FileUploadFailedEvent} from "./FileUploadFailedEvent";
+import {FileUploadProgressEvent} from "./FileUploadProgressEvent";
+import {FileUploadStartedEvent} from "./FileUploadStartedEvent";
+import {UploadItem} from "./UploadItem";
+
 declare var qq;
 
-module api.ui.uploader {
-
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-    import Element = api.dom.Element;
-
-    export interface FineUploaderFile {
+export interface FineUploaderFile {
         id: string,
         name: string,
         size: number,
@@ -34,7 +49,7 @@ module api.ui.uploader {
         hideDefaultDropZone?: boolean;
     }
 
-    export class UploaderEl<MODEL extends api.Equitable> extends api.dom.FormInputEl {
+    export class UploaderEl<MODEL extends Equitable> extends FormInputEl {
 
         protected config: UploaderElConfig;
         protected uploader;
@@ -44,13 +59,13 @@ module api.ui.uploader {
         private extraDropzoneIds: string[] = [];
 
         private defaultDropzoneContainer: DropzoneContainer;
-        protected dropzone: api.dom.AEl;
-        private uploadButton: api.dom.DivEl;
+        protected dropzone: AEl;
+        private uploadButton: DivEl;
 
-        private progress: api.ui.ProgressBar;
+        private progress: ProgressBar;
         private cancelBtn: Button;
 
-        private resultContainer: api.dom.DivEl;
+        private resultContainer: DivEl;
 
         private uploadStartedListeners: {(event: FileUploadStartedEvent<MODEL>): void }[] = [];
         private uploadProgressListeners: {(event: FileUploadProgressEvent<MODEL>): void }[] = [];
@@ -83,9 +98,9 @@ module api.ui.uploader {
 
             this.initDropzone();
 
-            this.appendChild(this.progress = new api.ui.ProgressBar());
+            this.appendChild(this.progress = new ProgressBar());
 
-            this.appendChild(this.resultContainer = new api.dom.DivEl('result-container'));
+            this.appendChild(this.resultContainer = new DivEl('result-container'));
 
             this.initCancelButton();
 
@@ -116,7 +131,7 @@ module api.ui.uploader {
             if (!this.config.hasUploadButton) {
                 return
             }
-            this.uploadButton = new api.dom.DivEl('upload-button');
+            this.uploadButton = new DivEl('upload-button');
             this.uploadButton.setId('upload-button-' + new Date().getTime());
             this.uploadButton.onClicked((event: MouseEvent) => {
                 this.showFileSelectionDialog();
@@ -125,7 +140,7 @@ module api.ui.uploader {
         }
 
         private initDebouncedUploadStart() {
-            this.debouncedUploadStart = api.util.AppHelper.debounce(() => {
+            this.debouncedUploadStart = AppHelper.debounce(() => {
                 this.notifyFileUploadStarted(this.uploadedItems);
                 this.uploader.uploadStoredFiles();
             }, 250, false);
@@ -335,7 +350,7 @@ module api.ui.uploader {
             return [jsonString];
         }
 
-        createResultItem(value: string): api.dom.Element {
+        createResultItem(value: string): Element {
             throw new Error('Should be overridden by inheritors');
         }
 
@@ -543,11 +558,11 @@ module api.ui.uploader {
             if (xhrOrXdr && xhrOrXdr.status !== 200) {
                 try {
                     var responseObj = JSON.parse(xhrOrXdr.response);
-                    var error = new api.rest.RequestError(responseObj.status, responseObj.message);
-                    api.DefaultErrorHandler.handle(error);
+                    var error = new RequestError(responseObj.status, responseObj.message);
+                    DefaultErrorHandler.handle(error);
                 } catch (e) {
                     console.warn("Failed to parse the response", xhrOrXdr.response, e);
-                    api.notify.NotifyManager.get().showError(this.getErrorMessage(name));
+                    NotifyManager.get().showError(this.getErrorMessage(name));
                 }
 
                 var uploadItem = this.findUploadItemById(id);
@@ -677,19 +692,19 @@ module api.ui.uploader {
             }
         }
 
-        getUploadButton(): api.dom.DivEl {
+        getUploadButton(): DivEl {
             return this.uploadButton;
         }
 
-        getResultContainer(): api.dom.DivEl {
+        getResultContainer(): DivEl {
             return this.resultContainer;
         }
 
-        getDefaultDropzoneContainer(): api.dom.DivEl {
+        getDefaultDropzoneContainer(): DivEl {
             return this.defaultDropzoneContainer;
         }
 
-        getDropzone(): api.dom.AEl {
+        getDropzone(): AEl {
             return this.dropzone;
         }
 
@@ -842,28 +857,27 @@ module api.ui.uploader {
         }
     }
 
-    export class DropzoneContainer extends api.dom.DivEl {
+    export class DropzoneContainer extends DivEl {
 
-        private dropzone: api.dom.AEl;
+        private dropzone: AEl;
 
         constructor(hasMask: boolean = false) {
             super('dropzone-container');
             this.initDropzone();
             if (hasMask) {
-                this.appendChild(new api.dom.DivEl('uploader-mask'));
+                this.appendChild(new DivEl('uploader-mask'));
             }
         }
 
         private initDropzone() {
-            this.dropzone = new api.dom.AEl("dropzone");
+            this.dropzone = new AEl("dropzone");
             this.dropzone.setId('uploader-dropzone-' + new Date().getTime());
             this.dropzone.getEl().setTabIndex(-1);// for mac default settings
             this.getEl().setTabIndex(0);
             this.appendChild(this.dropzone);
         }
 
-        getDropzone(): api.dom.AEl {
+        getDropzone(): AEl {
             return this.dropzone;
         }
     }
-}

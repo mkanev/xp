@@ -1,14 +1,14 @@
-import "../../../../api.ts";
+import {ComponentView} from "../../../../../../../common/js/liveedit/ComponentView";
+import {Component} from "../../../../../../../common/js/content/page/region/Component";
+import {PageView} from "../../../../../../../common/js/liveedit/PageView";
+import {TogglerButton} from "../../../../../../../common/js/ui/button/TogglerButton";
+import {ElementHiddenEvent} from "../../../../../../../common/js/dom/ElementHiddenEvent";
+
 import {ContextWindow} from "./ContextWindow";
 import {ShowContentFormEvent} from "../../ShowContentFormEvent";
 import {ShowSplitEditEvent} from "../../ShowSplitEditEvent";
 import {ShowLiveEditEvent} from "../../ShowLiveEditEvent";
 import {ContentWizardPanel} from "../../ContentWizardPanel";
-
-import ComponentView = api.liveedit.ComponentView;
-import Component = api.content.page.region.Component;
-import PageView = api.liveedit.PageView;
-import TogglerButton = api.ui.button.TogglerButton;
 
 export class ContextWindowController {
 
@@ -56,7 +56,7 @@ export class ContextWindowController {
             componentsView.setVisible(isActive);
         });
 
-        componentsView.onHidden((event: api.dom.ElementHiddenEvent) => {
+        componentsView.onHidden((event: ElementHiddenEvent) => {
             this.componentsViewToggler.setActive(false, true);
         });
 

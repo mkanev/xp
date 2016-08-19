@@ -1,6 +1,6 @@
-module api.query {
+import {QueryField} from "./QueryField";
 
-    export class QueryFields {
+export class QueryFields {
 
         queryFields: QueryField[] = [];
 
@@ -14,4 +14,3 @@ module api.query {
             }
         }
     }
-}

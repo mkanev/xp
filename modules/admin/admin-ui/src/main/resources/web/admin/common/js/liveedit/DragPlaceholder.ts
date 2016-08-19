@@ -1,8 +1,10 @@
-module api.liveedit {
+import {Component} from "../content/page/region/Component";
+import {DivEl} from "../dom/DivEl";
+import {ItemType} from "./ItemType";
+import {ItemViewPlaceholder} from "./ItemViewPlaceholder";
+import {RegionView} from "./RegionView";
 
-    import Component = api.content.page.region.Component;
-
-    export class DragPlaceholder extends ItemViewPlaceholder {
+export class DragPlaceholder extends ItemViewPlaceholder {
 
         private itemType: ItemType;
 
@@ -10,7 +12,7 @@ module api.liveedit {
 
         private regionView: RegionView;
 
-        private messageEl: api.dom.DivEl;
+        private messageEl: DivEl;
 
         private static instance: DragPlaceholder;
 
@@ -29,7 +31,7 @@ module api.liveedit {
         constructor() {
             super();
             this.setId('drag-placeholder').addClassEx("drag-placeholder");
-            this.messageEl = new api.dom.DivEl("message");
+            this.messageEl = new DivEl("message");
             this.appendChild(this.messageEl);
         }
 
@@ -90,4 +92,3 @@ module api.liveedit {
 
 
     }
-}

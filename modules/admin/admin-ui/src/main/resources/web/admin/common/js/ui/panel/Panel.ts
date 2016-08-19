@@ -1,9 +1,9 @@
-module api.ui.panel {
+import {DivEl} from "../../dom/DivEl";
 
-    /**
+/**
      * Use Panel when you need a container that needs 100% height.
      */
-    export class Panel extends api.dom.DivEl {
+    export class Panel extends DivEl {
 
         private doOffset: boolean;
 
@@ -45,4 +45,3 @@ module api.ui.panel {
         }
     }
 
-}

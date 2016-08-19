@@ -1,6 +1,7 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class ViewItem<M extends api.Equitable> implements api.Equitable {
+export class ViewItem<M extends Equitable> implements Equitable {
 
         private model: M;
 
@@ -89,8 +90,8 @@ module api.app.view {
             return this.renderable;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ViewItem)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ViewItem)) {
                 return false;
             }
             var other = <ViewItem<M>> o;
@@ -105,4 +106,3 @@ module api.app.view {
         }
     }
 
-}

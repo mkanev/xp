@@ -1,22 +1,24 @@
-module api.data {
+import {DateTime} from "../util/DateTime";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    import DateTime = api.util.DateTime;
-
-    export class ValueTypeDateTime extends ValueType {
+export class ValueTypeDateTime extends ValueType {
 
         constructor() {
             super("DateTime");
         }
 
         isValid(value: any): boolean {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.DateTime)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(value, DateTime)) {
                 return true;
             }
-            return api.util.DateTime.isValidDateTime(value);
+            return DateTime.isValidDateTime(value);
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
             // 2010-01-01T10:55:00+01:00
@@ -47,8 +49,7 @@ module api.data {
         }
 
         valueEquals(a: DateTime, b: DateTime): boolean {
-            return api.ObjectHelper.equals(a, b);
+            return ObjectHelper.equals(a, b);
         }
 
     }
-}

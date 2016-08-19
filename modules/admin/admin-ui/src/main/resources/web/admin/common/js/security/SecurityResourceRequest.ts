@@ -1,33 +1,38 @@
-module api.security {
+import {Role} from "./Role";
+import {Group} from "./Group";
+import {User} from "./User";
+import {ResourceRequest} from "../rest/ResourceRequest";
+import {Path} from "../rest/Path";
+import {PrincipalJson} from "./PrincipalJson";
+import {RoleJson} from "./RoleJson";
+import {GroupJson} from "./GroupJson";
+import {UserJson} from "./UserJson";
+import {Principal} from "./Principal";
+import {PrincipalKey} from "./PrincipalKey";
 
-    import Role = api.security.Role;
-    import Group = api.security.Group;
-    import User = api.security.User;
+export class SecurityResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-    export class SecurityResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
-
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         constructor() {
             super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "security");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "security");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
-        fromJsonToPrincipal(json: api.security.PrincipalJson): Principal {
+        fromJsonToPrincipal(json: PrincipalJson): Principal {
             var pKey: PrincipalKey = PrincipalKey.fromString(json.key);
             if (pKey.isRole()) {
-                return Role.fromJson(<api.security.RoleJson>json)
+                return Role.fromJson(<RoleJson>json)
 
             } else if (pKey.isGroup()) {
-                return Group.fromJson(<api.security.GroupJson>json);
+                return Group.fromJson(<GroupJson>json);
 
             } else if (pKey.isUser()) {
-                return User.fromJson(<api.security.UserJson>json);
+                return User.fromJson(<UserJson>json);
             }
         }
     }
-}

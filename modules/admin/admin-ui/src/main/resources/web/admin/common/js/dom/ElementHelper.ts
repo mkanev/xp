@@ -1,6 +1,11 @@
-module api.dom {
+import {assert} from "../util/Assert";
+import {StringHelper} from "../util/StringHelper";
+import {assertNotNull} from "../util/Assert";
+import {Class} from "../Class";
+import {Name} from "../Name";
+import {Element} from "./Element";
 
-    export interface ElementDimensions {
+export interface ElementDimensions {
         top: number;
         left: number;
         width: number;
@@ -12,12 +17,12 @@ module api.dom {
         private el: HTMLElement;
 
         static fromName(name: string): ElementHelper {
-            api.util.assert(!api.util.StringHelper.isEmpty(name), 'Tag name cannot be empty');
+            assert(!StringHelper.isEmpty(name), 'Tag name cannot be empty');
             return new ElementHelper(document.createElement(name));
         }
 
         constructor(element: HTMLElement) {
-            api.util.assertNotNull(element, 'Element cannot be null');
+            assertNotNull(element, 'Element cannot be null');
             this.el = element;
         }
 
@@ -26,8 +31,8 @@ module api.dom {
         }
 
         insertBefore(newEl: Element, existingEl: Element) {
-            api.util.assertNotNull(newEl, 'New element cannot be null');
-            api.util.assertNotNull(existingEl, 'Existing element cannot be null');
+            assertNotNull(newEl, 'New element cannot be null');
+            assertNotNull(existingEl, 'Existing element cannot be null');
             this.el.insertBefore(newEl.getHTMLElement(), existingEl ? existingEl.getHTMLElement() : null);
         }
 
@@ -36,18 +41,18 @@ module api.dom {
         }
 
         insertAfterEl(existingEl: ElementHelper) {
-            api.util.assertNotNull(existingEl, 'Existing element cannot be null');
-            api.util.assertNotNull(existingEl.el.parentElement, 'Existing element\'s parentElement cannot be null');
+            assertNotNull(existingEl, 'Existing element cannot be null');
+            assertNotNull(existingEl.el.parentElement, 'Existing element\'s parentElement cannot be null');
             existingEl.el.parentElement.insertBefore(this.el, existingEl.el.nextElementSibling);
         }
 
         insertAfterThisEl(toInsert: ElementHelper) {
-            api.util.assertNotNull(toInsert, 'Existing element cannot be null');
+            assertNotNull(toInsert, 'Existing element cannot be null');
             this.el.parentElement.insertBefore(toInsert.el, this.el.nextElementSibling);
         }
 
         /*
-         * @returns {api.dom.ElementHelper} ElementHelper for previous node of this element.
+         * @returns {ElementHelper} ElementHelper for previous node of this element.
          */
         getPrevious(): ElementHelper {
             var previous = this.el.previousSibling;
@@ -94,7 +99,7 @@ module api.dom {
         }
 
         setInnerHtml(value: string, escapeHtml: boolean = true): ElementHelper {
-            wemjq(this.el).html(escapeHtml ? api.util.StringHelper.escapeHtml(value) : value);
+            wemjq(this.el).html(escapeHtml ? StringHelper.escapeHtml(value) : value);
             return this;
         }
 
@@ -130,8 +135,8 @@ module api.dom {
         }
 
         setData(name: string, value: string): ElementHelper {
-            api.util.assert(!api.util.StringHelper.isEmpty(name), 'Name cannot be empty');
-            api.util.assert(!api.util.StringHelper.isEmpty(value), 'Value cannot be empty');
+            assert(!StringHelper.isEmpty(name), 'Name cannot be empty');
+            assert(!StringHelper.isEmpty(value), 'Value cannot be empty');
             this.el.setAttribute('data-' + name, value);
             wemjq(this.el).data(name, value);
             return this;
@@ -152,7 +157,7 @@ module api.dom {
         }
 
         addClass(clsName: string): ElementHelper {
-            api.util.assert(!api.util.StringHelper.isEmpty(clsName), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(clsName), 'Class name cannot be empty');
             // spaces are not allowed
             var classList: string[] = clsName.split(" ");
             classList.forEach((classItem: string) => {
@@ -182,7 +187,7 @@ module api.dom {
         }
 
         hasClass(clsName: string): boolean {
-            api.util.assert(!api.util.StringHelper.isEmpty(clsName), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(clsName), 'Class name cannot be empty');
             // spaces are not allowed
             var classList: string[] = clsName.split(" ");
             for (var i = 0; i < classList.length; i++) {
@@ -195,7 +200,7 @@ module api.dom {
         }
 
         removeClass(clsName: string): ElementHelper {
-            api.util.assert(!api.util.StringHelper.isEmpty(clsName), 'Class name cannot be empty');
+            assert(!StringHelper.isEmpty(clsName), 'Class name cannot be empty');
             // spaces are not allowed
             var classList: string[] = clsName.split(" ");
             classList.forEach((classItem: string) => {
@@ -715,4 +720,3 @@ module api.dom {
             return this.el.offsetWidth < this.el.scrollWidth;
         }
     }
-}

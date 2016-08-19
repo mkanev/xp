@@ -1,17 +1,17 @@
-import "../../api.ts";
+import {AccessControlList} from "../../../../../common/js/security/acl/AccessControlList";
+import {AccessControlListView} from "../../../../../common/js/ui/security/acl/AccessControlListView";
+import {AccessControlEntryView} from "../../../../../common/js/ui/security/acl/AccessControlEntryView";
+import {AccessControlEntry} from "../../../../../common/js/security/acl/AccessControlEntry";
+import {Content} from "../../../../../common/js/content/Content";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {Button} from "../../../../../common/js/ui/button/Button";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {OpenEditPermissionsDialogEvent} from "../../../../../common/js/content/event/OpenEditPermissionsDialogEvent";
+
 import {ContentPermissionsAppliedEvent} from "./ContentPermissionsAppliedEvent";
 
-import AccessControlList = api.security.acl.AccessControlList;
-import AccessControlListView = api.ui.security.acl.AccessControlListView;
-import AccessControlEntryView = api.ui.security.acl.AccessControlEntryView;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import Content = api.content.Content;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-import Button = api.ui.button.Button;
-
-export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
+export class SecurityWizardStepForm extends WizardStepForm {
 
     private label: LabelEl;
     private inheritance: DivEl;
@@ -61,7 +61,7 @@ export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
 
         this.editLink.onClicked(() => {
             if (!!this.content) {
-                new api.content.event.OpenEditPermissionsDialogEvent(this.content).fire();
+                new OpenEditPermissionsDialogEvent(this.content).fire();
             }
         });
 
@@ -73,7 +73,7 @@ export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
         });
     }
 
-    layout(content: api.content.Content) {
+    layout(content: Content) {
 
         this.accessListView.clearItems();
 
@@ -113,7 +113,7 @@ export class SecurityWizardStepForm extends api.app.wizard.WizardStepForm {
         this.content = content;
     }
 
-    update(content: api.content.Content, unchangedOnly: boolean = true) {
+    update(content: Content, unchangedOnly: boolean = true) {
         //TODO: preserve changes
         this.layout(content);
     }

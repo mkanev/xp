@@ -1,6 +1,6 @@
-module api.relationship.json {
 
-    export class RelationshipJson {
+
+export class RelationshipJson {
 
         type:string;
         fromContent:string;
@@ -16,4 +16,3 @@ module api.relationship.json {
         modifier:string;
         id:string;
     }
-}

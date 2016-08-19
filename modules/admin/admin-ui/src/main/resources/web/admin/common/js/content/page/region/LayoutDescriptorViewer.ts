@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {NamesAndIconViewer} from "../../../ui/NamesAndIconViewer";
+import {LayoutDescriptor} from "./LayoutDescriptor";
 
-    export class LayoutDescriptorViewer extends api.ui.NamesAndIconViewer<LayoutDescriptor> {
+export class LayoutDescriptorViewer extends NamesAndIconViewer<LayoutDescriptor> {
 
         constructor() {
             super();
@@ -18,4 +19,3 @@ module api.content.page.region {
             return "icon-insert-template icon-large";
         }
     }
-}

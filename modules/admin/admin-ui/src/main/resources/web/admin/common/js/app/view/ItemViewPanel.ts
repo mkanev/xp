@@ -1,16 +1,22 @@
-module api.app.view {
+import {Equitable} from "../../Equitable";
+import {Panel} from "../../ui/panel/Panel";
+import {Closeable} from "../../ui/Closeable";
+import {Toolbar} from "../../ui/toolbar/Toolbar";
+import {Action} from "../../ui/Action";
+import {ItemViewClosedEvent} from "./ItemViewClosedEvent";
+import {ViewItem} from "./ViewItem";
 
-    export class ItemViewPanel<M extends api.Equitable> extends api.ui.panel.Panel implements api.ui.Closeable {
+export class ItemViewPanel<M extends Equitable> extends Panel implements Closeable {
 
-        private toolbar: api.ui.toolbar.Toolbar;
+        private toolbar: Toolbar;
 
-        private panel: api.ui.panel.Panel;
+        private panel: Panel;
 
         private browseItem: ViewItem<M>;
 
         private closedListeners: {(event: ItemViewClosedEvent<M>):void}[] = [];
 
-        constructor(toolbar: api.ui.toolbar.Toolbar, panel: api.ui.panel.Panel) {
+        constructor(toolbar: Toolbar, panel: Panel) {
             super("item-view-panel");
             this.toolbar = toolbar;
             this.panel = panel;
@@ -22,7 +28,7 @@ module api.app.view {
          As long as the close action is excluded from the toolbar,
          we should add it along with the other toolbar actions to be able to close tabs.
          */
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return [];
         }
 
@@ -63,4 +69,3 @@ module api.app.view {
 
     }
 
-}

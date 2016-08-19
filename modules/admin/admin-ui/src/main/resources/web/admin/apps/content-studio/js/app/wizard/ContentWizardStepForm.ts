@@ -1,13 +1,14 @@
-import "../../api.ts";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {Form} from "../../../../../common/js/form/Form";
+import {FormContext} from "../../../../../common/js/form/FormContext";
+import {FormView} from "../../../../../common/js/form/FormView";
+import {PropertyTree} from "../../../../../common/js/data/PropertyTree";
+import {WizardStepValidityChangedEvent} from "../../../../../common/js/app/wizard/WizardStepValidityChangedEvent";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {FormValidityChangedEvent} from "../../../../../common/js/form/FormValidityChangedEvent";
+import {ValidationRecording} from "../../../../../common/js/form/ValidationRecording";
 
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import Form = api.form.Form;
-import FormContext = api.form.FormContext;
-import FormView = api.form.FormView;
-import PropertyTree = api.data.PropertyTree;
-import WizardStepValidityChangedEvent = api.app.wizard.WizardStepValidityChangedEvent;
-
-export class ContentWizardStepForm extends api.app.wizard.WizardStepForm {
+export class ContentWizardStepForm extends WizardStepForm {
 
     private formContext: FormContext;
 
@@ -52,14 +53,14 @@ export class ContentWizardStepForm extends api.app.wizard.WizardStepForm {
 
             this.appendChild(this.formView);
 
-            this.formView.onValidityChanged((event: api.form.FormValidityChangedEvent) => {
+            this.formView.onValidityChanged((event: FormValidityChangedEvent) => {
                 this.previousValidation = event.getRecording();
                 this.notifyValidityChanged(new WizardStepValidityChangedEvent(event.isValid()));
             });
         });
     }
 
-    public validate(silent?: boolean): api.form.ValidationRecording {
+    public validate(silent?: boolean): ValidationRecording {
         return this.formView.validate(silent);
     }
 

@@ -1,11 +1,15 @@
-import "../../../../../api.ts";
+import {CompareStatus} from "../../../../../../../../common/js/content/CompareStatus";
+import {CompareStatusFormatter} from "../../../../../../../../common/js/content/CompareStatus";
+import {ContentSummary} from "../../../../../../../../common/js/content/ContentSummary";
+import {DateTimeFormatter} from "../../../../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {Application} from "../../../../../../../../common/js/application/Application";
+import {ApplicationKey} from "../../../../../../../../common/js/application/ApplicationKey";
+import {DlEl} from "../../../../../../../../common/js/dom/DlEl";
+import {ObjectHelper} from "../../../../../../../../common/js/ObjectHelper";
+import {GetApplicationRequest} from "../../../../../../../../common/js/application/GetApplicationRequest";
+import {Element} from "../../../../../../../../common/js/dom/Element";
+import {DdDtEl} from "../../../../../../../../common/js/dom/DdDtEl";
 
-import CompareStatus = api.content.CompareStatus;
-import CompareStatusFormatter = api.content.CompareStatusFormatter;
-import ContentSummary = api.content.ContentSummary;
-import DateTimeFormatter = api.ui.treegrid.DateTimeFormatter;
-import Application = api.application.Application;
-import ApplicationKey = api.application.ApplicationKey;
 import {WidgetItemView} from "../../WidgetItemView";
 import {AttachmentsWidgetItemView} from "./AttachmentsWidgetItemView";
 
@@ -13,7 +17,7 @@ export class PropertiesWidgetItemView extends WidgetItemView {
 
     private content: ContentSummary;
 
-    private list: api.dom.DlEl;
+    private list: DlEl;
 
     public static debug = false;
 
@@ -25,7 +29,7 @@ export class PropertiesWidgetItemView extends WidgetItemView {
         if (AttachmentsWidgetItemView.debug) {
             console.debug('PropertiesWidgetItemView.setContent: ', content);
         }
-        if (!api.ObjectHelper.equals(content, this.content)) {
+        if (!ObjectHelper.equals(content, this.content)) {
             this.content = content;
             return this.layout();
         }
@@ -41,7 +45,7 @@ export class PropertiesWidgetItemView extends WidgetItemView {
             if (this.content != undefined) {
                 var applicationKey = this.content.getType().getApplicationKey();
                 if (!applicationKey.isSystemReserved()) {
-                    return new api.application.GetApplicationRequest(applicationKey).sendAndParse().then((application: Application) => {
+                    return new GetApplicationRequest(applicationKey).sendAndParse().then((application: Application) => {
                         this.layoutApplication(application);
                     }).catch(() => {
                         this.layoutApplication();
@@ -58,7 +62,7 @@ export class PropertiesWidgetItemView extends WidgetItemView {
         if (this.hasChild(this.list)) {
             this.removeChild(this.list);
         }
-        this.list = new api.dom.DlEl();
+        this.list = new DlEl();
 
         var strings: FieldString[];
 
@@ -109,9 +113,9 @@ class FieldString {
         return this;
     }
 
-    public layout(parentEl: api.dom.Element) {
-        var valueEl = new api.dom.DdDtEl("dt").setHtml(this.value);
-        var spanEl = new api.dom.DdDtEl("dd").setHtml(this.fieldName + ": ");
+    public layout(parentEl: Element) {
+        var valueEl = new DdDtEl("dt").setHtml(this.value);
+        var spanEl = new DdDtEl("dd").setHtml(this.fieldName + ": ");
         parentEl.appendChildren(spanEl, valueEl);
     }
 

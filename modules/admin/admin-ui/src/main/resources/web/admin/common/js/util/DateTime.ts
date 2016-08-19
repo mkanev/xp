@@ -1,8 +1,10 @@
-module api.util {
+import {StringHelper} from "./StringHelper";
+import {Equitable} from "../Equitable";
+import {Timezone} from "./Timezone";
+import {ObjectHelper} from "../ObjectHelper";
+import {DateHelper} from "./DateHelper";
 
-    import StringHelper = api.util.StringHelper;
-
-    export class DateTime implements api.Equitable {
+export class DateTime implements Equitable {
 
         private static DATE_TIME_SEPARATOR: string = "T";
 
@@ -69,7 +71,7 @@ module api.util {
             return this.fractions || 0;
         }
 
-        getTimezone(): api.util.Timezone {
+        getTimezone(): Timezone {
             return this.timezone;
         }
 
@@ -89,14 +91,14 @@ module api.util {
                    (this.timezone ? this.timezone.toString() : DateTime.DEFAULT_TIMEZONE);
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DateTime)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, DateTime)) {
                 return false;
             }
 
             var other = <DateTime>o;
 
-            if (!api.ObjectHelper.stringEquals(this.toString(), other.toString())) {
+            if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
                 return false;
             }
 
@@ -304,4 +306,3 @@ module api.util {
             return new DateTime(this);
         }
     }
-}

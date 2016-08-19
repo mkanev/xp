@@ -1,8 +1,11 @@
-module api.content.resource {
+import {QueryExpr} from "../../query/expr/QueryExpr";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentSummaryPreLoader} from "./ContentSummaryPreLoader";
+import {ContentSummaryRequest} from "./ContentSummaryRequest";
 
-    import QueryExpr = api.query.expr.QueryExpr;
-
-    export class ContentSummaryLoader extends ContentSummaryPreLoader {
+export class ContentSummaryLoader extends ContentSummaryPreLoader {
 
         private contentSummaryRequest: ContentSummaryRequest;
 
@@ -22,7 +25,7 @@ module api.content.resource {
             this.contentSummaryRequest.setAllowedContentTypes(contentTypes);
         }
 
-        setAllowedContentTypeNames(contentTypeNames: api.schema.content.ContentTypeName[]) {
+        setAllowedContentTypeNames(contentTypeNames: ContentTypeName[]) {
             this.contentSummaryRequest.setAllowedContentTypeNames(contentTypeNames);
         }
 
@@ -51,4 +54,3 @@ module api.content.resource {
     }
 
 
-}

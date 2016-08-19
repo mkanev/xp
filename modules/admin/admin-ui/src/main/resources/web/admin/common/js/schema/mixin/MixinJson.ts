@@ -1,8 +1,8 @@
-module api.schema.mixin {
+import {SchemaJson} from "../SchemaJson";
+import {FormItemJson} from "../../form/json/FormItemJson";
 
-    export interface MixinJson extends api.schema.SchemaJson {
+export interface MixinJson extends SchemaJson {
 
-        items:api.form.json.FormItemJson[];
+        items:FormItemJson[];
 
     }
-}

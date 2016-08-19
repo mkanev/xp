@@ -1,6 +1,9 @@
-module api.content.page {
+import {Cloneable} from "../../Cloneable";
+import {Form} from "../../form/Form";
+import {DescriptorKey} from "./DescriptorKey";
+import {DescriptorName} from "./DescriptorName";
 
-    export class Descriptor implements api.Cloneable {
+export class Descriptor implements Cloneable {
 
         private key: DescriptorKey;
 
@@ -8,7 +11,7 @@ module api.content.page {
 
         private displayName: string;
 
-        private config: api.form.Form;
+        private config: Form;
 
         constructor(builder: DescriptorBuilder) {
             this.name = builder.name;
@@ -29,7 +32,7 @@ module api.content.page {
             return this.displayName;
         }
 
-        getConfig(): api.form.Form {
+        getConfig(): Form {
             return this.config;
         }
 
@@ -46,7 +49,7 @@ module api.content.page {
 
         displayName: string;
 
-        config: api.form.Form;
+        config: Form;
 
         constructor(source?: Descriptor) {
             if (source) {
@@ -57,4 +60,3 @@ module api.content.page {
             }
         }
     }
-}

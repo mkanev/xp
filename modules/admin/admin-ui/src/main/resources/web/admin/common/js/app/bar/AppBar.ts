@@ -1,12 +1,23 @@
-module api.app.bar {
+import {ResponsiveRanges} from "../../ui/responsive/ResponsiveRanges";
+import {DivEl} from "../../dom/DivEl";
+import {ActionContainer} from "../../ui/ActionContainer";
+import {ButtonEl} from "../../dom/ButtonEl";
+import {NavigatorEvent} from "../../ui/NavigatorEvent";
+import {ResponsiveManager} from "../../ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../ui/responsive/ResponsiveItem";
+import {Action} from "../../ui/Action";
+import {ActionButton} from "../../ui/button/ActionButton";
+import {Button} from "../../ui/button/Button";
+import {App} from "../Application";
+import {AppBarActions} from "./AppBarActions";
+import {AppBarTabMenu} from "./AppBarTabMenu";
+import {ShowAppLauncherAction} from "./ShowAppLauncherAction";
 
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
-    export class AppBar extends api.dom.DivEl implements api.ui.ActionContainer {
+export class AppBar extends DivEl implements ActionContainer {
 
         private application: App;
 
-        private launcherButton: api.dom.ButtonEl;
+        private launcherButton: ButtonEl;
 
         private homeButton: HomeButton;
 
@@ -27,27 +38,27 @@ module api.app.bar {
 
             this.appendChild(this.tabMenu);
 
-            this.tabMenu.onNavigationItemAdded((event: api.ui.NavigatorEvent)=> {
+            this.tabMenu.onNavigationItemAdded((event: NavigatorEvent)=> {
                 this.updateAppOpenTabs();
             });
-            this.tabMenu.onNavigationItemRemoved((event: api.ui.NavigatorEvent)=> {
+            this.tabMenu.onNavigationItemRemoved((event: NavigatorEvent)=> {
                 this.updateAppOpenTabs();
             });
 
             // Responsive events to update homeButton styles
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+            ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
                 if (this.tabMenu.countVisible() > 0) {
                     this.addClass("tabs-present");
                 } else {
                     this.removeClass("tabs-present");
                 }
             });
-            this.onRendered(() => {api.ui.responsive.ResponsiveManager.fireResizeEvent();});
+            this.onRendered(() => {ResponsiveManager.fireResizeEvent();});
 
         }
 
 
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return [this.showAppLauncherAction];
         }
 
@@ -60,18 +71,18 @@ module api.app.bar {
         }
     }
 
-    export class LauncherButton extends api.ui.button.ActionButton {
+    export class LauncherButton extends ActionButton {
 
-        constructor(action: api.ui.Action) {
+        constructor(action: Action) {
             super(action, false);
             this.addClass('launcher-button');
         }
 
     }
 
-    export class HomeButton extends api.ui.button.Button {
+    export class HomeButton extends Button {
 
-        constructor(app: App, action: api.ui.Action) {
+        constructor(app: App, action: Action) {
 
             super(app.getName());
 
@@ -83,4 +94,3 @@ module api.app.bar {
         }
 
     }
-}

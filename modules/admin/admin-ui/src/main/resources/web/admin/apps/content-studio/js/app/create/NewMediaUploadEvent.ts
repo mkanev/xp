@@ -1,9 +1,9 @@
-import "../../api.ts";
+import {Content} from "../../../../../common/js/content/Content";
+import {UploadItem} from "../../../../../common/js/ui/uploader/UploadItem";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
 
-import Content = api.content.Content;
-import UploadItem = api.ui.uploader.UploadItem;
-
-export class NewMediaUploadEvent extends api.event.Event {
+export class NewMediaUploadEvent extends Event {
 
     private uploadItems: UploadItem<Content>[];
 
@@ -24,10 +24,10 @@ export class NewMediaUploadEvent extends api.event.Event {
     }
 
     static on(handler: (event: NewMediaUploadEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: NewMediaUploadEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

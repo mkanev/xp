@@ -1,6 +1,6 @@
-module api.security.acl {
 
-    export enum UserStoreAccess {
+
+export enum UserStoreAccess {
 
         READ,
         CREATE_USERS,
@@ -10,4 +10,3 @@ module api.security.acl {
 
     }
 
-}

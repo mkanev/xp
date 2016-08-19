@@ -1,16 +1,18 @@
-module api.macro {
+import {Equitable} from "../Equitable";
+import {ApplicationKey} from "../application/ApplicationKey";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class MacroKey implements api.Equitable {
+export class MacroKey implements Equitable {
 
         private static SEPARATOR = ":";
 
-        private applicationKey: api.application.ApplicationKey;
+        private applicationKey: ApplicationKey;
 
         private name: string;
 
         private refString: string;
 
-        constructor(applicationKey: api.application.ApplicationKey, name: string) {
+        constructor(applicationKey: ApplicationKey, name: string) {
             this.applicationKey = applicationKey;
             this.name = name;
             this.refString = applicationKey.toString() + MacroKey.SEPARATOR + name.toString();
@@ -25,11 +27,11 @@ module api.macro {
             var applicationKey = str.substring(0, sepIndex);
             var name = str.substring(sepIndex + 1, str.length);
 
-            return new MacroKey(api.application.ApplicationKey.fromString(applicationKey), name);
+            return new MacroKey(ApplicationKey.fromString(applicationKey), name);
         }
 
 
-        public getApplicationKey(): api.application.ApplicationKey {
+        public getApplicationKey(): ApplicationKey {
             return this.applicationKey;
         }
 
@@ -41,8 +43,8 @@ module api.macro {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MacroKey)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MacroKey)) {
                 return false;
             }
 
@@ -52,7 +54,7 @@ module api.macro {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
+            if (!ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
                 return false;
             }
 
@@ -60,4 +62,3 @@ module api.macro {
         }
 
     }
-}

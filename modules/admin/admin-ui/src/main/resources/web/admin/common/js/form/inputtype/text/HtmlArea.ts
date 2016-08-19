@@ -1,29 +1,39 @@
-module api.form.inputtype.text {
+import {BaseInputTypeNotManagingAdd} from "../support/BaseInputTypeNotManagingAdd";
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {Element} from "../../../dom/Element";
+import {OptionSelectedEvent} from "../../../ui/selector/OptionSelectedEvent";
+import {LinkModalDialog} from "../../../util/htmlarea/dialog/LinkModalDialog";
+import {ImageModalDialog} from "../../../util/htmlarea/dialog/ImageModalDialog";
+import {AnchorModalDialog} from "../../../util/htmlarea/dialog/AnchorModalDialog";
+import {HTMLAreaBuilder} from "../../../util/htmlarea/editor/HTMLAreaBuilder";
+import {HTMLAreaHelper} from "../../../util/htmlarea/editor/HTMLAreaHelper";
+import {HtmlModalDialog as ModalDialog} from "../../../util/htmlarea/dialog/HtmlModalDialog";
+import {ElementHelper} from "../../../dom/ElementHelper";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {ContentPath} from "../../../content/ContentPath";
+import {ContentInputTypeViewContext} from "../../../content/form/inputtype/ContentInputTypeViewContext";
+import {TextAreaInput} from "../../../ui/text/TextAreaInput";
+import {DivEl} from "../../../dom/DivEl";
+import {AppHelper} from "../../../util/AppHelper";
+import {SelectorOnBlurEvent} from "../../../ui/selector/SelectorOnBlurEvent";
+import {HTMLAreaDialogHandler} from "../../../util/htmlarea/dialog/HTMLAreaDialogHandler";
+import {ResponsiveManager} from "../../../ui/responsive/ResponsiveManager";
+import {StringHelper} from "../../../util/StringHelper";
+import {ArrayHelper} from "../../../util/ArrayHelper";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-    declare var CONFIG;
-
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import ContentSummary = api.content.ContentSummary;
-    import Element = api.dom.Element;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
-    import ImageModalDialog = api.util.htmlarea.dialog.ImageModalDialog;
-    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
-    import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
-    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import ModalDialog = api.util.htmlarea.dialog.HtmlModalDialog;
-    import ElementHelper = api.dom.ElementHelper;
-    import ApplicationKey = api.application.ApplicationKey
+declare var CONFIG;
 
     export class HtmlArea extends BaseInputTypeNotManagingAdd<string> {
 
         private editors: HtmlAreaOccurrenceInfo[];
-        private content: api.content.ContentSummary;
-        private contentPath: api.content.ContentPath;
+        private content: ContentSummary;
+        private contentPath: ContentPath;
         private applicationKeys: ApplicationKey[];
 
         private focusListeners: {(event: FocusEvent): void}[] = [];
@@ -35,7 +45,7 @@ module api.form.inputtype.text {
             exclude: ""
         };
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
 
             super(config);
 
@@ -61,20 +71,20 @@ module api.form.inputtype.text {
             return super.newInitialValue() || ValueTypes.STRING.newValue("");
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
             if (!ValueTypes.STRING.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
 
             var value = HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString());
-            var textAreaEl = new api.ui.text.TextAreaInput(this.getInput().getName() + "-" + index, value);
+            var textAreaEl = new TextAreaInput(this.getInput().getName() + "-" + index, value);
 
             var editorId = textAreaEl.getId();
 
             var clazz = editorId.replace(/\./g, '_');
             textAreaEl.addClass(clazz);
 
-            var textAreaWrapper = new api.dom.DivEl();
+            var textAreaWrapper = new DivEl();
 
             this.editors.push({id: editorId, textAreaWrapper: textAreaWrapper, property: property});
 
@@ -92,8 +102,8 @@ module api.form.inputtype.text {
             return textAreaWrapper;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var textArea = <api.ui.text.TextAreaInput> occurrence.getFirstChild();
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
+            var textArea = <TextAreaInput> occurrence.getFirstChild();
             var id = textArea.getId();
 
             if (!unchangedOnly || !textArea.isDirty()) {
@@ -111,8 +121,8 @@ module api.form.inputtype.text {
 
                 this.notifyFocused(e);
 
-                api.util.AppHelper.dispatchCustomEvent("focusin", this);
-                new api.ui.selector.SelectorOnBlurEvent(this).fire();
+                AppHelper.dispatchCustomEvent("focusin", this);
+                new SelectorOnBlurEvent(this).fire();
             };
 
             var notifyValueChanged = this.notifyValueChanged.bind(this, id, textAreaWrapper);
@@ -121,7 +131,7 @@ module api.form.inputtype.text {
 
             var blurHandler = (e) => {
                 //checking if remove occurence button clicked or not
-                api.util.AppHelper.dispatchCustomEvent("focusout", this);
+                AppHelper.dispatchCustomEvent("focusout", this);
 
                 if (!isMouseOverRemoveOccurenceButton) {
                     this.setStaticInputHeight();
@@ -152,7 +162,7 @@ module api.form.inputtype.text {
             };
 
             var createDialogHandler = event => {
-                api.util.htmlarea.dialog.HTMLAreaDialogHandler.createAndOpenDialog(event);
+                HTMLAreaDialogHandler.createAndOpenDialog(event);
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
@@ -209,12 +219,12 @@ module api.form.inputtype.text {
                 this.updateStickyEditorToolbar(inputOccurence);
             });
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
+            ResponsiveManager.onAvailableSizeChanged(this, () => {
                 this.updateEditorToolbarPos(inputOccurence);
             });
 
             this.onRemoved((event) => {
-                api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
+                ResponsiveManager.unAvailableSizeChanged(this);
             });
 
             this.onOccurrenceRendered(() => {
@@ -292,7 +302,7 @@ module api.form.inputtype.text {
             return !(wemjq(this.getHTMLElement()).parents(".inspection-panel").length > 0);
         }
 
-        private notifyValueChanged(id: string, occurrence: api.dom.Element) {
+        private notifyValueChanged(id: string, occurrence: Element) {
             var value = ValueTypes.STRING.newValue(HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id)));
             this.notifyOccurrenceValueChanged(occurrence, value);
         }
@@ -302,10 +312,10 @@ module api.form.inputtype.text {
         }
 
         valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.STRING) || api.util.StringHelper.isBlank(value.getString());
+            return value.isNull() || !value.getType().equals(ValueTypes.STRING) || StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+        hasInputElementValidUserInput(inputElement: Element) {
 
             // TODO
             return true;
@@ -377,7 +387,7 @@ module api.form.inputtype.text {
         }
 
         private reInitEditor(id: string) {
-            var savedEditor: HtmlAreaOccurrenceInfo = api.util.ArrayHelper.findElementByFieldValue(this.editors, "id", id);
+            var savedEditor: HtmlAreaOccurrenceInfo = ArrayHelper.findElementByFieldValue(this.editors, "id", id);
 
             this.initEditor(id, savedEditor.property, savedEditor.textAreaWrapper);
         }
@@ -390,5 +400,4 @@ module api.form.inputtype.text {
         property: Property;
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("HtmlArea", HtmlArea));
-}
+    InputTypeManager.register(new Class("HtmlArea", HtmlArea));

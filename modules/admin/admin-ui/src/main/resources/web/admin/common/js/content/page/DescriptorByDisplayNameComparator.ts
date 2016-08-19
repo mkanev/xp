@@ -1,6 +1,7 @@
-module api.content.page {
+import {Comparator} from "../../Comparator";
+import {Descriptor} from "./Descriptor";
 
-    export class DescriptorByDisplayNameComparator implements api.Comparator<Descriptor> {
+export class DescriptorByDisplayNameComparator implements Comparator<Descriptor> {
 
         compare(a: Descriptor, b: Descriptor): number {
             if (!a) {
@@ -16,4 +17,3 @@ module api.content.page {
             return firstName.localeCompare(secondName);
         }
     }
-}

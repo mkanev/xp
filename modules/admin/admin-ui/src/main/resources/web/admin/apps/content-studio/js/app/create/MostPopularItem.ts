@@ -1,6 +1,5 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
 
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
 import {NewContentDialogListItem} from "./NewContentDialogListItem";
 
 export class MostPopularItem extends NewContentDialogListItem {

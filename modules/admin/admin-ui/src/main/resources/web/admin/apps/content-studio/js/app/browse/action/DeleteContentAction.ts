@@ -1,8 +1,7 @@
-import "../../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../../common/js/content/CompareStatus";
+import {Action} from "../../../../../../common/js/ui/Action";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
-import Action = api.ui.Action;
 import {ContentTreeGrid} from "../ContentTreeGrid";
 import {ContentDeletePromptEvent} from "../ContentDeletePromptEvent";
 
@@ -12,11 +11,11 @@ export class DeleteContentAction extends Action {
         super("Delete", "mod+del");
         this.setEnabled(false);
         this.onExecuted(() => {
-            var contents: api.content.ContentSummaryAndCompareStatus[]
+            var contents: ContentSummaryAndCompareStatus[]
                 = grid.getSelectedDataList();
             new ContentDeletePromptEvent(contents)
                 .setNoCallback(null)
-                .setYesCallback((exclude?: api.content.CompareStatus[]) => {
+                .setYesCallback((exclude?: CompareStatus[]) => {
 
                     var excludeStatuses = !!exclude ? exclude : [CompareStatus.EQUAL, CompareStatus.NEWER, CompareStatus.MOVED,
                             CompareStatus.PENDING_DELETE, CompareStatus.OLDER],

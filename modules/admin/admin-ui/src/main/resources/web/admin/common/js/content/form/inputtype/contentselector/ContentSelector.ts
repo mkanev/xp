@@ -1,24 +1,36 @@
-module api.content.form.inputtype.contentselector {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {GetRelationshipTypeByNameRequest} from "../../../../schema/relationshiptype/GetRelationshipTypeByNameRequest";
+import {RelationshipTypeName} from "../../../../schema/relationshiptype/RelationshipTypeName";
+import {ContentDeletedEvent} from "../../../event/ContentDeletedEvent";
+import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../../ui/FocusSwitchEvent";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {ContentId} from "../../../ContentId";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {ContentComboBox} from "../../../ContentComboBox";
+import {Input} from "../../../../form/Input";
+import {RelationshipType} from "../../../../schema/relationshiptype/RelationshipType";
+import {ContentSummary} from "../../../ContentSummary";
+import {Reference} from "../../../../util/Reference";
+import {NotifyManager} from "../../../../notify/NotifyManager";
+import {GetContentSummaryByIds} from "../../../resource/GetContentSummaryByIds";
+import {Element} from "../../../../dom/Element";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
+import {ContentSelectorLoader} from "./ContentSelectorLoader";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
+export class ContentSelector extends BaseInputTypeManagingAdd<ContentId> {
 
-    export class ContentSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.content.ContentId> {
+        private config: ContentInputTypeViewContext;
 
-        private config: api.content.form.inputtype.ContentInputTypeViewContext;
+        private relationshipTypeName: RelationshipTypeName;
 
-        private relationshipTypeName: api.schema.relationshiptype.RelationshipTypeName;
-
-        private contentComboBox: api.content.ContentComboBox;
+        private contentComboBox: ContentComboBox;
 
         private draggingIndex: number;
 
@@ -30,7 +42,7 @@ module api.content.form.inputtype.contentselector {
 
         private contentDeletedListener: (event: ContentDeletedEvent) => void;
 
-        constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config?: ContentInputTypeViewContext) {
             super("relationship");
             this.addClass("input-type-view");
             this.config = config;
@@ -103,7 +115,7 @@ module api.content.form.inputtype.contentselector {
             return null;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.REFERENCE.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
@@ -118,7 +130,7 @@ module api.content.form.inputtype.contentselector {
 
             var value = this.getValueFromPropertyArray(propertyArray);
 
-            this.contentComboBox = api.content.ContentComboBox.create()
+            this.contentComboBox = ContentComboBox.create()
                 .setName(input.getName())
                 .setMaximumOccurrences(input.getOccurrences().getMaximum())
                 .setLoader(contentSelectorLoader)
@@ -133,16 +145,16 @@ module api.content.form.inputtype.contentselector {
             });
 
             return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse().then(
-                (relationshipType: api.schema.relationshiptype.RelationshipType) => {
+                (relationshipType: RelationshipType) => {
 
                     this.contentComboBox.setInputIconUrl(relationshipType.getIconUrl());
 
                     this.appendChild(this.contentComboBox);
 
-                    return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
+                    return this.doLoadContent(propertyArray).then((contents: ContentSummary[]) => {
 
                             //TODO: original value doesn't work because of additional request, so have to select manually
-                            contents.forEach((content: api.content.ContentSummary) => {
+                            contents.forEach((content: ContentSummary) => {
                                 this.contentComboBox.select(content);
                             });
 
@@ -150,10 +162,10 @@ module api.content.form.inputtype.contentselector {
                             this.updateSelectedOptionIsEditable(selectedOption);
                         });
 
-                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentSummary>) => {
                             this.fireFocusSwitchEvent(event);
 
-                            var reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
+                            var reference = Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
 
                                 var value = new Value(reference, ValueTypes.REFERENCE);
                                 if (this.contentComboBox.countSelected() == 1) { // overwrite initial value
@@ -169,7 +181,7 @@ module api.content.form.inputtype.contentselector {
                                 this.validate(false);
                             });
 
-                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentSummary>) => {
 
                             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
                             this.updateSelectedOptionStyle();
@@ -188,14 +200,14 @@ module api.content.form.inputtype.contentselector {
             for (let i = 0; i < length; i++) {
                 if (this.getPropertyArray().get(i).getValue().getString() == id) {
                     this.getPropertyArray().remove(i);
-                    api.notify.NotifyManager.get().showWarning("Failed to load content item with id " + id +
+                    NotifyManager.get().showWarning("Failed to load content item with id " + id +
                                                                ". The reference will be removed upon save.");
                     break;
                 }
             }
         }
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
                 if (!unchangedOnly || !this.contentComboBox.isDirty()) {
                     var value = this.getValueFromPropertyArray(propertyArray);
@@ -204,19 +216,19 @@ module api.content.form.inputtype.contentselector {
             });
         }
 
-        private doLoadContent(propertyArray: PropertyArray): wemQ.Promise<api.content.ContentSummary[]> {
+        private doLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
 
             var contentIds: ContentId[] = [];
             propertyArray.forEach((property: Property) => {
                 if (property.hasNonNullValue()) {
                     var referenceValue = property.getReference();
-                    if (referenceValue instanceof api.util.Reference) {
+                    if (referenceValue instanceof Reference) {
                         contentIds.push(ContentId.fromReference(referenceValue));
                     }
                 }
             });
-            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse().
-                then((result: api.content.ContentSummary[]) => {
+            return new GetContentSummaryByIds(contentIds).sendAndParse().
+                then((result: ContentSummary[]) => {
                     return result;
                 });
 
@@ -237,7 +249,7 @@ module api.content.form.inputtype.contentselector {
 
         private handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
 
-            var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
 
             ui.placeholder.html("Drop form item set here");
@@ -246,7 +258,7 @@ module api.content.form.inputtype.contentselector {
         private handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                var draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                var draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item.context);
                 var draggedToIndex = draggedElement.getSiblingIndex();
                 this.getPropertyArray().move(this.draggingIndex, draggedToIndex);
             }
@@ -302,5 +314,4 @@ module api.content.form.inputtype.contentselector {
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("ContentSelector", ContentSelector));
-}
+    InputTypeManager.register(new Class("ContentSelector", ContentSelector));

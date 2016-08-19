@@ -1,16 +1,19 @@
-module api.app.browse {
+import {Equitable} from "../../Equitable";
+import {DivEl} from "../../dom/DivEl";
+import {Viewer} from "../../ui/Viewer";
+import {BrowseItem} from "./BrowseItem";
 
-    export class SelectionItem<M extends api.Equitable> extends api.dom.DivEl {
+export class SelectionItem<M extends Equitable> extends DivEl {
 
-        private viewer: api.ui.Viewer<M>;
+        private viewer: Viewer<M>;
 
         protected item: BrowseItem<M>;
 
-        private removeEl: api.dom.DivEl;
+        private removeEl: DivEl;
 
         private removeListeners: {(event: MouseEvent): void}[] = [];
 
-        constructor(viewer: api.ui.Viewer<M>, item: BrowseItem<M>) {
+        constructor(viewer: Viewer<M>, item: BrowseItem<M>) {
             super("browse-selection-item");
             this.viewer = viewer;
             this.item = item;
@@ -26,7 +29,7 @@ module api.app.browse {
         }
 
         private initRemoveButton(callback?: () => void) {
-            var removeEl = new api.dom.DivEl("icon remove");
+            var removeEl = new DivEl("icon remove");
             removeEl.onClicked(this.notifyRemoveClicked.bind(this));
             return removeEl;
         }
@@ -69,4 +72,3 @@ module api.app.browse {
         }
     }
 
-}

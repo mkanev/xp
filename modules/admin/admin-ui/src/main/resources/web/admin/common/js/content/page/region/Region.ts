@@ -1,6 +1,22 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {Exception} from "../../../Exception";
+import {ExceptionType} from "../../../Exception";
+import {assertState} from "../../../util/Assert";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {BaseRegionChangedEvent} from "./BaseRegionChangedEvent";
+import {Component} from "./Component";
+import {ComponentAddedEvent} from "./ComponentAddedEvent";
+import {ComponentPath} from "./ComponentPath";
+import {ComponentPropertyChangedEvent} from "./ComponentPropertyChangedEvent";
+import {ComponentRemovedEvent} from "./ComponentRemovedEvent";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {LayoutComponent} from "./LayoutComponent";
+import {RegionJson} from "./RegionJson";
+import {RegionPath} from "./RegionPath";
+import {RegionPropertyValueChangedEvent} from "./RegionPropertyValueChangedEvent";
 
-    export class Region implements api.Equitable, api.Cloneable {
+export class Region implements Equitable, Cloneable {
 
         public static debug: boolean = false;
 
@@ -111,9 +127,9 @@ module api.content.page.region {
                 var message = "The rendered page is not consistent with the page components structure. Expected component with index " +
                               index + " was not found in region '" + this.getName() + "'.";
                 console.error(message);
-                throw new api.Exception(message, api.ExceptionType.ERROR);
+                throw new Exception(message, ExceptionType.ERROR);
             }
-            api.util.assertState(component.getIndex() == index,
+            assertState(component.getIndex() == index,
                 "Index of Component is not as expected. Expected [" + index + "], was: " + component.getIndex());
             return component;
         }
@@ -136,19 +152,19 @@ module api.content.page.region {
             return "Region[" + this.getPath().toString() + "]";
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Region)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Region)) {
                 return false;
             }
 
             var other = <Region>o;
 
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
+            if (!ObjectHelper.stringEquals(this.name, other.name)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.arrayEquals(this.components, other.components)) {
+            if (!ObjectHelper.arrayEquals(this.components, other.components)) {
                 return false;
             }
 
@@ -160,7 +176,7 @@ module api.content.page.region {
         }
 
         private checkIllegalLayoutComponentWithinLayoutComponent(component: Component, parent: LayoutComponent) {
-            if (!!parent && api.ObjectHelper.iFrameSafeInstanceOf(component, LayoutComponent)) {
+            if (!!parent && ObjectHelper.iFrameSafeInstanceOf(component, LayoutComponent)) {
                 throw new Error("Not allowed to have a LayoutComponent within a LayoutComponent: " +
                                 component.getPath().toString());
             }
@@ -349,4 +365,3 @@ module api.content.page.region {
             return new Region(this);
         }
     }
-}

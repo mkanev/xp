@@ -1,7 +1,12 @@
-module api.security.acl {
+import {PermissionsJson} from "../../content/json/PermissionsJson";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {AccessControlEntryJson} from "./AccessControlEntryJson";
+import {AccessControlEntry} from "./AccessControlEntry";
+import {ObjectHelper} from "../../ObjectHelper";
+import {PrincipalKey} from "../PrincipalKey";
 
-    import PermissionsJson = api.content.json.PermissionsJson;
-    export class AccessControlList implements api.Equitable, api.Cloneable {
+export class AccessControlList implements Equitable, Cloneable {
 
         private entries: {[key: string]: AccessControlEntry};
 
@@ -44,9 +49,9 @@ module api.security.acl {
             delete this.entries[principalKey.toString()];
         }
 
-        toJson(): api.security.acl.AccessControlEntryJson[] {
-            var acl: api.security.acl.AccessControlEntryJson[] = [];
-            this.getEntries().forEach((entry: api.security.acl.AccessControlEntry) => {
+        toJson(): AccessControlEntryJson[] {
+            var acl: AccessControlEntryJson[] = [];
+            this.getEntries().forEach((entry: AccessControlEntry) => {
                 var entryJson = entry.toJson();
                 acl.push(entryJson);
             });
@@ -57,14 +62,14 @@ module api.security.acl {
             return '[' + this.getEntries().map((ace) => ace.toString()).join(', ') + ']';
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, AccessControlList)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, AccessControlList)) {
                 return false;
             }
 
             var other = <AccessControlList>o;
-            return api.ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
+            return ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
         }
 
         clone(): AccessControlList {
@@ -79,11 +84,10 @@ module api.security.acl {
 
         static fromJson(json: PermissionsJson): AccessControlList {
             var acl = new AccessControlList();
-            json.permissions.forEach((entryJson: api.security.acl.AccessControlEntryJson) => {
+            json.permissions.forEach((entryJson: AccessControlEntryJson) => {
                 var entry = AccessControlEntry.fromJson(entryJson);
                 acl.add(entry);
             });
             return acl;
         }
     }
-}

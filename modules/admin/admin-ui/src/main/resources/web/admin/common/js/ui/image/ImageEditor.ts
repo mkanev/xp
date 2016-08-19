@@ -1,15 +1,23 @@
-module api.ui.image {
+import {ImgEl} from "../../dom/ImgEl";
+import {DivEl} from "../../dom/DivEl";
+import {Button} from "../button/Button";
+import {Element} from "../../dom/Element";
+import {TabMenu} from "../tab/TabMenu";
+import {TabMenuItem} from "../tab/TabMenuItem";
+import {TabMenuItemBuilder} from "../tab/TabMenuItem";
+import {NavigatorEvent} from "../NavigatorEvent";
+import {ButtonEl} from "../../dom/ButtonEl";
+import {ElementHiddenEvent} from "../../dom/ElementHiddenEvent";
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {ElementAddedEvent} from "../../dom/ElementAddedEvent";
+import {ElementRemovedEvent} from "../../dom/ElementRemovedEvent";
+import {BodyMask} from "../mask/BodyMask";
+import {Body} from "../../dom/Body";
+import {WindowDOM} from "../../dom/WindowDOM";
+import {CloseButton} from "../button/CloseButton";
+import {SpanEl} from "../../dom/SpanEl";
 
-    import ImgEl = api.dom.ImgEl;
-    import DivEl = api.dom.DivEl;
-    import Button = api.ui.button.Button;
-    import Element = api.dom.Element;
-    import TabMenu = api.ui.tab.TabMenu;
-    import TabMenuItem = api.ui.tab.TabMenuItem;
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-    import NavigatorEvent = api.ui.NavigatorEvent;
-
-    export interface Point {
+export interface Point {
         x: number;
         y: number;
     }
@@ -35,7 +43,7 @@ module api.ui.image {
 
     interface ZoomData extends SVGRect {}
 
-    export class ImageEditor extends api.dom.DivEl {
+    export class ImageEditor extends DivEl {
 
         private SCROLLABLE_SELECTOR: string = '.form-panel';
         private WIZARD_TOOLBAR_SELECTOR: string = '.wizard-step-navigator-and-toolbar';
@@ -77,7 +85,7 @@ module api.ui.image {
         private editCropButton: Button;
         private editFocusButton: Button;
         private editResetButton: Button;
-        private uploadButton: api.dom.ButtonEl;
+        private uploadButton: ButtonEl;
 
         private editModeListeners: {(edit: boolean, position: Rect, zoom: Rect, focus: Point): void}[] = [];
 
@@ -91,7 +99,7 @@ module api.ui.image {
 
         private maskWheelListener: (event: WheelEvent) => void;
         private maskClickListener: (event: MouseEvent) => void;
-        private maskHideListener: (event: api.dom.ElementHiddenEvent) => void;
+        private maskHideListener: (event: ElementHiddenEvent) => void;
 
         private imageErrorListeners: {(event: UIEvent): void}[] = [];
 
@@ -121,7 +129,7 @@ module api.ui.image {
                 this.updateStickyToolbar();
                 this.unShown(updateImageOnShown);
                 if (isFirstLoad) {
-                    api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, resizeListener);
+                    ResponsiveManager.onAvailableSizeChanged(this, resizeListener);
                     isFirstLoad = false;
                 }
             };
@@ -184,7 +192,7 @@ module api.ui.image {
                 return false
             };
 
-            var imageMask = new api.dom.DivEl("image-bg-mask");
+            var imageMask = new DivEl("image-bg-mask");
 
             this.canvas.appendChildren(imageMask, this.image, this.clip);
 
@@ -195,16 +203,16 @@ module api.ui.image {
 
             var scrollListener = (event) => this.updateStickyToolbar();
 
-            this.onAdded((event: api.dom.ElementAddedEvent) => {
+            this.onAdded((event: ElementAddedEvent) => {
                 // sticky toolbar needs to have access to parent elements
                 wemjq(this.getHTMLElement()).closest(this.SCROLLABLE_SELECTOR).bind("scroll", scrollListener);
             });
-            this.onRemoved((event: api.dom.ElementRemovedEvent) => {
+            this.onRemoved((event: ElementRemovedEvent) => {
                 // element has already been removed so use parent
                 if (!!event.getParent()) {
                     wemjq(event.getParent().getHTMLElement()).closest(this.SCROLLABLE_SELECTOR).unbind("scroll", scrollListener);
                 }
-                api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
+                ResponsiveManager.unAvailableSizeChanged(this);
                 this.unImageError(imageErrorHandler);
             });
 
@@ -248,7 +256,7 @@ module api.ui.image {
             return this.image;
         }
 
-        getUploadButton(): api.dom.ButtonEl {
+        getUploadButton(): ButtonEl {
             return this.uploadButton;
         }
 
@@ -493,7 +501,7 @@ module api.ui.image {
                 console.log('setShaderVisible', visible);
             }
 
-            var bodyMask = api.ui.mask.BodyMask.get();
+            var bodyMask = BodyMask.get();
             if (visible) {
                 if (!this.maskClickListener) {
                     this.maskClickListener = (event: MouseEvent) => {
@@ -523,12 +531,12 @@ module api.ui.image {
                         }
                     };
                 }
-                api.dom.Body.get().onClicked(this.maskClickListener);
+                Body.get().onClicked(this.maskClickListener);
 
                 if (!this.maskWheelListener) {
                     this.maskWheelListener = (event: WheelEvent) => {
                         var el = this.getEl(),
-                            win = api.dom.WindowDOM.get(),
+                            win = WindowDOM.get(),
                             myHeight = el.getHeight(),
                             myTop = el.getTopPx(),
                             winHeight = win.getHeight();
@@ -557,12 +565,12 @@ module api.ui.image {
                         }
                     };
                 }
-                api.dom.Body.get().onMouseWheel(this.maskWheelListener);
+                Body.get().onMouseWheel(this.maskWheelListener);
 
                 if (!this.maskHideListener) {
-                    this.maskHideListener = (event: api.dom.ElementHiddenEvent) => {
-                        api.dom.Body.get().unClicked(this.maskClickListener);
-                        api.dom.Body.get().unMouseWheel(this.maskWheelListener);
+                    this.maskHideListener = (event: ElementHiddenEvent) => {
+                        Body.get().unClicked(this.maskClickListener);
+                        Body.get().unMouseWheel(this.maskWheelListener);
                         bodyMask.unHidden(this.maskHideListener);
                     }
                 }
@@ -655,7 +663,7 @@ module api.ui.image {
                 }
             });
 
-            var cancelButton = new api.ui.button.CloseButton();
+            var cancelButton = new CloseButton();
             cancelButton.onClicked((event: MouseEvent) => {
                 event.stopPropagation();
 
@@ -753,10 +761,10 @@ module api.ui.image {
             this.zoomContainer = new DivEl('zoom-container');
 
             this.zoomLine = new DivEl('zoom-line');
-            this.zoomKnob = new api.dom.SpanEl('zoom-knob');
+            this.zoomKnob = new SpanEl('zoom-knob');
             this.zoomLine.appendChild(this.zoomKnob);
 
-            var zoomTitle = new api.dom.SpanEl('zoom-title');
+            var zoomTitle = new SpanEl('zoom-title');
             zoomTitle.setHtml('Zoom');
 
             this.zoomContainer.appendChildren(zoomTitle, this.zoomLine);
@@ -1094,7 +1102,7 @@ module api.ui.image {
                     lastPos = restrainedPos;
                 }
             };
-            api.dom.Body.get().onMouseMove(this.mouseMoveListener);
+            Body.get().onMouseMove(this.mouseMoveListener);
 
             this.mouseUpListener = (event: MouseEvent) => {
                 if (mouseDown) {
@@ -1121,7 +1129,7 @@ module api.ui.image {
                     mouseDown = false;
                 }
             };
-            api.dom.Body.get().onMouseUp(this.mouseUpListener);
+            Body.get().onMouseUp(this.mouseUpListener);
         }
 
         private unbindFocusMouseListeners() {
@@ -1129,8 +1137,8 @@ module api.ui.image {
                 console.log('ImageEditor.unbindFocusMouseListeners');
             }
 
-            api.dom.Body.get().unMouseMove(this.mouseMoveListener);
-            api.dom.Body.get().unMouseUp(this.mouseUpListener);
+            Body.get().unMouseMove(this.mouseMoveListener);
+            Body.get().unMouseUp(this.mouseUpListener);
         }
 
         private updateFocusMaskPosition() {
@@ -1504,7 +1512,7 @@ module api.ui.image {
 
                 lastPos = currPos;
             };
-            api.dom.Body.get().onMouseMove(this.mouseMoveListener);
+            Body.get().onMouseMove(this.mouseMoveListener);
 
             this.mouseUpListener = (event: MouseEvent) => {
                 if (ImageEditor.debug) {
@@ -1535,7 +1543,7 @@ module api.ui.image {
                     console.groupEnd();
                 }
             };
-            api.dom.Body.get().onMouseUp(this.mouseUpListener);
+            Body.get().onMouseUp(this.mouseUpListener);
         }
 
         private unbindCropMouseListeners() {
@@ -1547,8 +1555,8 @@ module api.ui.image {
             this.zoomKnob.unMouseDown(this.knobMouseDownListener);
             this.clip.unMouseDown(this.mouseDownListener);
 
-            api.dom.Body.get().unMouseMove(this.mouseMoveListener);
-            api.dom.Body.get().unMouseUp(this.mouseUpListener);
+            Body.get().unMouseMove(this.mouseMoveListener);
+            Body.get().unMouseUp(this.mouseUpListener);
         }
 
         /**
@@ -1936,4 +1944,3 @@ module api.ui.image {
         }
     }
 
-}

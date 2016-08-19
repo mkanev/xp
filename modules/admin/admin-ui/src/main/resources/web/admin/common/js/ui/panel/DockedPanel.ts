@@ -1,12 +1,16 @@
-module api.ui.panel {
+import {TabBar} from "../tab/TabBar";
+import {TabBarItem} from "../tab/TabBarItem";
+import {Element} from "../../dom/Element";
+import {TabBarItemBuilder} from "../tab/TabBarItem";
+import {DeckPanel} from "./DeckPanel";
+import {NavigatedDeckPanel} from "./NavigatedDeckPanel";
+import {Panel} from "./Panel";
 
-    import TabBar = api.ui.tab.TabBar;
-
-    export class DockedPanel extends Panel {
+export class DockedPanel extends Panel {
 
         private deck: NavigatedDeckPanel;
         private navigator: TabBar;
-        private items: api.ui.tab.TabBarItem[] = [];
+        private items: TabBarItem[] = [];
 
         constructor() {
             super("docked-panel");
@@ -21,14 +25,14 @@ module api.ui.panel {
         doRender(): Q.Promise<boolean> {
             return super.doRender().then((rendered) => {
 
-                this.appendChildren<api.dom.Element>(this.navigator, this.deck);
+                this.appendChildren<Element>(this.navigator, this.deck);
 
                 return rendered;
             });
         }
 
         addItem<T extends Panel>(label: string, addLabelTitleAttribute: boolean, panel: T, select?: boolean): number {
-            var item = new api.ui.tab.TabBarItemBuilder().setLabel(label).setAddLabelTitleAttribute(addLabelTitleAttribute).build();
+            var item = new TabBarItemBuilder().setLabel(label).setAddLabelTitleAttribute(addLabelTitleAttribute).build();
             this.items.push(item);
 
             this.deck.addNavigablePanel(item, panel, select || this.items.length == 1);
@@ -49,4 +53,3 @@ module api.ui.panel {
         }
 
     }
-}

@@ -1,4 +1,25 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {TreeGridActions} from "../../../../../../common/js/ui/treegrid/actions/TreeGridActions";
+import {BrowseItem} from "../../../../../../common/js/app/browse/BrowseItem";
+import {BrowseItemsChanges} from "../../../../../../common/js/app/browse/BrowseItemsChanges";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Content} from "../../../../../../common/js/content/Content";
+import {PermissionHelper} from "../../../../../../common/js/security/acl/PermissionHelper";
+import {AccessControlEntry} from "../../../../../../common/js/security/acl/AccessControlEntry";
+import {AccessControlList} from "../../../../../../common/js/security/acl/AccessControlList";
+import {ContentId} from "../../../../../../common/js/content/ContentId";
+import {ContentAccessControlList} from "../../../../../../common/js/security/acl/ContentAccessControlList";
+import {Permission} from "../../../../../../common/js/security/acl/Permission";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
+import {CompareStatus} from "../../../../../../common/js/content/CompareStatus";
+import {GetPermittedActionsRequest} from "../../../../../../common/js/content/resource/GetPermittedActionsRequest";
+import {GetContentTypeByNameRequest} from "../../../../../../common/js/schema/content/GetContentTypeByNameRequest";
+import {ContentType} from "../../../../../../common/js/schema/content/ContentType";
+import {GetContentByPathRequest} from "../../../../../../common/js/content/resource/GetContentByPathRequest";
+import {IsAuthenticatedRequest} from "../../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {LoginResult} from "../../../../../../common/js/security/auth/LoginResult";
+
 import {ContentTreeGrid} from "../ContentTreeGrid";
 import {ToggleSearchPanelAction} from "./ToggleSearchPanelAction";
 import {ShowNewContentDialogAction} from "./ShowNewContentDialogAction";
@@ -12,20 +33,6 @@ import {PublishContentAction} from "./PublishContentAction";
 import {PublishTreeContentAction} from "./PublishTreeContentAction";
 import {UnpublishContentAction} from "./UnpublishContentAction";
 import {ContentBrowseItem} from "../ContentBrowseItem";
-
-import Action = api.ui.Action;
-import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-import BrowseItem = api.app.browse.BrowseItem;
-import BrowseItemsChanges = api.app.browse.BrowseItemsChanges;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import Content = api.content.Content;
-import PermissionHelper = api.security.acl.PermissionHelper;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import AccessControlList = api.security.acl.AccessControlList;
-import ContentId = api.content.ContentId;
-import ContentAccessControlList = api.security.acl.ContentAccessControlList;
-import Permission = api.security.acl.Permission;
 
 export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAndCompareStatus> {
 
@@ -41,7 +48,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
     public UNPUBLISH_CONTENT: Action;
     public TOGGLE_SEARCH_PANEL: Action;
 
-    private actions: api.ui.Action[] = [];
+    private actions: Action[] = [];
 
     constructor(grid: ContentTreeGrid) {
         this.TOGGLE_SEARCH_PANEL = new ToggleSearchPanelAction();
@@ -72,11 +79,11 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
 
     }
 
-    getAllActions(): api.ui.Action[] {
+    getAllActions(): Action[] {
         return [...this.actions, this.PUBLISH_CONTENT, this.UNPUBLISH_CONTENT];
     }
 
-    getAllActionsNoPublish(): api.ui.Action[] {
+    getAllActionsNoPublish(): Action[] {
         return this.actions;
     }
 
@@ -97,7 +104,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         wemQ.all(parallelPromises).spread<any>(() => {
             deferred.resolve(contentBrowseItems);
             return wemQ(null);
-        }).catch(api.DefaultErrorHandler.handle);
+        }).catch(DefaultErrorHandler.handle);
 
         return deferred.promise;
     }
@@ -198,12 +205,12 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         return contentSummaries.length > 1 && contentSummaries.some((obj: ContentSummary) => obj.hasChildren());
     }
 
-    private isPublished(status: api.content.CompareStatus): boolean {
-        return status != api.content.CompareStatus.NEW && status != api.content.CompareStatus.UNKNOWN;
+    private isPublished(status: CompareStatus): boolean {
+        return status != CompareStatus.NEW && status != CompareStatus.UNKNOWN;
     }
 
-    private isOnline(status: api.content.CompareStatus): boolean {
-        return status == api.content.CompareStatus.EQUAL;
+    private isOnline(status: CompareStatus): boolean {
+        return status == CompareStatus.EQUAL;
     }
 
     private doUpdateActionsEnabledState(contentBrowseItems: ContentBrowseItem[]): wemQ.Promise<any> {
@@ -223,7 +230,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
     }
 
     private updateActionsByPermissionsNoItemsSelected(): wemQ.Promise<any> {
-        return new api.content.resource.GetPermittedActionsRequest().addPermissionsToBeChecked(Permission.CREATE).sendAndParse().then(
+        return new GetPermittedActionsRequest().addPermissionsToBeChecked(Permission.CREATE).sendAndParse().then(
             (allowedPermissions: Permission[]) => {
                 let canCreate = allowedPermissions.indexOf(Permission.CREATE) > -1;
 
@@ -249,7 +256,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
             return contentBrowseItem.getModel().getContentId();
         });
 
-        return new api.content.resource.GetPermittedActionsRequest().addContentIds(...selectedItemsIds).addPermissionsToBeChecked(
+        return new GetPermittedActionsRequest().addContentIds(...selectedItemsIds).addPermissionsToBeChecked(
             Permission.CREATE,
             Permission.DELETE, Permission.PUBLISH).sendAndParse().then(
             (allowedPermissions: Permission[]) => {
@@ -280,8 +287,8 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
     private checkIsChildrenAllowedByPermissions(contentSummary: ContentSummary): wemQ.Promise<Boolean> {
         var deferred = wemQ.defer<boolean>();
 
-        new api.schema.content.GetContentTypeByNameRequest(contentSummary.getType()).sendAndParse().then(
-            (contentType: api.schema.content.ContentType) => {
+        new GetContentTypeByNameRequest(contentSummary.getType()).sendAndParse().then(
+            (contentType: ContentType) => {
                 return deferred.resolve(contentType && contentType.isAllowChildContent());
             });
 
@@ -292,10 +299,10 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         var deferred = wemQ.defer<boolean>();
 
         if (contentSummary.hasParent()) {
-            new api.content.resource.GetContentByPathRequest(contentSummary.getPath().getParentPath()).sendAndParse().then(
-                (parent: api.content.Content) => {
-                    new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
-                        deferred.resolve(PermissionHelper.hasPermission(api.security.acl.Permission.CREATE,
+            new GetContentByPathRequest(contentSummary.getPath().getParentPath()).sendAndParse().then(
+                (parent: Content) => {
+                    new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
+                        deferred.resolve(PermissionHelper.hasPermission(Permission.CREATE,
                             loginResult,
                             parent.getPermissions()));
                     });
@@ -303,7 +310,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
 
                 });
         } else {
-            new api.content.resource.GetPermittedActionsRequest().addPermissionsToBeChecked(Permission.CREATE).sendAndParse().then(
+            new GetPermittedActionsRequest().addPermissionsToBeChecked(Permission.CREATE).sendAndParse().then(
                 (allowedPermissions: Permission[]) => {
                     deferred.resolve(allowedPermissions.indexOf(Permission.CREATE) > -1);
             });
@@ -312,9 +319,9 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         return deferred.promise;
     }
 
-    private anyEditable(contentSummaries: api.content.ContentSummary[]): boolean {
+    private anyEditable(contentSummaries: ContentSummary[]): boolean {
         for (var i = 0; i < contentSummaries.length; i++) {
-            var content: api.content.ContentSummary = contentSummaries[i];
+            var content: ContentSummary = contentSummaries[i];
             if (!!content && content.isEditable()) {
                 return true;
             }
@@ -322,9 +329,9 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         return false;
     }
 
-    private anyDeletable(contentSummaries: api.content.ContentSummary[]): boolean {
+    private anyDeletable(contentSummaries: ContentSummary[]): boolean {
         for (var i = 0; i < contentSummaries.length; i++) {
-            var content: api.content.ContentSummary = contentSummaries[i];
+            var content: ContentSummary = contentSummaries[i];
             if (!!content && content.isDeletable()) {
                 return true;
             }

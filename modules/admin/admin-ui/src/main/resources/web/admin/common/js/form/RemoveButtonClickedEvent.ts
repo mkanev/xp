@@ -1,6 +1,6 @@
-module api.form {
 
-    export class RemoveButtonClickedEvent<V> {
+
+export class RemoveButtonClickedEvent<V> {
 
         private view: V;
 
@@ -14,4 +14,3 @@ module api.form {
         }
 
     }
-}

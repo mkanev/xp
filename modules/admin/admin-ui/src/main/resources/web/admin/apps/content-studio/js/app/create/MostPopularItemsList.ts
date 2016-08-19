@@ -1,25 +1,29 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {LiEl} from "../../../../../common/js/dom/LiEl";
+import {NamesAndIconViewBuilder} from "../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../common/js/app/NamesAndIconViewSize";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ArrayHelper} from "../../../../../common/js/util/ArrayHelper";
+
 import {MostPopularItem} from "./MostPopularItem";
 import {NewContentDialogList} from "./NewContentDialogList";
 import {NewContentDialogListItem} from "./NewContentDialogListItem";
 import {MostPopularItemsBlock} from "./MostPopularItemsBlock";
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-
 export class MostPopularItemsList extends NewContentDialogList {
 
     constructor() {
         super("most-popular-content-types-list");
     }
 
-    createItemView(item: MostPopularItem): api.dom.LiEl {
-        var namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
+    createItemView(item: MostPopularItem): LiEl {
+        var namesAndIconView = new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small).build();
         namesAndIconView
             .setIconUrl(item.getIconUrl())
             .setMainName(item.getDisplayName() + " (" + item.getHits() + ")")
             .setSubName(item.getName())
             .setDisplayIconLabel(item.isSite());
 
-        var itemEl = new api.dom.LiEl('content-types-list-item' + (item.isSite() ? ' site' : ''));
+        var itemEl = new LiEl('content-types-list-item' + (item.isSite() ? ' site' : ''));
         itemEl.getEl().setTabIndex(0);
         itemEl.appendChild(namesAndIconView);
         itemEl.onClicked((event: MouseEvent) => this.notifySelected(item));
@@ -32,18 +36,18 @@ export class MostPopularItemsList extends NewContentDialogList {
     }
 
     createItems(listItems: NewContentDialogListItem[],
-                directChildContents: api.content.ContentSummary[]) {
+                directChildContents: ContentSummary[]) {
 
         var contentTypes = listItems.map((el) => el.getContentType());
 
         var mostPopularItems: MostPopularItem[] = [],
-            allowedContentTypes: api.content.ContentSummary[] = directChildContents.filter((content: api.content.ContentSummary) => {
+            allowedContentTypes: ContentSummary[] = directChildContents.filter((content: ContentSummary) => {
                 return this.isAllowedContentType(contentTypes, content);
             }),
             aggregatedList: ContentTypeInfo[] = this.getAggregatedItemList(allowedContentTypes);
 
         for (var i = 0; i < aggregatedList.length && i < MostPopularItemsBlock.DEFAULT_MAX_ITEMS; i++) {
-            var contentType: ContentTypeSummary = api.util.ArrayHelper.findElementByFieldValue(contentTypes, "name",
+            var contentType: ContentTypeSummary = ArrayHelper.findElementByFieldValue(contentTypes, "name",
                 aggregatedList[i].contentType);
             mostPopularItems.push(new MostPopularItem(contentType, aggregatedList[i].count));
         }
@@ -51,17 +55,17 @@ export class MostPopularItemsList extends NewContentDialogList {
         this.setItems(mostPopularItems);
     }
 
-    private isAllowedContentType(allowedContentTypes: ContentTypeSummary[], content: api.content.ContentSummary) {
+    private isAllowedContentType(allowedContentTypes: ContentTypeSummary[], content: ContentSummary) {
         return !content.getType().isMedia() && !content.getType().isDescendantOfMedia() &&
-               Boolean(api.util.ArrayHelper.findElementByFieldValue(allowedContentTypes, "id", content.getType().toString()));
+               Boolean(ArrayHelper.findElementByFieldValue(allowedContentTypes, "id", content.getType().toString()));
     }
 
-    private getAggregatedItemList(contentTypes: api.content.ContentSummary[]) {
+    private getAggregatedItemList(contentTypes: ContentSummary[]) {
         var aggregatedList: ContentTypeInfo[] = [];
 
-        contentTypes.forEach((content: api.content.ContentSummary) => {
+        contentTypes.forEach((content: ContentSummary) => {
             var contentType = content.getType().toString();
-            var existingContent = api.util.ArrayHelper.findElementByFieldValue(aggregatedList, "contentType", contentType);
+            var existingContent = ArrayHelper.findElementByFieldValue(aggregatedList, "contentType", contentType);
 
             if (existingContent) {
                 existingContent.count++;

@@ -1,6 +1,5 @@
-module api.content.page.region {
+import {DescriptorBasedComponentJson} from "./DescriptorBasedComponentJson";
 
-    export interface PartComponentJson extends DescriptorBasedComponentJson {
+export interface PartComponentJson extends DescriptorBasedComponentJson {
 
     }
-}

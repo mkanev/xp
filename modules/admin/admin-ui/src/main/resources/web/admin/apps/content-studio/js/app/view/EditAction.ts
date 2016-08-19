@@ -1,11 +1,14 @@
-import "../../api.ts";
+import {Action} from "../../../../../common/js/ui/Action";
+import {ItemViewPanel} from "../../../../../common/js/app/view/ItemViewPanel";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {EditContentEvent} from "../../../../../common/js/content/event/EditContentEvent";
 
-export class EditAction extends api.ui.Action {
+export class EditAction extends Action {
 
-    constructor(panel: api.app.view.ItemViewPanel<api.content.ContentSummaryAndCompareStatus>) {
+    constructor(panel: ItemViewPanel<ContentSummaryAndCompareStatus>) {
         super("Edit");
         this.onExecuted(() => {
-            new api.content.event.EditContentEvent([panel.getItem().getModel()]).fire();
+            new EditContentEvent([panel.getItem().getModel()]).fire();
         });
     }
 }

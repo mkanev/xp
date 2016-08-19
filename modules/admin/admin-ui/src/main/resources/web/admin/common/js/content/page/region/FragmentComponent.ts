@@ -1,9 +1,18 @@
-module api.content.page.region {
+import {PropertyTree} from "../../../data/PropertyTree";
+import {PropertyEvent} from "../../../data/PropertyEvent";
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ContentId} from "../../ContentId";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {Component} from "./Component";
+import {ComponentBuilder} from "./Component";
+import {ComponentName} from "./ComponentName";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {FragmentComponentJson} from "./FragmentComponentJson";
+import {FragmentComponentType} from "./FragmentComponentType";
+import {Region} from "./Region";
 
-    import PropertyTree = api.data.PropertyTree;
-    import PropertyEvent = api.data.PropertyEvent;
-
-    export class FragmentComponent extends Component implements api.Equitable, api.Cloneable {
+export class FragmentComponent extends Component implements Equitable, Cloneable {
 
         public static PROPERTY_FRAGMENT = 'fragment';
 
@@ -13,7 +22,7 @@ module api.content.page.region {
 
         private disableEventForwarding: boolean;
 
-        private fragment: api.content.ContentId;
+        private fragment: ContentId;
 
         private config: PropertyTree;
 
@@ -40,7 +49,7 @@ module api.content.page.region {
             this.disableEventForwarding = value;
         }
 
-        getFragment(): api.content.ContentId {
+        getFragment(): ContentId {
             return this.fragment;
         }
 
@@ -48,13 +57,13 @@ module api.content.page.region {
             return this.config;
         }
 
-        setFragment(contentId: api.content.ContentId, name: string) {
+        setFragment(contentId: ContentId, name: string) {
             var oldValue = this.fragment;
             this.fragment = contentId;
 
             this.setName(name ? new ComponentName(name) : this.getType().getDefaultName());
 
-            if (!api.ObjectHelper.equals(oldValue, contentId)) {
+            if (!ObjectHelper.equals(oldValue, contentId)) {
                 this.notifyPropertyChanged(FragmentComponent.PROPERTY_FRAGMENT);
             }
         }
@@ -82,9 +91,9 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FragmentComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, FragmentComponent)) {
                 return false;
             }
 
@@ -94,11 +103,11 @@ module api.content.page.region {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.fragment, other.fragment)) {
+            if (!ObjectHelper.equals(this.fragment, other.fragment)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.config, other.config)) {
+            if (!ObjectHelper.equals(this.config, other.config)) {
                 return false;
             }
 
@@ -112,7 +121,7 @@ module api.content.page.region {
 
     export class FragmentComponentBuilder extends ComponentBuilder<FragmentComponent> {
 
-        fragment: api.content.ContentId;
+        fragment: ContentId;
 
         config: PropertyTree;
 
@@ -127,7 +136,7 @@ module api.content.page.region {
             this.setType(FragmentComponentType.get());
         }
 
-        public setFragment(value: api.content.ContentId): FragmentComponentBuilder {
+        public setFragment(value: ContentId): FragmentComponentBuilder {
             this.fragment = value;
             return this;
         }
@@ -140,7 +149,7 @@ module api.content.page.region {
         public fromJson(json: FragmentComponentJson, region: Region): FragmentComponentBuilder {
 
             if (json.fragment) {
-                this.setFragment(new api.content.ContentId(json.fragment));
+                this.setFragment(new ContentId(json.fragment));
             }
 
             this.setName(json.name ? new ComponentName(json.name) : null);
@@ -159,4 +168,3 @@ module api.content.page.region {
             return new FragmentComponent(this);
         }
     }
-}

@@ -1,6 +1,6 @@
-module api.content.page{
 
-    export class PageTemplateName {
+
+export class PageTemplateName {
 
         private name:string;
 
@@ -15,4 +15,3 @@ module api.content.page{
             return this.name;
         }
     }
-}

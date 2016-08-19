@@ -1,6 +1,6 @@
-module api.i18n {
 
-    var messages: Object = {};
+
+var messages: Object = {};
 
     var currentLocale: string = 'en';
 
@@ -33,10 +33,4 @@ module api.i18n {
     export function _i18n(key: string, ...args: any[]) {
         return message(key, args);
     }
-
-}
-
-
-
-
 

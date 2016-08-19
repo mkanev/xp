@@ -1,40 +1,55 @@
-module api.content.form.inputtype.image {
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {ContentId} from "../../../ContentId";
+import {ContentSummary} from "../../../ContentSummary";
+import {ContentSummaryLoader} from "../../../resource/ContentSummaryLoader";
+import {ImageContentComboBox as ContentComboBox} from "./ImageContentComboBox";
+import {ContentTypeName} from "../../../../schema/content/ContentTypeName";
+import {ComboBox} from "../../../../ui/selector/combobox/ComboBox";
+import {ResponsiveManager} from "../../../../ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../ui/responsive/ResponsiveItem";
+import {LoadedDataEvent} from "../../../../util/loader/event/LoadedDataEvent";
+import {LoadingDataEvent} from "../../../../util/loader/event/LoadingDataEvent";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {Option} from "../../../../ui/selector/Option";
+import {RelationshipTypeName} from "../../../../schema/relationshiptype/RelationshipTypeName";
+import {ContentDeletedEvent} from "../../../event/ContentDeletedEvent";
+import {UploadItem} from "../../../../ui/uploader/UploadItem";
+import {FileUploadedEvent} from "../../../../ui/uploader/FileUploadedEvent";
+import {FileUploadStartedEvent} from "../../../../ui/uploader/FileUploadStartedEvent";
+import {FileUploadProgressEvent} from "../../../../ui/uploader/FileUploadProgressEvent";
+import {FileUploadCompleteEvent} from "../../../../ui/uploader/FileUploadCompleteEvent";
+import {FileUploadFailedEvent} from "../../../../ui/uploader/FileUploadFailedEvent";
+import {ContentSelectorLoader} from "../contentselector/ContentSelectorLoader";
+import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../../ui/FocusSwitchEvent";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {ImageUploaderEl} from "../../../image/ImageUploaderEl";
+import {ElementHiddenEvent} from "../../../../dom/ElementHiddenEvent";
+import {ElementShownEvent} from "../../../../dom/ElementShownEvent";
+import {Input} from "../../../../form/Input";
+import {GetRelationshipTypeByNameRequest} from "../../../../schema/relationshiptype/GetRelationshipTypeByNameRequest";
+import {RelationshipType} from "../../../../schema/relationshiptype/RelationshipType";
+import {DivEl} from "../../../../dom/DivEl";
+import {NotifyManager} from "../../../../notify/NotifyManager";
+import {MediaUploaderElOperation} from "../../../../ui/uploader/MediaUploaderEl";
+import {GetContentSummaryByIds} from "../../../resource/GetContentSummaryByIds";
+import {Reference} from "../../../../util/Reference";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
+import {Content} from "../../../Content";
+import {ContentComboBox} from "../../../ContentComboBox";
+import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
+import {ImageSelectorSelectedOptionsView} from "./ImageSelectorSelectedOptionsView";
+import {ImageSelectorSelectedOptionView} from "./ImageSelectorSelectedOptionView";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import ContentId = api.content.ContentId;
-    import ContentSummary = api.content.ContentSummary;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import ContentComboBox = api.content.form.inputtype.image.ImageContentComboBox;
-    import ContentTypeName = api.schema.content.ContentTypeName;
-    import ComboBox = api.ui.selector.combobox.ComboBox;
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
+export class ImageSelector extends BaseInputTypeManagingAdd<ContentId> {
 
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
-    import UploadItem = api.ui.uploader.UploadItem;
-    import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-    import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
-    import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
-    import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
-
-    import ContentSelectorLoader = api.content.form.inputtype.contentselector.ContentSelectorLoader;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-
-    export class ImageSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<ContentId> {
-
-        private config: api.content.form.inputtype.ContentInputTypeViewContext;
+        private config: ContentInputTypeViewContext;
 
         private relationshipTypeName: RelationshipTypeName;
 
@@ -44,7 +59,7 @@ module api.content.form.inputtype.image {
 
         private contentRequestsAllowed: boolean;
 
-        private uploader: api.content.image.ImageUploaderEl;
+        private uploader: ImageUploaderEl;
 
         private editContentRequestListeners: {(content: ContentSummary): void }[] = [];
 
@@ -56,7 +71,7 @@ module api.content.form.inputtype.image {
 
         private contentDeletedListener: (event: ContentDeletedEvent) => void;
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
             super("image-selector");
             this.addClass("input-type-view");
 
@@ -223,13 +238,13 @@ module api.content.form.inputtype.image {
                     build(),
                 comboBox: ComboBox<ImageSelectorDisplayValue> = contentComboBox.getComboBox();
 
-            comboBox.onHidden((event: api.dom.ElementHiddenEvent) => {
+            comboBox.onHidden((event: ElementHiddenEvent) => {
                 // hidden on max occurrences reached
                 if (this.uploader) {
                     this.uploader.hide();
                 }
             });
-            comboBox.onShown((event: api.dom.ElementShownEvent) => {
+            comboBox.onShown((event: ElementShownEvent) => {
                 // shown on occurrences between min and max
                 if (this.uploader) {
                     this.uploader.show();
@@ -274,20 +289,20 @@ module api.content.form.inputtype.image {
             return contentComboBox;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.REFERENCE.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
             return super.layout(input, propertyArray).then(() => {
-                return new api.schema.relationshiptype.GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
-                    .then((relationshipType: api.schema.relationshiptype.RelationshipType) => {
+                return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
+                    .then((relationshipType: RelationshipType) => {
 
                         this.contentComboBox = this.createContentComboBox(
                             input.getOccurrences().getMaximum(), relationshipType.getIconUrl(), relationshipType.getAllowedToTypes() || [],
                             input.getName()
                         );
 
-                        var comboBoxWrapper = new api.dom.DivEl("combobox-wrapper");
+                        var comboBoxWrapper = new DivEl("combobox-wrapper");
 
                         comboBoxWrapper.appendChild(this.contentComboBox);
 
@@ -310,7 +325,7 @@ module api.content.form.inputtype.image {
             for (let i = 0; i < length; i++) {
                 if (this.getPropertyArray().get(i).getValue().getString() == id) {
                     this.getPropertyArray().remove(i);
-                    api.notify.NotifyManager.get().showWarning("Failed to load image with id " + id +
+                    NotifyManager.get().showWarning("Failed to load image with id " + id +
                                                                ". The reference will be removed upon save.");
                     break;
                 }
@@ -325,14 +340,14 @@ module api.content.form.inputtype.image {
             });
         }
 
-        private createUploader(): api.content.image.ImageUploaderEl {
+        private createUploader(): ImageUploaderEl {
             var multiSelection = (this.getInput().getOccurrences().getMaximum() != 1);
 
-            this.uploader = new api.content.image.ImageUploaderEl({
+            this.uploader = new ImageUploaderEl({
                 params: {
                     parent: this.config.content.getContentId().toString()
                 },
-                operation: api.ui.uploader.MediaUploaderElOperation.create,
+                operation: MediaUploaderElOperation.create,
                 name: 'image-selector-upload-dialog',
                 showCancel: false,
                 showResult: false,
@@ -345,7 +360,7 @@ module api.content.form.inputtype.image {
                 event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
                     var value = ImageSelectorDisplayValue.fromUploadItem(uploadItem);
 
-                    var option = <api.ui.selector.Option<ImageSelectorDisplayValue>>{
+                    var option = <Option<ImageSelectorDisplayValue>>{
                         value: value.getId(),
                         displayValue: value
                     };
@@ -431,7 +446,7 @@ module api.content.form.inputtype.image {
                     contentIds.push(ContentId.fromReference(property.getReference()));
                 }
             });
-            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
+            return new GetContentSummaryByIds(contentIds).sendAndParse();
         }
 
         protected getNumberOfValids(): number {
@@ -445,8 +460,8 @@ module api.content.form.inputtype.image {
             return this.contentComboBox.giveFocus();
         }
 
-        private setContentIdProperty(contentId: api.content.ContentId) {
-            var reference = api.util.Reference.from(contentId);
+        private setContentIdProperty(contentId: ContentId) {
+            var reference = Reference.from(contentId);
 
             var value = new Value(reference, ValueTypes.REFERENCE);
 
@@ -495,6 +510,5 @@ module api.content.form.inputtype.image {
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("ImageSelector", ImageSelector));
+    InputTypeManager.register(new Class("ImageSelector", ImageSelector));
 
-}

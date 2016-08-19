@@ -1,6 +1,9 @@
-module api.content {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentName} from "./ContentName";
+import {ContentUnnamed} from "./ContentUnnamed";
 
-    export class ContentPath implements api.Equitable {
+export class ContentPath implements Equitable {
 
         public static ELEMENT_DIVIDER: string = "/";
 
@@ -95,15 +98,15 @@ module api.content {
             return !this.equals(ContentPath.ROOT);
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentPath)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentPath)) {
                 return false;
             }
 
             var other = <ContentPath>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
@@ -136,4 +139,3 @@ module api.content {
             return this.refString;
         }
     }
-}

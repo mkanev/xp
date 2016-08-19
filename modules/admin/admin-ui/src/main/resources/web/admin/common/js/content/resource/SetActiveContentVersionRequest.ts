@@ -1,6 +1,9 @@
-module api.content.resource {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class SetActiveContentVersionRequest extends ContentResourceRequest<any, any> {
+export class SetActiveContentVersionRequest extends ContentResourceRequest<any, any> {
 
         private versionId: string;
 
@@ -20,15 +23,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'setActiveVersion');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'setActiveVersion');
         }
 
         sendAndParse(): wemQ.Promise<ContentId> {
 
-            return this.send().then((response: api.rest.JsonResponse<any>) => {
+            return this.send().then((response: JsonResponse<any>) => {
                 return new ContentId(response.getResult()["id"]);
             });
         }
     }
-}

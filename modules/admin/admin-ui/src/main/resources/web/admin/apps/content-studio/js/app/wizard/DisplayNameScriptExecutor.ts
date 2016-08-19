@@ -1,19 +1,21 @@
-import "../../api.ts";
+import {PropertyPath} from "../../../../../common/js/data/PropertyPath";
+import {Property} from "../../../../../common/js/data/Property";
+import {Value} from "../../../../../common/js/data/Value";
+import {ValueType} from "../../../../../common/js/data/ValueType";
+import {ValueTypes} from "../../../../../common/js/data/ValueTypes";
+import {PropertyTree} from "../../../../../common/js/data/PropertyTree";
+import {DisplayNameGenerator} from "../../../../../common/js/app/wizard/DisplayNameGenerator";
+import {FormView} from "../../../../../common/js/form/FormView";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {assertNotNull} from "../../../../../common/js/util/Assert";
 
-import PropertyPath = api.data.PropertyPath;
-import Property = api.data.Property;
-import Value = api.data.Value;
-import ValueType = api.data.ValueType;
-import ValueTypes = api.data.ValueTypes;
-import PropertyTree = api.data.PropertyTree;
+export class DisplayNameScriptExecutor implements DisplayNameGenerator {
 
-export class DisplayNameScriptExecutor implements api.app.wizard.DisplayNameGenerator {
-
-    private formView: api.form.FormView;
+    private formView: FormView;
 
     private script: string;
 
-    setFormView(value: api.form.FormView): DisplayNameScriptExecutor {
+    setFormView(value: FormView): DisplayNameScriptExecutor {
         this.formView = value;
         return this;
     }
@@ -24,17 +26,17 @@ export class DisplayNameScriptExecutor implements api.app.wizard.DisplayNameGene
     }
 
     hasScript(): boolean {
-        return !api.util.StringHelper.isBlank(this.script);
+        return !StringHelper.isBlank(this.script);
     }
 
     execute(): string {
-        api.util.assertNotNull(this.formView, "formView not set");
-        api.util.assertNotNull(this.script, "script not set");
+        assertNotNull(this.formView, "formView not set");
+        assertNotNull(this.script, "script not set");
 
         return this.safeEval(this.script, this.formView);
     }
 
-    private safeEval(script: string, formView: api.form.FormView): string {
+    private safeEval(script: string, formView: FormView): string {
 
         function $(...paths: string[]) {
 
@@ -42,7 +44,7 @@ export class DisplayNameScriptExecutor implements api.app.wizard.DisplayNameGene
             paths.forEach((path: string) => {
 
                 var strValue = formView.getData().getString(path);
-                if (!api.util.StringHelper.isBlank(strValue)) {
+                if (!StringHelper.isBlank(strValue)) {
                     strValues.push(strValue);
                 }
             });

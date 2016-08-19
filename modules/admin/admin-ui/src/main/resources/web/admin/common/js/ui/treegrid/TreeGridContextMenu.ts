@@ -1,8 +1,7 @@
-module api.ui.treegrid {
+import {TreeGridActions} from "./actions/TreeGridActions";
+import {ContextMenu} from "../menu/ContextMenu";
 
-    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-
-    export class TreeGridContextMenu extends api.ui.menu.ContextMenu {
+export class TreeGridContextMenu extends ContextMenu {
 
         private actions: TreeGridActions<any>;
 
@@ -46,4 +45,3 @@ module api.ui.treegrid {
             return posY;
         }
     }
-}

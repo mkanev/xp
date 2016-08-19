@@ -1,6 +1,6 @@
-module api.query.expr {
 
-    export enum CompareOperator {
+
+export enum CompareOperator {
         EQ,
         NEQ,
         GT,
@@ -12,4 +12,3 @@ module api.query.expr {
         IN,
         NOT_IN
     }
-}

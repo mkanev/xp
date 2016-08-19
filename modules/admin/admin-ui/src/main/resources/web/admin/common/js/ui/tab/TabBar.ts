@@ -1,6 +1,11 @@
-module api.ui.tab {
+import {UlEl} from "../../dom/UlEl";
+import {Navigator} from "../Navigator";
+import {ActivatedEvent} from "../ActivatedEvent";
+import {NavigatorEvent} from "../NavigatorEvent";
+import {TabBarItem} from "./TabBarItem";
+import {TabItemEvent} from "./TabItemEvent";
 
-    export class TabBar extends api.dom.UlEl implements api.ui.Navigator {
+export class TabBar extends UlEl implements Navigator {
 
         private scrollEnabled: boolean = true;
 
@@ -184,4 +189,3 @@ module api.ui.tab {
         }
     }
 
-}

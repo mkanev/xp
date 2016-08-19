@@ -1,24 +1,28 @@
-module api.schema.content {
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {ContentTypeJson} from "./ContentTypeJson";
+import {ContentTypeSummaryJson} from "./ContentTypeSummaryJson";
+import {ContentType} from "./ContentType";
+import {ContentTypeSummary} from "./ContentTypeSummary";
 
-    export class ContentTypeResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class ContentTypeResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourceUrl: api.rest.Path;
+        private resourceUrl: Path;
 
         constructor() {
             super();
-            this.resourceUrl = api.rest.Path.fromParent(super.getRestPath(), "schema/content");
+            this.resourceUrl = Path.fromParent(super.getRestPath(), "schema/content");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourceUrl;
         }
 
-        fromJsonToContentType(json: api.schema.content.ContentTypeJson): ContentType {
+        fromJsonToContentType(json: ContentTypeJson): ContentType {
             return ContentType.fromJson(json);
         }
 
-        fromJsonToContentTypeSummary(json: api.schema.content.ContentTypeSummaryJson): ContentTypeSummary {
+        fromJsonToContentTypeSummary(json: ContentTypeSummaryJson): ContentTypeSummary {
             return ContentTypeSummary.fromJson(json);
         }
     }
-}

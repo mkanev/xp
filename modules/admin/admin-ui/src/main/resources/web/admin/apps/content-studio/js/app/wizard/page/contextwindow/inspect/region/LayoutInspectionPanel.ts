@@ -1,30 +1,31 @@
-import "../../../../../../api.ts";
+import {Content} from "../../../../../../../../../common/js/content/Content";
+import {SiteModel} from "../../../../../../../../../common/js/content/site/SiteModel";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {LayoutDescriptor} from "../../../../../../../../../common/js/content/page/region/LayoutDescriptor";
+import {DescriptorKey} from "../../../../../../../../../common/js/content/page/DescriptorKey";
+import {DescriptorByDisplayNameComparator} from "../../../../../../../../../common/js/content/page/DescriptorByDisplayNameComparator";
+import {LayoutComponent} from "../../../../../../../../../common/js/content/page/region/LayoutComponent";
+import {DescriptorBasedComponent} from "../../../../../../../../../common/js/content/page/region/DescriptorBasedComponent";
+import {ComponentPropertyChangedEvent} from "../../../../../../../../../common/js/content/page/region/ComponentPropertyChangedEvent";
+import {GetLayoutDescriptorByKeyRequest} from "../../../../../../../../../common/js/content/page/region/GetLayoutDescriptorByKeyRequest";
+import {GetLayoutDescriptorsByApplicationsRequest} from "../../../../../../../../../common/js/content/page/region/GetLayoutDescriptorsByApplicationsRequest";
+import {Descriptor} from "../../../../../../../../../common/js/content/page/Descriptor";
+import {LoadedDataEvent} from "../../../../../../../../../common/js/util/loader/event/LoadedDataEvent";
+import {LayoutDescriptorLoader} from "../../../../../../../../../common/js/content/page/region/LayoutDescriptorLoader";
+import {LayoutDescriptorBuilder} from "../../../../../../../../../common/js/content/page/region/LayoutDescriptor";
+import {LayoutDescriptorDropdown} from "../../../../../../../../../common/js/content/page/region/LayoutDescriptorDropdown";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {SelectedOption} from "../../../../../../../../../common/js/ui/selector/combobox/SelectedOption";
+import {OptionSelectedEvent} from "../../../../../../../../../common/js/ui/selector/OptionSelectedEvent";
+import {LayoutComponentView} from "../../../../../../../../../common/js/liveedit/layout/LayoutComponentView";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+
 import {
     DescriptorBasedComponentInspectionPanel,
     DescriptorBasedComponentInspectionPanelConfig
 } from "./DescriptorBasedComponentInspectionPanel";
 import {DescriptorBasedDropdownForm} from "./DescriptorBasedDropdownForm";
-
-import Content = api.content.Content;
-import SiteModel = api.content.site.SiteModel;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import LayoutDescriptor = api.content.page.region.LayoutDescriptor;
-import DescriptorKey = api.content.page.DescriptorKey;
-import DescriptorByDisplayNameComparator = api.content.page.DescriptorByDisplayNameComparator;
-import LayoutComponent = api.content.page.region.LayoutComponent;
-import DescriptorBasedComponent = api.content.page.region.DescriptorBasedComponent;
-import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
-import GetLayoutDescriptorByKeyRequest = api.content.page.region.GetLayoutDescriptorByKeyRequest;
-import GetLayoutDescriptorsByApplicationsRequest = api.content.page.region.GetLayoutDescriptorsByApplicationsRequest;
-import Descriptor = api.content.page.Descriptor;
-import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-import LayoutDescriptorLoader = api.content.page.region.LayoutDescriptorLoader;
-import LayoutDescriptorBuilder = api.content.page.region.LayoutDescriptorBuilder;
-import LayoutDescriptorDropdown = api.content.page.region.LayoutDescriptorDropdown;
-import Option = api.ui.selector.Option;
-import SelectedOption = api.ui.selector.combobox.SelectedOption;
-import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-import LayoutComponentView = api.liveedit.layout.LayoutComponentView;
 
 export class LayoutInspectionPanel extends DescriptorBasedComponentInspectionPanel<LayoutComponent, LayoutDescriptor> {
 
@@ -40,7 +41,7 @@ export class LayoutInspectionPanel extends DescriptorBasedComponentInspectionPan
 
     constructor() {
         super(<DescriptorBasedComponentInspectionPanelConfig>{
-            iconClass: api.liveedit.ItemViewIconClassResolver.resolveByType("layout", "icon-xlarge")
+            iconClass: ItemViewIconClassResolver.resolveByType("layout", "icon-xlarge")
         });
     }
 
@@ -120,7 +121,7 @@ export class LayoutInspectionPanel extends DescriptorBasedComponentInspectionPan
                     if (this.isNotFoundError(reason)) {
                         this.setSelectorValue(null);
                     } else {
-                        api.DefaultErrorHandler.handle(reason);
+                        DefaultErrorHandler.handle(reason);
                     }
                 }).done();
             }

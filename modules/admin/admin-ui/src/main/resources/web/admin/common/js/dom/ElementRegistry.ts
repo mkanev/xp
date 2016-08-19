@@ -1,17 +1,18 @@
-module api.dom {
+import {Element} from "./Element";
+import {ClassHelper} from "../ClassHelper";
 
-    export class ElementRegistry {
+export class ElementRegistry {
 
         private static counters: { [index: string]: number; } = {};
 
-        private static elements: { [index: string]: api.dom.Element; } = {};
+        private static elements: { [index: string]: Element; } = {};
 
-        public static registerElement(el: api.dom.Element): string {
+        public static registerElement(el: Element): string {
             var fullName,
                 id = el.getId();
 
             if (!id) {
-                id = fullName = api.ClassHelper.getFullName(el);
+                id = fullName = ClassHelper.getFullName(el);
             } else {
                 fullName = id;
             }
@@ -26,7 +27,7 @@ module api.dom {
             return id;
         }
 
-        public static unregisterElement(el: api.dom.Element) {
+        public static unregisterElement(el: Element) {
             if (el) {
                 delete ElementRegistry.elements[el.getId()];
                 // don't reduce counter because if we deleted 2nd element while having 5,
@@ -34,7 +35,7 @@ module api.dom {
             }
         }
 
-        public static getElementById(id: string): api.dom.Element {
+        public static getElementById(id: string): Element {
             return ElementRegistry.elements[id];
         }
 
@@ -45,4 +46,3 @@ module api.dom {
         }
     }
 
-}

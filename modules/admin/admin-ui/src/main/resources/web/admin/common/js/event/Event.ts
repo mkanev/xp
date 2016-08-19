@@ -1,11 +1,12 @@
-module api.event {
+import {ClassHelper} from "../ClassHelper";
+import {EventBus} from "./EventBus";
 
-    export class Event {
+export class Event {
 
         private name: string;
 
         constructor(name?: string) {
-            this.name = name || api.ClassHelper.getFullName(this);
+            this.name = name || ClassHelper.getFullName(this);
         }
 
         getName(): string {
@@ -25,4 +26,3 @@ module api.event {
         }
     }
 
-}

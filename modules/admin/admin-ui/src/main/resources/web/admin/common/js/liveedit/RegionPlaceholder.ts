@@ -1,8 +1,8 @@
-module api.liveedit {
+import {Region} from "../content/page/region/Region";
+import {PEl} from "../dom/PEl";
+import {ItemViewPlaceholder} from "./ItemViewPlaceholder";
 
-    import Region = api.content.page.region.Region;
-
-    export class RegionPlaceholder extends ItemViewPlaceholder {
+export class RegionPlaceholder extends ItemViewPlaceholder {
 
         private region: Region;
 
@@ -12,10 +12,9 @@ module api.liveedit {
 
             this.region = region;
 
-            var dragComponentsHereEl = new api.dom.PEl();
+            var dragComponentsHereEl = new PEl();
             dragComponentsHereEl.setHtml("Drop here");
 
             this.appendChild(dragComponentsHereEl);
         }
     }
-}

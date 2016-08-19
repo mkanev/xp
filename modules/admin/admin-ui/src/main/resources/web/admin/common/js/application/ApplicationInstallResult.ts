@@ -1,7 +1,9 @@
-module api.application {
+import {ApplicationInstallResultJson} from "./json/ApplicationInstallResultJson";
+import {Equitable} from "../Equitable";
+import {Application} from "./Application";
+import {ObjectHelper} from "../ObjectHelper";
 
-    import ApplicationInstallResultJson = api.application.json.ApplicationInstallResultJson;
-    export class ApplicationInstallResult implements api.Equitable{
+export class ApplicationInstallResult implements Equitable{
 
         private application: Application;
 
@@ -15,7 +17,7 @@ module api.application {
             this.application = application;
         }
 
-        public getApplication(): api.application.Application {
+        public getApplication(): Application {
             return this.application;
         }
 
@@ -23,15 +25,15 @@ module api.application {
             return this.failure;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ApplicationInstallResult)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ApplicationInstallResult)) {
                 return false;
             }
 
             var other = <ApplicationInstallResult>o;
-            return api.ObjectHelper.stringEquals(this.failure, other.failure) &&
-                   api.ObjectHelper.equals(this.application, other.application);
+            return ObjectHelper.stringEquals(this.failure, other.failure) &&
+                   ObjectHelper.equals(this.application, other.application);
         }
 
         static fromJson(json: ApplicationInstallResultJson): ApplicationInstallResult {
@@ -41,4 +43,3 @@ module api.application {
             return result;
         }
     }
-}

@@ -1,12 +1,26 @@
-import "../../api.ts";
+import {Content} from "../../../../../common/js/content/Content";
+import {AccessControlComboBox} from "../../../../../common/js/ui/security/acl/AccessControlComboBox";
+import {AccessControlEntry} from "../../../../../common/js/security/acl/AccessControlEntry";
+import {AccessControlList} from "../../../../../common/js/security/acl/AccessControlList";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Checkbox} from "../../../../../common/js/ui/Checkbox";
+import {Action} from "../../../../../common/js/ui/Action";
+import {SectionEl} from "../../../../../common/js/dom/SectionEl";
+import {Form} from "../../../../../common/js/ui/form/Form";
+import {ObjectHelper} from "../../../../../common/js/ObjectHelper";
+import {Body} from "../../../../../common/js/dom/Body";
+import {OpenEditPermissionsDialogEvent} from "../../../../../common/js/content/event/OpenEditPermissionsDialogEvent";
+import {showWarning} from "../../../../../common/js/notify/MessageBus";
+import {ApplyContentPermissionsRequest} from "../../../../../common/js/content/resource/ApplyContentPermissionsRequest";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {GetContentByPathRequest} from "../../../../../common/js/content/resource/GetContentByPathRequest";
+import {GetContentRootPermissionsRequest} from "../../../../../common/js/content/resource/GetContentRootPermissionsRequest";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {PEl} from "../../../../../common/js/dom/PEl";
+
 import {ContentPermissionsAppliedEvent} from "./ContentPermissionsAppliedEvent";
 
-import Content = api.content.Content;
-import AccessControlComboBox = api.ui.security.acl.AccessControlComboBox;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import AccessControlList = api.security.acl.AccessControlList;
-
-export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
+export class EditPermissionsDialog extends ModalDialog {
 
     private content: Content;
     private parentPermissions: AccessControlEntry[];
@@ -14,10 +28,10 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
     private originalInherit: boolean;
 
     private dialogTitle: EditPermissionsDialogTitle;
-    private inheritPermissionsCheck: api.ui.Checkbox;
-    private overwriteChildPermissionsCheck: api.ui.Checkbox;
+    private inheritPermissionsCheck: Checkbox;
+    private overwriteChildPermissionsCheck: Checkbox;
     private comboBox: AccessControlComboBox;
-    private applyAction: api.ui.Action;
+    private applyAction: Action;
 
 
     constructor() {
@@ -29,14 +43,14 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
 
         this.addClass('edit-permissions-dialog');
 
-        this.inheritPermissionsCheck = api.ui.Checkbox.create().setLabelText('Inherit permissions').build();
+        this.inheritPermissionsCheck = Checkbox.create().setLabelText('Inherit permissions').build();
         this.inheritPermissionsCheck.addClass('inherit-perm-check');
         this.appendChildToContentPanel(this.inheritPermissionsCheck);
 
-        var section = new api.dom.SectionEl();
+        var section = new SectionEl();
         this.appendChildToContentPanel(section);
 
-        var form = new api.ui.form.Form();
+        var form = new Form();
         section.appendChild(form);
 
         this.comboBox = new AccessControlComboBox();
@@ -45,7 +59,7 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
 
         var comboBoxChangeListener = () => {
             var currentEntries: AccessControlEntry[] = this.getEntries().sort();
-            var permissionsModified: boolean = !api.ObjectHelper.arrayEquals(currentEntries, this.originalValues);
+            var permissionsModified: boolean = !ObjectHelper.arrayEquals(currentEntries, this.originalValues);
             var inheritCheckModified: boolean = this.inheritPermissionsCheck.isChecked() !== this.originalInherit;
             var overwriteModified: boolean = this.overwriteChildPermissionsCheck.isChecked();
             this.applyAction.setEnabled(permissionsModified || inheritCheckModified || overwriteModified);
@@ -65,17 +79,17 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
         };
         this.inheritPermissionsCheck.onValueChanged(changeListener);
 
-        this.overwriteChildPermissionsCheck = api.ui.Checkbox.create().setLabelText('Overwrite child permissions').build();
+        this.overwriteChildPermissionsCheck = Checkbox.create().setLabelText('Overwrite child permissions').build();
         this.overwriteChildPermissionsCheck.addClass('overwrite-child-check');
         this.appendChildToContentPanel(this.overwriteChildPermissionsCheck);
 
-        this.applyAction = new api.ui.Action('Apply');
+        this.applyAction = new Action('Apply');
         this.applyAction.onExecuted(() => {
             this.applyPermissions();
         });
         this.addAction(this.applyAction, true);
 
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
 
         this.comboBox.onOptionValueChanged(comboBoxChangeListener);
         this.comboBox.onOptionSelected(comboBoxChangeListener);
@@ -83,7 +97,7 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
         this.overwriteChildPermissionsCheck.onValueChanged(comboBoxChangeListener);
 
         this.parentPermissions = [];
-        api.content.event.OpenEditPermissionsDialogEvent.on((event) => {
+        OpenEditPermissionsDialogEvent.on((event) => {
             this.content = event.getContent();
 
             this.getParentPermissions().then((parentPermissions: AccessControlList) => {
@@ -94,7 +108,7 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
                 this.open();
 
             }).catch(() => {
-                api.notify.showWarning('Could not read inherit permissions for content ' + this.content.getPath().toString());
+                showWarning('Could not read inherit permissions for content ' + this.content.getPath().toString());
             }).done();
         });
 
@@ -103,14 +117,14 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
 
     private applyPermissions() {
         var permissions = new AccessControlList(this.getEntries());
-        var req = new api.content.resource.ApplyContentPermissionsRequest().setId(this.content.getId()).setInheritPermissions(
+        var req = new ApplyContentPermissionsRequest().setId(this.content.getId()).setInheritPermissions(
             this.inheritPermissionsCheck.isChecked()).setPermissions(permissions).setOverwriteChildPermissions(
             this.overwriteChildPermissionsCheck.isChecked());
         var res = req.sendAndParse();
 
         res.done((updatedContent: Content) => {
             new ContentPermissionsAppliedEvent(updatedContent).fire();
-            api.notify.showFeedback('Permissions applied to content ' + updatedContent.getPath().toString());
+            showFeedback('Permissions applied to content ' + updatedContent.getPath().toString());
             this.close();
         });
     }
@@ -153,14 +167,14 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
 
         var parentPath = this.content.getPath().getParentPath();
         if (parentPath && parentPath.isNotRoot()) {
-            new api.content.resource.GetContentByPathRequest(parentPath).sendAndParse().then((content: Content) => {
+            new GetContentByPathRequest(parentPath).sendAndParse().then((content: Content) => {
                 deferred.resolve(content.getPermissions());
             }).catch((reason: any) => {
                 deferred.reject(new Error("Inherit permissions for [" + this.content.getPath().toString() +
                                           "] could not be retrieved"));
             }).done();
         } else {
-            new api.content.resource.GetContentRootPermissionsRequest().sendAndParse().then((rootPermissions: AccessControlList) => {
+            new GetContentRootPermissionsRequest().sendAndParse().then((rootPermissions: AccessControlList) => {
                 deferred.resolve(rootPermissions);
             }).catch((reason: any) => {
                 deferred.reject(new Error("Inherit permissions for [" + this.content.getPath().toString() +
@@ -188,14 +202,14 @@ export class EditPermissionsDialog extends api.ui.dialog.ModalDialog {
     }
 }
 
-export class EditPermissionsDialogTitle extends api.ui.dialog.ModalDialogHeader {
+export class EditPermissionsDialogTitle extends ModalDialogHeader {
 
-    private pathEl: api.dom.PEl;
+    private pathEl: PEl;
 
     constructor(title: string, path: string) {
         super(title);
 
-        this.pathEl = new api.dom.PEl('path');
+        this.pathEl = new PEl('path');
         this.pathEl.setHtml(path);
         this.appendChild(this.pathEl);
     }

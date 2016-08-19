@@ -1,8 +1,8 @@
-import "../../api.ts";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
 
 import {UserTreeGridActions} from "./UserTreeGridActions";
 
-export class UserBrowseToolbar extends api.ui.toolbar.Toolbar {
+export class UserBrowseToolbar extends Toolbar {
 
     constructor(actions: UserTreeGridActions) {
         super();

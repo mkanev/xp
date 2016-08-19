@@ -1,16 +1,26 @@
-module api.form.inputtype.support {
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {Input} from "../../Input";
+import {FormItemOccurrences} from "../../FormItemOccurrences";
+import {Occurrences} from "../../Occurrences";
+import {FormItemOccurrence} from "../../FormItemOccurrence";
+import {RemoveButtonClickedEvent} from "../../RemoveButtonClickedEvent";
+import {assertNotNull} from "../../../util/Assert";
+import {FormItemOccurrencesConfig} from "../../FormItemOccurrences";
+import {FormItemOccurrenceView} from "../../FormItemOccurrenceView";
+import {InputTypeView} from "../InputTypeView";
+import {BaseInputTypeNotManagingAdd} from "./BaseInputTypeNotManagingAdd";
+import {InputOccurrence} from "./InputOccurrence";
+import {InputOccurrenceView} from "./InputOccurrenceView";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-
-    export class InputOccurrencesBuilder {
+export class InputOccurrencesBuilder {
 
         baseInputTypeView: BaseInputTypeNotManagingAdd<any>;
 
-        input: api.form.Input;
+        input: Input;
 
         propertyArray: PropertyArray;
 
@@ -19,7 +29,7 @@ module api.form.inputtype.support {
             return this;
         }
 
-        setInput(value: api.form.Input): InputOccurrencesBuilder {
+        setInput(value: Input): InputOccurrencesBuilder {
             this.input = value;
             return this;
         }
@@ -37,11 +47,11 @@ module api.form.inputtype.support {
     /*
      * A kind of a controller, which add/remove InputOccurrenceView-s to the BaseInputTypeView
      */
-    export class InputOccurrences extends api.form.FormItemOccurrences<InputOccurrenceView> {
+    export class InputOccurrences extends FormItemOccurrences<InputOccurrenceView> {
 
         private baseInputTypeView: BaseInputTypeNotManagingAdd<any>;
 
-        private input: api.form.Input;
+        private input: Input;
 
         constructor(config: InputOccurrencesBuilder) {
             this.baseInputTypeView = config.baseInputTypeView;
@@ -71,16 +81,16 @@ module api.form.inputtype.support {
             super.moveOccurrence(fromIndex, toIndex);
         }
 
-        getInput(): api.form.Input {
+        getInput(): Input {
             return this.input;
         }
 
-        getAllowedOccurrences(): api.form.Occurrences {
+        getAllowedOccurrences(): Occurrences {
             return this.input.getOccurrences();
         }
 
-        protected constructOccurrencesForNoData(): api.form.FormItemOccurrence<InputOccurrenceView>[] {
-            var occurrences: api.form.FormItemOccurrence<InputOccurrenceView>[] = [];
+        protected constructOccurrencesForNoData(): FormItemOccurrence<InputOccurrenceView>[] {
+            var occurrences: FormItemOccurrence<InputOccurrenceView>[] = [];
             if (this.getAllowedOccurrences().getMinimum() > 0) {
 
                 for (var i = 0; i < this.getAllowedOccurrences().getMinimum(); i++) {
@@ -92,8 +102,8 @@ module api.form.inputtype.support {
             return occurrences;
         }
 
-        protected constructOccurrencesForData(): api.form.FormItemOccurrence<InputOccurrenceView>[] {
-            var occurrences: api.form.FormItemOccurrence<InputOccurrenceView>[] = [];
+        protected constructOccurrencesForData(): FormItemOccurrence<InputOccurrenceView>[] {
+            var occurrences: FormItemOccurrence<InputOccurrenceView>[] = [];
 
             this.propertyArray.forEach((property: Property, index: number) => {
                 occurrences.push(this.createNewOccurrence(this, index));
@@ -107,8 +117,8 @@ module api.form.inputtype.support {
             return occurrences;
         }
 
-        createNewOccurrence(formItemOccurrences: api.form.FormItemOccurrences<InputOccurrenceView>,
-                            insertAtIndex: number): api.form.FormItemOccurrence<InputOccurrenceView> {
+        createNewOccurrence(formItemOccurrences: FormItemOccurrences<InputOccurrenceView>,
+                            insertAtIndex: number): FormItemOccurrence<InputOccurrenceView> {
             return new InputOccurrence(<InputOccurrences>formItemOccurrences, insertAtIndex);
         }
 
@@ -118,7 +128,7 @@ module api.form.inputtype.support {
             var inputOccurrenceView: InputOccurrenceView = new InputOccurrenceView(occurrence, this.baseInputTypeView, property);
 
             var inputOccurrences: InputOccurrences = this;
-            inputOccurrenceView.onRemoveButtonClicked((event: api.form.RemoveButtonClickedEvent<InputOccurrenceView>) => {
+            inputOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<InputOccurrenceView>) => {
                 inputOccurrences.removeOccurrenceView(event.getView());
             });
 
@@ -136,7 +146,7 @@ module api.form.inputtype.support {
             var property = this.propertyArray.get(index);
             if (!property) {
                 var newInitialValue = this.baseInputTypeView.newInitialValue();
-                api.util.assertNotNull(newInitialValue,
+                assertNotNull(newInitialValue,
                     "InputTypeView-s extending BaseInputTypeNotManagingAdd must must return a Value from newInitialValue");
                 property = this.propertyArray.add(newInitialValue);
             }
@@ -162,4 +172,3 @@ module api.form.inputtype.support {
             return new InputOccurrencesBuilder();
         }
     }
-}

@@ -1,14 +1,18 @@
-module api.form {
+import {FormItemTypeWrapperJson} from "./json/FormItemTypeWrapperJson";
+import {ObjectHelper} from "../ObjectHelper";
+import {Equitable} from "../Equitable";
+import {FieldSet} from "./FieldSet";
+import {FormItem} from "./FormItem";
 
-    export class Layout extends FormItem {
+export class Layout extends FormItem {
 
         constructor(name: string) {
             super(name);
         }
 
-        public toLayoutJson(): api.form.json.FormItemTypeWrapperJson {
+        public toLayoutJson(): FormItemTypeWrapperJson {
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(this, FieldSet)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(this, FieldSet)) {
                 return (<FieldSet>this).toFieldSetJson();
             }
             else {
@@ -16,13 +20,12 @@ module api.form {
             }
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(o, Layout))) {
+            if (!(ObjectHelper.iFrameSafeInstanceOf(o, Layout))) {
                 return false;
             }
 
             return super.equals(o);
         }
     }
-}

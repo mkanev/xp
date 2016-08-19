@@ -1,6 +1,14 @@
-module api.application {
+import {BaseItem} from "../item/BaseItem";
+import {Form} from "../form/Form";
+import {ApplicationKey} from "./ApplicationKey";
+import {ContentTypeName} from "../schema/content/ContentTypeName";
+import {MixinNames} from "../schema/mixin/MixinNames";
+import {ApplicationJson} from "./json/ApplicationJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {BaseItemBuilder} from "../item/BaseItem";
 
-    export class Application extends api.item.BaseItem {
+export class Application extends BaseItem {
 
         static STATE_STARTED = 'started';
         static STATE_STOPPED = 'stopped';
@@ -23,15 +31,15 @@ module api.application {
 
         private local: boolean;
 
-        private config: api.form.Form;
+        private config: Form;
 
-        private authConfig: api.form.Form;
+        private authConfig: Form;
 
-        private applicationDependencies: api.application.ApplicationKey[] = [];
+        private applicationDependencies: ApplicationKey[] = [];
 
-        private contentTypeDependencies: api.schema.content.ContentTypeName[] = [];
+        private contentTypeDependencies: ContentTypeName[] = [];
 
-        private metaSteps: api.schema.mixin.MixinNames;
+        private metaSteps: MixinNames;
 
         private minSystemVersion: string;
 
@@ -108,11 +116,11 @@ module api.application {
             return false;
         }
 
-        getForm(): api.form.Form {
+        getForm(): Form {
             return this.config;
         }
 
-        getAuthForm(): api.form.Form {
+        getAuthForm(): Form {
             return this.authConfig;
         }
 
@@ -124,15 +132,15 @@ module api.application {
             return this.maxSystemVersion;
         }
 
-        getapplicationDependencies(): api.application.ApplicationKey[] {
+        getapplicationDependencies(): ApplicationKey[] {
             return this.applicationDependencies;
         }
 
-        getContentTypeDependencies(): api.schema.content.ContentTypeName[] {
+        getContentTypeDependencies(): ContentTypeName[] {
             return this.contentTypeDependencies;
         }
 
-        getMetaSteps(): api.schema.mixin.MixinNames {
+        getMetaSteps(): MixinNames {
             return this.metaSteps;
         }
 
@@ -140,20 +148,20 @@ module api.application {
             return this.iconUrl;
         }
 
-        static fromJson(json: api.application.json.ApplicationJson): Application {
+        static fromJson(json: ApplicationJson): Application {
             return new ApplicationBuilder().fromJson(json).build();
         }
 
-        static fromJsonArray(jsonArray: api.application.json.ApplicationJson[]): Application[] {
+        static fromJsonArray(jsonArray: ApplicationJson[]): Application[] {
             var array: Application[] = [];
-            jsonArray.forEach((json: api.application.json.ApplicationJson) => {
+            jsonArray.forEach((json: ApplicationJson) => {
                 array.push(Application.fromJson(json));
             });
             return array;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Application) || !super.equals(o)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Application) || !super.equals(o)) {
                 return false;
             }
             var other = <Application>o;
@@ -167,16 +175,16 @@ module api.application {
                    this.state == other.state &&
                    this.version == other.version &&
                    this.local == other.local &&
-                   api.ObjectHelper.arrayEquals(this.applicationDependencies, other.applicationDependencies) &&
-                   api.ObjectHelper.arrayEquals(this.contentTypeDependencies, other.contentTypeDependencies) &&
-                   api.ObjectHelper.equals(this.metaSteps, other.metaSteps) &&
+                   ObjectHelper.arrayEquals(this.applicationDependencies, other.applicationDependencies) &&
+                   ObjectHelper.arrayEquals(this.contentTypeDependencies, other.contentTypeDependencies) &&
+                   ObjectHelper.equals(this.metaSteps, other.metaSteps) &&
                    this.minSystemVersion == other.minSystemVersion &&
                    this.maxSystemVersion == other.maxSystemVersion &&
                    this.iconUrl == other.iconUrl;
         }
     }
 
-    export class ApplicationBuilder extends api.item.BaseItemBuilder {
+    export class ApplicationBuilder extends BaseItemBuilder {
 
         applicationKey: ApplicationKey;
 
@@ -196,15 +204,15 @@ module api.application {
 
         local: boolean;
 
-        config: api.form.Form;
+        config: Form;
 
-        authConfig: api.form.Form;
+        authConfig: Form;
 
-        applicationDependencies: api.application.ApplicationKey[];
+        applicationDependencies: ApplicationKey[];
 
-        contentTypeDependencies: api.schema.content.ContentTypeName[];
+        contentTypeDependencies: ContentTypeName[];
 
-        metaSteps: api.schema.mixin.MixinNames;
+        metaSteps: MixinNames;
 
         minSystemVersion: string;
 
@@ -237,7 +245,7 @@ module api.application {
             }
         }
 
-        fromJson(json: api.application.json.ApplicationJson): ApplicationBuilder {
+        fromJson(json: ApplicationJson): ApplicationBuilder {
 
             super.fromBaseItemJson(json, 'key');
 
@@ -251,26 +259,26 @@ module api.application {
             this.version = json.version;
             this.local = json.local;
 
-            this.config = json.config != null ? api.form.Form.fromJson(json.config) : null;
-            this.authConfig = json.authConfig != null ? api.form.Form.fromJson(json.authConfig) : null;
+            this.config = json.config != null ? Form.fromJson(json.config) : null;
+            this.authConfig = json.authConfig != null ? Form.fromJson(json.authConfig) : null;
             this.minSystemVersion = json.minSystemVersion;
             this.maxSystemVersion = json.maxSystemVersion;
             this.iconUrl = json.iconUrl;
 
             if (json.applicationDependencies != null) {
                 json.applicationDependencies.forEach((dependency: string) => {
-                    this.applicationDependencies.push(api.application.ApplicationKey.fromString(dependency));
+                    this.applicationDependencies.push(ApplicationKey.fromString(dependency));
                 });
             }
 
             if (json.contentTypeDependencies != null) {
                 json.contentTypeDependencies.forEach((dependency: string) => {
-                    this.contentTypeDependencies.push(new api.schema.content.ContentTypeName(dependency));
+                    this.contentTypeDependencies.push(new ContentTypeName(dependency));
                 });
             }
 
             if (json.metaSteps != null) {
-                this.metaSteps = api.schema.mixin.MixinNames.create().fromStrings(json.metaSteps).build();
+                this.metaSteps = MixinNames.create().fromStrings(json.metaSteps).build();
             }
 
             return this;
@@ -280,4 +288,3 @@ module api.application {
             return new Application(this);
         }
     }
-}

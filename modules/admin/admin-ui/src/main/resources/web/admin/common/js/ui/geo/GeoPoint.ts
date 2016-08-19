@@ -1,36 +1,40 @@
-module api.ui.geo {
+import {TextInput} from "../text/TextInput";
+import {GeoPoint} from "../../util/GeoPoint";
+import {_i18n} from "../../i18n/Messages";
+import {ValueChangedEvent} from "../../ValueChangedEvent";
+import {StringHelper} from "../../util/StringHelper";
 
-    export class GeoPoint extends api.ui.text.TextInput {
+export class GeoPoint extends TextInput {
 
         private validUserInput: boolean;
 
-        constructor(originalValue?: api.util.GeoPoint) {
+        constructor(originalValue?: GeoPoint) {
             super("geo-point", undefined, originalValue ? originalValue.toString() : undefined);
 
             this.validUserInput = true;
             this.getEl().setAttribute("title", "latitude,longitude");
-            this.setPlaceholder(api.i18n._i18n('latitude,longitude'));
+            this.setPlaceholder(_i18n('latitude,longitude'));
 
-            this.onValueChanged((event: api.ValueChangedEvent) => {
+            this.onValueChanged((event: ValueChangedEvent) => {
                 var typedGeoPoint = this.getValue();
-                this.validUserInput = api.util.StringHelper.isEmpty(typedGeoPoint) ||
-                                      api.util.GeoPoint.isValidString(typedGeoPoint);
+                this.validUserInput = StringHelper.isEmpty(typedGeoPoint) ||
+                                      GeoPoint.isValidString(typedGeoPoint);
 
                 this.updateValidationStatusOnUserInput(this.validUserInput);
             });
         }
 
-        setGeoPoint(value: api.util.GeoPoint): GeoPoint {
+        setGeoPoint(value: GeoPoint): GeoPoint {
             this.setValue(value ? value.toString() : "");
             return this;
         }
 
-        getGeoPoint(): api.util.GeoPoint {
+        getGeoPoint(): GeoPoint {
             var value = this.getValue();
-            if (api.util.StringHelper.isEmpty(value)) {
+            if (StringHelper.isEmpty(value)) {
                 return null;
             }
-            return <api.util.GeoPoint> api.util.GeoPoint.fromString(value);
+            return <GeoPoint> GeoPoint.fromString(value);
         }
 
         isValid(): boolean {
@@ -38,4 +42,3 @@ module api.ui.geo {
         }
 
     }
-}

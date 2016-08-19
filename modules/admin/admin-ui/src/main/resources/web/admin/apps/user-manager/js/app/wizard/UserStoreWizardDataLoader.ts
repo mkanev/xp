@@ -1,8 +1,9 @@
-import "../../api.ts";
-import {UserStoreWizardPanelParams} from "./UserStoreWizardPanelParams";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {GetUserStoreByKeyRequest} from "../../../../../common/js/security/GetUserStoreByKeyRequest";
+import {GetDefaultUserStoreRequest} from "../../../../../common/js/security/GetDefaultUserStoreRequest";
 
-import UserStore = api.security.UserStore;
-import UserStoreKey = api.security.UserStoreKey;
+import {UserStoreWizardPanelParams} from "./UserStoreWizardPanelParams";
 
 export class UserStoreWizardDataLoader {
 
@@ -43,14 +44,14 @@ export class UserStoreWizardDataLoader {
 
     private loadUserStoreToEdit(params: UserStoreWizardPanelParams): wemQ.Promise<UserStore> {
         if (!params.persistedItem && !!params.userStoreKey) {
-            return new api.security.GetUserStoreByKeyRequest(params.userStoreKey).sendAndParse();
+            return new GetUserStoreByKeyRequest(params.userStoreKey).sendAndParse();
         } else {
             return wemQ(params.persistedItem);
         }
     }
 
     private loadDefaultUserStore(): wemQ.Promise<UserStore> {
-        return new api.security.GetDefaultUserStoreRequest().sendAndParse();
+        return new GetDefaultUserStoreRequest().sendAndParse();
     }
 
 }

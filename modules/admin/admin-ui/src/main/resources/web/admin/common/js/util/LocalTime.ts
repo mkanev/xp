@@ -1,6 +1,8 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "./StringHelper";
 
-    export class LocalTime implements api.Equitable {
+export class LocalTime implements Equitable {
 
         private static TIME_SEPARATOR: string = ":";
 
@@ -34,21 +36,21 @@ module api.util {
             return this.padNumber(this.hours) + LocalTime.TIME_SEPARATOR + this.padNumber(this.minutes) + strSeconds;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, LocalTime)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, LocalTime)) {
                 return false;
             }
 
             var other = <LocalTime>o;
 
-            if (!api.ObjectHelper.numberEquals(this.getHours(), other.getHours())) {
+            if (!ObjectHelper.numberEquals(this.getHours(), other.getHours())) {
                 return false;
             }
-            if (!api.ObjectHelper.numberEquals(this.getMinutes(), other.getMinutes())) {
+            if (!ObjectHelper.numberEquals(this.getMinutes(), other.getMinutes())) {
                 return false;
             }
-            if (!api.ObjectHelper.numberEquals(this.getSeconds(), other.getSeconds())) {
+            if (!ObjectHelper.numberEquals(this.getSeconds(), other.getSeconds())) {
                 return false;
             }
             return true;
@@ -127,4 +129,3 @@ module api.util {
             return new LocalTime(this);
         }
     }
-}

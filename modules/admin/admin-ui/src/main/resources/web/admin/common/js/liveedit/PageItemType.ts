@@ -1,9 +1,12 @@
-module api.liveedit {
+import {Content} from "../content/Content";
+import {Site} from "../content/site/Site";
+import {StyleHelper} from "../StyleHelper";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {ItemType} from "./ItemType";
+import {ItemTypeConfigJson} from "./ItemTypeConfig";
+import {PageView} from "./PageView";
 
-    import Content = api.content.Content;
-    import Site = api.content.site.Site;
-
-    export class PageItemType extends ItemType {
+export class PageItemType extends ItemType {
 
         private static INSTANCE = new PageItemType();
 
@@ -16,7 +19,7 @@ module api.liveedit {
                 cssSelector: '[data-portal-component-type=page]',
                 draggable: false,
                 cursor: 'pointer',
-                iconCls: api.StyleHelper.COMMON_PREFIX + 'icon-page',
+                iconCls: StyleHelper.COMMON_PREFIX + 'icon-page',
                 highlighterStyle: {
                     stroke: 'rgba(20, 20, 20, 1)', // not used
                     strokeDasharray: '',
@@ -32,4 +35,3 @@ module api.liveedit {
     }
 
     PageItemType.get();
-}

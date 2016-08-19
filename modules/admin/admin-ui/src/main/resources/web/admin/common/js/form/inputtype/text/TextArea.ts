@@ -1,15 +1,20 @@
-module api.form.inputtype.text {
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {BaseInputTypeNotManagingAdd} from "../support/BaseInputTypeNotManagingAdd";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Element} from "../../../dom/Element";
+import {TextAreaInput} from "../../../ui/text/TextAreaInput";
+import {StringHelper} from "../../../util/StringHelper";
+import {InputTypeName} from "../../InputTypeName";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-    import ValueChangedEvent = api.ValueChangedEvent;
+export class TextArea extends BaseInputTypeNotManagingAdd<string> {
 
-    export class TextArea extends BaseInputTypeNotManagingAdd<string> {
-
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
+        constructor(config: InputTypeViewContext) {
             super(config);
         }
 
@@ -21,13 +26,13 @@ module api.form.inputtype.text {
             return super.newInitialValue() || new Value("", ValueTypes.STRING);
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
             if (!ValueTypes.STRING.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
 
             var value = property.hasNonNullValue() ? property.getString() : undefined;
-            var inputEl = new api.ui.text.TextAreaInput(this.getInput().getName() + "-" + index, value);
+            var inputEl = new TextAreaInput(this.getInput().getName() + "-" + index, value);
 
             inputEl.onValueChanged((event: ValueChangedEvent) => {
                 var value = ValueTypes.STRING.newValue(event.getNewValue());
@@ -37,8 +42,8 @@ module api.form.inputtype.text {
             return inputEl;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            var input = <api.ui.text.TextAreaInput> occurrence;
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
+            var input = <TextAreaInput> occurrence;
 
             if (!unchangedOnly || !input.isDirty()) {
                 input.setValue(property.getString());
@@ -51,19 +56,18 @@ module api.form.inputtype.text {
 
         valueBreaksRequiredContract(value: Value): boolean {
             return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-                   api.util.StringHelper.isBlank(value.getString());
+                   StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+        hasInputElementValidUserInput(inputElement: Element) {
 
             // TODO
             return true;
         }
 
-        static getName(): api.form.InputTypeName {
-            return new api.form.InputTypeName("TextArea", false);
+        static getName(): InputTypeName {
+            return new InputTypeName("TextArea", false);
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class(TextArea.getName().getName(), TextArea));
-}
+    InputTypeManager.register(new Class(TextArea.getName().getName(), TextArea));

@@ -1,13 +1,10 @@
-module api.ui.grid {
+import {Element} from "../../dom/Element";
+import {TreeGrid} from "../treegrid/TreeGrid";
+import {TreeNode} from "../treegrid/TreeNode";
+import {DragHelper} from "../DragHelper";
+import {ElementHelper} from "../../dom/ElementHelper";
 
-    import Element = api.dom.Element;
-    import TreeGrid = api.ui.treegrid.TreeGrid;
-    import TreeNode = api.ui.treegrid.TreeNode;
-
-    import DragHelper = api.ui.DragHelper;
-    import ElementHelper = api.dom.ElementHelper;
-
-    export class GridDragHandler<MODEL> {
+export class GridDragHandler<MODEL> {
 
         protected contentGrid: TreeGrid<MODEL>;
 
@@ -186,4 +183,3 @@ module api.ui.grid {
         insertBefore: number;
         rows: number[];
     }
-}

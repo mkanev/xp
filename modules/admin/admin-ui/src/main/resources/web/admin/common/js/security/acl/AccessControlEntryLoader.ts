@@ -1,11 +1,14 @@
-module api.security.acl {
+import {PrincipalListJson} from "../PrincipalListJson";
+import {PrincipalJson} from "../PrincipalJson";
+import {PrincipalType} from "../PrincipalType";
+import {UserStoreKey} from "../UserStoreKey";
+import {SecurityResourceRequest} from "../SecurityResourceRequest";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {BaseLoader} from "../../util/loader/BaseLoader";
+import {AccessControlEntry} from "./AccessControlEntry";
 
-    import PrincipalListJson = api.security.PrincipalListJson;
-    import PrincipalJson = api.security.PrincipalJson;
-    import PrincipalType = api.security.PrincipalType;
-    import UserStoreKey = api.security.UserStoreKey;
-
-    export class FindAccessControlEntriesRequest extends api.security.SecurityResourceRequest<PrincipalListJson, AccessControlEntry[]> {
+export class FindAccessControlEntriesRequest extends SecurityResourceRequest<PrincipalListJson, AccessControlEntry[]> {
 
         private allowedTypes: PrincipalType[];
         private searchQuery: string;
@@ -23,13 +26,13 @@ module api.security.acl {
             }
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals');
         }
 
         sendAndParse(): wemQ.Promise<AccessControlEntry[]> {
             return this.send().
-                then((response: api.rest.JsonResponse<PrincipalListJson>) => {
+                then((response: JsonResponse<PrincipalListJson>) => {
                     return response.getResult().principals.map((principalJson: PrincipalJson) => {
                         return new AccessControlEntry(this.fromJsonToPrincipal(principalJson));
                     });
@@ -58,7 +61,7 @@ module api.security.acl {
         }
     }
 
-    export class AccessControlEntryLoader extends api.util.loader.BaseLoader<PrincipalListJson, AccessControlEntry> {
+    export class AccessControlEntryLoader extends BaseLoader<PrincipalListJson, AccessControlEntry> {
 
         private findRequest: FindAccessControlEntriesRequest;
 
@@ -86,4 +89,3 @@ module api.security.acl {
 
     }
 
-}

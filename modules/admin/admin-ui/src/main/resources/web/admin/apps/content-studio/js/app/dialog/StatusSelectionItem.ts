@@ -1,12 +1,14 @@
-import "../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {SelectionItem} from "../../../../../common/js/app/browse/SelectionItem";
+import {Viewer} from "../../../../../common/js/ui/Viewer";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {CompareStatusFormatter} from "../../../../../common/js/content/CompareStatus";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
-import BrowseItem = api.app.browse.BrowseItem;
+export class StatusSelectionItem extends SelectionItem<ContentSummaryAndCompareStatus> {
 
-export class StatusSelectionItem extends api.app.browse.SelectionItem<ContentSummaryAndCompareStatus> {
-
-    constructor(viewer: api.ui.Viewer<ContentSummaryAndCompareStatus>, item: BrowseItem<ContentSummaryAndCompareStatus>) {
+    constructor(viewer: Viewer<ContentSummaryAndCompareStatus>, item: BrowseItem<ContentSummaryAndCompareStatus>) {
         super(viewer, item);
     }
 
@@ -21,8 +23,8 @@ export class StatusSelectionItem extends api.app.browse.SelectionItem<ContentSum
     }
 
     private initStatusDiv(status: CompareStatus) {
-        var statusDiv = new api.dom.DivEl("status");
-        statusDiv.setHtml(api.content.CompareStatusFormatter.formatStatus(status));
+        var statusDiv = new DivEl("status");
+        statusDiv.setHtml(CompareStatusFormatter.formatStatus(status));
         var statusClass = "" + CompareStatus[status];
         statusDiv.addClass(statusClass.toLowerCase());
         return statusDiv;

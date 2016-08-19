@@ -1,6 +1,6 @@
-module api.util {
 
-    export function assert(expression: boolean, message?: string) {
+
+export function assert(expression: boolean, message?: string) {
         if (!expression) {
             console.error(message);
             throw new Error(message || 'Assertion failed');
@@ -20,4 +20,3 @@ module api.util {
         assert(value == null, message);
     }
 
-}

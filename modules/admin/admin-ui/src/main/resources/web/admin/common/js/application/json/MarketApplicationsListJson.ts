@@ -1,9 +1,8 @@
-module api.application.json {
 
-    export interface MarketApplicationsListJson {
+
+export interface MarketApplicationsListJson {
 
         total: number;
 
         hits: Object;
     }
-}

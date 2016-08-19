@@ -1,10 +1,9 @@
-import "../../api.ts";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {Application} from "../../../../../common/js/application/Application";
+import {ApplicationViewer} from "../../../../../common/js/application/ApplicationViewer";
+import {BrowseItemsSelectionPanel} from "../../../../../common/js/app/browse/BrowseItemsSelectionPanel";
 
-import BrowseItem = api.app.browse.BrowseItem;
-import Application = api.application.Application;
-import ApplicationViewer = api.application.ApplicationViewer;
-
-export class ApplicationBrowseItemsSelectionPanel extends api.app.browse.BrowseItemsSelectionPanel<Application> {
+export class ApplicationBrowseItemsSelectionPanel extends BrowseItemsSelectionPanel<Application> {
 
     createItemViewer(item: BrowseItem<Application>): ApplicationViewer {
         var viewer = new ApplicationViewer();

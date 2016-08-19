@@ -1,23 +1,25 @@
-import "../../../api.ts";
+import {Event} from "../../../../../../common/js/event/Event";
+import {Principal} from "../../../../../../common/js/security/Principal";
+import {ClassHelper} from "../../../../../../common/js/ClassHelper";
 
-export class PrincipalBrowseSearchEvent extends api.event.Event {
+export class PrincipalBrowseSearchEvent extends Event {
 
-    private principals: api.security.Principal[];
+    private principals: Principal[];
 
-    constructor(principals: api.security.Principal[]) {
+    constructor(principals: Principal[]) {
         super();
         this.principals = principals;
     }
 
-    getPrincipals(): api.security.Principal[] {
+    getPrincipals(): Principal[] {
         return this.principals;
     }
 
     static on(handler: (event: PrincipalBrowseSearchEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: PrincipalBrowseSearchEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

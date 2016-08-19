@@ -1,7 +1,6 @@
-module api.content.attachment {
+import {AttachmentJson} from "./AttachmentJson";
 
-    export interface AttachmentListJson {
+export interface AttachmentListJson {
 
         attachments:AttachmentJson[];
     }
-}

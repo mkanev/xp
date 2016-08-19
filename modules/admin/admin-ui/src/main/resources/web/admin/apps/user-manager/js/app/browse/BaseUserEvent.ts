@@ -1,7 +1,8 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+
 import {UserTreeGridItem} from "./UserTreeGridItem";
 
-export class BaseUserEvent extends api.event.Event {
+export class BaseUserEvent extends Event {
 
     private gridItems: UserTreeGridItem[];
 

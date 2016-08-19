@@ -1,7 +1,8 @@
-module api.content.order {
+import {OrderExprJson} from "../json/OrderExprJson";
+import {OrderExpr} from "./OrderExpr";
+import {OrderExprBuilder} from "./OrderExpr";
 
-    import OrderExprJson = api.content.json.OrderExprJson;
-    export class DynamicOrderExpr extends OrderExpr {
+export class DynamicOrderExpr extends OrderExpr {
 
         private function: string;
 
@@ -44,4 +45,3 @@ module api.content.order {
             return new DynamicOrderExpr(this);
         }
     }
-}

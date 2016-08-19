@@ -1,7 +1,8 @@
-module api.form {
+import {OccurrencesJson} from "./json/OccurrencesJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    import OccurrencesJson = api.form.json.OccurrencesJson;
-    export class OccurrencesBuilder {
+export class OccurrencesBuilder {
 
         minimum: number;
 
@@ -27,7 +28,7 @@ module api.form {
         }
     }
 
-    export class Occurrences implements api.Equitable {
+    export class Occurrences implements Equitable {
 
         private minimum: number;
 
@@ -82,31 +83,30 @@ module api.form {
             return occurrenceCount > this.maximum;
         }
 
-        public toJson(): api.form.json.OccurrencesJson {
+        public toJson(): OccurrencesJson {
 
-            return <api.form.json.OccurrencesJson>{
+            return <OccurrencesJson>{
                 maximum: this.getMaximum(),
                 minimum: this.getMinimum()
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Occurrences)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Occurrences)) {
                 return false;
             }
 
             var other = <Occurrences>o;
 
-            if (!api.ObjectHelper.numberEquals(this.minimum, other.minimum)) {
+            if (!ObjectHelper.numberEquals(this.minimum, other.minimum)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.numberEquals(this.maximum, other.maximum)) {
+            if (!ObjectHelper.numberEquals(this.maximum, other.maximum)) {
                 return false;
             }
 
             return true;
         }
     }
-}

@@ -1,6 +1,9 @@
-module api.security.auth {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {AuthResourceRequest} from "./AuthResourceRequest";
+import {LogoutResultJson} from "./LogoutResultJson";
 
-    export class LogoutRequest extends AuthResourceRequest<LogoutResultJson, void> {
+export class LogoutRequest extends AuthResourceRequest<LogoutResultJson, void> {
 
         constructor() {
             super();
@@ -11,16 +14,15 @@ module api.security.auth {
             return {};
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'logout');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'logout');
         }
 
         sendAndParse(): wemQ.Promise<void> {
 
-            return this.send().then((response: api.rest.JsonResponse<LogoutResultJson>) => {
+            return this.send().then((response: JsonResponse<LogoutResultJson>) => {
                 return;
             });
         }
 
     }
-}

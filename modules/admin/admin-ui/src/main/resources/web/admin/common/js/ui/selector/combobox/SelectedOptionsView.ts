@@ -1,28 +1,31 @@
-module api.ui.selector.combobox {
+import {DivEl} from "../../../dom/DivEl";
+import {Option} from "../Option";
+import {SelectedOption} from "./SelectedOption";
+import {SelectedOptionEvent} from "./SelectedOptionEvent";
 
-    export interface SelectedOptionsView<T> extends api.dom.DivEl {
+export interface SelectedOptionsView<T> extends DivEl {
 
         setMaximumOccurrences(value: number);
 
         getMaximumOccurrences(): number;
 
-        createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T>;
+        createSelectedOption(option: Option<T>): SelectedOption<T>;
 
-        addOption(option: api.ui.selector.Option<T>, silent: boolean, keyCode: number): boolean;
+        addOption(option: Option<T>, silent: boolean, keyCode: number): boolean;
 
-        removeOption(optionToRemove: api.ui.selector.Option<T>, silent: boolean);
+        removeOption(optionToRemove: Option<T>, silent: boolean);
 
         count(): number;
 
         getSelectedOptions(): SelectedOption<T>[];
 
-        getByOption(option: api.ui.selector.Option<T>): SelectedOption<T>;
+        getByOption(option: Option<T>): SelectedOption<T>;
 
         getById(id: string): SelectedOption<T>;
 
         getByIndex(index: number): SelectedOption<T>;
 
-        isSelected(option: api.ui.selector.Option<T>): boolean;
+        isSelected(option: Option<T>): boolean;
 
         maximumOccurrencesReached(): boolean;
 
@@ -40,4 +43,3 @@ module api.ui.selector.combobox {
 
         unOptionMoved(listener: (moved: SelectedOption<T>) => void);
     }
-}

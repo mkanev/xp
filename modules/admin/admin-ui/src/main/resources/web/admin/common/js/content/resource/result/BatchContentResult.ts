@@ -1,9 +1,8 @@
-module api.content.resource.result {
+import {ContentMetadata} from "../../ContentMetadata";
 
-    export interface BatchContentResult<T> {
+export interface BatchContentResult<T> {
 
         contents: T[];
 
         metadata: ContentMetadata;
     }
-}

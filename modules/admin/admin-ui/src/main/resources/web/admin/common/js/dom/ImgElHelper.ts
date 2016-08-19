@@ -1,6 +1,6 @@
-module api.dom {
+import {ElementHelper} from "./ElementHelper";
 
-    export class ImgHelper extends ElementHelper {
+export class ImgHelper extends ElementHelper {
 
         private imgEl: HTMLImageElement;
 
@@ -38,4 +38,3 @@ module api.dom {
             return this.imgEl.naturalHeight;
         }
     }
-}

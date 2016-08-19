@@ -1,6 +1,6 @@
-module api.ui {
 
-    export class ActivatedEvent {
+
+export class ActivatedEvent {
 
         private index: number;
 
@@ -13,4 +13,3 @@ module api.ui {
             return this.index;
         }
     }
-}

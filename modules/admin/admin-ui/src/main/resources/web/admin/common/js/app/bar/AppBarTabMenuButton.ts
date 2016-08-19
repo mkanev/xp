@@ -1,6 +1,7 @@
-module api.app.bar{
+import {TabMenuButton} from "../../ui/tab/TabMenuButton";
+import {SpanEl} from "../../dom/SpanEl";
 
-    export class AppBarTabMenuButton extends api.ui.tab.TabMenuButton {
+export class AppBarTabMenuButton extends TabMenuButton {
 
         private tabCountEl:AppBarTabCount;
 
@@ -24,7 +25,7 @@ module api.app.bar{
         }
     }
 
-    export class AppBarTabCount extends api.dom.SpanEl {
+    export class AppBarTabCount extends SpanEl {
 
         constructor() {
             super("tab-count");
@@ -34,4 +35,3 @@ module api.app.bar{
             this.getEl().setInnerHtml(value > 0 ? "" + value : "");
         }
     }
-}

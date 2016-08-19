@@ -1,6 +1,7 @@
-module api.ui {
+import {DivEl} from "../dom/DivEl";
+import {PEl} from "../dom/PEl";
 
-    export class DragHelper extends api.dom.DivEl {
+export class DragHelper extends DivEl {
 
         public static CURSOR_AT = {left: -10, top: -15};
 
@@ -29,7 +30,7 @@ module api.ui {
         }
 
         public setItemName(itemName: string) {
-            var p = new api.dom.PEl();
+            var p = new PEl();
             p.setClass("drag-item-name");
             p.setHtml(itemName);
 
@@ -47,4 +48,3 @@ module api.ui {
         }
 
     }
-}

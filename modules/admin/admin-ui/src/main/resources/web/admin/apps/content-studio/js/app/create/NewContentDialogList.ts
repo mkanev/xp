@@ -1,10 +1,13 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {ListBox} from "../../../../../common/js/ui/selector/list/ListBox";
+import {LiEl} from "../../../../../common/js/dom/LiEl";
+import {NamesAndIconViewBuilder} from "../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../common/js/app/NamesAndIconViewSize";
+
 import {NewContentDialogItemSelectedEvent} from "./NewContentDialogItemSelectedEvent";
 import {NewContentDialogListItem} from "./NewContentDialogListItem";
 
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-
-export class NewContentDialogList extends api.ui.selector.list.ListBox<NewContentDialogListItem> {
+export class NewContentDialogList extends ListBox<NewContentDialogListItem> {
 
     private selectedListeners: {(event: NewContentDialogItemSelectedEvent):void}[] = [];
 
@@ -28,15 +31,15 @@ export class NewContentDialogList extends api.ui.selector.list.ListBox<NewConten
         });
     }
 
-    createItemView(item: NewContentDialogListItem): api.dom.LiEl {
-        var namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
+    createItemView(item: NewContentDialogListItem): LiEl {
+        var namesAndIconView = new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small).build();
         namesAndIconView
             .setIconUrl(item.getIconUrl())
             .setMainName(item.getDisplayName())
             .setSubName(item.getName())
             .setDisplayIconLabel(item.isSite());
 
-        var itemEl = new api.dom.LiEl('content-types-list-item' + (item.isSite() ? ' site' : ''));
+        var itemEl = new LiEl('content-types-list-item' + (item.isSite() ? ' site' : ''));
         itemEl.getEl().setTabIndex(0);
         itemEl.appendChild(namesAndIconView);
         itemEl.onClicked((event: MouseEvent) => this.notifySelected(item));

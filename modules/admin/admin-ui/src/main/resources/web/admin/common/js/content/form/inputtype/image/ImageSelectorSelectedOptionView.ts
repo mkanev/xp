@@ -1,30 +1,37 @@
-module api.content.form.inputtype.image {
+import {LoadMask} from "../../../../ui/mask/LoadMask";
+import {BaseSelectedOptionView} from "../../../../ui/selector/combobox/BaseSelectedOptionView";
+import {ImgEl} from "../../../../dom/ImgEl";
+import {DivEl} from "../../../../dom/DivEl";
+import {Checkbox} from "../../../../ui/Checkbox";
+import {ProgressBar} from "../../../../ui/ProgressBar";
+import {Option} from "../../../../ui/selector/Option";
+import {Element} from "../../../../dom/Element";
+import {ValueChangedEvent} from "../../../../ValueChangedEvent";
+import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
 
-    import LoadMask = api.ui.mask.LoadMask;
-
-    export class ImageSelectorSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ImageSelectorDisplayValue> {
+export class ImageSelectorSelectedOptionView extends BaseSelectedOptionView<ImageSelectorDisplayValue> {
 
         private static IMAGE_SIZE: number = 270;
 
-        private icon: api.dom.ImgEl;
+        private icon: ImgEl;
 
-        private label: api.dom.DivEl;
+        private label: DivEl;
 
-        private check: api.ui.Checkbox;
+        private check: Checkbox;
 
-        private progress: api.ui.ProgressBar;
+        private progress: ProgressBar;
 
-        private error: api.dom.DivEl;
+        private error: DivEl;
 
         private loadMask: LoadMask;
 
         private selectionChangeListeners: {(option: ImageSelectorSelectedOptionView, checked: boolean): void;}[] = [];
 
-        constructor(option: api.ui.selector.Option<ImageSelectorDisplayValue>) {
+        constructor(option: Option<ImageSelectorDisplayValue>) {
             super(option);
         }
 
-        setOption(option: api.ui.selector.Option<ImageSelectorDisplayValue>) {
+        setOption(option: Option<ImageSelectorDisplayValue>) {
             super.setOption(option);
 
             var content: ImageSelectorDisplayValue = this.getOption().displayValue;
@@ -57,15 +64,15 @@ module api.content.form.inputtype.image {
 
         doRender(): wemQ.Promise<boolean> {
 
-            this.icon = new api.dom.ImgEl();
-            this.label = new api.dom.DivEl("label");
-            this.check = api.ui.Checkbox.create().build();
-            this.progress = new api.ui.ProgressBar();
-            this.error = new api.dom.DivEl("error");
+            this.icon = new ImgEl();
+            this.label = new DivEl("label");
+            this.check = Checkbox.create().build();
+            this.progress = new ProgressBar();
+            this.error = new DivEl("error");
             this.loadMask = new LoadMask(this);
 
-            var squaredContent = new api.dom.DivEl('squared-content');
-            squaredContent.appendChildren<api.dom.Element>(this.icon, this.label, this.check, this.progress, this.error, this.loadMask);
+            var squaredContent = new DivEl('squared-content');
+            squaredContent.appendChildren<Element>(this.icon, this.label, this.check, this.progress, this.error, this.loadMask);
 
             this.appendChild(squaredContent);
 
@@ -82,7 +89,7 @@ module api.content.form.inputtype.image {
                 event.preventDefault();
             });
 
-            this.check.onValueChanged((event: api.ValueChangedEvent) => {
+            this.check.onValueChanged((event: ValueChangedEvent) => {
                 this.notifyChecked(event.getNewValue() == 'true');
             });
 
@@ -139,15 +146,15 @@ module api.content.form.inputtype.image {
             this.centerVertically(this.error, contentHeight);
         }
 
-        private centerVertically(el: api.dom.Element, contentHeight: number) {
+        private centerVertically(el: Element, contentHeight: number) {
             el.getEl().setMarginTop(Math.max(0, (contentHeight - el.getEl().getHeight()) / 2) + 'px');
         }
 
-        getIcon(): api.dom.ImgEl {
+        getIcon(): ImgEl {
             return this.icon;
         }
 
-        getCheckbox(): api.ui.Checkbox {
+        getCheckbox(): Checkbox {
             return this.check;
         }
 
@@ -172,4 +179,3 @@ module api.content.form.inputtype.image {
         }
 
     }
-}

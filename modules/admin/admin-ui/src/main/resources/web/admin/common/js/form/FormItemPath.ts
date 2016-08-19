@@ -1,6 +1,6 @@
-module api.form{
 
-    export class FormItemPath {
+
+export class FormItemPath {
 
         private static DEFAULT_ELEMENT_DIVIDER:string = ".";
 
@@ -137,4 +137,3 @@ module api.form{
         }
     }
 
-}

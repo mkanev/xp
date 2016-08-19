@@ -1,16 +1,18 @@
-import "../../../../../api.ts";
+import {DragHelper} from "../../../../../../../../common/js/ui/DragHelper";
+import {PageView} from "../../../../../../../../common/js/liveedit/PageView";
+import {LiveEditPageViewReadyEvent} from "../../../../../../../../common/js/liveedit/LiveEditPageViewReadyEvent";
+import {Content} from "../../../../../../../../common/js/content/Content";
+import {PageMode} from "../../../../../../../../common/js/content/page/PageMode";
+import {Panel} from "../../../../../../../../common/js/ui/panel/Panel";
+import {DataView} from "../../../../../../../../common/js/ui/grid/DataView";
+import {PEl} from "../../../../../../../../common/js/dom/PEl";
+
 import {ContentWizardPanel} from "../../../ContentWizardPanel";
 import {LiveEditPageProxy} from "../../LiveEditPageProxy";
 import {Insertable} from "./Insertable";
 import {InsertablesGrid} from "./InsertablesGrid";
 import {Insertables} from "./Insertables";
 import {PageComponentsView} from "../../../PageComponentsView";
-
-import DragHelper = api.ui.DragHelper;
-import PageView = api.liveedit.PageView;
-import LiveEditPageViewReadyEvent = api.liveedit.LiveEditPageViewReadyEvent;
-import Content = api.content.Content;
-import PageMode = api.content.page.PageMode;
 
 export interface ComponentTypesPanelConfig {
 
@@ -19,13 +21,13 @@ export interface ComponentTypesPanelConfig {
     contentWizardPanel: ContentWizardPanel;
 }
 
-export class InsertablesPanel extends api.ui.panel.Panel {
+export class InsertablesPanel extends Panel {
 
     private liveEditPageProxy: LiveEditPageProxy;
 
     private insertablesGrid: InsertablesGrid;
 
-    private insertablesDataView: api.ui.grid.DataView<Insertable>;
+    private insertablesDataView: DataView<Insertable>;
 
     private hideContextWindowRequestListeners: {(): void;}[] = [];
 
@@ -45,10 +47,10 @@ export class InsertablesPanel extends api.ui.panel.Panel {
         super("insertables-panel");
         this.liveEditPageProxy = config.liveEditPage;
 
-        var topDescription = new api.dom.PEl();
+        var topDescription = new PEl();
         topDescription.getEl().setInnerHtml('Drag and drop components into the page');
 
-        this.insertablesDataView = new api.ui.grid.DataView<Insertable>();
+        this.insertablesDataView = new DataView<Insertable>();
         this.insertablesGrid = new InsertablesGrid(this.insertablesDataView, {draggableRows: true, rowClass: "comp"});
 
         this.insertablesDataView.setItems(Insertables.ALL, "name");
@@ -86,7 +88,7 @@ export class InsertablesPanel extends api.ui.panel.Panel {
         return this.componentsView;
     }
 
-    setPageView(pageView: api.liveedit.PageView) {
+    setPageView(pageView: PageView) {
         this.componentsView.setPageView(pageView);
     }
 

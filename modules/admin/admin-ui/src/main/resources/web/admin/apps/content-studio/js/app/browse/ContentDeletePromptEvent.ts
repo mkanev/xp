@@ -1,4 +1,6 @@
-import "../../api.ts";
+import {Event} from "../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../common/js/ClassHelper";
+
 import {BaseContentModelEvent} from "./BaseContentModelEvent";
 
 export class ContentDeletePromptEvent extends BaseContentModelEvent {
@@ -26,10 +28,10 @@ export class ContentDeletePromptEvent extends BaseContentModelEvent {
     }
 
     static on(handler: (event: ContentDeletePromptEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ContentDeletePromptEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

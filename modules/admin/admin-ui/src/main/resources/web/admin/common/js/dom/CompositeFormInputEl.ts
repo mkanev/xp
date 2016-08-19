@@ -1,12 +1,14 @@
-module api.dom {
+import {FormInputEl} from "./FormInputEl";
+import {Element} from "./Element";
+import {ValueChangedEvent} from "../ValueChangedEvent";
 
-    export class CompositeFormInputEl extends api.dom.FormInputEl {
+export class CompositeFormInputEl extends FormInputEl {
 
-        private wrappedInput: api.dom.FormInputEl;
+        private wrappedInput: FormInputEl;
 
-        private additionalElements: api.dom.Element[];
+        private additionalElements: Element[];
 
-        constructor(wrappedInput: api.dom.FormInputEl, ...additionalElements: api.dom.Element[]) {
+        constructor(wrappedInput: FormInputEl, ...additionalElements: Element[]) {
             this.wrappedInput = wrappedInput;
             this.additionalElements = [];
 
@@ -15,7 +17,7 @@ module api.dom {
             this.appendChild(this.wrappedInput);
 
             if (additionalElements) {
-                additionalElements.forEach((element: api.dom.Element) => {
+                additionalElements.forEach((element: Element) => {
                     this.addAdditionalElement(element);
                 });
             }
@@ -61,11 +63,11 @@ module api.dom {
             this.wrappedInput.unDirtyChanged(listener);
         }
 
-        onValueChanged(listener: (p1: api.ValueChangedEvent) => void) {
+        onValueChanged(listener: (p1: ValueChangedEvent) => void) {
             this.wrappedInput.onValueChanged(listener);
         }
 
-        unValueChanged(listener: (p1: api.ValueChangedEvent) => void) {
+        unValueChanged(listener: (p1: ValueChangedEvent) => void) {
             this.wrappedInput.unValueChanged(listener);
         }
 
@@ -93,9 +95,8 @@ module api.dom {
             return this.wrappedInput.giveBlur();
         }
 
-        addAdditionalElement(element: api.dom.Element) {
+        addAdditionalElement(element: Element) {
             this.appendChild(element);
             this.additionalElements.push(element);
         }
     }
-}

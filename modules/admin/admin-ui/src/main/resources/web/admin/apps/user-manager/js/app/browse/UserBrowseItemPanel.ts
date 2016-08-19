@@ -1,15 +1,17 @@
-import "../../api.ts";
+import {BrowseItemPanel} from "../../../../../common/js/app/browse/BrowseItemPanel";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+
 import {UserBrowseItemsSelectionPanel} from "./UserBrowseItemsSelectionPanel";
 import {UserTreeGridItem} from "./UserTreeGridItem";
 import {UserItemStatisticsPanel} from "../view/UserItemStatisticsPanel";
 
-export class UserBrowseItemPanel extends api.app.browse.BrowseItemPanel<UserTreeGridItem> {
+export class UserBrowseItemPanel extends BrowseItemPanel<UserTreeGridItem> {
 
     createItemSelectionPanel(): UserBrowseItemsSelectionPanel {
         return new UserBrowseItemsSelectionPanel();
     }
 
-    createItemStatisticsPanel(): api.app.view.ItemStatisticsPanel<UserTreeGridItem> {
+    createItemStatisticsPanel(): ItemStatisticsPanel<UserTreeGridItem> {
         return new UserItemStatisticsPanel();
     }
 

@@ -1,6 +1,8 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {LiveEditModel} from "./LiveEditModel";
 
-    export class InitializeLiveEditEvent extends api.event.Event {
+export class InitializeLiveEditEvent extends Event {
 
         private liveEditModel: LiveEditModel;
 
@@ -14,11 +16,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: InitializeLiveEditEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: InitializeLiveEditEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

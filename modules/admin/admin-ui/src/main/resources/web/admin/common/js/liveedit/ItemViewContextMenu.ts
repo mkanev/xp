@@ -1,17 +1,20 @@
-module api.liveedit {
+import {MinimizeWizardPanelEvent} from "../app/wizard/MinimizeWizardPanelEvent";
+import {Action} from "../ui/Action";
+import {DivEl} from "../dom/DivEl";
+import {TreeContextMenu} from "../ui/menu/TreeContextMenu";
+import {ElementHiddenEvent} from "../dom/ElementHiddenEvent";
+import {Body} from "../dom/Body";
+import {ItemViewContextMenuTitle} from "./ItemViewContextMenuTitle";
 
-    import MinimizeWizardPanelEvent = api.app.wizard.MinimizeWizardPanelEvent;
-    import Action = api.ui.Action;
-
-    export enum ItemViewContextMenuOrientation {
+export enum ItemViewContextMenuOrientation {
         UP,
         DOWN
     }
 
-    export class ItemViewContextMenu extends api.dom.DivEl {
+    export class ItemViewContextMenu extends DivEl {
 
         private title: ItemViewContextMenuTitle;
-        private menu: api.ui.menu.TreeContextMenu;
+        private menu: TreeContextMenu;
         private arrow: ItemViewContextMenuArrow;
         private orientation: ItemViewContextMenuOrientation = ItemViewContextMenuOrientation.DOWN;
 
@@ -65,7 +68,7 @@ module api.liveedit {
                 this.appendChild(this.title);
             }
 
-            this.menu = new api.ui.menu.TreeContextMenu(actions, false);
+            this.menu = new TreeContextMenu(actions, false);
             this.menu.onItemClicked(() => {
                 this.hide();
             });
@@ -77,7 +80,7 @@ module api.liveedit {
                 e.stopPropagation();
             });
 
-            this.onHidden((e: api.dom.ElementHiddenEvent) => {
+            this.onHidden((e: ElementHiddenEvent) => {
                 // stop drag if the element was hidden while dragging
                 this.stopDrag(dragListener, upListener);
             });
@@ -92,7 +95,7 @@ module api.liveedit {
 
             this.onRemoved(() => MinimizeWizardPanelEvent.un(minimizeHandler));
 
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
         }
 
         showAt(x: number, y: number, notClicked: boolean = false) {
@@ -103,11 +106,11 @@ module api.liveedit {
             this.menu.moveBy.call(this, dx, dy);
         }
 
-        setActions(actions: api.ui.Action[]) {
+        setActions(actions: Action[]) {
             this.menu.setActions(actions);
         }
 
-        getMenu(): api.ui.menu.TreeContextMenu {
+        getMenu(): TreeContextMenu {
             return this.menu;
         }
 
@@ -142,13 +145,13 @@ module api.liveedit {
         }
 
         private startDrag(dragListener: (e: MouseEvent) => void, upListener: (e: MouseEvent) => void) {
-            api.dom.Body.get().onMouseMove(dragListener);
-            api.dom.Body.get().onMouseUp(upListener);
+            Body.get().onMouseMove(dragListener);
+            Body.get().onMouseUp(upListener);
         }
 
         private stopDrag(dragListener: (e: MouseEvent) => void, upListener: (e: MouseEvent) => void) {
-            api.dom.Body.get().unMouseMove(dragListener);
-            api.dom.Body.get().unMouseUp(upListener);
+            Body.get().unMouseMove(dragListener);
+            Body.get().unMouseUp(upListener);
         }
 
         private restrainX(x: number): number {
@@ -214,7 +217,7 @@ module api.liveedit {
 
     }
 
-    export class ItemViewContextMenuArrow extends api.dom.DivEl {
+    export class ItemViewContextMenuArrow extends DivEl {
         private static clsBottom = "bottom";
         private static clsTop = "top";
         private static clsLeft = "left";
@@ -246,4 +249,3 @@ module api.liveedit {
         }
     }
 
-}

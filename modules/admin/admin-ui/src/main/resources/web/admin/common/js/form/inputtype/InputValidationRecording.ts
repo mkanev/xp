@@ -1,6 +1,7 @@
-module api.form.inputtype {
+import {ObjectHelper} from "../../ObjectHelper";
+import {AdditionalValidationRecord} from "../AdditionalValidationRecord";
 
-    export class InputValidationRecording {
+export class InputValidationRecording {
 
         private breaksMinimumOccurrences: boolean;
 
@@ -51,7 +52,7 @@ module api.form.inputtype {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.additionalValidationRecord, that.additionalValidationRecord)) {
+            if (!ObjectHelper.equals(this.additionalValidationRecord, that.additionalValidationRecord)) {
                 return false;
             }
 
@@ -62,4 +63,3 @@ module api.form.inputtype {
             return other == undefined || other == null || !other.equals(this);
         }
     }
-}

@@ -1,7 +1,10 @@
-import "../../../api.ts";
-import {ContentTreeGrid} from "../ContentTreeGrid";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {DuplicateContentRequest} from "../../../../../../common/js/content/resource/DuplicateContentRequest";
+import {Content} from "../../../../../../common/js/content/Content";
+import {showFeedback} from "../../../../../../common/js/notify/MessageBus";
 
-import Action = api.ui.Action;
+import {ContentTreeGrid} from "../ContentTreeGrid";
 
 export class DuplicateContentAction extends Action {
 
@@ -15,10 +18,10 @@ export class DuplicateContentAction extends Action {
         });
     }
 
-    private duplicate(source: api.content.ContentSummary) {
-        new api.content.resource.DuplicateContentRequest(source.getContentId()).sendAndParse().then((content: api.content.Content) => {
+    private duplicate(source: ContentSummary) {
+        new DuplicateContentRequest(source.getContentId()).sendAndParse().then((content: Content) => {
             // TODO: Replace the returning content with an id
-            api.notify.showFeedback('\"' + source.getDisplayName() + '\" duplicated');
+            showFeedback('\"' + source.getDisplayName() + '\" duplicated');
         })
     }
 }

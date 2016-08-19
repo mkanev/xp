@@ -1,17 +1,25 @@
-module api.content.resource {
+import {QueryField} from "../../query/QueryField";
+import {OrderExpr} from "../../query/expr/OrderExpr";
+import {QueryExpr} from "../../query/expr/QueryExpr";
+import {FieldExpr} from "../../query/expr/FieldExpr";
+import {FieldOrderExpr} from "../../query/expr/FieldOrderExpr";
+import {OrderDirection} from "../../query/expr/OrderDirection";
+import {ConstraintExpr} from "../../query/expr/ConstraintExpr";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {ContentQueryResultJson} from "../json/ContentQueryResultJson";
+import {ContentQuery} from "../query/ContentQuery";
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Expand} from "../../rest/Expand";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentQueryResult} from "./result/ContentQueryResult";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {PathMatchExpressionBuilder} from "../../query/PathMatchExpression";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentQueryRequest} from "./ContentQueryRequest";
 
-    import QueryField = api.query.QueryField;
-    import OrderExpr = api.query.expr.OrderExpr;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import FieldOrderExpr = api.query.expr.FieldOrderExpr;
-    import OrderDirection = api.query.expr.OrderDirection;
-    import ConstraintExpr = api.query.expr.ConstraintExpr;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import ContentQuery = api.content.query.ContentQuery;
-
-    export class ContentSummaryRequest extends api.rest.ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
+export class ContentSummaryRequest extends ResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
 
         private contentQuery: ContentQuery;
 
@@ -31,18 +39,18 @@ module api.content.resource {
             super();
             this.contentQuery = new ContentQuery();
             this.request =
-                new ContentQueryRequest<ContentSummaryJson, ContentSummary>(this.contentQuery).setExpand(api.rest.Expand.SUMMARY);
+                new ContentQueryRequest<ContentSummaryJson, ContentSummary>(this.contentQuery).setExpand(Expand.SUMMARY);
         }
 
         getSearhchString(): string {
             return this.searchString;
         }
 
-        getRestPath(): api.rest.Path {
+        getRestPath(): Path {
             return this.request.getRestPath();
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return this.request.getRequestPath();
         }
 
@@ -54,7 +62,7 @@ module api.content.resource {
             return this.request.getParams();
         }
 
-        send(): wemQ.Promise<api.rest.JsonResponse<ContentQueryResultJson<ContentSummaryJson>>> {
+        send(): wemQ.Promise<JsonResponse<ContentQueryResultJson<ContentSummaryJson>>> {
             this.buildSearchQueryExpr();
 
             return this.request.send();
@@ -64,7 +72,7 @@ module api.content.resource {
             this.buildSearchQueryExpr();
 
             return this.request.sendAndParse().then(
-                (queryResult: api.content.resource.result.ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
+                (queryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
                 return queryResult.getContents();
             });
         }
@@ -73,7 +81,7 @@ module api.content.resource {
             this.contentQuery.setContentTypeNames(this.createContentTypeNames(contentTypes));
         }
 
-        setAllowedContentTypeNames(contentTypeNames: api.schema.content.ContentTypeName[]) {
+        setAllowedContentTypeNames(contentTypeNames: ContentTypeName[]) {
             this.contentQuery.setContentTypeNames(contentTypeNames);
         }
 
@@ -94,7 +102,7 @@ module api.content.resource {
         }
 
         protected createSearchExpression(): ConstraintExpr {
-            return new api.query.PathMatchExpressionBuilder()
+            return new PathMatchExpressionBuilder()
                 .setSearchString(this.searchString)
                 .setPath(this.path ? this.path.toString() : "")
                 .addField(new QueryField(QueryField.DISPLAY_NAME, 5))
@@ -103,8 +111,7 @@ module api.content.resource {
                 .build();
         }
 
-        private createContentTypeNames(names: string[]): api.schema.content.ContentTypeName[] {
-            return (names || []).map((name: string) => new api.schema.content.ContentTypeName(name));
+        private createContentTypeNames(names: string[]): ContentTypeName[] {
+            return (names || []).map((name: string) => new ContentTypeName(name));
         }
     }
-}

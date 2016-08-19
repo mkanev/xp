@@ -1,6 +1,6 @@
-module api.security {
 
-    export interface DeletePrincipalResultJson {
+
+export interface DeletePrincipalResultJson {
 
         principalKey: string;
 
@@ -9,4 +9,3 @@ module api.security {
         reason: string;
 
     }
-}

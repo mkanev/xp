@@ -1,8 +1,8 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+
 import {ContentUnpublishPromptEvent} from "../ContentUnpublishPromptEvent";
 import {ContentTreeGrid} from "../ContentTreeGrid";
-
-import Action = api.ui.Action;
 
 export class UnpublishContentAction extends Action {
 
@@ -12,7 +12,7 @@ export class UnpublishContentAction extends Action {
         this.setEnabled(false);
 
         this.onExecuted(() => {
-            var contents: api.content.ContentSummaryAndCompareStatus[]
+            var contents: ContentSummaryAndCompareStatus[]
                 = grid.getSelectedDataList();
             new ContentUnpublishPromptEvent(contents).fire();
         });

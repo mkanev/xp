@@ -1,18 +1,21 @@
-module api.ui.menu {
+import {DivEl} from "../../dom/DivEl";
+import {UlEl} from "../../dom/UlEl";
+import {Action} from "../Action";
+import {ActionMenuItem} from "./ActionMenuItem";
 
-    export class ActionMenu extends api.dom.DivEl {
+export class ActionMenu extends DivEl {
 
-        private actionListEl: api.dom.UlEl;
+        private actionListEl: UlEl;
 
-        private labelEl: api.dom.DivEl;
+        private labelEl: DivEl;
 
         constructor(label: string, ...actions: Action[]) {
             super("action-menu");
-            this.labelEl = new api.dom.DivEl("drop-down-button icon-arrow-down");
+            this.labelEl = new DivEl("drop-down-button icon-arrow-down");
             this.labelEl.setHtml(label);
             this.appendChild(this.labelEl);
 
-            this.actionListEl = new api.dom.UlEl();
+            this.actionListEl = new UlEl();
             this.appendChild(this.actionListEl);
 
             if (actions.length > 0) {
@@ -42,4 +45,3 @@ module api.ui.menu {
             });
         }
     }
-}

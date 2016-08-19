@@ -1,11 +1,20 @@
-module api.ui.form {
+import {DivEl} from "../../dom/DivEl";
+import {LabelEl} from "../../dom/LabelEl";
+import {FormItemEl} from "../../dom/FormItemEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {StringHelper} from "../../util/StringHelper";
+import {FormInputEl} from "../../dom/FormInputEl";
+import {ValidityChangedEvent} from "../../ValidityChangedEvent";
+import {ValidationResult} from "./ValidationResult";
+import {ValidationError} from "./ValidationResult";
+import {Validators} from "./Validators";
 
-    export class FormItem extends api.dom.DivEl {
+export class FormItem extends DivEl {
 
-        private label: api.dom.LabelEl;
-        private input: api.dom.FormItemEl;
-        private error: api.dom.SpanEl;
-        private validator: (input: api.dom.FormItemEl) => string;
+        private label: LabelEl;
+        private input: FormItemEl;
+        private error: SpanEl;
+        private validator: (input: FormItemEl) => string;
         private invalidClass: string = "invalid";
 
         private focusListeners: {(event: FocusEvent):void}[] = [];
@@ -14,7 +23,7 @@ module api.ui.form {
 
         constructor(builder: FormItemBuilder) {
             super("input-view");
-            this.error = new api.dom.SpanEl("error");
+            this.error = new SpanEl("error");
             this.appendChild(this.error);
 
             this.input = builder.getInput();
@@ -27,7 +36,7 @@ module api.ui.form {
             });
 
             if (builder.getLabel()) {
-                this.label = new api.dom.LabelEl(builder.getLabel(), this.input);
+                this.label = new LabelEl(builder.getLabel(), this.input);
                 if(Validators.required == builder.getValidator()) {
                     this.label.addClass("required");
                 }
@@ -40,15 +49,15 @@ module api.ui.form {
             }
         }
 
-        getLabel(): api.dom.LabelEl {
+        getLabel(): LabelEl {
             return this.label;
         }
 
-        getInput(): api.dom.FormItemEl {
+        getInput(): FormItemEl {
             return this.input;
         }
 
-        getValidator(): (input: api.dom.FormItemEl) => string {
+        getValidator(): (input: FormItemEl) => string {
             return this.validator;
         }
 
@@ -66,11 +75,11 @@ module api.ui.form {
                         validityChanged = (validationMessage !== this.getError());
                     } else {
                         this.removeClass(this.invalidClass);
-                        validityChanged = !api.util.StringHelper.isBlank(this.getError());
+                        validityChanged = !StringHelper.isBlank(this.getError());
                     }
-                    this.error.setHtml(validationMessage || api.util.StringHelper.EMPTY_STRING);
+                    this.error.setHtml(validationMessage || StringHelper.EMPTY_STRING);
                     if (validityChanged) {
-                        this.notifyValidityChanged(api.util.StringHelper.isBlank(validationMessage));
+                        this.notifyValidityChanged(StringHelper.isBlank(validationMessage));
                     }
                 }
             }
@@ -129,10 +138,10 @@ module api.ui.form {
     export class FormItemBuilder {
 
         private label: string;
-        private validator: (el: api.dom.FormInputEl) => string;
-        private input: api.dom.FormItemEl;
+        private validator: (el: FormInputEl) => string;
+        private input: FormItemEl;
 
-        constructor(input: api.dom.FormItemEl) {
+        constructor(input: FormItemEl) {
             if(!input) {
                 throw new Error("Input can't be null.");
             }
@@ -143,7 +152,7 @@ module api.ui.form {
             return new FormItem(this);
         }
 
-        getInput(): api.dom.FormItemEl {
+        getInput(): FormItemEl {
             return this.input;
         }
 
@@ -156,15 +165,14 @@ module api.ui.form {
             return this.label;
         }
 
-        setValidator(validator: (input: api.dom.FormInputEl) => string):FormItemBuilder {
+        setValidator(validator: (input: FormInputEl) => string):FormItemBuilder {
             this.validator = validator;
             return this;
         }
 
-        getValidator(): (input: api.dom.FormInputEl) => string {
+        getValidator(): (input: FormInputEl) => string {
             return this.validator;
         }
 
     }
 
-}

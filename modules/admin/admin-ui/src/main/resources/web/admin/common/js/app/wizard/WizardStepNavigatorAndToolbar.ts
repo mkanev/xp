@@ -1,13 +1,13 @@
-module api.app.wizard {
+import {ResponsiveManager} from "../../ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../ui/responsive/ResponsiveItem";
+import {Toolbar} from "../../ui/toolbar/Toolbar";
+import {DivEl} from "../../dom/DivEl";
+import {FoldButton} from "../../ui/toolbar/FoldButton";
+import {WizardStepNavigator} from "./WizardStepNavigator";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-    import Toolbar = api.ui.toolbar.Toolbar;
+export class WizardStepNavigatorAndToolbar extends DivEl {
 
-
-    export class WizardStepNavigatorAndToolbar extends api.dom.DivEl {
-
-        private foldButton: api.ui.toolbar.FoldButton;
+        private foldButton: FoldButton;
 
         private stepToolbar: Toolbar;
 
@@ -20,7 +20,7 @@ module api.app.wizard {
 
         constructor(className?: string) {
             super(className);
-            this.foldButton = new api.ui.toolbar.FoldButton();
+            this.foldButton = new FoldButton();
             this.foldButton.setLabel("Navigate to");
             this.appendChild(this.foldButton);
             this.minimized = false;
@@ -78,4 +78,3 @@ module api.app.wizard {
             }
         }
     }
-}

@@ -1,22 +1,31 @@
-module api.content.form.inputtype.tag {
+import {PropertyPath} from "../../../../data/PropertyPath";
+import {PropertyPathElement} from "../../../../data/PropertyPath";
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {ContentInputTypeViewContext} from "../ContentInputTypeViewContext";
+import {Tags} from "../../../../ui/tags/Tags";
+import {Input} from "../../../../form/Input";
+import {TagsBuilder} from "../../../../ui/tags/Tags";
+import {TagAddedEvent} from "../../../../ui/tags/TagAddedEvent";
+import {TagRemovedEvent} from "../../../../ui/tags/TagRemovedEvent";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
+import {ContentTagSuggesterBuilder} from "./ContentTagSuggester";
+import {ContentTagSuggester} from "./ContentTagSuggester";
 
-    import PropertyPath = api.data.PropertyPath;
-    import PropertyPathElement = api.data.PropertyPathElement;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
+export class Tag extends BaseInputTypeManagingAdd<string> {
 
-    export class Tag extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+        private context: ContentInputTypeViewContext;
 
-        private context: api.content.form.inputtype.ContentInputTypeViewContext;
-
-        private tags: api.ui.tags.Tags;
+        private tags: Tags;
 
         private tagSuggester: ContentTagSuggester;
 
-        constructor(context: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(context: ContentInputTypeViewContext) {
             super("tag");
             this.addClass("input-type-view");
 
@@ -27,7 +36,7 @@ module api.content.form.inputtype.tag {
                 build();
         }
 
-        private resolveDataPath(context: api.content.form.inputtype.ContentInputTypeViewContext): PropertyPath {
+        private resolveDataPath(context: ContentInputTypeViewContext): PropertyPath {
             if (context.parentDataPath) {
                 return PropertyPath.fromParent(context.parentDataPath, PropertyPathElement.fromString(context.input.getName()));
             }
@@ -48,13 +57,13 @@ module api.content.form.inputtype.tag {
             return null;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.STRING);
             }
             super.layout(input, propertyArray);
 
-            var tagsBuilder = new api.ui.tags.TagsBuilder().
+            var tagsBuilder = new TagsBuilder().
                 setTagSuggester(this.tagSuggester).
                 setMaxTags(this.context.input.getOccurrences().getMaximum());
 
@@ -68,7 +77,7 @@ module api.content.form.inputtype.tag {
             this.tags = tagsBuilder.build();
             this.appendChild(this.tags);
 
-            this.tags.onTagAdded((event: api.ui.tags.TagAddedEvent) => {
+            this.tags.onTagAdded((event: TagAddedEvent) => {
                 this.ignorePropertyChange = true;
                 var value = new Value(event.getValue(), ValueTypes.STRING);
                 if (this.tags.countTags() == 1) {
@@ -81,7 +90,7 @@ module api.content.form.inputtype.tag {
                 this.ignorePropertyChange = false;
             });
 
-            this.tags.onTagRemoved((event: api.ui.tags.TagRemovedEvent) => {
+            this.tags.onTagRemoved((event: TagRemovedEvent) => {
                 this.ignorePropertyChange = true;
                 this.getPropertyArray().remove(event.getIndex());
                 this.validate(false);
@@ -94,7 +103,7 @@ module api.content.form.inputtype.tag {
         }
 
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             var superPromise = super.update(propertyArray, unchangedOnly);
 
             if (!unchangedOnly || !this.tags.isDirty()) {
@@ -131,5 +140,4 @@ module api.content.form.inputtype.tag {
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("Tag", Tag));
-}
+    InputTypeManager.register(new Class("Tag", Tag));

@@ -1,9 +1,8 @@
-module api.content.order {
+import {ReorderChildContentJson} from "../json/ReorderChildContentJson";
+import {ReorderChildContentsJson} from "../json/ReorderChildContentsJson";
+import {OrderChildMovement} from "./OrderChildMovement";
 
-    import ReorderChildContentJson =  api.content.json.ReorderChildContentJson;
-    import ReorderChildContentsJson =  api.content.json.ReorderChildContentsJson;
-
-    export class OrderChildMovements {
+export class OrderChildMovements {
 
         private reorderChildren: OrderChildMovement[] = [];
 
@@ -26,4 +25,3 @@ module api.content.order {
 
     }
 
-}

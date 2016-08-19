@@ -1,4 +1,5 @@
-import "./api.ts";
+import {StyleHelper} from "../../common/js/StyleHelper";
+
 import {LiveEditPage} from "./LiveEditPage";
 
 declare var CONFIG;
@@ -7,7 +8,7 @@ declare var wemjq: JQueryStatic;
 /*
  Prefix must match @_CLS_PREFIX in n web\admin\live-edit\styles\less\live-edit.less
  */
-api.StyleHelper.setCurrentPrefix(api.StyleHelper.PAGE_EDITOR_PREFIX);
+StyleHelper.setCurrentPrefix(StyleHelper.PAGE_EDITOR_PREFIX);
 
 var liveEditPage: LiveEditPage;
 

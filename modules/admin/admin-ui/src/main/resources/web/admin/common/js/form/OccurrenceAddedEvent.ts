@@ -1,6 +1,7 @@
-module api.form {
+import {FormItemOccurrence} from "./FormItemOccurrence";
+import {FormItemOccurrenceView} from "./FormItemOccurrenceView";
 
-    export class OccurrenceAddedEvent {
+export class OccurrenceAddedEvent {
 
         private occurrence: FormItemOccurrence<FormItemOccurrenceView>;
 
@@ -19,4 +20,3 @@ module api.form {
             return this.occurrenceView;
         }
     }
-}

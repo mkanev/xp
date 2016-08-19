@@ -1,20 +1,32 @@
-module api.content.site.inputtype.siteconfigurator {
+import {SelectionItem} from "../../../../app/browse/SelectionItem";
+import {ContentSummary} from "../../../ContentSummary";
+import {DialogButton} from "../../../../ui/dialog/DialogButton";
+import {DivEl} from "../../../../dom/DivEl";
+import {FormView} from "../../../../form/FormView";
+import {ModalDialogHeader} from "../../../../ui/dialog/ModalDialog";
+import {InputView} from "../../../../form/InputView";
+import {ContentSelector} from "../../../form/inputtype/contentselector/ContentSelector";
+import {PrincipalSelector} from "../../../form/inputtype/principalselector/PrincipalSelector";
+import {ImageSelector} from "../../../form/inputtype/image/ImageSelector";
+import {ComboBox} from "../../../../ui/selector/combobox/ComboBox";
+import {CreateHtmlAreaDialogEvent} from "../../../../util/htmlarea/dialog/CreateHtmlAreaDialogEvent";
+import {Application} from "../../../../application/Application";
+import {ModalDialog} from "../../../../ui/dialog/ModalDialog";
+import {HTMLAreaDialogHandler} from "../../../../util/htmlarea/dialog/HTMLAreaDialogHandler";
+import {Action} from "../../../../ui/Action";
+import {NamesAndIconView} from "../../../../app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../app/NamesAndIconViewSize";
+import {Element} from "../../../../dom/Element";
+import {ObjectHelper} from "../../../../ObjectHelper";
+import {FieldSetView} from "../../../../form/FieldSetView";
+import {FormItemView} from "../../../../form/FormItemView";
+import {DropdownExpandedEvent} from "../../../../ui/selector/DropdownExpandedEvent";
+import {ElementHelper} from "../../../../dom/ElementHelper";
+import {ComboBox} from "../../../../form/inputtype/combobox/ComboBox";
+import {Body} from "../../../../dom/Body";
 
-    import SelectionItem = api.app.browse.SelectionItem;
-    import ContentSummary = api.content.ContentSummary;
-    import DialogButton = api.ui.dialog.DialogButton;
-    import DivEl = api.dom.DivEl;
-    import FormView = api.form.FormView;
-    import ModalDialogHeader = api.ui.dialog.ModalDialogHeader;
-    import InputView = api.form.InputView;
-    import ContentSelector = api.content.form.inputtype.contentselector.ContentSelector;
-    import PrincipalSelector = api.content.form.inputtype.principalselector.PrincipalSelector;
-    import ImageSelector = api.content.form.inputtype.image.ImageSelector;
-    import ComboBox = api.ui.selector.combobox.ComboBox;
-    import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
-    import Application = api.application.Application;
-
-    export class SiteConfiguratorDialog extends api.ui.dialog.ModalDialog {
+export class SiteConfiguratorDialog extends ModalDialog {
 
         public static debug: boolean = false;
 
@@ -38,7 +50,7 @@ module api.content.site.inputtype.siteconfigurator {
             CreateHtmlAreaDialogEvent.on((event: CreateHtmlAreaDialogEvent) => {
                 this.addClass("masked");
 
-                api.util.htmlarea.dialog.HTMLAreaDialogHandler.getOpenDialog().onRemoved(() => {
+                HTMLAreaDialogHandler.getOpenDialog().onRemoved(() => {
                     this.removeClass("masked");
                 })
             });
@@ -73,7 +85,7 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
         private addOkButton(okCallback: () => void) {
-            var okAction = new api.ui.Action("Apply");
+            var okAction = new Action("Apply");
             this.addAction(okAction, true, true);
             okAction.onExecuted(() => {
                 if (okCallback) {
@@ -86,8 +98,8 @@ module api.content.site.inputtype.siteconfigurator {
         private initHeader(application:Application):ModalDialogHeader {
             var dialogHeader = new ModalDialogHeader("");
 
-            var namesAndIconView = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(
-                api.app.NamesAndIconViewSize.large)).setMainName(application.getDisplayName()).setSubName(application.getName() + "-" + application.getVersion()).setIconClass("icon-xlarge icon-puzzle");
+            var namesAndIconView = new NamesAndIconView(new NamesAndIconViewBuilder().setSize(
+                NamesAndIconViewSize.large)).setMainName(application.getDisplayName()).setSubName(application.getName() + "-" + application.getVersion()).setIconClass("icon-xlarge icon-puzzle");
 
             if (application.getIconUrl()) {
                 namesAndIconView.setIconUrl(application.getIconUrl());
@@ -103,7 +115,7 @@ module api.content.site.inputtype.siteconfigurator {
 
         private handleSelectorsDropdowns(formView: FormView) {
             var comboboxArray = [];
-            formView.getChildren().forEach((element: api.dom.Element) => {
+            formView.getChildren().forEach((element: Element) => {
                 this.findItemViewsAndSubscribe(element, comboboxArray);
             });
             this.getContentPanel().onScroll((event) => {
@@ -115,28 +127,28 @@ module api.content.site.inputtype.siteconfigurator {
 
         private handleDialogClose(formView: FormView) {
             let imageSelector;
-            formView.getChildren().forEach((element: api.dom.Element) => {
-                if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
+            formView.getChildren().forEach((element: Element) => {
+                if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
                     imageSelector = (<InputView> element).getInputTypeView().getElement();
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(imageSelector, ImageSelector)) {
+                    if (ObjectHelper.iFrameSafeInstanceOf(imageSelector, ImageSelector)) {
                         (<ImageSelector> imageSelector).onEditContentRequest(this.close.bind(this));
                     }
                 }
             });
         }
 
-        private findItemViewsAndSubscribe(element: api.dom.Element, comboboxArray: ComboBox<any>[]) {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
+        private findItemViewsAndSubscribe(element: Element, comboboxArray: ComboBox<any>[]) {
+            if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
                 this.checkItemViewAndSubscribe(<InputView> element, comboboxArray);
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(element, api.form.FieldSetView)) {
-                var fieldSetView: api.form.FieldSetView = <api.form.FieldSetView> element;
-                fieldSetView.getFormItemViews().forEach((formItemView: api.form.FormItemView) => {
+            } else if (ObjectHelper.iFrameSafeInstanceOf(element, FieldSetView)) {
+                var fieldSetView: FieldSetView = <FieldSetView> element;
+                fieldSetView.getFormItemViews().forEach((formItemView: FormItemView) => {
                     this.findItemViewsAndSubscribe(formItemView, comboboxArray);
                 });
             }
         }
 
-        private checkItemViewAndSubscribe(itemView: api.form.FormItemView, comboboxArray: ComboBox<any>[]) {
+        private checkItemViewAndSubscribe(itemView: FormItemView, comboboxArray: ComboBox<any>[]) {
             var inputView: InputView = <InputView> itemView;
             if (this.isContentOrImageOrPrincipalOrComboSelectorInput(inputView)) {
                 var combobox = this.getComboboxFromSelectorInputView(inputView);
@@ -149,7 +161,7 @@ module api.content.site.inputtype.siteconfigurator {
 
         private subscribeCombobox(comboBox: ComboBox<any>) {
             if (!!comboBox) {
-                comboBox.onExpanded((event: api.ui.selector.DropdownExpandedEvent) => {
+                comboBox.onExpanded((event: DropdownExpandedEvent) => {
                     if (event.isExpanded()) {
                         this.adjustSelectorDropDown(comboBox.getInput(), event.getDropdownElement().getEl());
                     }
@@ -157,7 +169,7 @@ module api.content.site.inputtype.siteconfigurator {
             }
         }
 
-        private adjustSelectorDropDown(inputElement: api.dom.Element, dropDownElement: api.dom.ElementHelper) {
+        private adjustSelectorDropDown(inputElement: Element, dropDownElement: ElementHelper) {
             var inputPosition = wemjq(inputElement.getHTMLElement()).offset();
 
             dropDownElement.setMaxWidthPx(inputElement.getEl().getWidthWithBorder() - 2);
@@ -168,29 +180,29 @@ module api.content.site.inputtype.siteconfigurator {
         private getComboboxFromSelectorInputView(inputView: InputView): ComboBox<any> {
             var contentComboBox,
                 inputTypeView = inputView.getInputTypeView();
-            if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ContentSelector)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ContentSelector)) {
                 contentComboBox = (<ContentSelector> inputTypeView).getContentComboBox();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ImageSelector)) {
+            } else if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ImageSelector)) {
                 contentComboBox = (<ImageSelector> inputTypeView).getContentComboBox();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, PrincipalSelector)) {
+            } else if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, PrincipalSelector)) {
                 contentComboBox = (<PrincipalSelector> inputTypeView).getPrincipalComboBox();
             } else {
-                return (<api.form.inputtype.combobox.ComboBox> inputTypeView).getComboBox();
+                return (<ComboBox> inputTypeView).getComboBox();
             }
             return !!contentComboBox ? contentComboBox.getComboBox() : null;
         }
 
         private isContentOrImageOrPrincipalOrComboSelectorInput(inputView: InputView): boolean {
             return !!inputView &&
-                   (api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ContentSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ImageSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), PrincipalSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), api.form.inputtype.combobox.ComboBox));
+                   (ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ContentSelector) ||
+                    ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ImageSelector) ||
+                    ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), PrincipalSelector) ||
+                    ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ComboBox));
         }
 
 
         show() {
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
             super.show();
         }
 
@@ -199,4 +211,3 @@ module api.content.site.inputtype.siteconfigurator {
             this.remove();
         }
     }
-}

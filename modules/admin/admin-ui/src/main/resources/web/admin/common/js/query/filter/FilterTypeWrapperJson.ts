@@ -1,10 +1,12 @@
-module api.query.filter {
+import {RangeFilterJson} from "./RangeFilterJson";
+import {BooleanFilterJson} from "./BooleanFilterJson";
+import {BooleanFilter} from "./BooleanFilter";
+import {RangeFilter} from "./RangeFilter";
 
-    export interface FilterTypeWrapperJson {
+export interface FilterTypeWrapperJson {
 
-        RangeFilter?: api.query.filter.RangeFilterJson;
-        BooleanFilter?: api.query.filter.BooleanFilterJson;
+        RangeFilter?: RangeFilterJson;
+        BooleanFilter?: BooleanFilterJson;
 
     }
 
-}

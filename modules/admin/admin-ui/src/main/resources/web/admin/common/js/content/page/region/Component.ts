@@ -1,6 +1,19 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {ClassHelper} from "../../../ClassHelper";
+import {ComponentChangedEvent} from "./ComponentChangedEvent";
+import {ComponentJson} from "./ComponentJson";
+import {ComponentName} from "./ComponentName";
+import {ComponentPath} from "./ComponentPath";
+import {ComponentPropertyChangedEvent} from "./ComponentPropertyChangedEvent";
+import {ComponentPropertyValueChangedEvent} from "./ComponentPropertyValueChangedEvent";
+import {ComponentResetEvent} from "./ComponentResetEvent";
+import {ComponentType} from "./ComponentType";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {Region} from "./Region";
 
-    export class Component implements api.Equitable, api.Cloneable {
+export class Component implements Equitable, Cloneable {
 
         public static PROPERTY_NAME = 'name';
 
@@ -59,7 +72,7 @@ module api.content.page.region {
         setName(newValue: ComponentName) {
             var oldValue = this.name;
             this.name = newValue;
-            if (!api.ObjectHelper.equals(oldValue, newValue)) {
+            if (!ObjectHelper.equals(oldValue, newValue)) {
                 this.notifyPropertyChanged(Component.PROPERTY_NAME);
             }
         }
@@ -94,7 +107,7 @@ module api.content.page.region {
         }
 
         toJson(): ComponentTypeWrapperJson {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         toString(): string {
@@ -108,15 +121,15 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Component)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Component)) {
                 return false;
             }
 
             var other = <Component>o;
 
-            if (!api.ObjectHelper.equals(this.name, other.name)) {
+            if (!ObjectHelper.equals(this.name, other.name)) {
                 return false;
             }
 
@@ -255,4 +268,3 @@ module api.content.page.region {
             throw new Error("Must be implemented by inheritor");
         }
     }
-}

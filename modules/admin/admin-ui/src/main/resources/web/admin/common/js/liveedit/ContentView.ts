@@ -1,26 +1,30 @@
-module api.liveedit {
+import {PartComponentView} from "./part/PartComponentView";
+import {Element} from "../dom/Element";
+import {Action} from "../ui/Action";
+import {ContentItemType} from "./ContentItemType";
+import {ContentViewContextMenuTitle} from "./ContentViewContextMenuTitle";
+import {ItemViewBuilder} from "./ItemView";
+import {ItemView} from "./ItemView";
 
-    import PartComponentView = api.liveedit.part.PartComponentView;
-
-    export class ContentViewBuilder {
+export class ContentViewBuilder {
 
         parentPartComponentView: PartComponentView;
 
-        parentElement: api.dom.Element;
+        parentElement: Element;
 
-        element: api.dom.Element;
+        element: Element;
 
         setParentPartComponentView(value: PartComponentView): ContentViewBuilder {
             this.parentPartComponentView = value;
             return this;
         }
 
-        setParentElement(value: api.dom.Element): ContentViewBuilder {
+        setParentElement(value: Element): ContentViewBuilder {
             this.parentElement = value;
             return this;
         }
 
-        setElement(value: api.dom.Element): ContentViewBuilder {
+        setElement(value: Element): ContentViewBuilder {
             this.element = value;
             return this;
         }
@@ -46,17 +50,17 @@ module api.liveedit {
             this.parentPartComponentView = builder.parentPartComponentView;
         }
 
-        private createContentContextMenuActions(): api.ui.Action[] {
-            var actions: api.ui.Action[] = [];
+        private createContentContextMenuActions(): Action[] {
+            var actions: Action[] = [];
 
             actions.push(this.createSelectParentAction());
-            actions.push(new api.ui.Action('Insert').onExecuted(() => {
+            actions.push(new Action('Insert').onExecuted(() => {
                 // TODO
             }));
-            actions.push(new api.ui.Action('View').onExecuted(() => {
+            actions.push(new Action('View').onExecuted(() => {
                 // TODO
             }));
-            actions.push(new api.ui.Action('Edit').onExecuted(() => {
+            actions.push(new Action('Edit').onExecuted(() => {
                 // TODO
             }));
             return actions;
@@ -75,4 +79,3 @@ module api.liveedit {
             this.parentPartComponentView = partView;
         }
     }
-}

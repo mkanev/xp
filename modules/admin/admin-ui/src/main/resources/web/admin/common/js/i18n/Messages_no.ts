@@ -1,8 +1,7 @@
-module api.i18n {
+import {addBundle} from "./Messages";
 
-    var messages = {
+var messages = {
     };
 
     addBundle('no', messages);
 
-}

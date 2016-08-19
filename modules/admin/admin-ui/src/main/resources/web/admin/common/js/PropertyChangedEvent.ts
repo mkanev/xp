@@ -1,6 +1,6 @@
-module api {
 
-    /**
+
+/**
      * An event representing that a property of an object have changed.
      */
     export class PropertyChangedEvent {
@@ -37,4 +37,3 @@ module api {
             return this.source
         }
     }
-}

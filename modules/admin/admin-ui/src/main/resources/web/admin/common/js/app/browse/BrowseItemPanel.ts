@@ -1,8 +1,15 @@
-module api.app.browse {
+import {Equitable} from "../../Equitable";
+import {DeckPanel} from "../../ui/panel/DeckPanel";
+import {ItemStatisticsPanel} from "../view/ItemStatisticsPanel";
+import {BrowseItem} from "./BrowseItem";
+import {ViewItem} from "../view/ViewItem";
+import {BrowseItemsChanges} from "./BrowseItemsChanges";
+import {BrowseItemsSelectionPanel} from "./BrowseItemsSelectionPanel";
+import {ItemDeselectedEvent} from "./ItemDeselectedEvent";
 
-    export class BrowseItemPanel<M extends api.Equitable> extends api.ui.panel.DeckPanel {
+export class BrowseItemPanel<M extends Equitable> extends DeckPanel {
 
-        private itemStatisticsPanel: api.app.view.ItemStatisticsPanel<M>;
+        private itemStatisticsPanel: ItemStatisticsPanel<M>;
 
         private itemsSelectionPanel: BrowseItemsSelectionPanel<M>;
 
@@ -21,15 +28,15 @@ module api.app.browse {
             return new BrowseItemsSelectionPanel<M>();
         }
 
-        createItemStatisticsPanel(): api.app.view.ItemStatisticsPanel<M> {
-            return new api.app.view.ItemStatisticsPanel<M>();
+        createItemStatisticsPanel(): ItemStatisticsPanel<M> {
+            return new ItemStatisticsPanel<M>();
         }
 
         setMobileView(mobileView: boolean) {
             this.itemsSelectionPanel.setMobileView(mobileView);
         }
 
-        setItems(items: api.app.browse.BrowseItem<M>[]): BrowseItemsChanges<M> {
+        setItems(items: BrowseItem<M>[]): BrowseItemsChanges<M> {
             let changes = this.itemsSelectionPanel.setItems(items);
             this.updateDisplayedPanel();
 
@@ -58,7 +65,7 @@ module api.app.browse {
             this.itemStatisticsPanel.setItem(item.toViewItem());
         }
 
-        getStatisticsItem(): api.app.view.ViewItem<M> {
+        getStatisticsItem(): ViewItem<M> {
             return this.itemStatisticsPanel.getItem();
         }
 
@@ -66,4 +73,3 @@ module api.app.browse {
             this.itemsSelectionPanel.onDeselected(listener);
         }
     }
-}

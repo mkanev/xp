@@ -1,20 +1,22 @@
-import "../../../../../../api.ts";
+import {PropertyChangedEvent} from "../../../../../../../../../common/js/PropertyChangedEvent";
+import {ContentId} from "../../../../../../../../../common/js/content/ContentId";
+import {PageTemplateKey} from "../../../../../../../../../common/js/content/page/PageTemplateKey";
+import {PageTemplate} from "../../../../../../../../../common/js/content/page/PageTemplate";
+import {PageTemplateBuilder} from "../../../../../../../../../common/js/content/page/PageTemplate";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {OptionSelectedEvent} from "../../../../../../../../../common/js/ui/selector/OptionSelectedEvent";
+import {DropdownInput} from "../../../../../../../../../common/js/ui/selector/dropdown/DropdownInput";
+import {DropdownConfig} from "../../../../../../../../../common/js/ui/selector/dropdown/DropdownInput";
+import {PageModel} from "../../../../../../../../../common/js/content/page/PageModel";
+import {LiveEditModel} from "../../../../../../../../../common/js/liveedit/LiveEditModel";
+import {PageMode} from "../../../../../../../../../common/js/content/page/PageMode";
+import {DefaultErrorHandler} from "../../../../../../../../../common/js/DefaultErrorHandler";
+import {PageTemplateDisplayName} from "../../../../../../../../../common/js/content/page/PageMode";
+import {PropertyTree} from "../../../../../../../../../common/js/data/PropertyTree";
+
 import {PageTemplateOption} from "./PageTemplateOption";
 import {PageTemplateOptions} from "./PageTemplateOptions";
 import {PageTemplateOptionViewer} from "./PageTemplateOptionViewer";
-
-import PropertyChangedEvent = api.PropertyChangedEvent;
-import ContentId = api.content.ContentId;
-import PageTemplateKey = api.content.page.PageTemplateKey;
-import PageTemplate = api.content.page.PageTemplate;
-import PageTemplateBuilder = api.content.page.PageTemplateBuilder;
-import Option = api.ui.selector.Option;
-import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-import DropdownInput = api.ui.selector.dropdown.DropdownInput;
-import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-import PageModel = api.content.page.PageModel;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import PageMode = api.content.page.PageMode;
 
 export class PageTemplateSelector extends DropdownInput<PageTemplateOption> {
 
@@ -87,7 +89,7 @@ export class PageTemplateSelector extends DropdownInput<PageTemplateOption> {
             });
 
         }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).done();
     }
 
@@ -129,9 +131,9 @@ export class PageTemplateSelector extends DropdownInput<PageTemplateOption> {
     }
 
     private createCustomizedOption(): Option<PageTemplateOption> {
-        var pageTemplateDisplayName = api.content.page.PageTemplateDisplayName;
+        var pageTemplateDisplayName = PageTemplateDisplayName;
         var pageTemplate: PageTemplate = (<PageTemplateBuilder> new PageTemplateBuilder()
-            .setData(new api.data.PropertyTree())
+            .setData(new PropertyTree())
             .setDisplayName(pageTemplateDisplayName[pageTemplateDisplayName.Custom]))
             .build();
         var option = {

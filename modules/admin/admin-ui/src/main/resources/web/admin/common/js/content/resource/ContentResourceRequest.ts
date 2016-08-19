@@ -1,22 +1,26 @@
-module api.content.resource {
+import {ContentIdBaseItemJson} from "../json/ContentIdBaseItemJson";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {ContentJson} from "../json/ContentJson";
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {Content} from "../Content";
+import {ContentIdBaseItem} from "../ContentIdBaseItem";
+import {ContentSummary} from "../ContentSummary";
 
-    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentJson = api.content.json.ContentJson;
-    export class ContentResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class ContentResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
         public static EXPAND_NONE = 'none';
         public static EXPAND_SUMMARY = 'summary';
         public static EXPAND_FULL = 'full';
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
         constructor() {
             super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "content");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "content");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
@@ -56,4 +60,3 @@ module api.content.resource {
             return ContentIdBaseItem.fromJsonArray(jsonArray);
         }
     }
-}

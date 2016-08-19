@@ -1,6 +1,6 @@
-module api.ui.selector {
+import {Viewer} from "../Viewer";
 
-    export class DefaultOptionDisplayValueViewer extends api.ui.Viewer<any> {
+export class DefaultOptionDisplayValueViewer extends Viewer<any> {
 
         constructor() {
             super();
@@ -17,4 +17,3 @@ module api.ui.selector {
         }
     }
 
-}

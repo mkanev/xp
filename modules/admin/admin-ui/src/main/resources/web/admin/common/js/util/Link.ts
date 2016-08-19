@@ -1,6 +1,7 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class Link implements api.Equitable {
+export class Link implements Equitable {
 
         private path: string;
 
@@ -14,13 +15,13 @@ module api.util {
 
         equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Link)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Link)) {
                 return false;
             }
 
             var other = <Link>o;
 
-            if (!api.ObjectHelper.stringEquals(this.path, other.path)) {
+            if (!ObjectHelper.stringEquals(this.path, other.path)) {
                 return false;
             }
         }
@@ -29,4 +30,3 @@ module api.util {
             return this.path;
         }
     }
-}

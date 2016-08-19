@@ -1,13 +1,13 @@
-module api.liveedit {
+import {NamesAndIconView} from "../app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../app/NamesAndIconView";
 
-    export class ItemViewContextMenuTitle extends api.app.NamesAndIconView {
+export class ItemViewContextMenuTitle extends NamesAndIconView {
 
         constructor(name: string, icon: string) {
-            super(new api.app.NamesAndIconViewBuilder().setAddTitleAttribute(false));
+            super(new NamesAndIconViewBuilder().setAddTitleAttribute(false));
             this.setMainName(name);
             this.setIconClass(icon);
         }
 
     }
 
-}

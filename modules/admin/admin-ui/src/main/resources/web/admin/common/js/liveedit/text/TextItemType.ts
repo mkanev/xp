@@ -1,11 +1,12 @@
-module api.liveedit.text {
+import {ItemTypeConfigJson} from "../ItemTypeConfig";
+import {ComponentItemType} from "../ComponentItemType";
+import {RegionView} from "../RegionView";
+import {TextComponent} from "../../content/page/region/TextComponent";
+import {CreateItemViewConfig} from "../CreateItemViewConfig";
+import {TextComponentViewBuilder} from "./TextComponentView";
+import {TextComponentView} from "./TextComponentView";
 
-    import ItemTypeConfigJson = api.liveedit.ItemTypeConfigJson;
-    import ComponentItemType = api.liveedit.ComponentItemType;
-    import RegionView = api.liveedit.RegionView;
-    import TextComponent = api.content.page.region.TextComponent;
-
-    export class TextItemType extends ComponentItemType {
+export class TextItemType extends ComponentItemType {
 
         private static INSTANCE = new TextItemType();
 
@@ -40,4 +41,3 @@ module api.liveedit.text {
     }
 
     TextItemType.get();
-}

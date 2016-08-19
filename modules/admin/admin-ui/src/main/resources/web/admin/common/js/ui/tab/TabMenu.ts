@@ -1,10 +1,20 @@
-module api.ui.tab {
+import {DivEl} from "../../dom/DivEl";
+import {Navigator} from "../Navigator";
+import {UlEl} from "../../dom/UlEl";
+import {Body} from "../../dom/Body";
+import {NavigatorEvent} from "../NavigatorEvent";
+import {HideTabMenuEvent} from "./HideTabMenuEvent";
+import {TabBarItem} from "./TabBarItem";
+import {TabItemLabelChangedEvent} from "./TabItemLabelChangedEvent";
+import {TabItemSelectedEvent} from "./TabItemSelectedEvent";
+import {TabMenuButton} from "./TabMenuButton";
+import {TabMenuItem} from "./TabMenuItem";
 
-    export class TabMenu extends api.dom.DivEl implements api.ui.Navigator {
+export class TabMenu extends DivEl implements Navigator {
 
         private tabMenuButton: TabMenuButton;
 
-        private menuEl: api.dom.UlEl;
+        private menuEl: UlEl;
 
         private menuVisible: boolean = false;
 
@@ -28,7 +38,7 @@ module api.ui.tab {
             super("tab-menu" + (className ? " " + className : ""));
 
             this.initTabMenuButton();
-            this.menuEl = new api.dom.UlEl("menu");
+            this.menuEl = new UlEl("menu");
 
             this.appendChild(this.tabMenuButton);
             this.appendChild(this.menuEl);
@@ -49,7 +59,7 @@ module api.ui.tab {
         }
 
         private initListeners() {
-            api.dom.Body.get().onClicked((event: MouseEvent) => {
+            Body.get().onClicked((event: MouseEvent) => {
                 if (!this.getEl().contains(<HTMLElement> event.target)) {
                     this.hideMenu();
                 }
@@ -98,7 +108,7 @@ module api.ui.tab {
             return this.tabMenuButton;
         }
 
-        getMenuEl(): api.dom.UlEl {
+        getMenuEl(): UlEl {
             return this.menuEl;
         }
 
@@ -358,4 +368,3 @@ module api.ui.tab {
             });
         }
     }
-}

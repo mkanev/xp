@@ -1,29 +1,36 @@
-import "../../../api.ts";
+import {ResponsiveManager} from "../../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../../common/js/ui/responsive/ResponsiveItem";
+import {ViewItem} from "../../../../../../common/js/app/view/ViewItem";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {CompareStatus} from "../../../../../../common/js/content/CompareStatus";
+import {Widget} from "../../../../../../common/js/content/Widget";
+import {ContentSummaryViewer} from "../../../../../../common/js/content/ContentSummaryViewer";
+import {Panel} from "../../../../../../common/js/ui/panel/Panel";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+import {DragMask} from "../../../../../../common/js/ui/mask/DragMask";
+import {ContentServerEventsHandler} from "../../../../../../common/js/content/event/ContentServerEventsHandler";
+import {ObjectHelper} from "../../../../../../common/js/ObjectHelper";
+import {GetWidgetsByInterfaceRequest} from "../../../../../../common/js/content/resource/GetWidgetsByInterfaceRequest";
+import {showError} from "../../../../../../common/js/notify/MessageBus";
+import {BrowserHelper} from "../../../../../../common/js/BrowserHelper";
+
 import {WidgetView} from "./WidgetView";
 import {WidgetsSelectionRow} from "./WidgetsSelectionRow";
 import {VersionsWidgetItemView} from "./widget/version/VersionsWidgetItemView";
 import {DependenciesWidgetItemView} from "./widget/dependency/DependenciesWidgetItemView";
 import {InfoWidgetView} from "./widget/info/InfoWidgetView";
 
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import ViewItem = api.app.view.ViewItem;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import CompareStatus = api.content.CompareStatus;
-import Widget = api.content.Widget;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-
-export class DetailsPanel extends api.ui.panel.Panel {
+export class DetailsPanel extends Panel {
 
     private widgetViews: WidgetView[] = [];
     private viewer: ContentSummaryViewer;
-    private detailsContainer: api.dom.DivEl = new api.dom.DivEl("details-container");
+    private detailsContainer: DivEl = new DivEl("details-container");
     private widgetsSelectionRow: WidgetsSelectionRow;
 
-    private splitter: api.dom.DivEl;
-    private ghostDragger: api.dom.DivEl;
-    private mask: api.ui.mask.DragMask;
-    private divForNoSelection: api.dom.DivEl;
+    private splitter: DivEl;
+    private ghostDragger: DivEl;
+    private mask: DragMask;
+    private divForNoSelection: DivEl;
 
     private actualWidth: number;
     private minWidth: number = 280;
@@ -54,10 +61,10 @@ export class DetailsPanel extends api.ui.panel.Panel {
         this.initSlideFunctions(builder.getSlideFrom());
         this.useSplitter = builder.isUseSplitter();
 
-        this.ghostDragger = new api.dom.DivEl("ghost-dragger");
+        this.ghostDragger = new DivEl("ghost-dragger");
 
         if (this.useSplitter) {
-            this.splitter = new api.dom.DivEl("splitter");
+            this.splitter = new DivEl("splitter");
             this.appendChild(this.splitter);
             this.onRendered(() => this.onRenderedHandler());
         }
@@ -82,7 +89,7 @@ export class DetailsPanel extends api.ui.panel.Panel {
 
     private managePublishEvent() {
 
-        let serverEvents = api.content.event.ContentServerEventsHandler.getInstance();
+        let serverEvents = ContentServerEventsHandler.getInstance();
 
         serverEvents.onContentPublished((contents: ContentSummaryAndCompareStatus[]) => {
             if (this.getItem()) {
@@ -100,7 +107,7 @@ export class DetailsPanel extends api.ui.panel.Panel {
     }
 
     private initDivForNoSelection() {
-        this.divForNoSelection = new api.dom.DivEl("no-selection-message");
+        this.divForNoSelection = new DivEl("no-selection-message");
         this.divForNoSelection.getEl().setInnerHtml("Select an item - and we'll show you the details!");
         this.appendChild(this.divForNoSelection);
     }
@@ -213,7 +220,7 @@ export class DetailsPanel extends api.ui.panel.Panel {
             console.debug('DetailsPanel.setItem: ', item);
         }
 
-        if (!api.ObjectHelper.equals(item, this.item)) {
+        if (!ObjectHelper.equals(item, this.item)) {
             this.item = item;
             if (item) {
                 this.layout(false);
@@ -299,7 +306,7 @@ export class DetailsPanel extends api.ui.panel.Panel {
     }
 
     private getAndInitCustomWidgetViews(): wemQ.Promise<any> {
-        var getWidgetsByInterfaceRequest = new api.content.resource.GetWidgetsByInterfaceRequest(this.getWidgetsInterfaceNames());
+        var getWidgetsByInterfaceRequest = new GetWidgetsByInterfaceRequest(this.getWidgetsInterfaceNames());
 
         return getWidgetsByInterfaceRequest.sendAndParse().then((widgets: Widget[]) => {
             widgets.forEach((widget) => {
@@ -309,9 +316,9 @@ export class DetailsPanel extends api.ui.panel.Panel {
             })
         }).catch((reason: any) => {
             if (reason && reason.message) {
-                //api.notify.showError(reason.message);
+                //showError(reason.message);
             } else {
-                //api.notify.showError('Could not load widget descriptors.');
+                //showError('Could not load widget descriptors.');
             }
         });
     }
@@ -320,7 +327,7 @@ export class DetailsPanel extends api.ui.panel.Panel {
         var initialPos = 0;
         var splitterPosition = 0;
         this.actualWidth = this.getEl().getWidth();
-        this.mask = new api.ui.mask.DragMask(this.getParentElement());
+        this.mask = new DragMask(this.getParentElement());
 
         var dragListener = (e: MouseEvent) => {
             if (this.splitterWithinBoundaries(initialPos - e.clientX)) {
@@ -483,11 +490,11 @@ export class DetailsPanel extends api.ui.panel.Panel {
 export class MobileDetailsPanel extends DetailsPanel {
 
     protected slideOutTop() {
-        this.getEl().setTopPx(api.BrowserHelper.isIOS() ? -window.innerHeight : -window.outerHeight);
+        this.getEl().setTopPx(BrowserHelper.isIOS() ? -window.innerHeight : -window.outerHeight);
     }
 
     protected slideOutBottom() {
-        this.getEl().setTopPx(api.BrowserHelper.isIOS() ? window.innerHeight : window.outerHeight);
+        this.getEl().setTopPx(BrowserHelper.isIOS() ? window.innerHeight : window.outerHeight);
     }
 }
 

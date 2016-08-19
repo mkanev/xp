@@ -1,14 +1,16 @@
-module api.liveedit.text {
+import {TextComponentView} from "./TextComponentView";
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {TextComponent} from "../../content/page/region/TextComponent";
+import {ItemViewIconClassResolver} from "../ItemViewIconClassResolver";
+import {ItemView} from "../ItemView";
 
-    import TextComponentView = api.liveedit.text.TextComponentView;
-
-    export class TextComponentViewer extends api.ui.NamesAndIconViewer<api.content.page.region.TextComponent> {
+export class TextComponentViewer extends NamesAndIconViewer<TextComponent> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: api.content.page.region.TextComponent, componentView?: api.liveedit.text.TextComponentView): string {
+        resolveDisplayName(object: TextComponent, componentView?: TextComponentView): string {
             if (componentView) {
                 return this.extractTextFromTextComponentView(componentView) || componentView.getName();
             }
@@ -17,12 +19,12 @@ module api.liveedit.text {
             }
         }
 
-        resolveSubName(object: api.content.page.region.TextComponent, relativePath: boolean = false): string {
+        resolveSubName(object: TextComponent, relativePath: boolean = false): string {
             return object.getPath() ? object.getPath().toString() : '';
         }
 
-        resolveIconClass(object: api.content.page.region.TextComponent): string {
-            return api.liveedit.ItemViewIconClassResolver.resolveByType("text");
+        resolveIconClass(object: TextComponent): string {
+            return ItemViewIconClassResolver.resolveByType("text");
         }
 
         private extractTextFromTextComponentView(object: ItemView): string {
@@ -30,4 +32,3 @@ module api.liveedit.text {
         }
     }
 
-}

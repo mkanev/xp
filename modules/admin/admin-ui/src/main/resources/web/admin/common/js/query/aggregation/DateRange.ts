@@ -1,6 +1,7 @@
-module api.query.aggregation {
+import {DateRangeJson} from "./DateRangeJson";
+import {Range} from "./Range";
 
-    export class DateRange extends Range {
+export class DateRange extends Range {
 
         private to: string;
         private from: string;
@@ -27,9 +28,9 @@ module api.query.aggregation {
             this.from = from.toISOString();
         }
 
-        public toJson(): api.query.aggregation.DateRangeJson {
+        public toJson(): DateRangeJson {
 
-            var json: api.query.aggregation.DateRangeJson = <api.query.aggregation.DateRangeJson>super.toRangeJson();
+            var json: DateRangeJson = <DateRangeJson>super.toRangeJson();
 
             json.from = this.from;
             json.to = this.to;
@@ -37,6 +38,4 @@ module api.query.aggregation {
             return json;
         }
     }
-
-}
 

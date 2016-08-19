@@ -1,8 +1,7 @@
-module api.content.order {
+import {ReorderChildContentJson} from "../json/ReorderChildContentJson";
+import {ContentId} from "../ContentId";
 
-    import ReorderChildContentJson =  api.content.json.ReorderChildContentJson;
-
-    export class OrderChildMovement {
+export class OrderChildMovement {
 
         private contentId: ContentId;
 
@@ -31,4 +30,3 @@ module api.content.order {
 
     }
 
-}

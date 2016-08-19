@@ -1,15 +1,17 @@
-module api.ui.menu {
+import {Action} from "../Action";
+import {Body} from "../../dom/Body";
+import {Menu} from "./Menu";
 
-    export class ContextMenu extends Menu {
+export class ContextMenu extends Menu {
 
-        constructor(actions?: api.ui.Action[], appendToBody = true) {
+        constructor(actions?: Action[], appendToBody = true) {
             super(actions);
             
             this.addClass("context-menu");
             
             if (appendToBody) {
-                api.dom.Body.get().appendChild(this);
-                api.dom.Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
+                Body.get().appendChild(this);
+                Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
             }
         }
 
@@ -39,4 +41,3 @@ module api.ui.menu {
         }
     }
 
-}

@@ -1,6 +1,7 @@
-module api.dom {
+import {Event} from "../event/Event";
+import {Element} from "./Element";
 
-    export class ElementEvent extends api.event.Event {
+export class ElementEvent extends Event {
 
         private element: Element;
         private target: Element;
@@ -20,4 +21,3 @@ module api.dom {
         }
     }
 
-}

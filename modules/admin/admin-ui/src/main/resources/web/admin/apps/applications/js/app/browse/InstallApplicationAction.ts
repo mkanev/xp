@@ -1,10 +1,10 @@
-import "../../api.ts";
+import {Application} from "../../../../../common/js/application/Application";
+import {Action} from "../../../../../common/js/ui/Action";
 
-import Application = api.application.Application;
 import {ApplicationTreeGrid} from "./ApplicationTreeGrid";
 import {InstallAppPromptEvent} from "../installation/InstallAppPromptEvent";
 
-export class InstallApplicationAction extends api.ui.Action {
+export class InstallApplicationAction extends Action {
 
     constructor(applicationTreeGrid: ApplicationTreeGrid) {
         super("Install");

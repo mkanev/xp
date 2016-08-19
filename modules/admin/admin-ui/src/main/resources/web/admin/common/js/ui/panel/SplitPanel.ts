@@ -1,9 +1,15 @@
-module api.ui.panel {
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {ResponsiveItem} from "../responsive/ResponsiveItem";
+import {DivEl} from "../../dom/DivEl";
+import {DragMask} from "../mask/DragMask";
+import {AppHelper} from "../../util/AppHelper";
+import {ElementShownEvent} from "../../dom/ElementShownEvent";
+import {assert} from "../../util/Assert";
+import {Element} from "../../dom/Element";
+import {ClassHelper} from "../../ClassHelper";
+import {Panel} from "./Panel";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-
-    export enum SplitPanelAlignment {
+export enum SplitPanelAlignment {
         HORIZONTAL,
         VERTICAL
     }
@@ -180,17 +186,17 @@ module api.ui.panel {
 
         private splitterThickness: number;
 
-        private splitter: api.dom.DivEl;
+        private splitter: DivEl;
 
         private alignment: SplitPanelAlignment;
 
         private alignmentTreshold: number;
 
-        private ghostDragger: api.dom.DivEl;
+        private ghostDragger: DivEl;
 
         private dragListener: (e: MouseEvent) => void;
 
-        private mask: api.ui.mask.DragMask;
+        private mask: DragMask;
 
         private splitterPosition: number;
 
@@ -248,7 +254,7 @@ module api.ui.panel {
             this.alignment = builder.getAlignment();
             this.alignmentTreshold = builder.getAlignmentTreshold();
             this.splitterThickness = builder.getSplitterThickness();
-            this.splitter = new api.dom.DivEl("splitter");
+            this.splitter = new DivEl("splitter");
 
             this.firstPanel.setDoOffset(false);
             this.secondPanel.setDoOffset(false);
@@ -257,12 +263,12 @@ module api.ui.panel {
             super.appendChild(this.splitter);
             super.appendChild(this.secondPanel);
 
-            this.mask = new api.ui.mask.DragMask(this);
+            this.mask = new DragMask(this);
             super.appendChild(this.mask);
             this.onRendered(() => this.onRenderedDragHandler());
 
             if (this.alignmentTreshold) {
-                let debounced = api.util.AppHelper.debounce(() => {
+                let debounced = AppHelper.debounce(() => {
                     if (this.requiresAlignment() && this.isVisible()) {
                         this.updateAlignment();
                     }
@@ -270,9 +276,9 @@ module api.ui.panel {
                 ResponsiveManager.onAvailableSizeChanged(this, debounced);
             }
 
-            this.onAdded((event: api.dom.ElementShownEvent) => {
+            this.onAdded((event: ElementShownEvent) => {
                 let splitPanelSize = this.isHorizontal() ? this.getEl().getHeight() : this.getEl().getWidth();
-                api.util.assert(this.firstPanelMinSize + this.secondPanelMinSize <= splitPanelSize,
+                assert(this.firstPanelMinSize + this.secondPanelMinSize <= splitPanelSize,
                     "warning: total sum of first and second panel minimum sizes exceed total split panel size");
                 this.updateAlignment();
             });
@@ -292,7 +298,7 @@ module api.ui.panel {
         private onRenderedDragHandler() {
 
             var initialPos = 0;
-            this.ghostDragger = new api.dom.DivEl("ghost-dragger");
+            this.ghostDragger = new DivEl("ghost-dragger");
             this.dragListener = (e: MouseEvent) => {
                 if (this.isHorizontal()) {
                     if (this.splitterWithinBoundaries(initialPos - e.clientY)) {
@@ -457,15 +463,15 @@ module api.ui.panel {
             this.distribute();
         }
 
-        appendChild<T extends api.dom.Element>(child: T): api.dom.Element {
+        appendChild<T extends Element>(child: T): Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
-        appendChildren<T extends api.dom.Element>(...children): api.dom.Element {
+        appendChildren<T extends Element>(...children): Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
-        prependChild(child: api.dom.Element): api.dom.Element {
+        prependChild(child: Element): Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
@@ -516,7 +522,7 @@ module api.ui.panel {
         }
 
         getPanelSizeString(panelNumber: number): string {
-            api.util.assert((panelNumber == 1 || panelNumber == 2), "Panel number must be 1 or 2");
+            assert((panelNumber == 1 || panelNumber == 2), "Panel number must be 1 or 2");
 
             var size = (panelNumber == 1) ? this.firstPanelSize : this.secondPanelSize;
             var otherPanelSize = (panelNumber == 1) ? this.secondPanelSize : this.firstPanelSize;
@@ -666,7 +672,7 @@ module api.ui.panel {
         }
 
         private getUnitString(panelNumber: number): string {
-            api.util.assert((panelNumber == 1 || panelNumber == 2), "Panel number must be 1 or 2");
+            assert((panelNumber == 1 || panelNumber == 2), "Panel number must be 1 or 2");
 
             var unit = (panelNumber == 1) ? this.firstPanelUnit : this.secondPanelUnit;
             //console.log("UNIT", unit);
@@ -682,7 +688,6 @@ module api.ui.panel {
         }
 
         toString(): string {
-            return api.ClassHelper.getClassName(this) + '[' + this.getId() + ']';
+            return ClassHelper.getClassName(this) + '[' + this.getId() + ']';
         }
     }
-}

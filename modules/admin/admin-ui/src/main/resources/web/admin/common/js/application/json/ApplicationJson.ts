@@ -1,6 +1,7 @@
-module api.application.json {
+import {ItemJson} from "../../item/ItemJson";
+import {FormJson} from "../../form/json/FormJson";
 
-    export interface ApplicationJson extends api.item.ItemJson {
+export interface ApplicationJson extends ItemJson {
 
         key: string;
 
@@ -20,9 +21,9 @@ module api.application.json {
 
         state: string;
 
-        config: api.form.json.FormJson;
+        config: FormJson;
 
-        authConfig: api.form.json.FormJson;
+        authConfig: FormJson;
 
         applicationDependencies: string[];
 
@@ -38,4 +39,3 @@ module api.application.json {
 
         iconUrl: string;
     }
-}

@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {DeleteUserStoreResult} from "./DeleteUserStoreResult";
+import {DeleteUserStoreResultsJson} from "./DeleteUserStoreResultsJson";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class DeleteUserStoreRequest extends SecurityResourceRequest<DeleteUserStoreResultsJson, DeleteUserStoreResult[]> {
+export class DeleteUserStoreRequest extends SecurityResourceRequest<DeleteUserStoreResultsJson, DeleteUserStoreResult[]> {
 
         private keys: UserStoreKey[];
 
@@ -20,15 +25,14 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'userstore', 'delete');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'userstore', 'delete');
         }
 
         sendAndParse(): wemQ.Promise<DeleteUserStoreResult[]> {
-            return this.send().then((response: api.rest.JsonResponse<DeleteUserStoreResultsJson>) => {
+            return this.send().then((response: JsonResponse<DeleteUserStoreResultsJson>) => {
                 return response.getResult().results.map((resultJson) => DeleteUserStoreResult.fromJson(resultJson));
             });
         }
 
     }
-}

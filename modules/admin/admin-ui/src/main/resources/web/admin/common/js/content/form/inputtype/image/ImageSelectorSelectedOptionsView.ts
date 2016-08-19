@@ -1,18 +1,22 @@
-module api.content.form.inputtype.image {
+import {Option} from "../../../../ui/selector/Option";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {ContentSummary} from "../../../ContentSummary";
+import {Property} from "../../../../data/Property";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {InputValueChangedEvent as ValueChangedEvent} from "../../../../form/inputtype/InputValueChangedEvent";
+import {LoadMask} from "../../../../ui/mask/LoadMask";
+import {Tooltip} from "../../../../ui/Tooltip";
+import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
+import {BaseSelectedOptionsView} from "../../../../ui/selector/combobox/BaseSelectedOptionsView";
+import {Body} from "../../../../dom/Body";
+import {ValueChangedEvent} from "../../../../ValueChangedEvent";
+import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
+import {ImageSelectorSelectedOptionView} from "./ImageSelectorSelectedOptionView";
+import {SelectionToolbar} from "./SelectionToolbar";
 
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ContentSummary = api.content.ContentSummary;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import ValueChangedEvent = api.form.inputtype.InputValueChangedEvent;
-    import LoadMask = api.ui.mask.LoadMask;
-    import Tooltip = api.ui.Tooltip;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-
-    export class ImageSelectorSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageSelectorDisplayValue> {
+export class ImageSelectorSelectedOptionsView extends BaseSelectedOptionsView<ImageSelectorDisplayValue> {
 
         private numberOfOptionsPerRow: number = 3;
 
@@ -215,7 +219,7 @@ module api.content.form.inputtype.image {
                 this.activeOption = null;
             }
 
-            api.dom.Body.get().unClicked(this.mouseClickListener);
+            Body.get().unClicked(this.mouseClickListener);
         }
 
         private setOutsideClickListener() {
@@ -228,7 +232,7 @@ module api.content.form.inputtype.image {
                 this.resetActiveOption();
             };
 
-            api.dom.Body.get().onClicked(this.mouseClickListener);
+            Body.get().onClicked(this.mouseClickListener);
         }
 
         private handleOptionViewRendered(option: SelectedOption<ImageSelectorDisplayValue>, optionView: ImageSelectorSelectedOptionView) {
@@ -370,4 +374,3 @@ module api.content.form.inputtype.image {
 
     }
 
-}

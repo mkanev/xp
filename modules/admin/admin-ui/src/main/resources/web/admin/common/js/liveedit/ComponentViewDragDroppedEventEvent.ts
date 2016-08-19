@@ -1,9 +1,10 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {Component} from "../content/page/region/Component";
+import {ClassHelper} from "../ClassHelper";
+import {ComponentView} from "./ComponentView";
+import {RegionView} from "./RegionView";
 
-    import Event = api.event.Event;
-    import Component = api.content.page.region.Component;
-
-    export class ComponentViewDragDroppedEvent extends Event {
+export class ComponentViewDragDroppedEvent extends Event {
 
         private componentView: ComponentView<Component>;
         private regionView: RegionView;
@@ -24,11 +25,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: ComponentViewDragDroppedEvent) => void, contextWindow: Window = window) {
-            Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler: (event: ComponentViewDragDroppedEvent) => void, contextWindow: Window = window) {
-            Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

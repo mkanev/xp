@@ -1,8 +1,16 @@
-module api.ui.selector {
+import {Viewer} from "../Viewer";
+import {Grid} from "../grid/Grid";
+import {DataView} from "../grid/DataView";
+import {GridColumn} from "../grid/GridColumn";
+import {GridColumnBuilder} from "../grid/GridColumn";
+import {GridOptions} from "../grid/GridOptions";
+import {GridOptionsBuilder} from "../grid/GridOptions";
+import {DefaultOptionDisplayValueViewer} from "./DefaultOptionDisplayValueViewer";
+import {DropdownGridMultipleSelectionEvent} from "./DropdownGridMultipleSelectionEvent";
+import {DropdownGridRowSelectedEvent} from "./DropdownGridRowSelectedEvent";
+import {Option} from "./Option";
 
-    import Viewer = api.ui.Viewer;
-
-    export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
+export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
 
         maxHeight?: number;
 
@@ -23,9 +31,9 @@ module api.ui.selector {
 
         private width: number;
 
-        private grid: api.ui.grid.Grid<Option<OPTION_DISPLAY_VALUE>>;
+        private grid: Grid<Option<OPTION_DISPLAY_VALUE>>;
 
-        private gridData: api.ui.grid.DataView<Option<OPTION_DISPLAY_VALUE>>;
+        private gridData: DataView<Option<OPTION_DISPLAY_VALUE>>;
 
         private dataIdProperty: string;
 
@@ -56,8 +64,8 @@ module api.ui.selector {
                     return this.optionDisplayValueViewer.toString();
                 };
 
-            var columns: api.ui.grid.GridColumn<Option<OPTION_DISPLAY_VALUE>>[] = [
-                new api.ui.grid.GridColumnBuilder().
+            var columns: GridColumn<Option<OPTION_DISPLAY_VALUE>>[] = [
+                new GridColumnBuilder().
                     setId("option").
                     setName("Options").
                     setField("displayValue").
@@ -65,8 +73,8 @@ module api.ui.selector {
                 build()
             ];
 
-            var options: api.ui.grid.GridOptions<Option<OPTION_DISPLAY_VALUE>> =
-                new api.ui.grid.GridOptionsBuilder().
+            var options: GridOptions<Option<OPTION_DISPLAY_VALUE>> =
+                new GridOptionsBuilder().
                     setWidth(this.width).
                     setHeight(this.maxHeight).
                     setHideColumnHeaders(true).
@@ -79,11 +87,11 @@ module api.ui.selector {
                     setDataIdProperty(this.dataIdProperty).
                 build();
 
-            this.gridData = new api.ui.grid.DataView<Option<OPTION_DISPLAY_VALUE>>();
+            this.gridData = new DataView<Option<OPTION_DISPLAY_VALUE>>();
             if (this.filter) {
                 this.gridData.setFilter(this.filter);
             }
-            this.grid = new api.ui.grid.Grid<Option<OPTION_DISPLAY_VALUE>>(this.gridData, columns, options);
+            this.grid = new Grid<Option<OPTION_DISPLAY_VALUE>>(this.gridData, columns, options);
 
             this.grid.addClass("options-container");
             this.grid.getEl().setPosition("absolute");
@@ -116,7 +124,7 @@ module api.ui.selector {
             });
         }
 
-        getElement(): api.ui.grid.Grid<Option<OPTION_DISPLAY_VALUE>> {
+        getElement(): Grid<Option<OPTION_DISPLAY_VALUE>> {
             return this.grid;
         }
 
@@ -356,4 +364,3 @@ module api.ui.selector {
             this.grid.unsubscribeOnClick(callback);
         }
     }
-}

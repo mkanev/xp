@@ -1,12 +1,13 @@
-module api.util.htmlarea.editor {
+import {CreateHtmlAreaDialogEvent} from "../dialog/CreateHtmlAreaDialogEvent";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {ContentPath} from "../../../content/ContentPath";
+import {HtmlAreaDialogType} from "../dialog/CreateHtmlAreaDialogEvent";
 
-    import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
-    import ApplicationKey = api.application.ApplicationKey
+export class HTMLAreaBuilder {
 
-    export class HTMLAreaBuilder {
-
-        private content: api.content.ContentSummary; // used for image dialog
-        private contentPath: api.content.ContentPath; // used for macro dialog
+        private content: ContentSummary; // used for image dialog
+        private contentPath: ContentPath; // used for macro dialog
         private applicationKeys: ApplicationKey[]; // used for macro dialog
 
         private assetsUri: string;
@@ -87,12 +88,12 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setContent(content: api.content.ContentSummary): HTMLAreaBuilder {
+        setContent(content: ContentSummary): HTMLAreaBuilder {
             this.content = content;
             return this;
         }
 
-        setContentPath(contentPath: api.content.ContentPath): HTMLAreaBuilder {
+        setContentPath(contentPath: ContentPath): HTMLAreaBuilder {
             this.contentPath = contentPath;
             return this;
         }
@@ -293,7 +294,7 @@ module api.util.htmlarea.editor {
         private notifyLinkDialog(config) {
             let event = CreateHtmlAreaDialogEvent.create().
                 setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).
+                setType(HtmlAreaDialogType.LINK).
                 setContent(this.content).
                 build();
             this.publishCreateDialogEvent(event);
@@ -301,7 +302,7 @@ module api.util.htmlarea.editor {
 
         private notifyImageDialog(config) {
             let event = CreateHtmlAreaDialogEvent.create().
-                setConfig(config).setType(api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE).setContent(this.content).
+                setConfig(config).setType(HtmlAreaDialogType.IMAGE).setContent(this.content).
                 build();
             this.publishCreateDialogEvent(event);
         }
@@ -309,7 +310,7 @@ module api.util.htmlarea.editor {
         private notifyAnchorDialog(config) {
             let event = CreateHtmlAreaDialogEvent.create().
                 setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR).
+                setType(HtmlAreaDialogType.ANCHOR).
                 build();
             this.publishCreateDialogEvent(event);
         }
@@ -317,9 +318,9 @@ module api.util.htmlarea.editor {
         private notifyMacroDialog(config) {
             let event = CreateHtmlAreaDialogEvent.create().
                 setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).setContentPath(this.contentPath).setApplicationKeys(
+                setType(HtmlAreaDialogType.MACRO).setContentPath(this.contentPath).setApplicationKeys(
                 this.applicationKeys).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).
+                setType(HtmlAreaDialogType.MACRO).
                 setContent(this.content).
                 setApplicationKeys(this.applicationKeys).
                 build();
@@ -332,4 +333,3 @@ module api.util.htmlarea.editor {
             event.fire();
         }
     }
-}

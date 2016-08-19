@@ -1,12 +1,18 @@
-module api.ui.mask {
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {DivEl} from "../../dom/DivEl";
+import {Element} from "../../dom/Element";
+import {StyleHelper} from "../../StyleHelper";
+import {ElementHiddenEvent} from "../../dom/ElementHiddenEvent";
+import {Body} from "../../dom/Body";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ElementHelper} from "../../dom/ElementHelper";
 
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    export class Mask extends api.dom.DivEl {
+export class Mask extends DivEl {
 
-        private masked: api.dom.Element;
+        private masked: Element;
 
-        constructor(itemToMask?: api.dom.Element) {
-            super("mask", api.StyleHelper.COMMON_PREFIX);
+        constructor(itemToMask?: Element) {
+            super("mask", StyleHelper.COMMON_PREFIX);
 
             this.masked = itemToMask;
 
@@ -23,7 +29,7 @@ module api.ui.mask {
 
                 });
 
-                this.masked.onHidden((event: api.dom.ElementHiddenEvent) => {
+                this.masked.onHidden((event: ElementHiddenEvent) => {
                     if (event.getTarget() == this.masked) {
                         this.hide();
                     }
@@ -32,17 +38,17 @@ module api.ui.mask {
                     this.remove();
                 });
                 // Masked element might have been resized on window resize
-                ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get(), (item) => {
+                ResponsiveManager.onAvailableSizeChanged(Body.get(), (item) => {
                     if (this.isVisible()) {
                         this.positionOver(this.masked);
                     }
                 });
             }
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
         }
 
         private cloneWheelEvent(e: WheelEvent): WheelEvent {
-            return api.ObjectHelper.create(WheelEvent, e.type, {
+            return ObjectHelper.create(WheelEvent, e.type, {
                 bubbles: e.bubbles,
                 cancelable: e.cancelable,
                 cancelBubble: e.cancelBubble,
@@ -74,7 +80,7 @@ module api.ui.mask {
             }
         }
 
-        private positionOver(masked: api.dom.Element) {
+        private positionOver(masked: Element) {
             var maskedEl = masked.getEl(),
                 maskEl = this.getEl(),
                 maskedOffset: {top:number; left: number},
@@ -106,8 +112,8 @@ module api.ui.mask {
 
                 if (maskedParent != maskParent) {
                     // they have different offset parents so calc the difference
-                    var maskedParentOffset = new api.dom.ElementHelper(maskedParent).getOffset(),
-                        maskParentOffset = new api.dom.ElementHelper(maskParent).getOffset();
+                    var maskedParentOffset = new ElementHelper(maskedParent).getOffset(),
+                        maskParentOffset = new ElementHelper(maskParent).getOffset();
 
                     maskedOffset.left = maskedOffset.left + (maskedParentOffset.left - maskParentOffset.left);
                     maskedOffset.top = maskedOffset.top + (maskedParentOffset.top - maskParentOffset.top);
@@ -140,4 +146,3 @@ module api.ui.mask {
     }
 
 
-}

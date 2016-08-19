@@ -1,12 +1,14 @@
-module api.macro {
+import {SelectedOption} from "../ui/selector/combobox/SelectedOption";
+import {Option} from "../ui/selector/Option";
+import {RichComboBox} from "../ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../ui/selector/combobox/RichComboBox";
+import {MacrosLoader} from "./resource/MacrosLoader";
+import {BaseSelectedOptionsView} from "../ui/selector/combobox/BaseSelectedOptionsView";
+import {RichSelectedOptionView} from "../ui/selector/combobox/RichSelectedOptionView";
+import {MacroDescriptor} from "./MacroDescriptor";
+import {MacroViewer} from "./MacroViewer";
 
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
-    import RichComboBox = api.ui.selector.combobox.RichComboBox;
-    import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import MacrosLoader = api.macro.resource.MacrosLoader;
-
-    export class MacroComboBox extends RichComboBox<MacroDescriptor> {
+export class MacroComboBox extends RichComboBox<MacroDescriptor> {
 
         constructor(builder: MacroComboBoxBuilder) {
 
@@ -37,17 +39,17 @@ module api.macro {
         }
     }
 
-    export class MacroSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<MacroDescriptor> {
+    export class MacroSelectedOptionsView extends BaseSelectedOptionsView<MacroDescriptor> {
 
-        createSelectedOption(option: api.ui.selector.Option<MacroDescriptor>): SelectedOption<MacroDescriptor> {
+        createSelectedOption(option: Option<MacroDescriptor>): SelectedOption<MacroDescriptor> {
             var optionView = new MacroSelectedOptionView(option);
             return new SelectedOption<MacroDescriptor>(optionView, this.count());
         }
     }
 
-    export class MacroSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<MacroDescriptor> {
+    export class MacroSelectedOptionView extends RichSelectedOptionView<MacroDescriptor> {
 
-        constructor(option: api.ui.selector.Option<MacroDescriptor>) {
+        constructor(option: Option<MacroDescriptor>) {
             super(option);
         }
 
@@ -92,4 +94,3 @@ module api.macro {
         }
 
     }
-}

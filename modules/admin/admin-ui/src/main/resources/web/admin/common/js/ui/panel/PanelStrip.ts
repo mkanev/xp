@@ -1,12 +1,15 @@
-module api.ui.panel {
+import {H2El} from "../../dom/H2El";
+import {Element} from "../../dom/Element";
+import {Panel} from "./Panel";
+import {PanelShownEvent} from "./PanelShownEvent";
 
-    export class PanelStrip extends Panel {
+export class PanelStrip extends Panel {
 
         private panels: Panel[] = [];
 
-        private headers: api.dom.H2El[] = [];
+        private headers: H2El[] = [];
 
-        private scrollable: api.dom.Element;
+        private scrollable: Element;
 
         private offset: number = 0;
 
@@ -14,7 +17,7 @@ module api.ui.panel {
 
         private panelShownListeners: {(event: PanelShownEvent):void}[] = [];
 
-        constructor(scrollable?: api.dom.Element, className?: string) {
+        constructor(scrollable?: Element, className?: string) {
             super("panel-strip" + (className ? " " + className : ""));
             if (scrollable) {
                 this.scrollable = scrollable;
@@ -42,7 +45,7 @@ module api.ui.panel {
             panel.setDoOffset(false);
             var previousChildrenIndex = this.countExistingChildren(index);
             if (header) {
-                var headerEl = new api.dom.H2El("panel-strip-panel-header");
+                var headerEl = new H2El("panel-strip-panel-header");
                 headerEl.getEl().setInnerHtml(header);
                 this.insertChild(headerEl, previousChildrenIndex);
             }
@@ -65,7 +68,7 @@ module api.ui.panel {
             return this.panels;
         }
 
-        getScrollable(): api.dom.Element {
+        getScrollable(): Element {
             return this.scrollable;
         }
 
@@ -144,7 +147,7 @@ module api.ui.panel {
             return this.panels[index];
         }
 
-        getHeader(index: number): api.dom.H2El {
+        getHeader(index: number): H2El {
             return this.headers[index];
         }
 
@@ -218,4 +221,3 @@ module api.ui.panel {
 
     }
 
-}

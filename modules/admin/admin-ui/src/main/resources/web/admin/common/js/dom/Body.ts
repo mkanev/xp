@@ -1,6 +1,8 @@
-module api.dom {
+import {ElementFromHelperBuilder} from "./Element";
+import {Element} from "./Element";
+import {ElementHelper} from "./ElementHelper";
 
-    export class Body extends Element {
+export class Body extends Element {
 
         private static instance: Body;
 
@@ -41,4 +43,3 @@ module api.dom {
             return this;
         }
     }
-}

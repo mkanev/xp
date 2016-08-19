@@ -1,6 +1,7 @@
-module api.ui.treegrid {
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class TreeGridItemClickedEvent extends api.event.Event {
+export class TreeGridItemClickedEvent extends Event {
 
         private repeatedSelection: boolean;
 
@@ -14,11 +15,10 @@ module api.ui.treegrid {
         }
 
         static on(handler: (event: TreeGridItemClickedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: TreeGridItemClickedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
-}

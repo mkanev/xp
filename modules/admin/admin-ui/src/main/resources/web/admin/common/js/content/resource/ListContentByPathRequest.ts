@@ -1,13 +1,19 @@
-module api.content.resource {
+import {ListContentResult} from "./result/ListContentResult";
+import {ContentResponse} from "./result/ContentResponse";
+import {ContentSummaryJson} from "../json/ContentSummaryJson";
+import {Expand} from "../../rest/Expand";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentMetadata} from "../ContentMetadata";
+import {ContentPath} from "../ContentPath";
+import {ContentSummary} from "../ContentSummary";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ListContentResult = api.content.resource.result.ListContentResult;
-    import ContentResponse = api.content.resource.result.ContentResponse;
-    
-    export class ListContentByPathRequest<T> extends ContentResourceRequest<ListContentResult<api.content.json.ContentSummaryJson>, ContentResponse<ContentSummary>> {
+export class ListContentByPathRequest<T> extends ContentResourceRequest<ListContentResult<ContentSummaryJson>, ContentResponse<ContentSummary>> {
 
         private parentPath: ContentPath;
 
-        private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
+        private expand: Expand = Expand.SUMMARY;
 
         private from: number;
 
@@ -19,7 +25,7 @@ module api.content.resource {
             this.parentPath = parentPath;
         }
 
-        setExpand(value: api.rest.Expand): ListContentByPathRequest<T> {
+        setExpand(value: Expand): ListContentByPathRequest<T> {
             this.expand = value;
             return this;
         }
@@ -43,13 +49,13 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "list", "bypath");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "list", "bypath");
         }
 
         sendAndParse(): wemQ.Promise<ContentResponse<ContentSummary>> {
 
-            return this.send().then((response: api.rest.JsonResponse<ListContentResult<api.content.json.ContentSummaryJson>>) => {
+            return this.send().then((response: JsonResponse<ListContentResult<ContentSummaryJson>>) => {
                 return new ContentResponse(
                     ContentSummary.fromJsonArray(response.getResult().contents),
                     new ContentMetadata(response.getResult().metadata["hits"], response.getResult().metadata["totalHits"])
@@ -58,4 +64,3 @@ module api.content.resource {
         }
 
     }
-}

@@ -1,17 +1,21 @@
-module api.content.json {
+import {PropertyArrayJson} from "../../data/PropertyArrayJson";
+import {AttachmentJson} from "../attachment/AttachmentJson";
+import {ExtraDataJson} from "./ExtraDataJson";
+import {PageJson} from "../page/PageJson";
+import {AccessControlEntryJson} from "../../security/acl/AccessControlEntryJson";
+import {ContentSummaryJson} from "./ContentSummaryJson";
 
-    export interface ContentJson extends ContentSummaryJson {
+export interface ContentJson extends ContentSummaryJson {
 
-        data: api.data.PropertyArrayJson[];
+        data: PropertyArrayJson[];
 
-        attachments: api.content.attachment.AttachmentJson[];
+        attachments: AttachmentJson[];
 
-        meta: api.content.json.ExtraDataJson[];
+        meta: ExtraDataJson[];
 
-        page: api.content.page.PageJson;
+        page: PageJson;
 
-        permissions: api.security.acl.AccessControlEntryJson[];
+        permissions: AccessControlEntryJson[];
 
         inheritPermissions: boolean;
     }
-}

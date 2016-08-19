@@ -1,6 +1,7 @@
-module api.query.expr {
+import {Expression} from "./Expression";
+import {ValueExpr} from "./ValueExpr";
 
-    export class FunctionExpr implements Expression {
+export class FunctionExpr implements Expression {
 
         private name: string;
         private args: ValueExpr[] = [];
@@ -33,4 +34,3 @@ module api.query.expr {
             return result;
         }
     }
-}

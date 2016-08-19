@@ -1,16 +1,16 @@
-module api.schema.relationshiptype {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ApplicationBasedName} from "../../application/ApplicationBasedName";
+import {assertNotNull} from "../../util/Assert";
+import {RelationshipType} from "./RelationshipType";
 
-    import ApplicationKey = api.application.ApplicationKey;
+export class RelationshipTypeName extends ApplicationBasedName {
 
-    export class RelationshipTypeName extends api.application.ApplicationBasedName {
-
-        static REFERENCE = new RelationshipTypeName(ApplicationKey.SYSTEM + api.application.ApplicationBasedName.SEPARATOR + "reference");
+        static REFERENCE = new RelationshipTypeName(ApplicationKey.SYSTEM + ApplicationBasedName.SEPARATOR + "reference");
 
         constructor(name: string) {
-            api.util.assertNotNull(name, "RelationshipType name can't be null");
-            var parts = name.split(api.application.ApplicationBasedName.SEPARATOR);
+            assertNotNull(name, "RelationshipType name can't be null");
+            var parts = name.split(ApplicationBasedName.SEPARATOR);
             super(ApplicationKey.fromString(parts[0]), parts[1]);
         }
 
     }
-}

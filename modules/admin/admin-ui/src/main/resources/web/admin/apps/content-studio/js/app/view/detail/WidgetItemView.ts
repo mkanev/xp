@@ -1,10 +1,9 @@
-import "../../../api.ts";
+import {Element} from "../../../../../../common/js/dom/Element";
+import {LabelEl} from "../../../../../../common/js/dom/LabelEl";
+import {LinkEl} from "../../../../../../common/js/dom/LinkEl";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
 
-import Element = api.dom.Element;
-import LabelEl = api.dom.LabelEl;
-import LinkEl = api.dom.LinkEl;
-
-export class WidgetItemView extends api.dom.DivEl {
+export class WidgetItemView extends DivEl {
 
     public static debug = false;
     private uid: string = "";

@@ -1,9 +1,12 @@
-module api.security.event {
+import {ContentPath} from "../../content/ContentPath";
+import {NodeServerChangeType} from "../../event/NodeServerChange";
+import {Class} from "../../Class";
+import {PrincipalDeletedEvent} from "./PrincipalDeletedEvent";
+import {PrincipalServerChangeItem} from "./PrincipalServerChange";
+import {PrincipalServerChange} from "./PrincipalServerChange";
+import {PrincipalServerEvent} from "./PrincipalServerEvent";
 
-    import ContentPath = api.content.ContentPath;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-
-    /**
+/**
      * Class that listens to server events and fires UI events
      */
     export class PrincipalServerEventsHandler {
@@ -89,4 +92,3 @@ module api.security.event {
             });
         }
     }
-}

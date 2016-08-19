@@ -1,16 +1,15 @@
-module api.content.site.inputtype.siteconfigurator {
+import {Application} from "../../../../application/Application";
+import {ApplicationKey} from "../../../../application/ApplicationKey";
+import {FormView} from "../../../../form/FormView";
+import {Option} from "../../../../ui/selector/Option";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {SelectedOptionView} from "../../../../ui/selector/combobox/SelectedOptionView";
+import {BaseSelectedOptionsView} from "../../../../ui/selector/combobox/BaseSelectedOptionsView";
+import {ContentFormContext} from "../../ContentFormContext";
+import {AuthApplicationSelectedOptionView} from "./AuthApplicationSelectedOptionView";
+import {SiteConfigProvider} from "../../../site/inputtype/siteconfigurator/SiteConfigProvider";
 
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-
-    import FormView = api.form.FormView;
-
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
-    import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
-
-    export class AuthApplicationSelectedOptionsView extends BaseSelectedOptionsView<Application> {
+export class AuthApplicationSelectedOptionsView extends BaseSelectedOptionsView<Application> {
 
         private siteConfigProvider: SiteConfigProvider;
 
@@ -20,13 +19,13 @@ module api.content.site.inputtype.siteconfigurator {
 
         private afterOptionCreatedListeners: {():void}[] = [];
 
-        private formContext: api.content.form.ContentFormContext;
+        private formContext: ContentFormContext;
 
         private items: AuthApplicationSelectedOptionView[] = [];
 
         private readOnly: boolean;
 
-        constructor(siteConfigProvider: SiteConfigProvider, formContext: api.content.form.ContentFormContext, readOnly: boolean) {
+        constructor(siteConfigProvider: SiteConfigProvider, formContext: ContentFormContext, readOnly: boolean) {
             super();
             this.readOnly = readOnly;
             this.siteConfigProvider = siteConfigProvider;
@@ -61,7 +60,7 @@ module api.content.site.inputtype.siteconfigurator {
             return new SelectedOption<Application>(optionView, this.count());
         }
 
-        removeOption(optionToRemove: api.ui.selector.Option<Application>, silent: boolean = false) {
+        removeOption(optionToRemove: Option<Application>, silent: boolean = false) {
             this.items = this.items.filter(item => !item.getSiteConfig().getApplicationKey().
                 equals(optionToRemove.displayValue.getApplicationKey()));
             super.removeOption(optionToRemove, silent);
@@ -110,4 +109,3 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
     }
-}

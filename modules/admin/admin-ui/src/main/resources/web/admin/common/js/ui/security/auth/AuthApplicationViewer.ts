@@ -1,21 +1,21 @@
-module api.ui.security.auth {
+import {NamesAndIconViewer} from "../../NamesAndIconViewer";
+import {Application} from "../../../application/Application";
 
-    export class AuthApplicationViewer extends api.ui.NamesAndIconViewer<api.application.Application> {
+export class AuthApplicationViewer extends NamesAndIconViewer<Application> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: api.application.Application): string {
+        resolveDisplayName(object: Application): string {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: api.application.Application, relativePath: boolean = false): string {
+        resolveSubName(object: Application, relativePath: boolean = false): string {
             return object.getApplicationKey().toString();
         }
 
-        resolveIconClass(object: api.application.Application): string {
+        resolveIconClass(object: Application): string {
             return "icon-shield icon-large";
         }
     }
-}

@@ -1,6 +1,7 @@
-module api.ui.panel {
+import {Panel} from "./Panel";
+import {PanelShownEvent} from "./PanelShownEvent";
 
-    /**
+/**
      * A panel having multiple child panels, but showing only one at a time - like a deck of cards.
      */
     export class DeckPanel extends Panel {
@@ -147,4 +148,3 @@ module api.ui.panel {
             });
         }
     }
-}

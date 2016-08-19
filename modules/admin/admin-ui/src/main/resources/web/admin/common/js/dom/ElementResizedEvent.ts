@@ -1,6 +1,7 @@
-module api.dom {
+import {Element} from "./Element";
+import {ElementEvent} from "./ElementEvent";
 
-    export class ElementResizedEvent extends ElementEvent {
+export class ElementResizedEvent extends ElementEvent {
 
         private newWidth:number;
         private newHeight:number;
@@ -19,4 +20,3 @@ module api.dom {
             return this.newHeight;
         }
     }
-}

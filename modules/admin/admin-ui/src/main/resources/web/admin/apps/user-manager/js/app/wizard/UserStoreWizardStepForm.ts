@@ -1,21 +1,35 @@
-import Principal = api.security.Principal;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
+import {Principal} from "../../../../../common/js/security/Principal";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {FormView} from "../../../../../common/js/form/FormView";
+import {PropertySet} from "../../../../../common/js/data/PropertySet";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {FormValidityChangedEvent} from "../../../../../common/js/form/FormValidityChangedEvent";
+import {WizardStepValidityChangedEvent} from "../../../../../common/js/app/wizard/WizardStepValidityChangedEvent";
+import {FormBuilder} from "../../../../../common/js/form/Form";
+import {InputBuilder} from "../../../../../common/js/form/Input";
+import {TextLine} from "../../../../../common/js/form/inputtype/text/TextLine";
+import {OccurrencesBuilder} from "../../../../../common/js/form/Occurrences";
+import {InputTypeName} from "../../../../../common/js/form/InputTypeName";
+import {PropertyTree} from "../../../../../common/js/data/PropertyTree";
+import {FormContext} from "../../../../../common/js/form/FormContext";
+import {ValidationRecording} from "../../../../../common/js/form/ValidationRecording";
+import {AuthConfig} from "../../../../../common/js/security/AuthConfig";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
 
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
+export class UserStoreWizardStepForm extends WizardStepForm {
 
+    private formView: FormView;
 
-export class UserStoreWizardStepForm extends api.app.wizard.WizardStepForm {
-
-    private formView: api.form.FormView;
-
-    private propertySet: api.data.PropertySet;
+    private propertySet: PropertySet;
 
     constructor() {
         super();
     }
 
-    layout(userStore?: api.security.UserStore): wemQ.Promise<void> {
+    layout(userStore?: UserStore): wemQ.Promise<void> {
 
         this.formView = this.createFormView(userStore);
 
@@ -30,60 +44,60 @@ export class UserStoreWizardStepForm extends api.app.wizard.WizardStepForm {
 
             this.appendChild(this.formView);
 
-            this.formView.onValidityChanged((event: api.form.FormValidityChangedEvent) => {
+            this.formView.onValidityChanged((event: FormValidityChangedEvent) => {
                 this.previousValidation = event.getRecording();
-                this.notifyValidityChanged(new api.app.wizard.WizardStepValidityChangedEvent(event.isValid()));
+                this.notifyValidityChanged(new WizardStepValidityChangedEvent(event.isValid()));
             });
 
             var formViewValid = this.formView.isValid();
-            this.notifyValidityChanged(new api.app.wizard.WizardStepValidityChangedEvent(formViewValid));
+            this.notifyValidityChanged(new WizardStepValidityChangedEvent(formViewValid));
         });
     }
 
-    private createFormView(userStore?: api.security.UserStore): api.form.FormView {
+    private createFormView(userStore?: UserStore): FormView {
         var isSystemUserStore = (!!userStore && userStore.getKey().isSystem()).toString();
-        var formBuilder = new api.form.FormBuilder().
-            addFormItem(new api.form.InputBuilder().
+        var formBuilder = new FormBuilder().
+            addFormItem(new InputBuilder().
                 setName("description").
-                setInputType(api.form.inputtype.text.TextLine.getName()).
+                setInputType(TextLine.getName()).
                 setLabel("Description").
-                setOccurrences(new api.form.OccurrencesBuilder().setMinimum(0).setMaximum(1).build()).
+                setOccurrences(new OccurrencesBuilder().setMinimum(0).setMaximum(1).build()).
                 setInputTypeConfig({}).
                 setMaximizeUIInputWidth(true).
                 build()).
-            addFormItem(new api.form.InputBuilder().
+            addFormItem(new InputBuilder().
                 setName("authConfig").
-                setInputType(new api.form.InputTypeName("AuthApplicationSelector", false)).setLabel("ID Provider").setOccurrences(
-            new api.form.OccurrencesBuilder().setMinimum(0).setMaximum(1).build()).setInputTypeConfig(
+                setInputType(new InputTypeName("AuthApplicationSelector", false)).setLabel("ID Provider").setOccurrences(
+            new OccurrencesBuilder().setMinimum(0).setMaximum(1).build()).setInputTypeConfig(
             {readOnly: [{value: isSystemUserStore}]}).
                 setMaximizeUIInputWidth(true).
                 build());
 
-        this.propertySet = new api.data.PropertyTree().getRoot();
+        this.propertySet = new PropertyTree().getRoot();
         if (userStore) {
             this.propertySet.addString("description", userStore.getDescription());
             var authConfig = userStore.getAuthConfig();
             if (authConfig) {
-                var authConfigPropertySet = new api.data.PropertySet();
+                var authConfigPropertySet = new PropertySet();
                 authConfigPropertySet.addString("applicationKey", authConfig.getApplicationKey().toString())
                 authConfigPropertySet.addPropertySet("config", authConfig.getConfig().getRoot())
                 this.propertySet.addPropertySet("authConfig", authConfigPropertySet);
             }
         }
 
-        return new api.form.FormView(api.form.FormContext.create().build(), formBuilder.build(), this.propertySet);
+        return new FormView(FormContext.create().build(), formBuilder.build(), this.propertySet);
     }
 
-    public validate(silent?: boolean): api.form.ValidationRecording {
+    public validate(silent?: boolean): ValidationRecording {
         return this.formView.validate(silent);
     }
 
-    getAuthConfig(): api.security.AuthConfig {
+    getAuthConfig(): AuthConfig {
         var authConfigPropertySet = this.propertySet.getPropertySet("authConfig");
         if (authConfigPropertySet) {
-            var applicationKey = api.application.ApplicationKey.fromString(authConfigPropertySet.getString("applicationKey"));
-            var config = new api.data.PropertyTree(authConfigPropertySet.getPropertySet("config"));
-            return api.security.AuthConfig.create().
+            var applicationKey = ApplicationKey.fromString(authConfigPropertySet.getString("applicationKey"));
+            var config = new PropertyTree(authConfigPropertySet.getPropertySet("config"));
+            return AuthConfig.create().
                 setApplicationKey(applicationKey).
                 setConfig(config).
                 build();

@@ -1,12 +1,14 @@
-module api.macro.resource {
+import {PropertyTree} from "../../data/PropertyTree";
+import {MacroKey} from "../MacroKey";
+import {MacroResourceRequest} from "./MacroResourceRequest";
 
-    export class PreviewRequest<JSON_TYPE, PARSED_TYPE> extends MacroResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class PreviewRequest<JSON_TYPE, PARSED_TYPE> extends MacroResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        protected data: api.data.PropertyTree;
+        protected data: PropertyTree;
 
-        protected macroKey: api.macro.MacroKey;
+        protected macroKey: MacroKey;
 
-        constructor(data: api.data.PropertyTree, macroKey: api.macro.MacroKey) {
+        constructor(data: PropertyTree, macroKey: MacroKey) {
             super();
             super.setMethod("POST");
             this.data = data;
@@ -20,4 +22,3 @@ module api.macro.resource {
             };
         }
     }
-}

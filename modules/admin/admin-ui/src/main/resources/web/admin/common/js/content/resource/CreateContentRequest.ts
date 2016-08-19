@@ -1,6 +1,16 @@
-module api.content.resource {
+import {ContentJson} from "../json/ContentJson";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {PropertyTree} from "../../data/PropertyTree";
+import {ExtraDataJson} from "../json/ExtraDataJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {Content} from "../Content";
+import {ContentName} from "../ContentName";
+import {ContentPath} from "../ContentPath";
+import {ExtraData} from "../ExtraData";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class CreateContentRequest extends ContentResourceRequest<api.content.json.ContentJson, Content> {
+export class CreateContentRequest extends ContentResourceRequest<ContentJson, Content> {
 
         private valid: boolean;
 
@@ -10,9 +20,9 @@ module api.content.resource {
 
         private parent: ContentPath;
 
-        private contentType: api.schema.content.ContentTypeName;
+        private contentType: ContentTypeName;
 
-        private data: api.data.PropertyTree;
+        private data: PropertyTree;
 
         private meta: ExtraData[] = [];
 
@@ -45,12 +55,12 @@ module api.content.resource {
             return this;
         }
 
-        setContentType(value: api.schema.content.ContentTypeName): CreateContentRequest {
+        setContentType(value: ContentTypeName): CreateContentRequest {
             this.contentType = value;
             return this;
         }
 
-        setData(data: api.data.PropertyTree): CreateContentRequest {
+        setData(data: PropertyTree): CreateContentRequest {
             this.data = data;
             return this;
         }
@@ -78,17 +88,17 @@ module api.content.resource {
             };
         }
 
-        private extraDataToJson(): api.content.json.ExtraDataJson[] {
+        private extraDataToJson(): ExtraDataJson[] {
             return this.meta ? this.meta.map((extraData: ExtraData) => extraData.toJson()) : null;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "create");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "create");
         }
 
         sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
 
                 return this.fromJsonToContent(response.getResult());
 
@@ -96,4 +106,3 @@ module api.content.resource {
         }
 
     }
-}

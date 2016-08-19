@@ -1,6 +1,7 @@
-module api.content.page {
+import {NamesAndIconViewer} from "../../ui/NamesAndIconViewer";
+import {PageTemplate} from "./PageTemplate";
 
-    export class PageTemplateViewer extends api.ui.NamesAndIconViewer<PageTemplate> {
+export class PageTemplateViewer extends NamesAndIconViewer<PageTemplate> {
 
         constructor() {
             super();
@@ -18,4 +19,3 @@ module api.content.page {
             return "icon-newspaper icon-large";
         }
     }
-}

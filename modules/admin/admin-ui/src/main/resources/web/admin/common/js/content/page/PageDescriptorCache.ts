@@ -1,23 +1,28 @@
-module api.content.page {
+import {Application} from "../../application/Application";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ApplicationCaches} from "../../application/ApplicationCaches";
+import {ApplicationBasedCache} from "../../application/ApplicationBasedCache";
+import {WindowDOM} from "../../dom/WindowDOM";
+import {DefaultErrorHandler} from "../../DefaultErrorHandler";
+import {assertNotNull} from "../../util/Assert";
+import {Cache} from "../../cache/Cache";
+import {DescriptorKey} from "./DescriptorKey";
+import {GetPageDescriptorsByApplicationRequest} from "./GetPageDescriptorsByApplicationRequest";
+import {PageDescriptor} from "./PageDescriptor";
 
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationCaches = api.application.ApplicationCaches;
-    import ApplicationBasedCache = api.application.ApplicationBasedCache;
-
-    export class PageDescriptorCache extends ApplicationBasedCache<PageDescriptorApplicationCache,PageDescriptor,DescriptorKey> {
+export class PageDescriptorCache extends ApplicationBasedCache<PageDescriptorApplicationCache,PageDescriptor,DescriptorKey> {
 
         private static instance: PageDescriptorCache;
 
         static get(): PageDescriptorCache {
 
-            var w = api.dom.WindowDOM.get();
+            var w = WindowDOM.get();
             var topWindow: any = w.getTopParent() == null ? w.asWindow() : w.getTopParent().asWindow();
 
-            if (!topWindow.api.content.page.PageDescriptorCache.instance) {
-                topWindow.api.content.page.PageDescriptorCache.instance = new PageDescriptorCache();
+            if (!topWindow.PageDescriptorCache.instance) {
+                topWindow.PageDescriptorCache.instance = new PageDescriptorCache();
             }
-            return topWindow.api.content.page.PageDescriptorCache.instance;
+            return topWindow.PageDescriptorCache.instance;
         }
 
         constructor() {
@@ -29,12 +34,12 @@ module api.content.page {
 
         loadByApplication(applicationKey: ApplicationKey) {
             new GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
         }
 
         put(descriptor: PageDescriptor) {
-            api.util.assertNotNull(descriptor, "a PageDescriptor must be given");
+            assertNotNull(descriptor, "a PageDescriptor must be given");
 
             super.put(descriptor, descriptor.getKey().getApplicationKey());
         }
@@ -48,7 +53,7 @@ module api.content.page {
         }
     }
 
-    export class PageDescriptorApplicationCache extends api.cache.Cache<PageDescriptor, DescriptorKey> {
+    export class PageDescriptorApplicationCache extends Cache<PageDescriptor, DescriptorKey> {
 
         copy(object: PageDescriptor): PageDescriptor {
             return object.clone();
@@ -62,4 +67,3 @@ module api.content.page {
             return key.toString();
         }
     }
-}

@@ -1,6 +1,9 @@
-module api.locale {
+import {BaseLoader} from "../util/loader/BaseLoader";
+import {LocaleListJson} from "./json/LocaleListJson";
+import {Locale} from "./Locale";
+import {GetLocalesRequest} from "./GetLocalesRequest";
 
-    export class LocaleLoader extends api.util.loader.BaseLoader<api.locale.json.LocaleListJson, Locale> {
+export class LocaleLoader extends BaseLoader<LocaleListJson, Locale> {
 
         private preservedSearchString: string;
 
@@ -23,7 +26,7 @@ module api.locale {
             this.notifyLoadingData();
 
             return this.sendRequest()
-                .then((locales: api.locale.Locale[]) => {
+                .then((locales: Locale[]) => {
 
                     this.notifyLoadedData(locales);
                     if (this.preservedSearchString) {
@@ -36,4 +39,3 @@ module api.locale {
 
     }
 
-}

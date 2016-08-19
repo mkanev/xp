@@ -1,9 +1,9 @@
-module api.content.form.inputtype.image {
+import {ContentSummary} from "../../../ContentSummary";
+import {UploadItem} from "../../../../ui/uploader/UploadItem";
+import {ContentId} from "../../../ContentId";
+import {ContentIconUrlResolver} from "../../../util/ContentIconUrlResolver";
 
-    import ContentSummary = api.content.ContentSummary;
-    import UploadItem = api.ui.uploader.UploadItem;
-
-    export class ImageSelectorDisplayValue {
+export class ImageSelectorDisplayValue {
 
         private uploadItem: UploadItem<ContentSummary>;
 
@@ -57,12 +57,12 @@ module api.content.form.inputtype.image {
             return this.content ? this.content.getId() : this.uploadItem.getId();
         }
 
-        getContentId(): api.content.ContentId {
+        getContentId(): ContentId {
             return this.content ? this.content.getContentId() : null;
         }
 
         getImageUrl(): string {
-            return this.content ? new api.content.util.ContentIconUrlResolver().setContent(this.content).resolve() : null;
+            return this.content ? new ContentIconUrlResolver().setContent(this.content).resolve() : null;
         }
 
         getLabel(): string {
@@ -82,4 +82,3 @@ module api.content.form.inputtype.image {
         }
 
     }
-}

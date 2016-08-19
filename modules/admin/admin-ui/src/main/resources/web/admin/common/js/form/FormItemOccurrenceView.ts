@@ -1,8 +1,10 @@
-module api.form {
+import {PropertyArray} from "../data/PropertyArray";
+import {DivEl} from "../dom/DivEl";
+import {PropertyPath} from "../data/PropertyPath";
+import {FormItemOccurrence} from "./FormItemOccurrence";
+import {RemoveButtonClickedEvent} from "./RemoveButtonClickedEvent";
 
-    import PropertyArray = api.data.PropertyArray;
-
-    export class FormItemOccurrenceView extends api.dom.DivEl {
+export class FormItemOccurrenceView extends DivEl {
 
         private formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
 
@@ -13,7 +15,7 @@ module api.form {
             this.formItemOccurrence = formItemOccurrence;
         }
 
-        getDataPath(): api.data.PropertyPath {
+        getDataPath(): PropertyPath {
             throw new Error("Must be implemented by inheritor");
         }
 
@@ -58,4 +60,3 @@ module api.form {
             return false;
         }
     }
-}

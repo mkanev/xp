@@ -1,21 +1,34 @@
-module api.form {
+import {PropertyPath} from "../data/PropertyPath";
+import {Property} from "../data/Property";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {PropertyTree} from "../data/PropertyTree";
+import {PropertySet} from "../data/PropertySet";
+import {DivEl} from "../dom/DivEl";
+import {assert} from "../util/Assert";
+import {ContentSummary} from "../content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../content/ContentSummaryAndCompareStatus";
+import {EditContentEvent} from "../content/event/EditContentEvent";
+import {WindowDOM} from "../dom/WindowDOM";
+import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {Form} from "./Form";
+import {FormContext} from "./FormContext";
+import {FormItemLayer} from "./FormItemLayer";
+import {FormItemSet} from "./FormItemSet";
+import {FormItemView} from "./FormItemView";
+import {FormValidityChangedEvent} from "./FormValidityChangedEvent";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
 
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import PropertyTree = api.data.PropertyTree;
-    import PropertySet = api.data.PropertySet;
-
-    /**
-     * Creates a UI component representing the given [[Form]] backed by given [[api.data.PropertySet]].
-     * Form data is both read from and written to the given [[api.data.PropertySet]] as the user changes the form.
+/**
+     * Creates a UI component representing the given [[Form]] backed by given [[PropertySet]].
+     * Form data is both read from and written to the given [[PropertySet]] as the user changes the form.
      *
      * When displaying a form for a empty PropertyTree, then FormItemSet's will not be displayed by default.
      * To enable displaying set [[FormContext.showEmptyFormItemSetOccurrences]] to true.
      */
-    export class FormView extends api.dom.DivEl {
+    export class FormView extends DivEl {
 
         private context: FormContext;
 
@@ -73,7 +86,7 @@ module api.form {
             layoutPromise.then((formItemViews: FormItemView[]) => {
 
                 this.formItemViews = formItemViews;
-                api.util.assert(this.formItemViews.length == formItems.length,
+                assert(this.formItemViews.length == formItems.length,
                     "Not all FormItemView-s was created. Expected " + formItems.length + ", was: " + formItemViews.length);
 
                 deferred.resolve(null);
@@ -107,17 +120,17 @@ module api.form {
                         }
                     });
 
-                    formItemView.onEditContentRequest((content: api.content.ContentSummary) => {
-                        var summaryAndStatus = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
-                        new api.content.event.EditContentEvent([summaryAndStatus]).fire();
+                    formItemView.onEditContentRequest((content: ContentSummary) => {
+                        var summaryAndStatus = ContentSummaryAndCompareStatus.fromContentSummary(content);
+                        new EditContentEvent([summaryAndStatus]).fire();
                     })
                 });
 
-                api.dom.WindowDOM.get().onResized((event: UIEvent) => this.checkSizeChanges(), this);
+                WindowDOM.get().onResized((event: UIEvent) => this.checkSizeChanges(), this);
                 this.onShown(() => this.checkSizeChanges());
 
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done(() => {
                 this.notifyLayoutFinished();
             });
@@ -295,4 +308,3 @@ module api.form {
             })
         }
     }
-}

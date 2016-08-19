@@ -1,8 +1,8 @@
-module api.schema.content {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ApplicationBasedName} from "../../application/ApplicationBasedName";
+import {assertNotNull} from "../../util/Assert";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class ContentTypeName extends api.application.ApplicationBasedName {
+export class ContentTypeName extends ApplicationBasedName {
 
         // Built-in ContentTypes can be listed here
 //
@@ -51,12 +51,12 @@ module api.schema.content {
         static IMAGE = ContentTypeName.from(ApplicationKey.MEDIA, "image");
 
         constructor(name: string) {
-            api.util.assertNotNull(name, "Content type name can't be null");
-            var parts = name.split(api.application.ApplicationBasedName.SEPARATOR);
+            assertNotNull(name, "Content type name can't be null");
+            var parts = name.split(ApplicationBasedName.SEPARATOR);
             super(ApplicationKey.fromString(parts[0]), parts[1]);
         }
 
-        static from(applicationKey: api.application.ApplicationKey, localName: string) {
+        static from(applicationKey: ApplicationKey, localName: string) {
             return new ContentTypeName(applicationKey.toString() + ":" + localName);
         }
 
@@ -116,4 +116,3 @@ module api.schema.content {
             });
         }
     }
-}

@@ -1,7 +1,7 @@
-import "../../../api.ts";
+import {ViewItem} from "../../../../../../common/js/app/view/ViewItem";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {AppHelper} from "../../../../../../common/js/util/AppHelper";
 
-import ViewItem = api.app.view.ViewItem;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 import {DetailsPanel} from "./DetailsPanel";
 import {WidgetView} from "./WidgetView";
 
@@ -9,7 +9,7 @@ export class ActiveDetailsPanelManager {
 
     private static activeDetailsPanel: DetailsPanel;
 
-    private static debouncedSetActiveDetailsPanel: (detailsPanel: DetailsPanel) => void = api.util.AppHelper.debounce(
+    private static debouncedSetActiveDetailsPanel: (detailsPanel: DetailsPanel) => void = AppHelper.debounce(
         ActiveDetailsPanelManager.doSetActiveDetailsPanel,
         300, false);
 

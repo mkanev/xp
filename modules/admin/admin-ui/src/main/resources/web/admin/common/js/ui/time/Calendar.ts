@@ -1,6 +1,16 @@
-module api.ui.time {
+import {DivEl} from "../../dom/DivEl";
+import {DateHelper} from "../../util/DateHelper";
+import {SpanEl} from "../../dom/SpanEl";
+import {CalendarDayBuilder} from "./CalendarDay";
+import {CalendarDay} from "./CalendarDay";
+import {CalendarDayClickedEvent} from "./CalendarDayClickedEvent";
+import {CalendarWeekBuilder} from "./CalendarWeek";
+import {CalendarWeek} from "./CalendarWeek";
+import {DayOfWeek} from "./DayOfWeek";
+import {DaysOfWeek} from "./DaysOfWeek";
+import {SelectedDateChangedEvent} from "./SelectedDateChangedEvent";
 
-    export class CalendarBuilder {
+export class CalendarBuilder {
 
         year: number;
 
@@ -42,7 +52,7 @@ module api.ui.time {
         }
     }
 
-    export class Calendar extends api.dom.DivEl {
+    export class Calendar extends DivEl {
 
         private interactive: boolean;
 
@@ -82,8 +92,8 @@ module api.ui.time {
                 this.selectedDate = value;
                 this.removeChildren();
 
-                if (api.util.DateHelper.isInvalidDate(value)) {
-                    var spanEl = new api.dom.SpanEl().setHtml("Invalid date");
+                if (DateHelper.isInvalidDate(value)) {
+                    var spanEl = new SpanEl().setHtml("Invalid date");
                     this.appendChild(spanEl);
                 }
                 else {
@@ -146,7 +156,7 @@ module api.ui.time {
 
         private resolveDaysInMonth() {
             var calendarDays: CalendarDay[] = [];
-            var daysInMonth = api.util.DateHelper.numDaysInMonth(this.year, this.month);
+            var daysInMonth = DateHelper.numDaysInMonth(this.year, this.month);
             var previousDay: CalendarDay = null;
             for (var i = 1; i <= daysInMonth; i++) {
                 var calendarDay = this.createCalendarDay(i, previousDay);
@@ -274,4 +284,3 @@ module api.ui.time {
             });
         }
     }
-}

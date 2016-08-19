@@ -1,9 +1,16 @@
-module api.content.page.region {
+import {PropertyTree} from "../../../data/PropertyTree";
+import {PropertyEvent} from "../../../data/PropertyEvent";
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {Descriptor} from "../Descriptor";
+import {DescriptorKey} from "../DescriptorKey";
+import {Component} from "./Component";
+import {ComponentBuilder} from "./Component";
+import {ComponentName} from "./ComponentName";
+import {DescriptorBasedComponentJson} from "./DescriptorBasedComponentJson";
 
-    import PropertyTree = api.data.PropertyTree;
-    import PropertyEvent = api.data.PropertyEvent;
-
-    export class DescriptorBasedComponent extends Component implements api.Equitable, api.Cloneable {
+export class DescriptorBasedComponent extends Component implements Equitable, Cloneable {
 
         public static debug: boolean = false;
 
@@ -57,7 +64,7 @@ module api.content.page.region {
 
             this.setName(descriptor ? new ComponentName(descriptor.getDisplayName()) : this.getType().getDefaultName());
 
-            if (!api.ObjectHelper.equals(oldValue, descriptorKey)) {
+            if (!ObjectHelper.equals(oldValue, descriptorKey)) {
                 this.notifyPropertyChanged(DescriptorBasedComponent.PROPERTY_DESCRIPTOR);
             }
 
@@ -72,7 +79,7 @@ module api.content.page.region {
             this.config = config;
             this.config.onChanged(this.configChangedHandler);
 
-            if (!api.ObjectHelper.equals(oldValue, config)) {
+            if (!ObjectHelper.equals(oldValue, config)) {
                 this.notifyPropertyChanged(DescriptorBasedComponent.PROPERTY_CONFIG);
             }
         }
@@ -94,9 +101,9 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DescriptorBasedComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, DescriptorBasedComponent)) {
                 return false;
             }
 
@@ -105,11 +112,11 @@ module api.content.page.region {
             }
             var other = <DescriptorBasedComponent>o;
 
-            if (!api.ObjectHelper.equals(this.descriptor, other.descriptor)) {
+            if (!ObjectHelper.equals(this.descriptor, other.descriptor)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.config, other.config)) {
+            if (!ObjectHelper.equals(this.config, other.config)) {
                 return false;
             }
 
@@ -153,4 +160,3 @@ module api.content.page.region {
             throw new Error("Must be implemented by inheritor");
         }
     }
-}

@@ -1,6 +1,6 @@
-module api.item{
 
-    export interface ItemJson {
+
+export interface ItemJson {
 
         id:string;
 
@@ -13,4 +13,3 @@ module api.item{
         deletable:boolean;
     }
 
-}

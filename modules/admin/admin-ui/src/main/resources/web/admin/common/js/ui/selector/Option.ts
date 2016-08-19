@@ -1,6 +1,6 @@
-module api.ui.selector {
 
-    export interface Option<T> extends Slick.SlickData {
+
+export interface Option<T> extends Slick.SlickData {
 
         value:string;
 
@@ -13,6 +13,4 @@ module api.ui.selector {
         empty? :boolean;
 
     }
-
-}
 

@@ -1,14 +1,19 @@
-module api.ui.toolbar {
-    
-    import ActionButton = api.ui.button.ActionButton;
+import {ActionButton} from "../button/ActionButton";
+import {DivEl} from "../../dom/DivEl";
+import {ActionContainer} from "../ActionContainer";
+import {Action} from "../Action";
+import {ResponsiveManager} from "../responsive/ResponsiveManager";
+import {Element} from "../../dom/Element";
+import {ObjectHelper} from "../../ObjectHelper";
+import {FoldButton} from "./FoldButton";
 
-    export class Toolbar extends api.dom.DivEl implements api.ui.ActionContainer {
+export class Toolbar extends DivEl implements ActionContainer {
 
         private fold: FoldButton;
 
         private hasGreedySpacer: boolean;
 
-        private actions: api.ui.Action[] = [];
+        private actions: Action[] = [];
 
         constructor(className?: string) {
             super(!className ? "toolbar" : className + " toolbar");
@@ -17,28 +22,28 @@ module api.ui.toolbar {
             this.fold.hide();
             this.appendChild(this.fold);
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item) => this.foldOrExpand());
+            ResponsiveManager.onAvailableSizeChanged(this, (item) => this.foldOrExpand());
 
             this.onShown((event) => this.foldOrExpand());
         }
 
-        addAction(action: api.ui.Action): ActionButton {
+        addAction(action: Action): ActionButton {
             this.actions.push(action);
             action.onPropertyChanged((action) => this.foldOrExpand());
             return <ActionButton>this.addElement(new ActionButton(action));
         }
 
-        addActions(actions: api.ui.Action[]) {
+        addActions(actions: Action[]) {
             actions.forEach((action) => {
                 this.addAction(action);
             });
         }
 
         removeActions() {
-            this.actions.forEach((action: api.ui.Action) => {
-                this.getChildren().forEach((element: api.dom.Element) => {
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(element, api.ui.button.ActionButton)) {
-                        if (action.getLabel() == (<api.ui.button.ActionButton>element).getLabel()) {
+            this.actions.forEach((action: Action) => {
+                this.getChildren().forEach((element: Element) => {
+                    if (ObjectHelper.iFrameSafeInstanceOf(element, ActionButton)) {
+                        if (action.getLabel() == (<ActionButton>element).getLabel()) {
                             this.removeChild(element);
                         }
                     }
@@ -47,11 +52,11 @@ module api.ui.toolbar {
             this.actions = [];
         }
 
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return this.actions;
         }
 
-        addElement(element: api.dom.Element): api.dom.Element {
+        addElement(element: Element): Element {
             if (this.hasGreedySpacer) {
                 element.addClass('pull-right');
                 element.insertAfterEl(this.fold);
@@ -109,20 +114,19 @@ module api.ui.toolbar {
         }
 
         private getVisibleButtonsWidth(includeFold: boolean = true): number {
-            return this.getChildren().reduce((totalWidth: number, element: api.dom.Element) => {
+            return this.getChildren().reduce((totalWidth: number, element: Element) => {
                 return totalWidth + ( element.isVisible() && (includeFold || element != this.fold) ?
                                       element.getEl().getWidthWithMargin() : 0 );
             }, 0);
         }
 
-        private getNextFoldableButton(): api.dom.Element {
+        private getNextFoldableButton(): Element {
             return this.getChildren()[this.getChildren().indexOf(this.fold) - 1];
         }
 
-        private getFoldableButtons(): api.dom.Element[] {
+        private getFoldableButtons(): Element[] {
             return this.getChildren().slice(0, this.getChildren().indexOf(this.fold));
         }
 
     }
 
-}

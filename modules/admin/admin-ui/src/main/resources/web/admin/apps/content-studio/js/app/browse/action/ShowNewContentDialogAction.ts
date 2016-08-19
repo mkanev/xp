@@ -1,6 +1,6 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
 
-import Action = api.ui.Action;
 import {ShowNewContentDialogEvent} from "../ShowNewContentDialogEvent";
 import {ContentTreeGrid} from "../ContentTreeGrid";
 
@@ -10,7 +10,7 @@ export class ShowNewContentDialogAction extends Action {
         super("New", "alt+n");
         this.setEnabled(true);
         this.onExecuted(() => {
-            var contents: api.content.ContentSummaryAndCompareStatus[]
+            var contents: ContentSummaryAndCompareStatus[]
                 = grid.getSelectedDataList();
             new ShowNewContentDialogEvent(contents.length > 0 ? contents[0] : null).fire();
         });

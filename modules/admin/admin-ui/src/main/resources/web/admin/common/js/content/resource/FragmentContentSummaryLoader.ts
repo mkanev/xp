@@ -1,7 +1,8 @@
-module api.content.resource {
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ContentSummaryLoader} from "./ContentSummaryLoader";
+import {FragmentContentSummaryRequest} from "./FragmentContentSummaryRequest";
 
-    import ContentTypeName = api.schema.content.ContentTypeName;
-    export class FragmentContentSummaryLoader extends ContentSummaryLoader {
+export class FragmentContentSummaryLoader extends ContentSummaryLoader {
 
         constructor() {
             super();
@@ -21,10 +22,9 @@ module api.content.resource {
             throw new Error("Only fragments allowed");
         }
 
-        setAllowedContentTypeNames(contentTypeNames: api.schema.content.ContentTypeName[]) {
+        setAllowedContentTypeNames(contentTypeNames: ContentTypeName[]) {
             throw new Error("Only fragments allowed");
         }
 
     }
 
-}

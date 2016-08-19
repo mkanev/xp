@@ -1,6 +1,6 @@
-module api {
 
-    export class ValueChangedEvent {
+
+export class ValueChangedEvent {
 
         private oldValue: string;
 
@@ -24,4 +24,3 @@ module api {
             return this.oldValue === this.newValue;
         }
     }
-}

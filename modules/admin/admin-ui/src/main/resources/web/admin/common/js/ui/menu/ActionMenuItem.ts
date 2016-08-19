@@ -1,10 +1,11 @@
-module api.ui.menu {
+import {LiEl} from "../../dom/LiEl";
+import {Action} from "../Action";
 
-    export class ActionMenuItem extends api.dom.LiEl {
+export class ActionMenuItem extends LiEl {
 
-        private action: api.ui.Action;
+        private action: Action;
 
-        constructor(action: api.ui.Action) {
+        constructor(action: Action) {
 
             super("action");
             this.action = action;
@@ -25,4 +26,3 @@ module api.ui.menu {
             });
         }
     }
-}

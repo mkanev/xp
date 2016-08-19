@@ -1,12 +1,19 @@
-module api.ui.selector.combobox {
+import {BaseSelectedOptionView} from "./BaseSelectedOptionView";
+import {NamesAndIconViewSize} from "../../../app/NamesAndIconViewSize";
+import {Option} from "../Option";
+import {Element} from "../../../dom/Element";
+import {NamesAndIconViewBuilder} from "../../../app/NamesAndIconView";
+import {StringHelper} from "../../../util/StringHelper";
+import {AEl} from "../../../dom/AEl";
+import {DivEl} from "../../../dom/DivEl";
 
-    export class RichSelectedOptionView<T> extends api.ui.selector.combobox.BaseSelectedOptionView<T> {
+export class RichSelectedOptionView<T> extends BaseSelectedOptionView<T> {
 
         private optionDisplayValue: T;
 
-        private size: api.app.NamesAndIconViewSize;
+        private size: NamesAndIconViewSize;
 
-        constructor(option: api.ui.selector.Option<T>, size: api.app.NamesAndIconViewSize = api.app.NamesAndIconViewSize.small) {
+        constructor(option: Option<T>, size: NamesAndIconViewSize = NamesAndIconViewSize.small) {
             this.optionDisplayValue = option.displayValue;
             this.size = size;
             super(option);
@@ -28,26 +35,26 @@ module api.ui.selector.combobox {
             return "";
         }
 
-        createActionButtons(content: T): api.dom.Element[] {
+        createActionButtons(content: T): Element[] {
             return [];
         }
 
         doRender(): wemQ.Promise<boolean> {
 
-            var namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(this.size).build();
+            var namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
 
             namesAndIconView
                 .setMainName(this.resolveTitle(this.optionDisplayValue))
                 .setSubName(this.resolveSubTitle(this.optionDisplayValue));
 
             var url = this.resolveIconUrl(this.optionDisplayValue);
-            if (!api.util.StringHelper.isBlank(url)) {
+            if (!StringHelper.isBlank(url)) {
                 namesAndIconView.setIconUrl(this.resolveIconUrl(this.optionDisplayValue) + '?crop=false')
             } else {
                 namesAndIconView.setIconClass(this.resolveIconClass(this.optionDisplayValue));
             }
 
-            var removeButton = new api.dom.AEl("remove");
+            var removeButton = new AEl("remove");
             removeButton.onClicked((event: Event) => {
                 this.notifyRemoveClicked();
 
@@ -56,13 +63,12 @@ module api.ui.selector.combobox {
                 return false;
             });
 
-            var buttons: api.dom.Element[] = this.createActionButtons(this.optionDisplayValue);
+            var buttons: Element[] = this.createActionButtons(this.optionDisplayValue);
 
-            this.appendChildren<api.dom.Element>(new api.dom.DivEl("drag-control"), removeButton);
+            this.appendChildren<Element>(new DivEl("drag-control"), removeButton);
             this.appendChildren(...buttons);
             this.appendChild(namesAndIconView);
 
             return wemQ(true);
         }
     }
-}

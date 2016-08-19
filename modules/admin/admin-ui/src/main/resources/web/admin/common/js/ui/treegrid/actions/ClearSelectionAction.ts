@@ -1,8 +1,7 @@
-module api.ui.treegrid.actions {
+import {Action} from "../../Action";
+import {TreeGrid} from "../TreeGrid";
 
-    import Action = api.ui.Action;
-
-    export class ClearSelectionAction<DATA> extends Action {
+export class ClearSelectionAction<DATA> extends Action {
 
         constructor(treeGrid: TreeGrid<DATA>) {
             super(this.createLabel(treeGrid.getRoot().getFullSelection().length));
@@ -24,4 +23,3 @@ module api.ui.treegrid.actions {
             return "Clear Selection" + ( !!count ? " (" + count + ")" : "");
         }
     }
-}

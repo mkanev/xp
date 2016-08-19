@@ -1,24 +1,23 @@
-import "../../api.ts";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+import {ItemDataGroup} from "../../../../../common/js/app/view/ItemDataGroup";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {GetPrincipalByKeyRequest} from "../../../../../common/js/security/GetPrincipalByKeyRequest";
+import {PrincipalViewer} from "../../../../../common/js/ui/security/PrincipalViewer";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
 
-import ViewItem = api.app.view.ViewItem;
-import ItemStatisticsPanel = api.app.view.ItemStatisticsPanel;
-import ItemDataGroup = api.app.view.ItemDataGroup;
-
-import Principal = api.security.Principal;
-import PrincipalType = api.security.PrincipalType;
-import GetPrincipalByKeyRequest = api.security.GetPrincipalByKeyRequest;
-
-import PrincipalViewer = api.ui.security.PrincipalViewer;
 import {UserTreeGridItem, UserTreeGridItemType} from "../browse/UserTreeGridItem";
 
 export class UserItemStatisticsPanel extends ItemStatisticsPanel<UserTreeGridItem> {
 
-    private userDataContainer: api.dom.DivEl;
+    private userDataContainer: DivEl;
 
     constructor() {
         super("principal-item-statistics-panel");
 
-        this.userDataContainer = new api.dom.DivEl("user-data-container");
+        this.userDataContainer = new DivEl("user-data-container");
         this.appendChild(this.userDataContainer);
     }
 
@@ -104,7 +103,7 @@ export class UserItemStatisticsPanel extends ItemStatisticsPanel<UserTreeGridIte
                 this.userDataContainer.appendChild(userGroup);
                 this.userDataContainer.appendChild(rolesAndGroupsGroup);
             }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).finally(() => {
         }).done();
     }
@@ -115,7 +114,7 @@ export class UserItemStatisticsPanel extends ItemStatisticsPanel<UserTreeGridIte
             name = name.charAt(0) + name.slice(1).toLowerCase();
 
         var groupAndRoleGroup = new ItemDataGroup(name, "group-and-role");
-        groupAndRoleGroup.appendChild(new api.dom.DivEl("description").setHtml(item.getModel().getPrincipal().getDescription()));
+        groupAndRoleGroup.appendChild(new DivEl("description").setHtml(item.getModel().getPrincipal().getDescription()));
         this.userDataContainer.appendChild(groupAndRoleGroup);
 
         var membersGroup = new ItemDataGroup("Members", "members");
@@ -145,12 +144,12 @@ export class UserItemStatisticsPanel extends ItemStatisticsPanel<UserTreeGridIte
                     this.userDataContainer.appendChild(groupAndRoleGroup);
                     this.userDataContainer.appendChild(membersGroup);
                 }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason);
+                    DefaultErrorHandler.handle(reason);
                 }).done();
 
 
             }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         }).finally(() => {
         }).done();
     }

@@ -1,6 +1,6 @@
-module api.aggregation {
+import {BucketJson} from "./BucketJson";
 
-    export class Bucket {
+export class Bucket {
 
         key: string;
         docCount: number;
@@ -26,7 +26,7 @@ module api.aggregation {
             this.docCount = docCount;
         }
 
-        public static fromJson(json: api.aggregation.BucketJson): Bucket {
+        public static fromJson(json: BucketJson): Bucket {
             return new Bucket(json.key, json.docCount);
         }
 
@@ -35,4 +35,3 @@ module api.aggregation {
         }
 
     }
-}

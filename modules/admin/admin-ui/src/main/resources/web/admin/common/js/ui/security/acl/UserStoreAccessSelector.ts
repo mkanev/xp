@@ -1,14 +1,16 @@
-module api.ui.security.acl {
+import {TabMenuItemBuilder} from "../../tab/TabMenuItem";
+import {UserStoreAccess} from "../../../security/acl/UserStoreAccess";
+import {TabMenu} from "../../tab/TabMenu";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {NavigatorEvent} from "../../NavigatorEvent";
+import {TabMenuItem} from "../../tab/TabMenuItem";
 
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-    import UserStoreAccess = api.security.acl.UserStoreAccess;
-
-    interface UserStoreAccessSelectorOption {
+interface UserStoreAccessSelectorOption {
         value: UserStoreAccess;
         name: string;
     }
 
-    export class UserStoreAccessSelector extends api.ui.tab.TabMenu {
+    export class UserStoreAccessSelector extends TabMenu {
 
         private static OPTIONS: UserStoreAccessSelectorOption[] = [
             {value: UserStoreAccess.READ, name: 'Read'},
@@ -19,7 +21,7 @@ module api.ui.security.acl {
         ];
 
         private value: UserStoreAccess;
-        private valueChangedListeners: {(event: api.ValueChangedEvent):void}[] = [];
+        private valueChangedListeners: {(event: ValueChangedEvent):void}[] = [];
 
         constructor() {
             super("access-selector");
@@ -29,8 +31,8 @@ module api.ui.security.acl {
                 this.addNavigationItem(menuItem);
             });
 
-            this.onNavigationItemSelected((event: api.ui.NavigatorEvent) => {
-                var item: api.ui.tab.TabMenuItem = <api.ui.tab.TabMenuItem> event.getItem();
+            this.onNavigationItemSelected((event: NavigatorEvent) => {
+                var item: TabMenuItem = <TabMenuItem> event.getItem();
                 this.setValue(UserStoreAccessSelector.OPTIONS[item.getIndex()].value);
             });
 
@@ -45,7 +47,7 @@ module api.ui.security.acl {
             if (option) {
                 this.selectNavigationItem(UserStoreAccessSelector.OPTIONS.indexOf(option));
                 if (!silent) {
-                    this.notifyValueChanged(new api.ValueChangedEvent(UserStoreAccess[this.value], UserStoreAccess[value]));
+                    this.notifyValueChanged(new ValueChangedEvent(UserStoreAccess[this.value], UserStoreAccess[value]));
                 }
                 this.value = value;
             }
@@ -62,17 +64,17 @@ module api.ui.security.acl {
             return undefined;
         }
 
-        onValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        onValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        unValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners = this.valueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        private notifyValueChanged(event: api.ValueChangedEvent) {
+        private notifyValueChanged(event: ValueChangedEvent) {
             this.valueChangedListeners.forEach((listener) => {
                 listener(event);
             })
@@ -80,4 +82,3 @@ module api.ui.security.acl {
 
     }
 
-}

@@ -1,20 +1,19 @@
-import "../../api.ts";
+import {User} from "../../../../../common/js/security/User";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {PrincipalLoader} from "../../../../../common/js/security/PrincipalLoader";
+import {RoleKeys} from "../../../../../common/js/security/RoleKeys";
+import {FormItemBuilder} from "../../../../../common/js/ui/form/FormItem";
+import {Validators} from "../../../../../common/js/ui/form/Validators";
+import {PrincipalComboBox} from "../../../../../common/js/ui/security/PrincipalComboBox";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {LabelEl} from "../../../../../common/js/dom/LabelEl";
+import {WizardStepForm} from "../../../../../common/js/app/wizard/WizardStepForm";
+import {Fieldset} from "../../../../../common/js/ui/form/Fieldset";
+import {Form} from "../../../../../common/js/ui/form/Form";
 
-import User = api.security.User;
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalType = api.security.PrincipalType;
-import PrincipalLoader = api.security.PrincipalLoader;
-import RoleKeys = api.security.RoleKeys;
-import FormItemBuilder = api.ui.form.FormItemBuilder;
-import Validators = api.ui.form.Validators;
-
-import PrincipalComboBox = api.ui.security.PrincipalComboBox;
-
-import DivEl = api.dom.DivEl;
-import LabelEl = api.dom.LabelEl;
-
-export class UserMembershipsWizardStepForm extends api.app.wizard.WizardStepForm {
+export class UserMembershipsWizardStepForm extends WizardStepForm {
 
     private groups: PrincipalComboBox;
 
@@ -58,11 +57,11 @@ export class UserMembershipsWizardStepForm extends api.app.wizard.WizardStepForm
 
         var rolesFormItem = new FormItemBuilder(this.roles).setLabel('Roles').build();
 
-        var fieldSet = new api.ui.form.Fieldset();
+        var fieldSet = new Fieldset();
         fieldSet.add(groupsFormItem);
         fieldSet.add(rolesFormItem);
 
-        var form = new api.ui.form.Form().add(fieldSet);
+        var form = new Form().add(fieldSet);
 
         this.appendChild(form);
 

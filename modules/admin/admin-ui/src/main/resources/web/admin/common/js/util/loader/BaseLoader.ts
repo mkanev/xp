@@ -1,11 +1,12 @@
-module api.util.loader {
+import {LoaderEvents} from "./event/LoaderEvents";
+import {LoaderEvent} from "./event/LoaderEvent";
+import {LoadedDataEvent} from "./event/LoadedDataEvent";
+import {LoadingDataEvent} from "./event/LoadingDataEvent";
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {ClassHelper} from "../../ClassHelper";
+import {Comparator} from "../../Comparator";
 
-    import LoaderEvents = api.util.loader.event.LoaderEvents;
-    import LoaderEvent = api.util.loader.event.LoaderEvent;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-
-    enum LoaderStatus {
+enum LoaderStatus {
         NOT_STARTED,
         LOADING,
         LOADED
@@ -13,7 +14,7 @@ module api.util.loader {
 
     export class BaseLoader<JSON, OBJECT> {
 
-        private request: api.rest.ResourceRequest<JSON, OBJECT[]>;
+        private request: ResourceRequest<JSON, OBJECT[]>;
 
         private status: LoaderStatus = LoaderStatus.NOT_STARTED;
 
@@ -27,7 +28,7 @@ module api.util.loader {
 
         private comparator: Comparator<OBJECT>;
 
-        constructor(request: api.rest.ResourceRequest<JSON, OBJECT[]>) {
+        constructor(request: ResourceRequest<JSON, OBJECT[]>) {
             this.setRequest(request);
         }
 
@@ -44,7 +45,7 @@ module api.util.loader {
                     try {
                         this.results = results.sort(this.comparator.compare);
                     } catch (e) {
-                        console.error('Error sorting loaded elements with ' + api.ClassHelper.getClassName(this.comparator) + ': ', e);
+                        console.error('Error sorting loaded elements with ' + ClassHelper.getClassName(this.comparator) + ': ', e);
                     }
                 }
                 this.notifyLoadedData(results, postLoad);
@@ -73,11 +74,11 @@ module api.util.loader {
             return this;
         }
 
-        setRequest(request: api.rest.ResourceRequest<JSON, OBJECT[]>) {
+        setRequest(request: ResourceRequest<JSON, OBJECT[]>) {
             this.request = request;
         }
 
-        getRequest(): api.rest.ResourceRequest<JSON, OBJECT[]> {
+        getRequest(): ResourceRequest<JSON, OBJECT[]> {
             return this.request;
         }
 
@@ -154,4 +155,3 @@ module api.util.loader {
         }
 
     }
-}

@@ -1,14 +1,28 @@
-import "../../../../../api.ts";
+import {ContentVersion} from "../../../../../../../../common/js/content/ContentVersion";
+import {ContentId} from "../../../../../../../../common/js/content/ContentId";
+import {ContentSummaryAndCompareStatus} from "../../../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ListBox} from "../../../../../../../../common/js/ui/selector/list/ListBox";
+import {CompareStatus} from "../../../../../../../../common/js/content/CompareStatus";
+import {Element} from "../../../../../../../../common/js/dom/Element";
+import {LiEl} from "../../../../../../../../common/js/dom/LiEl";
+import {GetContentVersionsForViewRequest} from "../../../../../../../../common/js/content/resource/GetContentVersionsForViewRequest";
+import {ContentVersions} from "../../../../../../../../common/js/content/ContentVersions";
+import {CompareStatusFormatter} from "../../../../../../../../common/js/content/CompareStatus";
+import {DivEl} from "../../../../../../../../common/js/dom/DivEl";
+import {SpanEl} from "../../../../../../../../common/js/dom/SpanEl";
+import {DateTimeFormatter} from "../../../../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {ActionButton} from "../../../../../../../../common/js/ui/button/ActionButton";
+import {Action} from "../../../../../../../../common/js/ui/Action";
+import {SetActiveContentVersionRequest} from "../../../../../../../../common/js/content/resource/SetActiveContentVersionRequest";
+import {NotifyManager} from "../../../../../../../../common/js/notify/NotifyManager";
+import {ActiveContentVersionSetEvent} from "../../../../../../../../common/js/content/event/ActiveContentVersionSetEvent";
+
 import {ContentVersionViewer} from "./ContentVersionViewer";
 
-import ContentVersion = api.content.ContentVersion;
-import ContentId = api.content.ContentId;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-
-export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
+export class VersionsView extends ListBox<ContentVersion> {
 
     private contentId: ContentId;
-    private status: api.content.CompareStatus;
+    private status: CompareStatus;
     private loadedListeners: {(): void}[] = [];
     private activeVersion: ContentVersion;
 
@@ -31,8 +45,8 @@ export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
         })
     }
 
-    createItemView(item: ContentVersion, readOnly: boolean): api.dom.Element {
-        var itemContainer = new api.dom.LiEl("content-version-item");
+    createItemView(item: ContentVersion, readOnly: boolean): Element {
+        var itemContainer = new LiEl("content-version-item");
 
         this.createStatusBlock(item, itemContainer);
         this.createDataBlocks(item, itemContainer);
@@ -63,8 +77,8 @@ export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
 
     private loadData(): wemQ.Promise<ContentVersion[]> {
         if (this.contentId) {
-            return new api.content.resource.GetContentVersionsForViewRequest(this.contentId).sendAndParse().then(
-                (contentVersions: api.content.ContentVersions) => {
+            return new GetContentVersionsForViewRequest(this.contentId).sendAndParse().then(
+                (contentVersions: ContentVersions) => {
                     this.activeVersion = contentVersions.getActiveVersion();
                     return contentVersions.getContentVersions();
                 });
@@ -101,23 +115,23 @@ export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
 
     private getState(workspace): string {
         if (workspace == VersionsView.branchMaster) {
-            return api.content.CompareStatusFormatter.formatStatus(api.content.CompareStatus.EQUAL);
+            return CompareStatusFormatter.formatStatus(CompareStatus.EQUAL);
         }
         else {
-            return api.content.CompareStatusFormatter.formatStatus(this.status);
+            return CompareStatusFormatter.formatStatus(this.status);
         }
     }
 
-    private createStatusBlock(item: ContentVersion, itemEl: api.dom.Element) {
+    private createStatusBlock(item: ContentVersion, itemEl: Element) {
         var contentVersionStatus = this.getStatus(item);
         if (!!contentVersionStatus) {
-            var statusDiv = new api.dom.DivEl("status " + contentVersionStatus.workspace);
+            var statusDiv = new DivEl("status " + contentVersionStatus.workspace);
             statusDiv.setHtml(contentVersionStatus.status);
             itemEl.appendChild(statusDiv);
         }
     }
 
-    private createDataBlocks(item: ContentVersion, itemEl: api.dom.Element) {
+    private createDataBlocks(item: ContentVersion, itemEl: Element) {
         var descriptionDiv = this.createDescriptionBlock(item),
             versionInfoDiv = this.createVersionInfoBlock(item),
             closeButton = this.createCloseButton();
@@ -125,40 +139,40 @@ export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
         itemEl.appendChildren(closeButton, descriptionDiv, versionInfoDiv);
     }
 
-    private createCloseButton(): api.dom.Element {
-        return new api.dom.DivEl("close-version-info-button hidden");
+    private createCloseButton(): Element {
+        return new DivEl("close-version-info-button hidden");
     }
 
-    private createDescriptionBlock(item: ContentVersion): api.dom.Element {
+    private createDescriptionBlock(item: ContentVersion): Element {
         var descriptionDiv = new ContentVersionViewer();
         descriptionDiv.addClass("description");
         descriptionDiv.setObject(item);
         return descriptionDiv;
     }
 
-    private createVersionInfoBlock(item: ContentVersion): api.dom.Element {
-        var versionInfoDiv = new api.dom.DivEl("version-info hidden");
+    private createVersionInfoBlock(item: ContentVersion): Element {
+        var versionInfoDiv = new DivEl("version-info hidden");
 
-        var timestampDiv = new api.dom.DivEl("version-info-timestamp");
-        timestampDiv.appendChildren(new api.dom.SpanEl("label").setHtml("Timestamp: "),
-            new api.dom.SpanEl().setHtml(api.ui.treegrid.DateTimeFormatter.createHtml(item.modified)));
+        var timestampDiv = new DivEl("version-info-timestamp");
+        timestampDiv.appendChildren(new SpanEl("label").setHtml("Timestamp: "),
+            new SpanEl().setHtml(DateTimeFormatter.createHtml(item.modified)));
 
-        var versionIdDiv = new api.dom.DivEl("version-info-version-id");
-        versionIdDiv.appendChildren(new api.dom.SpanEl("label").setHtml("Version Id: "), new api.dom.SpanEl().setHtml(item.id));
+        var versionIdDiv = new DivEl("version-info-version-id");
+        versionIdDiv.appendChildren(new SpanEl("label").setHtml("Version Id: "), new SpanEl().setHtml(item.id));
 
-        var displayNameDiv = new api.dom.DivEl("version-info-display-name");
-        displayNameDiv.appendChildren(new api.dom.SpanEl("label").setHtml("Display name: "),
-            new api.dom.SpanEl().setHtml(item.displayName));
+        var displayNameDiv = new DivEl("version-info-display-name");
+        displayNameDiv.appendChildren(new SpanEl("label").setHtml("Display name: "),
+            new SpanEl().setHtml(item.displayName));
 
         var isActive = item.id === this.activeVersion.id;
-        var restoreButton = new api.ui.button.ActionButton(new api.ui.Action(isActive
+        var restoreButton = new ActionButton(new Action(isActive
             ? "This version is active"
-            : "Restore this version").onExecuted((action: api.ui.Action) => {
+            : "Restore this version").onExecuted((action: Action) => {
             if (!isActive) {
-                new api.content.resource.SetActiveContentVersionRequest(item.id, this.contentId).sendAndParse().then(
+                new SetActiveContentVersionRequest(item.id, this.contentId).sendAndParse().then(
                     (contentId: ContentId) => {
-                    api.notify.NotifyManager.get().showFeedback(`Version successfully changed to ${item.id}`);
-                    new api.content.event.ActiveContentVersionSetEvent(this.contentId, item.id).fire();
+                    NotifyManager.get().showFeedback(`Version successfully changed to ${item.id}`);
+                    new ActiveContentVersionSetEvent(this.contentId, item.id).fire();
                 });
             }
         }), false);
@@ -177,14 +191,14 @@ export class VersionsView extends api.ui.selector.list.ListBox<ContentVersion> {
         return versionInfoDiv;
     }
 
-    private addOnClickHandler(itemContainer: api.dom.Element) {
+    private addOnClickHandler(itemContainer: Element) {
         itemContainer.onClicked(() => {
             this.collapseAllContentVersionItemViewsExcept(itemContainer);
             itemContainer.toggleClass("expanded");
         });
     }
 
-    private collapseAllContentVersionItemViewsExcept(itemContainer: api.dom.Element) {
+    private collapseAllContentVersionItemViewsExcept(itemContainer: Element) {
         wemjq(this.getHTMLElement()).find(".content-version-item").not(itemContainer.getHTMLElement()).removeClass("expanded");
     }
 }

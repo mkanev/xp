@@ -1,6 +1,9 @@
-module api.content.page.region {
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorJson} from "./LayoutDescriptorJson";
+import {LayoutDescriptorResourceRequest} from "./LayoutDescriptorResourceRequest";
+import {LayoutDescriptorsJson} from "./LayoutDescriptorsJson";
 
-    export class LayoutDescriptorsResourceRequest extends LayoutDescriptorResourceRequest<LayoutDescriptorsJson, LayoutDescriptor[]> {
+export class LayoutDescriptorsResourceRequest extends LayoutDescriptorResourceRequest<LayoutDescriptorsJson, LayoutDescriptor[]> {
 
         fromJsonToLayoutDescriptors(json: LayoutDescriptorsJson): LayoutDescriptor[] {
 
@@ -13,4 +16,3 @@ module api.content.page.region {
 
 
     }
-}

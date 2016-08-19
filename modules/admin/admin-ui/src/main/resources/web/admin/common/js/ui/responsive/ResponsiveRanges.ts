@@ -1,5 +1,6 @@
-module api.ui.responsive {
-    export class ResponsiveRanges {
+import {ResponsiveRange} from "./ResponsiveRange";
+
+export class ResponsiveRanges {
         public static _0_240: ResponsiveRange = new ResponsiveRange(0, 240);     // none (necessary for valid check)
         public static _240_360: ResponsiveRange = new ResponsiveRange(240, 375);     // mobile vertical
         public static _360_540: ResponsiveRange = new ResponsiveRange(375, 540);     // mobile horizontal
@@ -11,4 +12,3 @@ module api.ui.responsive {
         public static _1620_1920: ResponsiveRange = new ResponsiveRange(1620, 1920);     // TV
         public static _1920_UP: ResponsiveRange = new ResponsiveRange(1920, Infinity); // Monitor
     }
-}

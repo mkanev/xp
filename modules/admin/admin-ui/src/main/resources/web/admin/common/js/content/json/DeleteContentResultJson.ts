@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface DeleteContentResultJson {
+
+export interface DeleteContentResultJson {
 
         success: number;
 
@@ -14,4 +14,3 @@ module api.content.json {
 
         failureReason: string;
     }
-}

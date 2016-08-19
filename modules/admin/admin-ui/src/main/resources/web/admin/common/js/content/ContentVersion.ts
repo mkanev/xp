@@ -1,6 +1,6 @@
-module api.content {
+import {ContentVersionJson} from "./json/ContentVersionJson";
 
-    export class ContentVersion {
+export class ContentVersion {
 
         modifier: string;
 
@@ -16,7 +16,7 @@ module api.content {
 
         workspaces: string[];
 
-        static fromJson(contentVersionJson: api.content.json.ContentVersionJson, workspaces?: string[]): ContentVersion {
+        static fromJson(contentVersionJson: ContentVersionJson, workspaces?: string[]): ContentVersion {
 
             var contentVersion: ContentVersion = new ContentVersion();
             contentVersion.modifier = contentVersionJson.modifier;
@@ -31,4 +31,3 @@ module api.content {
         }
     }
 
-}

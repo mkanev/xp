@@ -1,6 +1,6 @@
-module api.security {
+import {PrincipalJson} from "./PrincipalJson";
 
-    export interface UserJson extends PrincipalJson {
+export interface UserJson extends PrincipalJson {
 
         email: string;
 
@@ -11,4 +11,3 @@ module api.security {
         memberships?: PrincipalJson[];
 
     }
-}

@@ -1,6 +1,7 @@
-module api.form {
+import {DivEl} from "../dom/DivEl";
+import {FieldSet} from "./FieldSet";
 
-    export class FieldSetLabel extends api.dom.DivEl {
+export class FieldSetLabel extends DivEl {
 
         private fieldSet:FieldSet;
 
@@ -12,4 +13,3 @@ module api.form {
             this.getEl().setInnerHtml(this.fieldSet.getLabel());
         }
     }
-}

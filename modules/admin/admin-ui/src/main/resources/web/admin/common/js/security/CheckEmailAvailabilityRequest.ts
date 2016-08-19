@@ -1,6 +1,9 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export interface CheckEmailAvailabilityResponse {
+export interface CheckEmailAvailabilityResponse {
         available: boolean;
     }
 
@@ -28,16 +31,15 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals', 'emailAvailable');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals', 'emailAvailable');
         }
 
         sendAndParse(): wemQ.Promise<boolean> {
 
-            return this.send().then((response: api.rest.JsonResponse<CheckEmailAvailabilityResponse>) => {
+            return this.send().then((response: JsonResponse<CheckEmailAvailabilityResponse>) => {
                 return response.getResult().available;
             });
         }
 
     }
-}

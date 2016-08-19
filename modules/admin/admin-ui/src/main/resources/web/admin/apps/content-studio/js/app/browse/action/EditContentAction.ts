@@ -1,7 +1,9 @@
-import "../../../api.ts";
-import {ContentTreeGrid} from "../ContentTreeGrid";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {showWarning} from "../../../../../../common/js/notify/MessageBus";
+import {EditContentEvent} from "../../../../../../common/js/content/event/EditContentEvent";
 
-import Action = api.ui.Action;
+import {ContentTreeGrid} from "../ContentTreeGrid";
 
 export class EditContentAction extends Action {
 
@@ -11,16 +13,16 @@ export class EditContentAction extends Action {
         super("Edit", "mod+e");
         this.setEnabled(false);
         this.onExecuted(() => {
-            var contents: api.content.ContentSummaryAndCompareStatus[]
+            var contents: ContentSummaryAndCompareStatus[]
                 = grid.getSelectedDataList();
 
             if (contents.length > EditContentAction.MAX_ITEMS_TO_EDIT) {
-                api.notify.showWarning("Too many items selected for edit ("
+                showWarning("Too many items selected for edit ("
                                        + EditContentAction.MAX_ITEMS_TO_EDIT +
                                        " allowed) - performance may degrade. Please deselect some of the items.");
             }
             else {
-                new api.content.event.EditContentEvent(contents).fire();
+                new EditContentEvent(contents).fire();
             }
 
         });

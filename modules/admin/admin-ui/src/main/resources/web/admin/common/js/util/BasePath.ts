@@ -1,6 +1,6 @@
-module api.util {
 
-    export class BasePath<PATH> {
+
+export class BasePath<PATH> {
 
         private static DEFAULT_ELEMENT_DIVIDER:string = "/";
 
@@ -78,4 +78,3 @@ module api.util {
             return filteredElements;
         }
     }
-}

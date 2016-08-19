@@ -1,9 +1,10 @@
-import "../../../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {BrowseItemsChanges} from "../../../../../../../common/js/app/browse/BrowseItemsChanges";
+import {BrowseItem} from "../../../../../../../common/js/app/browse/BrowseItem";
+import {ContentId} from "../../../../../../../common/js/content/ContentId";
+import {DefaultErrorHandler} from "../../../../../../../common/js/DefaultErrorHandler";
+import {IsRenderableRequest} from "../../../../../../../common/js/content/page/IsRenderableRequest";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import BrowseItemsChanges = api.app.browse.BrowseItemsChanges;
-import BrowseItem = api.app.browse.BrowseItem;
-import ContentId = api.content.ContentId;
 import {ContentBrowseItem} from "../../ContentBrowseItem";
 
 export class PreviewContentHandler {
@@ -52,7 +53,7 @@ export class PreviewContentHandler {
                     this.notifyPreviewStateChangedIfNeeded();
                 }
 
-            }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
+            }).catch((reason: any) => DefaultErrorHandler.handle(reason));
     }
 
     private makeRenderableRequests(contentBrowseItems: ContentBrowseItem[],
@@ -65,7 +66,7 @@ export class PreviewContentHandler {
         return browseItems.map((contentBrowseItem) => {
             let contentSummary = contentBrowseItem.getModel().getContentSummary();
 
-            return new api.content.page.IsRenderableRequest(contentSummary.getContentId()).sendAndParse()
+            return new IsRenderableRequest(contentSummary.getContentId()).sendAndParse()
                 .then((value: boolean) => {
 
                     contentBrowseItem.setRenderable(value);
@@ -81,7 +82,7 @@ export class PreviewContentHandler {
                     }
 
                     return value;
-                }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
+                }).catch((reason: any) => DefaultErrorHandler.handle(reason));
         });
     }
 

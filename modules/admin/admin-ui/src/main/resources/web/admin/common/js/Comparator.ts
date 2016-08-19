@@ -1,7 +1,6 @@
-module api {
 
-    export interface Comparator<T> {
+
+export interface Comparator<T> {
 
         compare(a: T, b: T) : number;
     }
-}

@@ -1,7 +1,12 @@
-module api.application {
+import {ApplicationJson} from "./json/ApplicationJson";
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {Application} from "./Application";
+import {ApplicationCache} from "./ApplicationCache";
+import {ApplicationKey} from "./ApplicationKey";
+import {ApplicationResourceRequest} from "./ApplicationResourceRequest";
 
-    import ApplicationJson = api.application.json.ApplicationJson;
-    export class GetApplicationRequest extends ApplicationResourceRequest<ApplicationJson, Application> {
+export class GetApplicationRequest extends ApplicationResourceRequest<ApplicationJson, Application> {
 
         private applicationKey: ApplicationKey;
 
@@ -21,8 +26,8 @@ module api.application {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath());
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath());
         }
 
         sendAndParse(): wemQ.Promise<Application> {
@@ -33,7 +38,7 @@ module api.application {
                 return wemQ(appObj);
             }
             else {
-                return this.send().then((response: api.rest.JsonResponse<ApplicationJson>) => {
+                return this.send().then((response: JsonResponse<ApplicationJson>) => {
                     appObj = this.fromJsonToApplication(response.getResult());
                     cache.put(appObj);
                     return appObj;
@@ -41,4 +46,3 @@ module api.application {
             }
         }
     }
-}

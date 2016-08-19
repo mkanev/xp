@@ -1,10 +1,10 @@
-module api.dom {
+import {StyleHelper} from "../StyleHelper";
+import {FormItemEl} from "./FormItemEl";
 
-    export class ButtonEl extends FormItemEl {
+export class ButtonEl extends FormItemEl {
 
         constructor(className?: string) {
-            super("button", className, api.StyleHelper.COMMON_PREFIX);
+            super("button", className, StyleHelper.COMMON_PREFIX);
         }
 
     }
-}

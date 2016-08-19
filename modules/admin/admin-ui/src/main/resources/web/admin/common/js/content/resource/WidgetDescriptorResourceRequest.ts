@@ -1,22 +1,25 @@
-module api.content.resource {
+import {ResourceRequest} from "../../rest/ResourceRequest";
+import {Path} from "../../rest/Path";
+import {WidgetDescriptorJson} from "../json/WidgetDescriptorJson";
+import {Widget} from "../Widget";
 
-    export class WidgetDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class WidgetDescriptorResourceRequest<JSON_TYPE, PARSED_TYPE> extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+        private resourcePath: Path;
 
 
         constructor() {
             super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), "widget");
+            this.resourcePath = Path.fromParent(super.getRestPath(), "widget");
         }
 
-        getResourcePath(): api.rest.Path {
+        getResourcePath(): Path {
             return this.resourcePath;
         }
 
-        static fromJson(json: api.content.json.WidgetDescriptorJson[]): Widget[] {
+        static fromJson(json: WidgetDescriptorJson[]): Widget[] {
             var result: Widget[] = [];
-            json.forEach((widgetDescriptor: api.content.json.WidgetDescriptorJson) => {
+            json.forEach((widgetDescriptor: WidgetDescriptorJson) => {
                 result.push(new Widget(widgetDescriptor.url,
                     widgetDescriptor.displayName,
                     widgetDescriptor.interfaces,
@@ -25,4 +28,3 @@ module api.content.resource {
             return result;
         }
     }
-}

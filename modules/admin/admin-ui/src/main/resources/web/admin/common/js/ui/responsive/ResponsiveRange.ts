@@ -1,6 +1,6 @@
-module api.ui.responsive {
 
-    export class ResponsiveRange {
+
+export class ResponsiveRange {
 
         private minRange: number;
         private maxRange: number;
@@ -36,4 +36,3 @@ module api.ui.responsive {
             return size > this.minRange;
         }
     }
-}

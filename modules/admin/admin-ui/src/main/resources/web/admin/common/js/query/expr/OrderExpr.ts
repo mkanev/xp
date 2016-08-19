@@ -1,6 +1,7 @@
-module api.query.expr {
+import {Expression} from "./Expression";
+import {OrderDirection} from "./OrderDirection";
 
-    export class OrderExpr implements Expression {
+export class OrderExpr implements Expression {
 
         private direction: OrderDirection;
 
@@ -23,4 +24,3 @@ module api.query.expr {
             }
         }
     }
-}

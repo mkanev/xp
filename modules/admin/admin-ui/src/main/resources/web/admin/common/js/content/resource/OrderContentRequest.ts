@@ -1,13 +1,19 @@
-module api.content.resource {
+import {SetChildOrderJson} from "../json/SetChildOrderJson";
+import {ChildOrder} from "../order/ChildOrder";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentJson} from "../json/ContentJson";
+import {Content} from "../Content";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import SetChildOrderJson = api.content.json.SetChildOrderJson;
-    export class OrderContentRequest extends ContentResourceRequest<any, any> {
+export class OrderContentRequest extends ContentResourceRequest<any, any> {
 
         private silent: boolean = false;
 
         private contentId: ContentId;
 
-        private childOrder: api.content.order.ChildOrder;
+        private childOrder: ChildOrder;
 
         constructor() {
             super();
@@ -19,7 +25,7 @@ module api.content.resource {
             return this;
         }
 
-        setChildOrder(value: api.content.order.ChildOrder): OrderContentRequest {
+        setChildOrder(value: ChildOrder): OrderContentRequest {
             this.childOrder = value;
             return this;
         }
@@ -34,16 +40,16 @@ module api.content.resource {
         }
 
         private contentToJson(): SetChildOrderJson {
-            return api.content.order.ChildOrder.toSetChildOrderJson(this.contentId, this.childOrder, this.silent);
+            return ChildOrder.toSetChildOrderJson(this.contentId, this.childOrder, this.silent);
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "setChildOrder");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "setChildOrder");
         }
 
         sendAndParse(): wemQ.Promise<Content> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.ContentJson>) => {
+            return this.send().then((response: JsonResponse<ContentJson>) => {
 
                 return this.fromJsonToContent(response.getResult());
 
@@ -51,4 +57,3 @@ module api.content.resource {
         }
 
     }
-}

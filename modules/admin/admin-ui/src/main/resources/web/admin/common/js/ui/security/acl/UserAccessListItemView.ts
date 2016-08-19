@@ -1,17 +1,22 @@
-module api.ui.security.acl {
+import {Principal} from "../../../security/Principal";
+import {Tooltip} from "../../Tooltip";
+import {User} from "../../../security/User";
+import {Viewer} from "../../Viewer";
+import {DivEl} from "../../../dom/DivEl";
+import {ResponsiveItem} from "../../responsive/ResponsiveItem";
+import {SpanEl} from "../../../dom/SpanEl";
+import {ResponsiveManager} from "../../responsive/ResponsiveManager";
+import {Access} from "./Access";
+import {EffectivePermission} from "./EffectivePermission";
+import {EffectivePermissionMember} from "./EffectivePermissionMember";
 
-    import Principal = api.security.Principal;
-    import Tooltip = api.ui.Tooltip;
-    import User = api.security.User;
+export class UserAccessListItemView extends Viewer<EffectivePermission> {
 
+        private userLine: DivEl;
 
-    export class UserAccessListItemView extends api.ui.Viewer<EffectivePermission> {
+        private accessLine: DivEl;
 
-        private userLine: api.dom.DivEl;
-
-        private accessLine: api.dom.DivEl;
-
-        private resizeListener: (item: api.ui.responsive.ResponsiveItem) => void;
+        private resizeListener: (item: ResponsiveItem) => void;
 
         private currentUser: User;
 
@@ -41,12 +46,12 @@ module api.ui.security.acl {
             }
 
             if (!this.accessLine && !this.userLine) {
-                this.accessLine = new api.dom.SpanEl("access-line");
-                this.userLine = new api.dom.DivEl("user-line");
+                this.accessLine = new SpanEl("access-line");
+                this.userLine = new DivEl("user-line");
                 this.appendChildren(this.accessLine, this.userLine);
 
                 this.resizeListener = this.setExtraCount.bind(this);
-                api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, this.resizeListener);
+                ResponsiveManager.onAvailableSizeChanged(this, this.resizeListener);
 
                 this.userLine.onRendered(() => {
                     this.setExtraCount();
@@ -60,7 +65,7 @@ module api.ui.security.acl {
 
                     var display = principal.getDisplayName().split(" ").map(word => word.substring(0, 1).toUpperCase());
 
-                    var icon = new api.dom.SpanEl("user-icon").setHtml(display.length >= 2
+                    var icon = new SpanEl("user-icon").setHtml(display.length >= 2
                         ? display.join("").substring(0, 2)
                         : principal.getDisplayName().substring(0, 2).toUpperCase());
                     if (this.currentUser && this.currentUser.getKey().equals(principal.getUserKey())) {
@@ -75,7 +80,7 @@ module api.ui.security.acl {
         }
 
         remove(): any {
-            api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
+            ResponsiveManager.unAvailableSizeChanged(this);
             return super.remove();
         }
 
@@ -118,4 +123,3 @@ module api.ui.security.acl {
 
 
     }
-}

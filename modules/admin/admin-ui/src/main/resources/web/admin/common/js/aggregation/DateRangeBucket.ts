@@ -1,6 +1,7 @@
-module api.aggregation {
+import {DateRangeBucketJson} from "./DateRangeBucketJson";
+import {Bucket} from "./Bucket";
 
-    export class DateRangeBucket extends Bucket {
+export class DateRangeBucket extends Bucket {
 
         private from: Date;
         private to: Date;
@@ -17,9 +18,9 @@ module api.aggregation {
             return this.to;
         }
 
-        public static fromDateRangeJson(json: api.aggregation.DateRangeBucketJson): DateRangeBucket {
+        public static fromDateRangeJson(json: DateRangeBucketJson): DateRangeBucket {
 
-            var dateRangeBucket: api.aggregation.DateRangeBucket = new api.aggregation.DateRangeBucket(json.key, json.docCount);
+            var dateRangeBucket: DateRangeBucket = new DateRangeBucket(json.key, json.docCount);
             dateRangeBucket.from = json.from;
             dateRangeBucket.to = json.to;
 
@@ -28,4 +29,3 @@ module api.aggregation {
 
     }
 
-}

@@ -1,11 +1,12 @@
-module api.liveedit {
+import {Content} from "../content/Content";
+import {ItemViewContextMenuTitle} from "./ItemViewContextMenuTitle";
+import {PageItemType} from "./PageItemType";
 
-    export class PageViewContextMenuTitle extends ItemViewContextMenuTitle {
+export class PageViewContextMenuTitle extends ItemViewContextMenuTitle {
 
-        constructor(content: api.content.Content) {
+        constructor(content: Content) {
             super(content.getDisplayName(), PageItemType.get().getConfig().getIconCls());
         }
 
     }
 
-}

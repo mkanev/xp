@@ -1,8 +1,10 @@
-import "../../../../../../api.ts";
+import {ContentComboBox} from "../../../../../../../../../common/js/content/ContentComboBox";
+import {Form} from "../../../../../../../../../common/js/ui/form/Form";
+import {Fieldset} from "../../../../../../../../../common/js/ui/form/Fieldset";
+import {StringHelper} from "../../../../../../../../../common/js/util/StringHelper";
+import {FormItemBuilder} from "../../../../../../../../../common/js/ui/form/FormItem";
 
-import ContentComboBox = api.content.ContentComboBox;
-
-export class ImageSelectorForm extends api.ui.form.Form {
+export class ImageSelectorForm extends Form {
 
     private imageSelector: ContentComboBox;
 
@@ -10,12 +12,12 @@ export class ImageSelectorForm extends api.ui.form.Form {
         super('image-combobox-form');
         this.imageSelector = templateSelector;
 
-        var fieldSet = new api.ui.form.Fieldset();
-        if (!api.util.StringHelper.isBlank(title)) {
-            fieldSet.add(new api.ui.form.FormItemBuilder(templateSelector).setLabel(title).build());
+        var fieldSet = new Fieldset();
+        if (!StringHelper.isBlank(title)) {
+            fieldSet.add(new FormItemBuilder(templateSelector).setLabel(title).build());
         }
         else {
-            fieldSet.add(new api.ui.form.FormItemBuilder(templateSelector).build());
+            fieldSet.add(new FormItemBuilder(templateSelector).build());
         }
 
         this.add(fieldSet);

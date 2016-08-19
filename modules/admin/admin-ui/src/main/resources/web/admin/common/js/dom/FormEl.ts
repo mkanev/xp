@@ -1,6 +1,7 @@
-module api.dom {
+import {Element} from "./Element";
+import {NewElementBuilder} from "./Element";
 
-    export class FormEl extends Element {
+export class FormEl extends Element {
 
         constructor(className?: string) {
             super(new NewElementBuilder().setTagName("form").setClassName(className));
@@ -32,7 +33,7 @@ module api.dom {
 
             // set focus to the next visible input
             for (var i = index + 1; i < focusableElements.length; i++) {
-                var nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements.item(i));
+                var nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements.item(i));
                 if (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0) {
                     continue;
                 } else {
@@ -51,7 +52,7 @@ module api.dom {
             do {
                 index = index - 1;
                 if (0 <= index) {
-                    var nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements.item(index));
+                    var nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements.item(index));
                 }
             } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
             nextFocusable.giveFocus();
@@ -71,4 +72,3 @@ module api.dom {
             return index;
         }
     }
-}

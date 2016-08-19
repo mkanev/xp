@@ -1,16 +1,16 @@
-module api.content.attachment {
+import {Button} from "../../ui/button/Button";
+import {CloseButton} from "../../ui/button/CloseButton";
+import {ValueTypes} from "../../data/ValueTypes";
+import {Attachment} from "./Attachment";
+import {AttachmentJson} from "./AttachmentJson";
+import {AttachmentBuilder} from "./Attachment";
+import {SelectionItem} from "../../app/browse/SelectionItem";
+import {FileUploaderEl} from "../../ui/uploader/FileUploaderEl";
+import {UriHelper} from "../../util/UriHelper";
+import {Element} from "../../dom/Element";
+import {AttachmentItem} from "./AttachmentItem";
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-    import ValueTypes = api.data.ValueTypes;
-
-    import Attachment = api.content.attachment.Attachment;
-    import AttachmentJson = api.content.attachment.AttachmentJson;
-    import AttachmentBuilder = api.content.attachment.AttachmentBuilder;
-    import SelectionItem = api.app.browse.SelectionItem;
-
-
-    export class AttachmentUploaderEl extends api.ui.uploader.FileUploaderEl<Attachment> {
+export class AttachmentUploaderEl extends FileUploaderEl<Attachment> {
 
         private attachmentItems: AttachmentItem[];
 
@@ -19,7 +19,7 @@ module api.content.attachment {
         constructor(config) {
 
             if (config.url == undefined) {
-                config.url = api.util.UriHelper.getRestUri("content/createAttachment");
+                config.url = UriHelper.getRestUri("content/createAttachment");
             }
             if (config.attachmentRemoveCallback) {
                 this.removeCallback = config.attachmentRemoveCallback;
@@ -56,7 +56,7 @@ module api.content.attachment {
             );
         }
 
-        getExistingItem(value: string) : api.dom.Element {
+        getExistingItem(value: string) : Element {
             var element = null;
             this.getResultContainer().getChildren().forEach((item) => {
                 if((<AttachmentItem>item).getValue() == value) {
@@ -66,7 +66,7 @@ module api.content.attachment {
             return element;
         }
 
-        createResultItem(value: string): api.dom.Element {
+        createResultItem(value: string): Element {
 
             var attachmentItem = new AttachmentItem(this.contentId, value, this.removeCallback);
             this.attachmentItems.push(attachmentItem);
@@ -74,4 +74,3 @@ module api.content.attachment {
             return attachmentItem;
         }
     }
-}

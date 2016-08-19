@@ -1,17 +1,22 @@
-module api.security.acl {
+import {ContentPermissionsJson as ContentsPermissionsEntryJson} from "../../content/json/ContentPermissionsJson";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {ContentId} from "../../content/ContentId";
+import {ObjectHelper} from "../../ObjectHelper";
+import {AccessControlEntryJson} from "./AccessControlEntryJson";
+import {AccessControlEntry} from "./AccessControlEntry";
+import {AccessControlList} from "./AccessControlList";
 
-    import ContentsPermissionsEntryJson = api.content.json.ContentPermissionsJson;
+export class ContentAccessControlList extends AccessControlList implements Equitable, Cloneable {
 
-    export class ContentAccessControlList extends AccessControlList implements api.Equitable, api.Cloneable {
-
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
 
         constructor(id: string, entries?: AccessControlEntry[]) {
-            this.contentId = new api.content.ContentId(id);
+            this.contentId = new ContentId(id);
             super(entries);
         }
 
-        getContentId(): api.content.ContentId {
+        getContentId(): ContentId {
             return this.contentId;
         }
 
@@ -19,15 +24,15 @@ module api.security.acl {
             return this.contentId.toString() + ': ' + super.toString();
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentAccessControlList)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentAccessControlList)) {
                 return false;
             }
 
             var other = <ContentAccessControlList>o;
             return this.contentId.equals(other.getContentId()) &&
-                   api.ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
+                   ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
         }
 
         clone(): ContentAccessControlList {
@@ -36,11 +41,10 @@ module api.security.acl {
 
         static fromJson(json: ContentsPermissionsEntryJson): ContentAccessControlList {
             var cacl = new ContentAccessControlList(json.contentId);
-            json.permissions.forEach((entryJson: api.security.acl.AccessControlEntryJson) => {
+            json.permissions.forEach((entryJson: AccessControlEntryJson) => {
                 var entry = AccessControlEntry.fromJson(entryJson);
                 cacl.add(entry);
             });
             return cacl;
         }
     }
-}

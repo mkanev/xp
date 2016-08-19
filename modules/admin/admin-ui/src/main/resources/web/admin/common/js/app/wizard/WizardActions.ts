@@ -1,12 +1,12 @@
-module api.app.wizard {
+import {Action} from "../../ui/Action";
 
-    export class WizardActions<T> {
+export class WizardActions<T> {
 
-        private actions: api.ui.Action[];
+        private actions: Action[];
 
-        private suspendedActions: api.ui.Action[] = [];
+        private suspendedActions: Action[] = [];
 
-        constructor(...actions: api.ui.Action[]) {
+        constructor(...actions: Action[]) {
             this.actions = actions;
         }
 
@@ -18,7 +18,7 @@ module api.app.wizard {
             throw new Error('Must be overridden by inheritors');
         }
 
-        getActions(): api.ui.Action[] {
+        getActions(): Action[] {
             return this.actions;
         }
 
@@ -36,4 +36,3 @@ module api.app.wizard {
             }
         }
     }
-}

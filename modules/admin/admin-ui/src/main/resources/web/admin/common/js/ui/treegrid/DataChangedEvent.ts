@@ -1,6 +1,6 @@
-module api.ui.treegrid {
+import {TreeNode} from "./TreeNode";
 
-    export class DataChangedEvent<DATA> {
+export class DataChangedEvent<DATA> {
 
         public static ADDED: string = 'added';
 
@@ -26,4 +26,3 @@ module api.ui.treegrid {
         }
 
     }
-}

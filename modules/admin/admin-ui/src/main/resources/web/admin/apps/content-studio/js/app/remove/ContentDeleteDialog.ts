@@ -1,18 +1,22 @@
-import "../../api.ts";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {ListBox} from "../../../../../common/js/ui/selector/list/ListBox";
+import {Checkbox} from "../../../../../common/js/ui/Checkbox";
+import {Action} from "../../../../../common/js/ui/Action";
+import {DeleteContentResult} from "../../../../../common/js/content/resource/result/DeleteContentResult";
+import {showError} from "../../../../../common/js/notify/MessageBus";
+import {DeleteContentRequest} from "../../../../../common/js/content/resource/DeleteContentRequest";
+
 import {DeleteAction} from "../view/DeleteAction";
 import {DependantItemsDialog} from "../dialog/DependantItemsDialog";
 import {ContentDeleteDialogAction} from "./ContentDeleteDialogAction";
 import {ConfirmContentDeleteDialog} from "./ConfirmContentDeleteDialog";
 
-import ContentSummary = api.content.ContentSummary;
-import CompareStatus = api.content.CompareStatus;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import DialogButton = api.ui.dialog.DialogButton;
-import ListBox = api.ui.selector.list.ListBox;
-
 export class ContentDeleteDialog extends DependantItemsDialog {
 
-    private instantDeleteCheckbox: api.ui.Checkbox;
+    private instantDeleteCheckbox: Checkbox;
 
     private yesCallback: (exclude?: CompareStatus[]) => void;
 
@@ -35,7 +39,7 @@ export class ContentDeleteDialog extends DependantItemsDialog {
 
         this.addCancelButtonToBottom();
 
-        this.instantDeleteCheckbox = api.ui.Checkbox.create().setLabelText("Instantly delete published items").build();
+        this.instantDeleteCheckbox = Checkbox.create().setLabelText("Instantly delete published items").build();
         this.instantDeleteCheckbox.addClass('instant-delete-check');
 
         this.appendChild(this.instantDeleteCheckbox);
@@ -114,7 +118,7 @@ export class ContentDeleteDialog extends DependantItemsDialog {
     }
 
 
-    private addDeleteActionHandler(deleteAction: api.ui.Action) {
+    private addDeleteActionHandler(deleteAction: Action) {
         deleteAction.onExecuted(() => {
             if (this.isAnySiteToBeDeleted()) {
                 let totalItemsToDelete = this.totalItemsToDelete,
@@ -139,14 +143,14 @@ export class ContentDeleteDialog extends DependantItemsDialog {
             this.actionButton.setEnabled(false);
             this.showLoadingSpinner();
 
-            this.createDeleteRequest().sendAndParse().then((result: api.content.resource.result.DeleteContentResult) => {
+            this.createDeleteRequest().sendAndParse().then((result: DeleteContentResult) => {
                 this.close();
                 DeleteAction.showDeleteResult(result);
             }).catch((reason: any) => {
                 if (reason && reason.message) {
-                    api.notify.showError(reason.message);
+                    showError(reason.message);
                 } else {
-                    api.notify.showError('Content could not be deleted.');
+                    showError('Content could not be deleted.');
                 }
             }).finally(() => {
                 this.actionButton.setEnabled(true);
@@ -162,8 +166,8 @@ export class ContentDeleteDialog extends DependantItemsDialog {
         this.updateButtonCount("Delete", this.totalItemsToDelete);
     }
 
-    private createDeleteRequest(): api.content.resource.DeleteContentRequest {
-        var deleteRequest = new api.content.resource.DeleteContentRequest();
+    private createDeleteRequest(): DeleteContentRequest {
+        var deleteRequest = new DeleteContentRequest();
 
         this.getItemList().getItems().forEach((item) => {
             deleteRequest.addContentPath(item.getContentSummary().getPath());

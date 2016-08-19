@@ -1,4 +1,23 @@
-import "./api.ts";
+import {App} from "../../../common/js/app/Application";
+import {Path} from "../../../common/js/rest/Path";
+import {ServerEventsListener} from "../../../common/js/app/ServerEventsListener";
+import {LostConnectionDetector} from "../../../common/js/system/LostConnectionDetector";
+import {NotifyManager} from "../../../common/js/notify/NotifyManager";
+import {showError} from "../../../common/js/notify/MessageBus";
+import {UriHelper} from "../../../common/js/util/UriHelper";
+import {StyleHelper} from "../../../common/js/StyleHelper";
+import {StringHelper} from "../../../common/js/util/StringHelper";
+import {Body} from "../../../common/js/dom/Body";
+import {AppBar} from "../../../common/js/app/bar/AppBar";
+import {ContentSummary} from "../../../common/js/content/ContentSummary";
+import {GetContentByIdRequest} from "../../../common/js/content/resource/GetContentByIdRequest";
+import {Content} from "../../../common/js/content/Content";
+import {GetContentByPathRequest} from "../../../common/js/content/resource/GetContentByPathRequest";
+import {DefaultErrorHandler} from "../../../common/js/DefaultErrorHandler";
+import {AppHelper} from "../../../common/js/util/AppHelper";
+import {AppLauncherEventType} from "../../../common/js/app/AppLauncherEventType";
+import {ContentServerEventsHandler} from "../../../common/js/content/event/ContentServerEventsHandler";
+
 import {Router} from "./app/Router";
 import {ContentAppPanel} from "./app/ContentAppPanel";
 import {ContentDeletePromptEvent} from "./app/browse/ContentDeletePromptEvent";
@@ -21,38 +40,38 @@ declare var CONFIG;
  }
  */
 
-function getApplication(): api.app.App {
-    var application = new api.app.App('content-studio', 'Content Studio', 'CM', 'content-studio');
-    application.setPath(api.rest.Path.fromString(Router.getPath()));
+function getApplication(): App {
+    var application = new App('content-studio', 'Content Studio', 'CM', 'content-studio');
+    application.setPath(Path.fromString(Router.getPath()));
     application.setWindow(window);
-    this.serverEventsListener = new api.app.ServerEventsListener([application]);
+    this.serverEventsListener = new ServerEventsListener([application]);
 
     var messageId;
-    this.lostConnectionDetector = new api.system.LostConnectionDetector();
+    this.lostConnectionDetector = new LostConnectionDetector();
     this.lostConnectionDetector.setAuthenticated(true);
     this.lostConnectionDetector.onConnectionLost(() => {
-        api.notify.NotifyManager.get().hide(messageId);
-        messageId = api.notify.showError("Lost connection to server - Please wait until connection is restored", false);
+        NotifyManager.get().hide(messageId);
+        messageId = showError("Lost connection to server - Please wait until connection is restored", false);
     });
     this.lostConnectionDetector.onSessionExpired(() => {
-        api.notify.NotifyManager.get().hide(messageId);
-        window.location.href = api.util.UriHelper.getToolUri("");
+        NotifyManager.get().hide(messageId);
+        window.location.href = UriHelper.getToolUri("");
     });
     this.lostConnectionDetector.onConnectionRestored(() => {
-        api.notify.NotifyManager.get().hide(messageId);
+        NotifyManager.get().hide(messageId);
     });
 
     return application;
 }
 
 function initToolTip() {
-    var ID = api.StyleHelper.getCls("tooltip", api.StyleHelper.COMMON_PREFIX),
+    var ID = StyleHelper.getCls("tooltip", StyleHelper.COMMON_PREFIX),
         CLS_ON = "tooltip_ON", FOLLOW = true,
         DATA = "_tooltip", OFFSET_X = 0, OFFSET_Y = 20,
         pageX = 0, pageY = 0,
         showAt = function (e) {
             var ntop = pageY + OFFSET_Y, nleft = pageX + OFFSET_X;
-            var tooltipText = api.util.StringHelper.escapeHtml(wemjq(e.target).data(DATA));
+            var tooltipText = StringHelper.escapeHtml(wemjq(e.target).data(DATA));
             if (!tooltipText) { //if no text then probably hovering over children of original element that has title attr
                 return;
             }
@@ -90,11 +109,11 @@ function initToolTip() {
 
 function startApplication() {
 
-    var application: api.app.App = getApplication();
+    var application: App = getApplication();
 
-    var body = api.dom.Body.get();
+    var body = Body.get();
 
-    var appBar = new api.app.bar.AppBar(application);
+    var appBar = new AppBar(application);
     var appPanel = new ContentAppPanel(appBar, application.getPath());
 
     body.appendChild(appBar);
@@ -130,22 +149,22 @@ function startApplication() {
     var newContentDialog = new NewContentDialog();
     ShowNewContentDialogEvent.on((event) => {
 
-        var parentContent: api.content.ContentSummary = event.getParentContent()
+        var parentContent: ContentSummary = event.getParentContent()
             ? event.getParentContent().getContentSummary() : null;
 
         if (parentContent != null) {
-            new api.content.resource.GetContentByIdRequest(parentContent.getContentId()).sendAndParse().then(
-                (newParentContent: api.content.Content) => {
+            new GetContentByIdRequest(parentContent.getContentId()).sendAndParse().then(
+                (newParentContent: Content) => {
 
                     // TODO: remove pyramid of doom
                     if (parentContent.hasParent() && parentContent.getType().isTemplateFolder()) {
-                        new api.content.resource.GetContentByPathRequest(parentContent.getPath().getParentPath()).sendAndParse().then(
-                            (grandParent: api.content.Content) => {
+                        new GetContentByPathRequest(parentContent.getPath().getParentPath()).sendAndParse().then(
+                            (grandParent: Content) => {
 
                                 newContentDialog.setParentContent(newParentContent);
                                 newContentDialog.open();
                             }).catch((reason: any) => {
-                                api.DefaultErrorHandler.handle(reason);
+                                DefaultErrorHandler.handle(reason);
                             }).done();
                     }
                     else {
@@ -153,7 +172,7 @@ function startApplication() {
                         newContentDialog.open();
                     }
                 }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason);
+                    DefaultErrorHandler.handle(reason);
                 }).done();
         }
         else {
@@ -164,7 +183,7 @@ function startApplication() {
 
     initToolTip();
 
-    api.util.AppHelper.preventDragRedirect();
+    AppHelper.preventDragRedirect();
 
     var sortDialog = new SortContentDialog();
     var moveDialog = new MoveContentDialog();
@@ -175,14 +194,14 @@ function startApplication() {
 
     window.onmessage = (e: MessageEvent) => {
         if (e.data.appLauncherEvent) {
-            var eventType: api.app.AppLauncherEventType = api.app.AppLauncherEventType[<string>e.data.appLauncherEvent];
-            if (eventType == api.app.AppLauncherEventType.Show) {
+            var eventType: AppLauncherEventType = AppLauncherEventType[<string>e.data.appLauncherEvent];
+            if (eventType == AppLauncherEventType.Show) {
                 appPanel.activateCurrentKeyBindings();
             }
         }
     };
 
-    api.content.event.ContentServerEventsHandler.getInstance().start();
+    ContentServerEventsHandler.getInstance().start();
 }
 
 window.onload = function () {

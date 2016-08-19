@@ -1,18 +1,18 @@
-import "../../api.ts";
+import {Group} from "../../../../../common/js/security/Group";
+import {GroupBuilder} from "../../../../../common/js/security/Group";
+import {CreateGroupRequest} from "../../../../../common/js/security/CreateGroupRequest";
+import {UpdateGroupRequest} from "../../../../../common/js/security/UpdateGroupRequest";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {PrincipalLoader} from "../../../../../common/js/security/PrincipalLoader";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {UserItemCreatedEvent} from "../../../../../common/js/security/UserItemCreatedEvent";
+import {UserItemUpdatedEvent} from "../../../../../common/js/security/UserItemUpdatedEvent";
+
 import {GroupRoleWizardPanel} from "./GroupRoleWizardPanel";
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
 import {GroupMembersWizardStepForm} from "./GroupMembersWizardStepForm";
-
-import Group = api.security.Group;
-import GroupBuilder = api.security.GroupBuilder;
-import CreateGroupRequest = api.security.CreateGroupRequest;
-import UpdateGroupRequest = api.security.UpdateGroupRequest;
-
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import PrincipalLoader = api.security.PrincipalLoader;
-
-import WizardStep = api.app.wizard.WizardStep;
 
 export class GroupWizardPanel extends GroupRoleWizardPanel {
 
@@ -38,8 +38,8 @@ export class GroupWizardPanel extends GroupRoleWizardPanel {
     persistNewItem(): wemQ.Promise<Principal> {
         return this.produceCreateGroupRequest().sendAndParse().then((principal: Principal) => {
 
-            api.notify.showFeedback('Group was created!');
-            new api.security.UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
+            showFeedback('Group was created!');
+            new UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
             this.notifyPrincipalNamed(principal);
 
             (<PrincipalLoader>this.getMembersWizardStepForm().getLoader()).skipPrincipal(principal.getKey());
@@ -68,8 +68,8 @@ export class GroupWizardPanel extends GroupRoleWizardPanel {
             if (!this.getPersistedItem().getDisplayName() && !!principal.getDisplayName()) {
                 this.notifyPrincipalNamed(principal);
             }
-            api.notify.showFeedback('Group was updated!');
-            new api.security.UserItemUpdatedEvent(principal, this.getUserStore()).fire();
+            showFeedback('Group was updated!');
+            new UserItemUpdatedEvent(principal, this.getUserStore()).fire();
 
             return principal;
         });

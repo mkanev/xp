@@ -1,6 +1,7 @@
-module api.schema.content {
+import {SchemaJson} from "../SchemaJson";
+import {ContentTypeSummaryJson} from "./ContentTypeSummaryJson";
 
-    export interface ContentTypeSummaryListJson extends api.schema.SchemaJson {
+export interface ContentTypeSummaryListJson extends SchemaJson {
 
         total:number;
         totalHits: number;
@@ -8,4 +9,3 @@ module api.schema.content {
 
         contentTypes:ContentTypeSummaryJson[];
     }
-}

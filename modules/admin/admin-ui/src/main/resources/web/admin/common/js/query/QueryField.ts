@@ -1,6 +1,6 @@
-module api.query {
 
-    export class QueryField {
+
+export class QueryField {
 
         static DISPLAY_NAME: string = "displayName";
 
@@ -40,4 +40,3 @@ module api.query {
         }
     }
 
-}

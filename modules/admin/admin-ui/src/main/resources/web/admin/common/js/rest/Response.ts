@@ -1,7 +1,6 @@
-module api.rest {
 
-    export class Response {
+
+export class Response {
 
 
     }
-}

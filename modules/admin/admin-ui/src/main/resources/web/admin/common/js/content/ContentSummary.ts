@@ -1,9 +1,18 @@
-module api.content {
+import {Thumbnail} from "../thumb/Thumbnail";
+import {ContentState} from "../schema/content/ContentState";
+import {ContentTypeName} from "../schema/content/ContentTypeName";
+import {PrincipalKey} from "../security/PrincipalKey";
+import {ChildOrder} from "./order/ChildOrder";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ContentSummaryJson} from "./json/ContentSummaryJson";
+import {ContentId} from "./ContentId";
+import {ContentIdBaseItem} from "./ContentIdBaseItem";
+import {ContentIdBaseItemBuilder} from "./ContentIdBaseItem";
+import {ContentName} from "./ContentName";
+import {ContentPath} from "./ContentPath";
 
-    import Thumbnail = api.thumb.Thumbnail;
-    import ContentState = api.schema.content.ContentState;
-
-    export class ContentSummary extends ContentIdBaseItem {
+export class ContentSummary extends ContentIdBaseItem {
 
         private id: string;
 
@@ -17,7 +26,7 @@ module api.content {
 
         private children: boolean;
 
-        private type: api.schema.content.ContentTypeName;
+        private type: ContentTypeName;
 
         private iconUrl: string;
 
@@ -25,7 +34,7 @@ module api.content {
 
         private modifier: string;
 
-        private owner: api.security.PrincipalKey;
+        private owner: PrincipalKey;
 
         private page: boolean;
 
@@ -41,7 +50,7 @@ module api.content {
 
         private editable: boolean;
 
-        private childOrder: api.content.order.ChildOrder;
+        private childOrder: ChildOrder;
 
         private language: string;
 
@@ -97,7 +106,7 @@ module api.content {
             return this.children;
         }
 
-        getType(): api.schema.content.ContentTypeName {
+        getType(): ContentTypeName {
             return this.type;
         }
 
@@ -113,7 +122,7 @@ module api.content {
             return this.thumbnail;
         }
 
-        getOwner(): api.security.PrincipalKey {
+        getOwner(): PrincipalKey {
             return this.owner;
         }
 
@@ -165,7 +174,7 @@ module api.content {
             return this.editable;
         }
 
-        getChildOrder(): api.content.order.ChildOrder {
+        getChildOrder(): ChildOrder {
             return this.childOrder;
         }
 
@@ -177,9 +186,9 @@ module api.content {
             return this.contentState;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
                 return false;
             }
 
@@ -189,76 +198,76 @@ module api.content {
 
             var other = <ContentSummary>o;
 
-            if (!api.ObjectHelper.stringEquals(this.id, other.id)) {
+            if (!ObjectHelper.stringEquals(this.id, other.id)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.name, other.name)) {
+            if (!ObjectHelper.equals(this.name, other.name)) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.displayName, other.displayName)) {
+            if (!ObjectHelper.stringEquals(this.displayName, other.displayName)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.path, other.path)) {
+            if (!ObjectHelper.equals(this.path, other.path)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.root, other.root)) {
+            if (!ObjectHelper.booleanEquals(this.root, other.root)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.children, other.children)) {
+            if (!ObjectHelper.booleanEquals(this.children, other.children)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.type, other.type)) {
+            if (!ObjectHelper.equals(this.type, other.type)) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.iconUrl, other.iconUrl)) {
+            if (!ObjectHelper.stringEquals(this.iconUrl, other.iconUrl)) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.thumbnail, other.thumbnail)) {
+            if (!ObjectHelper.equals(this.thumbnail, other.thumbnail)) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.modifier, other.modifier)) {
+            if (!ObjectHelper.stringEquals(this.modifier, other.modifier)) {
                 return false;
             }
-            if (!api.ObjectHelper.objectEquals(this.owner, other.owner)) {
+            if (!ObjectHelper.objectEquals(this.owner, other.owner)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.page, other.page)) {
+            if (!ObjectHelper.booleanEquals(this.page, other.page)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.valid, other.valid)) {
+            if (!ObjectHelper.booleanEquals(this.valid, other.valid)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.requireValid, other.requireValid)) {
+            if (!ObjectHelper.booleanEquals(this.requireValid, other.requireValid)) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.createdTime, other.createdTime)) {
+            if (!ObjectHelper.dateEquals(this.createdTime, other.createdTime)) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
+            if (!ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.deletable, other.deletable)) {
+            if (!ObjectHelper.booleanEquals(this.deletable, other.deletable)) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.editable, other.editable)) {
+            if (!ObjectHelper.booleanEquals(this.editable, other.editable)) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.language, other.language)) {
+            if (!ObjectHelper.stringEquals(this.language, other.language)) {
                 return false;
             }
-            if (!api.ObjectHelper.objectEquals(this.contentState, other.contentState)) {
+            if (!ObjectHelper.objectEquals(this.contentState, other.contentState)) {
                 return false;
             }
             return true;
         }
 
-        static fromJson(json: api.content.json.ContentSummaryJson): ContentSummary {
+        static fromJson(json: ContentSummaryJson): ContentSummary {
             return new ContentSummaryBuilder().fromContentSummaryJson(json).build();
         }
 
-        static fromJsonArray(jsonArray: api.content.json.ContentSummaryJson[]): ContentSummary[] {
+        static fromJsonArray(jsonArray: ContentSummaryJson[]): ContentSummary[] {
             var array: ContentSummary[] = [];
-            jsonArray.forEach((json: api.content.json.ContentSummaryJson) => {
+            jsonArray.forEach((json: ContentSummaryJson) => {
                 array.push(ContentSummary.fromJson(json));
             });
             return array;
@@ -279,7 +288,7 @@ module api.content {
 
         children: boolean;
 
-        type: api.schema.content.ContentTypeName;
+        type: ContentTypeName;
 
         iconUrl: string;
 
@@ -287,7 +296,7 @@ module api.content {
 
         modifier: string;
 
-        owner: api.security.PrincipalKey;
+        owner: PrincipalKey;
 
         page: boolean;
 
@@ -303,7 +312,7 @@ module api.content {
 
         editable: boolean;
 
-        childOrder: api.content.order.ChildOrder;
+        childOrder: ChildOrder;
 
         language: string;
 
@@ -336,7 +345,7 @@ module api.content {
             }
         }
 
-        fromContentSummaryJson(json: api.content.json.ContentSummaryJson): ContentSummaryBuilder {
+        fromContentSummaryJson(json: ContentSummaryJson): ContentSummaryBuilder {
 
             super.fromContentIdBaseItemJson(json);
 
@@ -345,11 +354,11 @@ module api.content {
             this.path = ContentPath.fromString(json.path);
             this.root = json.isRoot;
             this.children = json.hasChildren;
-            this.type = new api.schema.content.ContentTypeName(json.type);
+            this.type = new ContentTypeName(json.type);
             this.iconUrl = json.iconUrl;
             this.thumbnail = json.thumbnail ? Thumbnail.create().fromJson(json.thumbnail).build() : null;
             this.modifier = json.modifier;
-            this.owner = json.owner ? api.security.PrincipalKey.fromString(json.owner) : null;
+            this.owner = json.owner ? PrincipalKey.fromString(json.owner) : null;
             this.page = json.isPage;
             this.valid = json.isValid;
             this.requireValid = json.requireValid;
@@ -362,7 +371,7 @@ module api.content {
             this.deletable = json.deletable;
             this.editable = json.editable;
 
-            this.childOrder = api.content.order.ChildOrder.fromJson(json.childOrder);
+            this.childOrder = ChildOrder.fromJson(json.childOrder);
 
             this.contentState = ContentState.fromString(json.contentState);
 
@@ -409,7 +418,7 @@ module api.content {
             return this;
         }
 
-        setType(value: api.schema.content.ContentTypeName): ContentSummaryBuilder {
+        setType(value: ContentTypeName): ContentSummaryBuilder {
             this.type = value;
             return this;
         }
@@ -433,4 +442,3 @@ module api.content {
             return new ContentSummary(this);
         }
     }
-}

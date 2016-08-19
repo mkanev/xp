@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {Group} from "./Group";
+import {GroupJson} from "./GroupJson";
+import {PrincipalKey} from "./PrincipalKey";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
 
-    export class UpdateGroupRequest extends SecurityResourceRequest<GroupJson, Group> {
+export class UpdateGroupRequest extends SecurityResourceRequest<GroupJson, Group> {
 
         private key: PrincipalKey;
         private displayName: string;
@@ -48,16 +53,15 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals', 'updateGroup');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals', 'updateGroup');
         }
 
         sendAndParse(): wemQ.Promise<Group> {
 
-            return this.send().then((response: api.rest.JsonResponse<GroupJson>) => {
+            return this.send().then((response: JsonResponse<GroupJson>) => {
                 return Group.fromJson(response.getResult());
             });
         }
 
     }
-}

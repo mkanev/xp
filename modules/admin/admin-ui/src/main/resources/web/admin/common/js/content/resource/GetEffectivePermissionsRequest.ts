@@ -1,8 +1,12 @@
-module api.content.resource {
+import {AccessControlList} from "../../security/acl/AccessControlList";
+import {EffectivePermissionJson} from "../json/EffectivePermissionJson";
+import {EffectivePermission} from "../../ui/security/acl/EffectivePermission";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import AccessControlList = api.security.acl.AccessControlList;
-
-    export class GetEffectivePermissionsRequest extends ContentResourceRequest<api.content.json.EffectivePermissionJson[], api.ui.security.acl.EffectivePermission[]> {
+export class GetEffectivePermissionsRequest extends ContentResourceRequest<EffectivePermissionJson[], EffectivePermission[]> {
 
         private contentId: ContentId;
 
@@ -18,20 +22,19 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "effectivePermissions");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "effectivePermissions");
         }
 
-        sendAndParse(): wemQ.Promise<api.ui.security.acl.EffectivePermission[]> {
+        sendAndParse(): wemQ.Promise<EffectivePermission[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.EffectivePermissionJson[]>) => {
+            return this.send().then((response: JsonResponse<EffectivePermissionJson[]>) => {
                 if (response.getJson()) {
                     return response.getJson().map((json) => {
-                        return api.ui.security.acl.EffectivePermission.fromJson(json);
+                        return EffectivePermission.fromJson(json);
                     });
                 }
                 return null;
             });
         }
     }
-}

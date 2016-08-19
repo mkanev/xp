@@ -1,6 +1,8 @@
-module api.query.expr {
+import {FieldExpr} from "./FieldExpr";
+import {OrderDirection} from "./OrderDirection";
+import {OrderExpr} from "./OrderExpr";
 
-    export class FieldOrderExpr extends OrderExpr {
+export class FieldOrderExpr extends OrderExpr {
 
         private field: FieldExpr;
 
@@ -17,4 +19,3 @@ module api.query.expr {
             return this.field.toString() + " " + super.directionAsString();
         }
     }
-}

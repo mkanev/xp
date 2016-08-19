@@ -1,12 +1,29 @@
-module api.ui.security.auth {
+import {RichComboBox} from "../../selector/combobox/RichComboBox";
+import {Application} from "../../../application/Application";
+import {RichComboBoxBuilder} from "../../selector/combobox/RichComboBox";
+import {AuthApplicationLoader} from "../../../security/auth/AuthApplicationLoader";
+import {BaseSelectedOptionsView} from "../../selector/combobox/BaseSelectedOptionsView";
+import {Option} from "../../selector/Option";
+import {SelectedOption} from "../../selector/combobox/SelectedOption";
+import {RichSelectedOptionView} from "../../selector/combobox/RichSelectedOptionView";
+import {AuthConfig} from "../../../security/AuthConfig";
+import {PropertyTree} from "../../../data/PropertyTree";
+import {UriHelper} from "../../../util/UriHelper";
+import {Element} from "../../../dom/Element";
+import {AEl} from "../../../dom/AEl";
+import {SiteConfiguratorDialog} from "../../../content/site/inputtype/siteconfigurator/SiteConfiguratorDialog";
+import {FormView} from "../../../form/FormView";
+import {FormContext} from "../../../form/FormContext";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {AuthApplicationViewer} from "./AuthApplicationViewer";
 
-    export class AuthApplicationComboBox extends api.ui.selector.combobox.RichComboBox<api.application.Application> {
+export class AuthApplicationComboBox extends RichComboBox<Application> {
         constructor() {
-            var builder = new api.ui.selector.combobox.RichComboBoxBuilder<api.application.Application>();
+            var builder = new RichComboBoxBuilder<Application>();
             builder.
                 setMaximumOccurrences(1).
                 setComboBoxName("authApplicationSelector").
-                setLoader(new api.security.auth.AuthApplicationLoader()).
+                setLoader(new AuthApplicationLoader()).
                 setSelectedOptionsView(new AuthApplicationSelectedOptionsView()).
                 setOptionDisplayValueViewer(new AuthApplicationViewer()).
                 setDelayedInputValueChangedHandling(500);
@@ -14,55 +31,55 @@ module api.ui.security.auth {
         }
     }
 
-    export class AuthApplicationSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<api.application.Application> {
+    export class AuthApplicationSelectedOptionsView extends BaseSelectedOptionsView<Application> {
 
-        createSelectedOption(option: api.ui.selector.Option<api.application.Application>): api.ui.selector.combobox.SelectedOption<api.application.Application> {
+        createSelectedOption(option: Option<Application>): SelectedOption<Application> {
             var optionView = new AuthApplicationSelectedOptionView(option);
-            return new api.ui.selector.combobox.SelectedOption<api.application.Application>(optionView, this.count());
+            return new SelectedOption<Application>(optionView, this.count());
         }
     }
 
-    export class AuthApplicationSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<api.application.Application> {
+    export class AuthApplicationSelectedOptionView extends RichSelectedOptionView<Application> {
 
-        private application: api.application.Application;
+        private application: Application;
 
-        private authConfig: api.security.AuthConfig;
+        private authConfig: AuthConfig;
 
         private formView;
 
 
-        constructor(option: api.ui.selector.Option<api.application.Application>) {
+        constructor(option: Option<Application>) {
             super(option);
             this.application = option.displayValue;
-            this.authConfig = api.security.AuthConfig.create().
-                setConfig(new api.data.PropertyTree(undefined)).
+            this.authConfig = AuthConfig.create().
+                setConfig(new PropertyTree(undefined)).
                 setApplicationKey(this.application.getApplicationKey()).
                 build();
         }
 
-        getAuthConfig(): api.security.AuthConfig {
+        getAuthConfig(): AuthConfig {
             return this.authConfig;
         }
 
-        setAuthConfig(authConfig: api.security.AuthConfig) {
+        setAuthConfig(authConfig: AuthConfig) {
             this.authConfig = authConfig;
         }
 
-        resolveIconUrl(content: api.application.Application): string {
-            return api.util.UriHelper.getAdminUri("common/images/icons/icoMoon/32x32/puzzle.png");
+        resolveIconUrl(content: Application): string {
+            return UriHelper.getAdminUri("common/images/icons/icoMoon/32x32/puzzle.png");
         }
 
-        resolveTitle(content: api.application.Application): string {
+        resolveTitle(content: Application): string {
             return content.getDisplayName();
         }
 
-        resolveSubTitle(content: api.application.Application): string {
+        resolveSubTitle(content: Application): string {
             return content.getApplicationKey().toString();
         }
 
-        createActionButtons(content: api.application.Application): api.dom.Element[] {
+        createActionButtons(content: Application): Element[] {
             if (content.getAuthForm().getFormItems().length > 0) {
-                let editButton = new api.dom.AEl("edit");
+                let editButton = new AEl("edit");
                 editButton.onClicked((event: MouseEvent) => {
                     this.initAndOpenConfigureDialog();
                 });
@@ -74,7 +91,7 @@ module api.ui.security.auth {
         initAndOpenConfigureDialog() {
             if (this.application.getAuthForm().getFormItems().length > 0) {
 
-                var tempSiteConfig: api.security.AuthConfig = this.makeTemporaryAuthConfig();
+                var tempSiteConfig: AuthConfig = this.makeTemporaryAuthConfig();
                 var formViewStateOnDialogOpen = this.formView;
                 this.formView = this.createFormView(tempSiteConfig);
 
@@ -84,7 +101,7 @@ module api.ui.security.auth {
                     }
                 };
 
-                var siteConfiguratorDialog = new api.content.site.inputtype.siteconfigurator.SiteConfiguratorDialog(this.application,
+                var siteConfiguratorDialog = new SiteConfiguratorDialog(this.application,
                     this.formView,
                     okCallback,
                     () => {
@@ -93,27 +110,27 @@ module api.ui.security.auth {
             }
         }
 
-        private makeTemporaryAuthConfig(): api.security.AuthConfig {
-            return api.security.AuthConfig.create().
+        private makeTemporaryAuthConfig(): AuthConfig {
+            return AuthConfig.create().
                 setConfig(this.authConfig.getConfig().copy()).
                 setApplicationKey(this.authConfig.getApplicationKey()).build();
         }
 
-        private createFormView(authConfig: api.security.AuthConfig): api.form.FormView {
-            var formView = new api.form.FormView(api.form.FormContext.create().build(), this.application.getAuthForm(),
+        private createFormView(authConfig: AuthConfig): FormView {
+            var formView = new FormView(FormContext.create().build(), this.application.getAuthForm(),
                 authConfig.getConfig().getRoot());
             formView.addClass("site-form");
             formView.layout().then(() => {
                 this.formView.validate(false, true);
                 this.toggleClass("invalid", !this.formView.isValid());
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
             return formView;
         }
 
-        private applyTemporaryConfig(tempSiteConfig: api.security.AuthConfig) {
+        private applyTemporaryConfig(tempSiteConfig: AuthConfig) {
             tempSiteConfig.getConfig().getRoot().forEach((property) => {
                 this.authConfig.getConfig().setProperty(property.getName(), property.getIndex(), property.getValue());
             });
@@ -126,4 +143,3 @@ module api.ui.security.auth {
         }
 
     }
-}

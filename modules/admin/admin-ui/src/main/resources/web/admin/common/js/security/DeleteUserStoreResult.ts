@@ -1,6 +1,7 @@
-module api.security {
+import {DeleteUserStoreResultJson} from "./DeleteUserStoreResultJson";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class DeleteUserStoreResult {
+export class DeleteUserStoreResult {
 
         private userStoreKey: UserStoreKey;
         private deleted: boolean;
@@ -21,7 +22,7 @@ module api.security {
             return this.reason;
         }
 
-        static fromJson(json: api.security.DeleteUserStoreResultJson): DeleteUserStoreResult {
+        static fromJson(json: DeleteUserStoreResultJson): DeleteUserStoreResult {
             var result = new DeleteUserStoreResult();
             result.userStoreKey = UserStoreKey.fromString(json.userStoreKey);
             result.deleted = json.deleted;
@@ -30,4 +31,3 @@ module api.security {
         }
     }
 
-}

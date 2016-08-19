@@ -1,11 +1,13 @@
-module api.content.site {
+import {Property} from "../../data/Property";
+import {PropertySet} from "../../data/PropertySet";
+import {PropertyTree} from "../../data/PropertyTree";
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {assertNotNull} from "../../util/Assert";
 
-    import Property = api.data.Property;
-    import PropertySet = api.data.PropertySet;
-    import PropertyTree = api.data.PropertyTree;
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class SiteConfig implements api.Equitable, api.Cloneable {
+export class SiteConfig implements Equitable, Cloneable {
 
         private applicationKey: ApplicationKey;
 
@@ -16,7 +18,7 @@ module api.content.site {
             this.config = builder.config;
         }
 
-        getApplicationKey(): api.application.ApplicationKey {
+        getApplicationKey(): ApplicationKey {
             return this.applicationKey;
         }
 
@@ -31,19 +33,19 @@ module api.content.site {
             }
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, SiteConfig)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, SiteConfig)) {
                 return false;
             }
 
             var other = <SiteConfig>o;
 
-            if (!api.ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
+            if (!ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.config, other.config)) {
+            if (!ObjectHelper.equals(this.config, other.config)) {
                 return false;
             }
 
@@ -77,7 +79,7 @@ module api.content.site {
         }
 
         fromData(propertySet: PropertySet): SiteConfigBuilder {
-            api.util.assertNotNull(propertySet, "data cannot be null");
+            assertNotNull(propertySet, "data cannot be null");
             var applicationKey = ApplicationKey.fromString(propertySet.getString("applicationKey"));
             var siteConfig = propertySet.getPropertySet("config");
             this.setApplicationKey(applicationKey);
@@ -85,7 +87,7 @@ module api.content.site {
             return this;
         }
 
-        setApplicationKey(value: api.application.ApplicationKey): SiteConfigBuilder {
+        setApplicationKey(value: ApplicationKey): SiteConfigBuilder {
             this.applicationKey = value;
             return this;
         }
@@ -100,4 +102,3 @@ module api.content.site {
         }
     }
 
-}

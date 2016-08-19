@@ -1,6 +1,8 @@
-module api.macro {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {PageContributionsJson} from "./resource/MacroPreviewJson";
 
-    export class PageContributions implements api.Equitable {
+export class PageContributions implements Equitable {
         private bodyBegin: string[];
         private bodyEnd: string[];
         private headBegin: string[];
@@ -33,26 +35,26 @@ module api.macro {
             return this.bodyBegin.length > 0 || this.bodyEnd.length > 0 || this.headBegin.length > 0 || this.headEnd.length > 0;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PageContributions)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PageContributions)) {
                 return false;
             }
 
             var other = <PageContributions>o;
 
-            if (!api.ObjectHelper.stringArrayEquals(this.bodyBegin, other.bodyBegin)) {
+            if (!ObjectHelper.stringArrayEquals(this.bodyBegin, other.bodyBegin)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringArrayEquals(this.bodyEnd, other.bodyEnd)) {
+            if (!ObjectHelper.stringArrayEquals(this.bodyEnd, other.bodyEnd)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringArrayEquals(this.headBegin, other.headBegin)) {
+            if (!ObjectHelper.stringArrayEquals(this.headBegin, other.headBegin)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.stringArrayEquals(this.headEnd, other.headEnd)) {
+            if (!ObjectHelper.stringArrayEquals(this.headEnd, other.headEnd)) {
                 return false;
             }
 
@@ -71,7 +73,7 @@ module api.macro {
         headBegin: string[];
         headEnd: string[];
 
-        fromJson(json: api.macro.resource.PageContributionsJson) {
+        fromJson(json: PageContributionsJson) {
             this.bodyBegin = json.bodyBegin;
             this.bodyEnd = json.bodyEnd;
             this.headBegin = json.headBegin;
@@ -104,4 +106,3 @@ module api.macro {
         }
     }
 
-}

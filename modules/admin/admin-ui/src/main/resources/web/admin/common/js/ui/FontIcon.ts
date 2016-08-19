@@ -1,8 +1,8 @@
-module api.ui {
+import {DivEl} from "../dom/DivEl";
+import {StyleHelper} from "../StyleHelper";
 
-    export class FontIcon extends api.dom.DivEl {
+export class FontIcon extends DivEl {
         constructor(iconClass: string) {
-            super("font-icon " + iconClass, api.StyleHelper.getCurrentPrefix());
+            super("font-icon " + iconClass, StyleHelper.getCurrentPrefix());
         }
     }
-}

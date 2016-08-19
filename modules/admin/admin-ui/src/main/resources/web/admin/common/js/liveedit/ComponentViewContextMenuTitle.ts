@@ -1,10 +1,10 @@
-module api.liveedit {
+import {Component} from "../content/page/region/Component";
+import {ComponentPropertyChangedEvent} from "../content/page/region/ComponentPropertyChangedEvent";
+import {ComponentName} from "../content/page/region/ComponentName";
+import {ComponentItemType} from "./ComponentItemType";
+import {ItemViewContextMenuTitle} from "./ItemViewContextMenuTitle";
 
-    import Component = api.content.page.region.Component;
-    import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
-    import ComponentName = api.content.page.region.ComponentName;
-
-    export class ComponentViewContextMenuTitle<COMPONENT extends Component> extends ItemViewContextMenuTitle {
+export class ComponentViewContextMenuTitle<COMPONENT extends Component> extends ItemViewContextMenuTitle {
 
         constructor(component: COMPONENT, type: ComponentItemType) {
             var handler = (event: ComponentPropertyChangedEvent) => {
@@ -24,4 +24,3 @@ module api.liveedit {
 
     }
 
-}

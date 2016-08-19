@@ -1,24 +1,28 @@
-import "../../api.ts";
-import {UninstallApplicationEvent} from "./UninstallApplicationEvent";
-import Application = api.application.Application;
+import {Application} from "../../../../../common/js/application/Application";
+import {ModalDialog} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {Action} from "../../../../../common/js/ui/Action";
+import {ModalDialogHeader} from "../../../../../common/js/ui/dialog/ModalDialog";
+import {H6El} from "../../../../../common/js/dom/H6El";
+import {Body} from "../../../../../common/js/dom/Body";
 
-export class UninstallApplicationDialog extends api.ui.dialog.ModalDialog {
+import {UninstallApplicationEvent} from "./UninstallApplicationEvent";
+export class UninstallApplicationDialog extends ModalDialog {
 
     private applications: Application[];
 
-    private yesAction = new api.ui.Action('Yes');
+    private yesAction = new Action('Yes');
 
-    private noAction = new api.ui.Action('No');
+    private noAction = new Action('No');
 
 
     constructor(applications: Application[]) {
         super({
-            title: new api.ui.dialog.ModalDialogHeader("Uninstall Applications")
+            title: new ModalDialogHeader("Uninstall Applications")
         });
         this.applications = applications;
         this.addClass("uninstall-dialog");
 
-        var message = new api.dom.H6El();
+        var message = new H6El();
         message.getEl().setInnerHtml("Are you sure you want to uninstall selected application(s)?");
         this.appendChildToContentPanel(message);
 
@@ -35,7 +39,7 @@ export class UninstallApplicationDialog extends api.ui.dialog.ModalDialog {
     }
 
     show() {
-        api.dom.Body.get().appendChild(this);
+        Body.get().appendChild(this);
         super.show();
     }
 

@@ -1,7 +1,6 @@
-module api.security {
+import {PrincipalJson} from "./PrincipalJson";
 
-    export interface PrincipalsJson {
+export interface PrincipalsJson {
 
         principals: PrincipalJson[];
     }
-}

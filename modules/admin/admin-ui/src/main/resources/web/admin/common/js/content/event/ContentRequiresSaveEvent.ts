@@ -1,8 +1,8 @@
-module api.content.event {
+import {ContentId} from "../ContentId";
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
 
-    import ContentId = api.content.ContentId;
-
-    export class ContentRequiresSaveEvent extends api.event.Event {
+export class ContentRequiresSaveEvent extends Event {
 
         private contentId: ContentId;
 
@@ -16,11 +16,10 @@ module api.content.event {
         }
 
         static on(handler: (event: ContentRequiresSaveEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ContentRequiresSaveEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
-}

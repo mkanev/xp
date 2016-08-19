@@ -1,6 +1,7 @@
-module api.macro {
+import {NamesAndIconViewer} from "../ui/NamesAndIconViewer";
+import {MacroDescriptor} from "./MacroDescriptor";
 
-    export class MacroViewer extends api.ui.NamesAndIconViewer<MacroDescriptor> {
+export class MacroViewer extends NamesAndIconViewer<MacroDescriptor> {
 
         constructor() {
             super();
@@ -18,4 +19,3 @@ module api.macro {
             return object.getIconUrl();
         }
     }
-}

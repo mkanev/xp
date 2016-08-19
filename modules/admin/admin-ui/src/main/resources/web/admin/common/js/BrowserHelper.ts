@@ -1,6 +1,6 @@
-module api {
 
-    enum BrowserName {
+
+enum BrowserName {
         CHROME, FIREFOX, OPERA, SAFARI, MSIE, TRIDENT
     }
 
@@ -81,4 +81,3 @@ module api {
 
         }
     }
-}

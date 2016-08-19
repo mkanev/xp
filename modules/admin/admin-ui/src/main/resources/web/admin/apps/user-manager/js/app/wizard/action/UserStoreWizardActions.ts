@@ -1,21 +1,21 @@
-import "../../../api.ts";
+import {GetPrincipalsByUserStoreRequest} from "../../../../../../common/js/security/GetPrincipalsByUserStoreRequest";
+import {PrincipalType} from "../../../../../../common/js/security/PrincipalType";
+import {UserStore} from "../../../../../../common/js/security/UserStore";
+import {UserStoreKey} from "../../../../../../common/js/security/UserStoreKey";
+
 import {UserItemWizardActions} from "./UserItemWizardActions";
 import {UserItemWizardPanel} from "../UserItemWizardPanel";
 
-import GetPrincipalsByUserStoreRequest = api.security.GetPrincipalsByUserStoreRequest;
-import PrincipalType = api.security.PrincipalType;
-import UserStore = api.security.UserStore;
+export class UserStoreWizardActions extends UserItemWizardActions<UserStore> {
 
-export class UserStoreWizardActions extends UserItemWizardActions<api.security.UserStore> {
-
-    constructor(wizardPanel: UserItemWizardPanel<api.security.UserStore>) {
+    constructor(wizardPanel: UserItemWizardPanel<UserStore>) {
         super(wizardPanel);
 
         var userStore = wizardPanel.getPersistedItem();
         this.establishDeleteActionState(userStore ? userStore.getKey() : null);
     }
 
-    establishDeleteActionState(key: api.security.UserStoreKey) {
+    establishDeleteActionState(key: UserStoreKey) {
         if (key) {
             UserStore.checkOnDeletable(key).then((result: boolean) => {
                 this.getDeleteAction().setEnabled(result);

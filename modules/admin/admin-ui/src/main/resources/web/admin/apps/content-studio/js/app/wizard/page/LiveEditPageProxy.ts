@@ -1,65 +1,75 @@
-import "../../../api.ts";
+import {Content} from "../../../../../../common/js/content/Content";
+import {Site} from "../../../../../../common/js/content/site/Site";
+import {PageModel} from "../../../../../../common/js/content/page/PageModel";
+import {SiteModel} from "../../../../../../common/js/content/site/SiteModel";
+import {LiveEditModel} from "../../../../../../common/js/liveedit/LiveEditModel";
+import {Component} from "../../../../../../common/js/content/page/region/Component";
+import {RenderingMode} from "../../../../../../common/js/rendering/RenderingMode";
+import {Branch as Workspace} from "../../../../../../common/js/content/Branch";
+import {ComponentView} from "../../../../../../common/js/liveedit/ComponentView";
+import {LiveEditPageViewReadyEvent} from "../../../../../../common/js/liveedit/LiveEditPageViewReadyEvent";
+import {ComponentViewDragStartedEvent} from "../../../../../../common/js/liveedit/ComponentViewDragStartedEvent";
+import {ComponentViewDragStoppedEvent} from "../../../../../../common/js/liveedit/ComponentViewDraggingStoppedEvent";
+import {ComponentViewDragCanceledEvent} from "../../../../../../common/js/liveedit/ComponentViewDragCanceledEvent";
+import {ComponentViewDragDroppedEvent} from "../../../../../../common/js/liveedit/ComponentViewDragDroppedEventEvent";
+import {PageSelectedEvent} from "../../../../../../common/js/liveedit/PageSelectedEvent";
+import {PageLockedEvent} from "../../../../../../common/js/liveedit/PageLockedEvent";
+import {PageUnlockedEvent} from "../../../../../../common/js/liveedit/PageUnlockedEvent";
+import {PageUnloadedEvent} from "../../../../../../common/js/liveedit/PageUnloadedEvent";
+import {PageTextModeStartedEvent} from "../../../../../../common/js/liveedit/PageTextModeStartedEvent";
+import {RegionSelectedEvent} from "../../../../../../common/js/liveedit/RegionSelectedEvent";
+import {ItemViewSelectedEvent} from "../../../../../../common/js/liveedit/ItemViewSelectedEvent";
+import {ItemViewDeselectedEvent} from "../../../../../../common/js/liveedit/ItemViewDeselectedEvent";
+import {LiveComponentAddedEvent as ComponentAddedEvent} from "../../../../../../common/js/liveedit/LiveComponentAddedEvent";
+import {LiveComponentRemovedEvent as ComponentRemovedEvent} from "../../../../../../common/js/liveedit/LiveComponentRemovedEvent";
+import {ComponentDuplicatedEvent} from "../../../../../../common/js/liveedit/ComponentDuplicatedEvent";
+import {ComponentInspectedEvent} from "../../../../../../common/js/liveedit/ComponentInspectedEvent";
+import {PageInspectedEvent} from "../../../../../../common/js/liveedit/PageInspectedEvent";
+import {ComponentLoadedEvent} from "../../../../../../common/js/liveedit/ComponentLoadedEvent";
+import {LiveComponentResetEvent as ComponentResetEvent} from "../../../../../../common/js/liveedit/LiveComponentResetEvent";
+import {LiveEditPageInitializationErrorEvent} from "../../../../../../common/js/liveedit/LiveEditPageInitializationErrorEvent";
+import {ComponentFragmentCreatedEvent} from "../../../../../../common/js/liveedit/ComponentFragmentCreatedEvent";
+import {ShowWarningLiveEditEvent} from "../../../../../../common/js/liveedit/ShowWarningLiveEditEvent";
+import {EditContentEvent} from "../../../../../../common/js/content/event/EditContentEvent";
+import {ItemViewIdProducer} from "../../../../../../common/js/liveedit/ItemViewIdProducer";
+import {CreateItemViewConfig} from "../../../../../../common/js/liveedit/CreateItemViewConfig";
+import {RegionView} from "../../../../../../common/js/liveedit/RegionView";
+import {CreateHtmlAreaDialogEvent} from "../../../../../../common/js/util/htmlarea/dialog/CreateHtmlAreaDialogEvent";
+import {LiveEditPageDialogCreatedEvent} from "../../../../../../common/js/liveedit/LiveEditPageDialogCreatedEvent";
+import {MinimizeWizardPanelEvent} from "../../../../../../common/js/app/wizard/MinimizeWizardPanelEvent";
+import {IFrameEl} from "../../../../../../common/js/dom/IFrameEl";
+import {LoadMask} from "../../../../../../common/js/ui/mask/LoadMask";
+import {DragMask} from "../../../../../../common/js/ui/mask/DragMask";
+import {DragAndDrop} from "../../../../../../common/js/liveedit/DragAndDrop";
+import {PortalUriHelper} from "../../../../../../common/js/rendering/PortalUriHelper";
+import {BrowserHelper} from "../../../../../../common/js/BrowserHelper";
+import {SkipLiveEditReloadConfirmationEvent} from "../../../../../../common/js/liveedit/SkipLiveEditReloadConfirmationEvent";
+import {InitializeLiveEditEvent} from "../../../../../../common/js/liveedit/InitializeLiveEditEvent";
+import {assertNotNull} from "../../../../../../common/js/util/Assert";
+import {Element} from "../../../../../../common/js/dom/Element";
+import {HtmlModalDialog} from "../../../../../../common/js/util/htmlarea/dialog/HtmlModalDialog";
+import {PageDescriptorBuilder} from "../../../../../../common/js/content/page/PageDescriptor";
+import {Regions} from "../../../../../../common/js/content/page/region/Regions";
+
 import {ShowContentFormEvent} from "../ShowContentFormEvent";
 import {ShowLiveEditEvent} from "../ShowLiveEditEvent";
 import {ShowSplitEditEvent} from "../ShowSplitEditEvent";
 
 declare var CONFIG;
 
-import Content = api.content.Content;
-import Site = api.content.site.Site;
-import PageModel = api.content.page.PageModel;
-import SiteModel = api.content.site.SiteModel;
-import LiveEditModel = api.liveedit.LiveEditModel;
-import Component = api.content.page.region.Component;
-import RenderingMode = api.rendering.RenderingMode;
-import Workspace = api.content.Branch;
-
-import ComponentView = api.liveedit.ComponentView;
-import LiveEditPageViewReadyEvent = api.liveedit.LiveEditPageViewReadyEvent;
-import ComponentViewDragStartedEvent = api.liveedit.ComponentViewDragStartedEvent;
-import ComponentViewDragStoppedEvent = api.liveedit.ComponentViewDragStoppedEvent;
-import ComponentViewDragCanceledEvent = api.liveedit.ComponentViewDragCanceledEvent;
-import ComponentViewDragDroppedEvent = api.liveedit.ComponentViewDragDroppedEvent;
-import PageSelectedEvent = api.liveedit.PageSelectedEvent;
-import PageLockedEvent = api.liveedit.PageLockedEvent;
-import PageUnlockedEvent = api.liveedit.PageUnlockedEvent;
-import PageUnloadedEvent = api.liveedit.PageUnloadedEvent;
-import PageTextModeStartedEvent = api.liveedit.PageTextModeStartedEvent;
-import RegionSelectedEvent = api.liveedit.RegionSelectedEvent;
-import ItemViewSelectedEvent = api.liveedit.ItemViewSelectedEvent;
-import ItemViewDeselectedEvent = api.liveedit.ItemViewDeselectedEvent;
-import ComponentAddedEvent = api.liveedit.LiveComponentAddedEvent;
-import ComponentRemovedEvent = api.liveedit.LiveComponentRemovedEvent;
-import ComponentDuplicatedEvent = api.liveedit.ComponentDuplicatedEvent;
-import ComponentInspectedEvent = api.liveedit.ComponentInspectedEvent;
-import PageInspectedEvent = api.liveedit.PageInspectedEvent;
-import ComponentLoadedEvent = api.liveedit.ComponentLoadedEvent;
-import ComponentResetEvent = api.liveedit.LiveComponentResetEvent;
-import LiveEditPageInitializationErrorEvent = api.liveedit.LiveEditPageInitializationErrorEvent;
-import ComponentFragmentCreatedEvent = api.liveedit.ComponentFragmentCreatedEvent;
-import ShowWarningLiveEditEvent = api.liveedit.ShowWarningLiveEditEvent;
-import EditContentEvent = api.content.event.EditContentEvent;
-import ItemViewIdProducer = api.liveedit.ItemViewIdProducer;
-import CreateItemViewConfig = api.liveedit.CreateItemViewConfig;
-import RegionView = api.liveedit.RegionView;
-
-import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
-import LiveEditPageDialogCreatedEvent = api.liveedit.LiveEditPageDialogCreatedEvent;
-import MinimizeWizardPanelEvent = api.app.wizard.MinimizeWizardPanelEvent;
-
 export class LiveEditPageProxy {
 
     private liveEditModel: LiveEditModel;
 
-    private liveEditIFrame: api.dom.IFrameEl;
+    private liveEditIFrame: IFrameEl;
 
-    private loadMask: api.ui.mask.LoadMask;
+    private loadMask: LoadMask;
 
     private liveEditWindow: any;
 
     private livejq: JQueryStatic;
 
-    private dragMask: api.ui.mask.DragMask;
+    private dragMask: DragMask;
 
     private loadedListeners: {(): void;}[] = [];
 
@@ -127,10 +137,10 @@ export class LiveEditPageProxy {
 
     constructor() {
 
-        this.liveEditIFrame = new api.dom.IFrameEl("live-edit-frame");
+        this.liveEditIFrame = new IFrameEl("live-edit-frame");
         this.liveEditIFrame.onLoaded(() => this.handleIFrameLoadedEvent());
-        this.loadMask = new api.ui.mask.LoadMask(this.liveEditIFrame);
-        this.dragMask = new api.ui.mask.DragMask(this.liveEditIFrame);
+        this.loadMask = new LoadMask(this.liveEditIFrame);
+        this.dragMask = new DragMask(this.liveEditIFrame);
 
         this.hideLoadMaskHandler = () => {
             this.loadMask.hide();
@@ -180,11 +190,11 @@ export class LiveEditPageProxy {
         return this.liveEditIFrame.getEl().getHeight();
     }
 
-    public getIFrame(): api.dom.IFrameEl {
+    public getIFrame(): IFrameEl {
         return this.liveEditIFrame;
     }
 
-    public getLoadMask(): api.ui.mask.LoadMask {
+    public getLoadMask(): LoadMask {
         return this.loadMask;
     }
 
@@ -193,14 +203,14 @@ export class LiveEditPageProxy {
     }
 
     public createDraggable(item: JQuery) {
-        this.liveEditWindow.api.liveedit.DragAndDrop.get().createDraggable(item);
+        this.liveEditWindow.DragAndDrop.get().createDraggable(item);
     }
 
     public destroyDraggable(item: JQuery) {
-        this.liveEditWindow.api.liveedit.DragAndDrop.get().destroyDraggable(item);
+        this.liveEditWindow.DragAndDrop.get().destroyDraggable(item);
     }
 
-    public getDragMask(): api.ui.mask.DragMask {
+    public getDragMask(): DragMask {
         return this.dragMask;
     }
 
@@ -218,12 +228,12 @@ export class LiveEditPageProxy {
         this.showLoadMaskHandler();
 
         var contentId = this.liveEditModel.getContent().getContentId().toString();
-        var pageUrl = api.rendering.PortalUriHelper.getPortalUri(contentId, RenderingMode.EDIT, Workspace.DRAFT);
+        var pageUrl = PortalUriHelper.getPortalUri(contentId, RenderingMode.EDIT, Workspace.DRAFT);
         if (LiveEditPageProxy.debug) {
             console.log("LiveEditPageProxy.load pageUrl: " + pageUrl);
         }
 
-        if (api.BrowserHelper.isIE()) {
+        if (BrowserHelper.isIE()) {
             this.copyObjectsBeforeFrameReloadForIE();
         }
 
@@ -231,7 +241,7 @@ export class LiveEditPageProxy {
     }
 
     public skipNextReloadConfirmation(skip: boolean) {
-        new api.liveedit.SkipLiveEditReloadConfirmationEvent(skip).fire(this.liveEditWindow);
+        new SkipLiveEditReloadConfirmationEvent(skip).fire(this.liveEditWindow);
     }
 
     private handleIFrameLoadedEvent() {
@@ -252,14 +262,14 @@ export class LiveEditPageProxy {
 
                 this.listenToPage(this.liveEditWindow);
 
-                if (api.BrowserHelper.isIE()) {
+                if (BrowserHelper.isIE()) {
                     this.resetObjectsAfterFrameReloadForIE();
                     this.disableLinksInLiveEditForIE();
                 }
-                new api.liveedit.InitializeLiveEditEvent(this.liveEditModel).fire(this.liveEditWindow);
+                new InitializeLiveEditEvent(this.liveEditModel).fire(this.liveEditWindow);
             }
             else {
-                this.notifyLiveEditPageViewReady(new api.liveedit.LiveEditPageViewReadyEvent());
+                this.notifyLiveEditPageViewReady(new LiveEditPageViewReadyEvent());
             }
         }
 
@@ -269,14 +279,14 @@ export class LiveEditPageProxy {
 
     public loadComponent(componentView: ComponentView<Component>, componentUrl: string): wemQ.Promise<string> {
         var deferred = wemQ.defer<string>();
-        api.util.assertNotNull(componentView, "componentView cannot be null");
-        api.util.assertNotNull(componentUrl, "componentUrl cannot be null");
+        assertNotNull(componentView, "componentView cannot be null");
+        assertNotNull(componentUrl, "componentUrl cannot be null");
 
         wemjq.ajax({
             url: componentUrl,
             type: 'GET',
             success: (htmlAsString: string) => {
-                var newElement = api.dom.Element.fromString(htmlAsString);
+                var newElement = Element.fromString(htmlAsString);
                 var itemViewIdProducer = componentView.getItemViewIdProducer();
 
                 var createViewConfig = new CreateItemViewConfig<RegionView,Component>().setItemViewProducer(
@@ -697,7 +707,7 @@ export class LiveEditPageProxy {
         this.createHtmlAreaDialogListeners.forEach((listener) => listener(event));
     }
 
-    notifyLiveEditPageDialogCreated(modalDialog: api.util.htmlarea.dialog.HtmlModalDialog, config: any) {
+    notifyLiveEditPageDialogCreated(modalDialog: HtmlModalDialog, config: any) {
         new LiveEditPageDialogCreatedEvent(modalDialog, config).fire(this.liveEditWindow);
     }
 
@@ -764,14 +774,14 @@ export class LiveEditPageProxy {
 
     private resetControllerForIE() {
         if (this.controllerCopyForIE) {
-            var controller = new api.content.page.PageDescriptorBuilder().fromJson(this.controllerCopyForIE).build();
+            var controller = new PageDescriptorBuilder().fromJson(this.controllerCopyForIE).build();
             this.liveEditModel.getPageModel().setControllerDescriptor(controller);
         }
     }
 
     private resetRegionsForIE() {
         if (this.regionsCopyForIE) {
-            var regions = api.content.page.region.Regions.create().fromJson(this.regionsCopyForIE, null).build();
+            var regions = Regions.create().fromJson(this.regionsCopyForIE, null).build();
             this.liveEditModel.getPageModel().setRegions(regions);
         }
     }

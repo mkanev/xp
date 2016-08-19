@@ -1,18 +1,18 @@
-import "../../api.ts";
+import {Role} from "../../../../../common/js/security/Role";
+import {RoleBuilder} from "../../../../../common/js/security/Role";
+import {CreateRoleRequest} from "../../../../../common/js/security/CreateRoleRequest";
+import {UpdateRoleRequest} from "../../../../../common/js/security/UpdateRoleRequest";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {RoleKeys} from "../../../../../common/js/security/RoleKeys";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {UserItemCreatedEvent} from "../../../../../common/js/security/UserItemCreatedEvent";
+import {UserItemUpdatedEvent} from "../../../../../common/js/security/UserItemUpdatedEvent";
+
 import {GroupRoleWizardPanel} from "./GroupRoleWizardPanel";
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
 import {RoleMembersWizardStepForm} from "./RoleMembersWizardStepForm";
-
-import Role = api.security.Role;
-import RoleBuilder = api.security.RoleBuilder;
-import CreateRoleRequest = api.security.CreateRoleRequest;
-import UpdateRoleRequest = api.security.UpdateRoleRequest;
-
-import Principal = api.security.Principal;
-import PrincipalKey = api.security.PrincipalKey;
-import RoleKeys = api.security.RoleKeys;
-
-import WizardStep = api.app.wizard.WizardStep;
 
 export class RoleWizardPanel extends GroupRoleWizardPanel {
 
@@ -42,8 +42,8 @@ export class RoleWizardPanel extends GroupRoleWizardPanel {
     persistNewItem(): wemQ.Promise<Principal> {
         return this.produceCreateRoleRequest().sendAndParse().then((principal: Principal) => {
 
-            api.notify.showFeedback('Role was created!');
-            new api.security.UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
+            showFeedback('Role was created!');
+            new UserItemCreatedEvent(principal, this.getUserStore(), this.isParentOfSameType()).fire();
             this.notifyPrincipalNamed(principal);
 
             return principal;
@@ -66,8 +66,8 @@ export class RoleWizardPanel extends GroupRoleWizardPanel {
             if (!this.getPersistedItem().getDisplayName() && !!principal.getDisplayName()) {
                 this.notifyPrincipalNamed(principal);
             }
-            api.notify.showFeedback('Role was updated!');
-            new api.security.UserItemUpdatedEvent(principal, this.getUserStore()).fire();
+            showFeedback('Role was updated!');
+            new UserItemUpdatedEvent(principal, this.getUserStore()).fire();
 
             return principal;
         });

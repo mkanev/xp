@@ -1,6 +1,10 @@
-module api.ui {
+import {DivEl} from "../dom/DivEl";
+import {Element} from "../dom/Element";
+import {StyleHelper} from "../StyleHelper";
+import {Body} from "../dom/Body";
+import {WindowDOM} from "../dom/WindowDOM";
 
-    export class Tooltip {
+export class Tooltip {
 
         static SIDE_TOP = "top";
         static SIDE_RIGHT = "right";
@@ -18,16 +22,16 @@ module api.ui {
         private static multipleAllowed: boolean = true;
         private static instances: Tooltip[] = [];
 
-        private tooltipEl: api.dom.DivEl;
+        private tooltipEl: DivEl;
         private timeoutTimer: number;
 
         private overListener: (event: MouseEvent) => any;
         private outListener: (event: MouseEvent) => any;
         private moveListener: (event: MouseEvent) => any;
 
-        private targetEl: api.dom.Element;
+        private targetEl: Element;
         private text: string;
-        private contentEl: api.dom.Element;
+        private contentEl: Element;
         private showDelay: number;
         private hideTimeout: number;
         private trigger: string;
@@ -45,7 +49,7 @@ module api.ui {
          * @param trigger Event type to hook on (mouse,focus)
          * @param side Side of the target where tooltip should be shown (top,left,right,bottom)
          */
-        constructor(target: api.dom.Element, text?: string, showDelay: number = 0, hideTimeout: number = 0) {
+        constructor(target: Element, text?: string, showDelay: number = 0, hideTimeout: number = 0) {
 
             this.targetEl = target;
             this.text = text;
@@ -74,7 +78,7 @@ module api.ui {
         show() {
             this.stopTimeout();
             if (!this.tooltipEl) {
-                this.tooltipEl = new api.dom.DivEl("tooltip", api.StyleHelper.COMMON_PREFIX);
+                this.tooltipEl = new DivEl("tooltip", StyleHelper.COMMON_PREFIX);
                 this.tooltipEl.addClass(this.side);
                 if (this.contentEl) {
                     this.tooltipEl.appendChild(this.contentEl);
@@ -86,7 +90,7 @@ module api.ui {
                 if (this.mode == Tooltip.MODE_STATIC) {
                     appendTo = this.targetEl.getParentElement() || this.targetEl;
                 } else {
-                    appendTo = api.dom.Body.get();
+                    appendTo = Body.get();
                 }
                 appendTo.appendChild(this.tooltipEl);
 
@@ -134,13 +138,13 @@ module api.ui {
             return this.text;
         }
 
-        setContent(content: api.dom.Element): Tooltip {
+        setContent(content: Element): Tooltip {
             this.contentEl = content;
             this.text = undefined;
             return this;
         }
 
-        getContent(): api.dom.Element {
+        getContent(): Element {
             return this.contentEl;
         }
 
@@ -200,9 +204,9 @@ module api.ui {
             if (mode == this.mode) {
                 return this;
             } else if (mode == Tooltip.MODE_STATIC || mode == Tooltip.MODE_GLOBAL_STATIC) {
-                api.dom.Body.get().unMouseMove(this.moveListener);
+                Body.get().unMouseMove(this.moveListener);
             } else if (mode == Tooltip.MODE_FOLLOW) {
-                api.dom.Body.get().onMouseMove(this.moveListener);
+                Body.get().onMouseMove(this.moveListener);
             }
             this.mode = mode;
             return this;
@@ -217,7 +221,7 @@ module api.ui {
                 x = event.clientX,
                 y = event.clientY,
                 el = this.tooltipEl.getEl(),
-                windowEl = <any> api.dom.WindowDOM.get().getHTMLElement(),
+                windowEl = <any> WindowDOM.get().getHTMLElement(),
                 elProps = {
                     height: el.getHeightWithMargin(),
                     width: el.getWidthWithMargin(),
@@ -347,10 +351,10 @@ module api.ui {
                 }
 
                 tooltip.startHideTimeout();
-                api.dom.Body.get().unMouseMove(mouseMoveListener);
+                Body.get().unMouseMove(mouseMoveListener);
             };
 
-            api.dom.Body.get().onMouseMove(mouseMoveListener);
+            Body.get().onMouseMove(mouseMoveListener);
         }
 
         private getEventName(enter: boolean) {
@@ -383,4 +387,3 @@ module api.ui {
 
     }
 
-}

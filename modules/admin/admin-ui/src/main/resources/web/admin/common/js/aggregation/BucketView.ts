@@ -1,18 +1,24 @@
-module api.aggregation {
+import {DivEl} from "../dom/DivEl";
+import {Bucket} from "./Bucket";
+import {Checkbox} from "../ui/Checkbox";
+import {AggregationView} from "./AggregationView";
+import {ValueChangedEvent} from "../ValueChangedEvent";
+import {StringHelper} from "../util/StringHelper";
+import {BucketViewSelectionChangedEvent} from "./BucketViewSelectionChangedEvent";
 
-    export class BucketView extends api.dom.DivEl {
+export class BucketView extends DivEl {
 
-        private bucket: api.aggregation.Bucket;
+        private bucket: Bucket;
 
-        private checkbox: api.ui.Checkbox;
+        private checkbox: Checkbox;
 
-        private parentAggregationView: api.aggregation.AggregationView;
+        private parentAggregationView: AggregationView;
 
         private selectionChangedListeners: Function[] = [];
 
         private displayName: string;
 
-        constructor(bucket: api.aggregation.Bucket, parentAggregationView: api.aggregation.AggregationView, select: boolean,
+        constructor(bucket: Bucket, parentAggregationView: AggregationView, select: boolean,
                     displayName?: string) {
 
             super('aggregation-bucket-view');
@@ -20,9 +26,9 @@ module api.aggregation {
             this.parentAggregationView = parentAggregationView;
             this.displayName = displayName;
 
-            this.checkbox = api.ui.Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
+            this.checkbox = Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
 
-            this.checkbox.onValueChanged((event: api.ValueChangedEvent) => {
+            this.checkbox.onValueChanged((event: ValueChangedEvent) => {
                 this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));
             });
             this.appendChild(this.checkbox);
@@ -42,7 +48,7 @@ module api.aggregation {
         private resolveKey(): string {
             var key = this.bucket.getKey();
             if (key.indexOf(":") > 0) {
-                return api.util.StringHelper.capitalize(key.substring(key.indexOf(":") + 1));
+                return StringHelper.capitalize(key.substring(key.indexOf(":") + 1));
             }
 
             return key;
@@ -57,7 +63,7 @@ module api.aggregation {
             this.checkbox.setLabel(this.resolveLabelValue());
         }
 
-        getBucket(): api.aggregation.Bucket {
+        getBucket(): Bucket {
             return this.bucket;
         }
 
@@ -65,7 +71,7 @@ module api.aggregation {
             return this.bucket.getKey();
         }
 
-        update(bucket: api.aggregation.Bucket) {
+        update(bucket: Bucket) {
             this.bucket = bucket;
             this.updateUI();
         }
@@ -95,20 +101,19 @@ module api.aggregation {
 
         notifySelectionChanged(oldValue: boolean, newValue: boolean) {
 
-            this.selectionChangedListeners.forEach((listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) => {
-                listener(new api.aggregation.BucketViewSelectionChangedEvent(oldValue, newValue, this));
+            this.selectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
+                listener(new BucketViewSelectionChangedEvent(oldValue, newValue, this));
             });
         }
 
-        unSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
+        unSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
             this.selectionChangedListeners = this.selectionChangedListeners.filter(function (curr) {
                 return curr != listener;
             });
         }
 
-        onSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
+        onSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
             this.selectionChangedListeners.push(listener);
         }
 
     }
-}

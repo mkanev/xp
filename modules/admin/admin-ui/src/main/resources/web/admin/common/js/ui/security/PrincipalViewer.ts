@@ -1,9 +1,8 @@
-module api.ui.security {
+import {Principal} from "../../security/Principal";
+import {PrincipalType} from "../../security/PrincipalType";
+import {NamesAndIconViewer} from "../NamesAndIconViewer";
 
-    import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-
-    export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
+export class PrincipalViewer extends NamesAndIconViewer<Principal> {
 
         private removeClickedListeners: {(event: MouseEvent):void}[] = [];
 
@@ -52,4 +51,3 @@ module api.ui.security {
             })
         }
     }
-}

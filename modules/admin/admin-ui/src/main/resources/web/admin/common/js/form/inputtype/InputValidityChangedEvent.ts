@@ -1,6 +1,6 @@
-module api.form.inputtype {
+import {InputValidationRecording} from "./InputValidationRecording";
 
-    export class InputValidityChangedEvent {
+export class InputValidityChangedEvent {
 
         private inputName: string;
 
@@ -23,4 +23,3 @@ module api.form.inputtype {
             return this.recording;
         }
     }
-}

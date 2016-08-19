@@ -1,17 +1,24 @@
-module api.content.form.inputtype.time {
+import {Property} from "../../../data/Property";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {BaseInputTypeNotManagingAdd} from "../support/BaseInputTypeNotManagingAdd";
+import {ValueTypeLocalDate} from "../../../data/ValueTypeLocalDate";
+import {InputTypeViewContext} from "../InputTypeViewContext";
+import {Element} from "../../../dom/Element";
+import {DatePickerBuilder} from "../../../ui/time/DatePicker";
+import {SelectedDateChangedEvent} from "../../../ui/time/SelectedDateChangedEvent";
+import {LocalDate} from "../../../util/LocalDate";
+import {DatePicker} from "../../../ui/time/DatePicker";
+import {InputTypeManager} from "../InputTypeManager";
+import {Class} from "../../../Class";
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-
-    /**
-     * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDate]].
+/**
+     * Uses [[ValueType]] [[ValueTypeLocalDate]].
      */
     export class Date extends BaseInputTypeNotManagingAdd<Date> {
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
+        constructor(config: InputTypeViewContext) {
             super(config);
         }
 
@@ -23,12 +30,12 @@ module api.content.form.inputtype.time {
             return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(index: number, property: Property): Element {
             if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
                 property.convertValueType(ValueTypes.LOCAL_DATE);
             }
 
-            var datePickerBuilder = new api.ui.time.DatePickerBuilder();
+            var datePickerBuilder = new DatePickerBuilder();
 
             if (!property.hasNullValue()) {
                 var date = property.getLocalDate();
@@ -39,8 +46,8 @@ module api.content.form.inputtype.time {
             }
             var datePicker = datePickerBuilder.build();
 
-            datePicker.onSelectedDateChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                var value = new Value(event.getDate() != null ? api.util.LocalDate.fromDate(event.getDate()) : null,
+            datePicker.onSelectedDateChanged((event: SelectedDateChangedEvent) => {
+                var value = new Value(event.getDate() != null ? LocalDate.fromDate(event.getDate()) : null,
                     ValueTypes.LOCAL_DATE);
                 this.notifyOccurrenceValueChanged(datePicker, value);
             });
@@ -48,8 +55,8 @@ module api.content.form.inputtype.time {
             return datePicker;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly?: boolean) {
-            var datePicker = <api.ui.time.DatePicker> occurrence;
+        updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly?: boolean) {
+            var datePicker = <DatePicker> occurrence;
             if (!unchangedOnly || !datePicker.isDirty()) {
                 var date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
                 datePicker.setSelectedDate(date);
@@ -60,11 +67,10 @@ module api.content.form.inputtype.time {
             return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
-            var datePicker = <api.ui.time.DatePicker>inputElement;
+        hasInputElementValidUserInput(inputElement: Element) {
+            var datePicker = <DatePicker>inputElement;
             return datePicker.isValid();
         }
     }
-    api.form.inputtype.InputTypeManager.register(new api.Class("Date", Date));
+    InputTypeManager.register(new Class("Date", Date));
 
-}

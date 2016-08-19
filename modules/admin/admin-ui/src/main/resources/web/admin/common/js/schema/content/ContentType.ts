@@ -1,21 +1,27 @@
-module api.schema.content {
+import {Equitable} from "../../Equitable";
+import {Form} from "../../form/Form";
+import {ObjectHelper} from "../../ObjectHelper";
+import {ContentTypeJson} from "./ContentTypeJson";
+import {FormItemFactory} from "../../form/FormItemFactory";
+import {ContentTypeSummary} from "./ContentTypeSummary";
+import {ContentTypeSummaryBuilder} from "./ContentTypeSummary";
 
-    export class ContentType extends ContentTypeSummary implements api.Equitable {
+export class ContentType extends ContentTypeSummary implements Equitable {
 
-        private form: api.form.Form;
+        private form: Form;
 
         constructor(builder: ContentTypeBuilder) {
             super(builder);
             this.form = builder.form;
         }
 
-        getForm(): api.form.Form {
+        getForm(): Form {
             return this.form;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentType)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentType)) {
                 return false;
             }
 
@@ -32,14 +38,14 @@ module api.schema.content {
             return true;
         }
 
-        static fromJson(json: api.schema.content.ContentTypeJson): ContentType {
+        static fromJson(json: ContentTypeJson): ContentType {
             return new ContentTypeBuilder().fromContentTypeJson(json).build();
         }
     }
 
     export class ContentTypeBuilder extends ContentTypeSummaryBuilder {
 
-        form: api.form.Form;
+        form: Form;
 
         constructor(source?: ContentType) {
             if (source) {
@@ -48,13 +54,13 @@ module api.schema.content {
             }
         }
 
-        fromContentTypeJson(json: api.schema.content.ContentTypeJson): ContentTypeBuilder {
+        fromContentTypeJson(json: ContentTypeJson): ContentTypeBuilder {
             super.fromContentTypeSummaryJson(json);
-            this.form = api.form.FormItemFactory.createForm(json.form);
+            this.form = FormItemFactory.createForm(json.form);
             return this;
         }
 
-        setForm(value: api.form.Form): ContentTypeSummaryBuilder {
+        setForm(value: Form): ContentTypeSummaryBuilder {
             this.form = value;
             return this;
         }
@@ -63,4 +69,3 @@ module api.schema.content {
             return new ContentType(this);
         }
     }
-}

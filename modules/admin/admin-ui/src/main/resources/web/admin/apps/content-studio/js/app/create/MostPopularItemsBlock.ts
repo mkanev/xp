@@ -1,18 +1,20 @@
-import "../../api.ts";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {H2El} from "../../../../../common/js/dom/H2El";
+
 import {MostPopularItemsList} from "./MostPopularItemsList";
 
-export class MostPopularItemsBlock extends api.dom.DivEl {
+export class MostPopularItemsBlock extends DivEl {
 
     public static DEFAULT_MAX_ITEMS = 2;
 
     private mostPopularItemsList: MostPopularItemsList;
 
-    private title: api.dom.H2El;
+    private title: H2El;
 
     constructor(title = "Most Popular") {
         super("most-popular-content-types-container");
 
-        this.title = new api.dom.H2El();
+        this.title = new H2El();
         this.title.setHtml(title);
 
         this.mostPopularItemsList = new MostPopularItemsList();

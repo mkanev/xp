@@ -1,21 +1,23 @@
-module api.schema.mixin{
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {ApplicationBasedName} from "../../application/ApplicationBasedName";
+import {assertNotNull} from "../../util/Assert";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {Mixin} from "./Mixin";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class MixinName extends api.application.ApplicationBasedName {
+export class MixinName extends ApplicationBasedName {
 
         constructor(name:string) {
-            api.util.assertNotNull(name, "Mixin name can't be null");
-            var parts = name.split(api.application.ApplicationBasedName.SEPARATOR);
+            assertNotNull(name, "Mixin name can't be null");
+            var parts = name.split(ApplicationBasedName.SEPARATOR);
             super(ApplicationKey.fromString(parts[0]), parts[1]);
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MixinName)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MixinName)) {
                 return false;
             }
 
             return super.equals(o);
         }
     }
-}

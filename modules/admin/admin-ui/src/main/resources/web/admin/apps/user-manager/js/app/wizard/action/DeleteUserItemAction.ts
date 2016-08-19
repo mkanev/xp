@@ -1,15 +1,23 @@
-import "../../../api.ts";
+import {UserStore} from "../../../../../../common/js/security/UserStore";
+import {Principal} from "../../../../../../common/js/security/Principal";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {WizardPanel} from "../../../../../../common/js/app/wizard/WizardPanel";
+import {Equitable} from "../../../../../../common/js/Equitable";
+import {ConfirmationDialog} from "../../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {DeletePrincipalRequest} from "../../../../../../common/js/security/DeletePrincipalRequest";
+import {JsonResponse} from "../../../../../../common/js/rest/JsonResponse";
+import {showFeedback} from "../../../../../../common/js/notify/MessageBus";
+import {UserItemDeletedEvent} from "../../../../../../common/js/security/UserItemDeletedEvent";
+import {DeleteUserStoreRequest} from "../../../../../../common/js/security/DeleteUserStoreRequest";
 
-import UserStore = api.security.UserStore;
-import Principal = api.security.Principal;
 import {PrincipalWizardPanel} from "../PrincipalWizardPanel";
 
-export class DeleteUserItemAction extends api.ui.Action {
+export class DeleteUserItemAction extends Action {
 
-    constructor(wizardPanel: api.app.wizard.WizardPanel<api.Equitable>) {
+    constructor(wizardPanel: WizardPanel<Equitable>) {
         super("Delete", "mod+del", true);
         this.onExecuted(() => {
-            api.ui.dialog.ConfirmationDialog.get()
+            ConfirmationDialog.get()
                 .setQuestion("Are you sure you want to delete this item?")
                 .setNoCallback(null)
                 .setYesCallback(() => {
@@ -21,32 +29,32 @@ export class DeleteUserItemAction extends api.ui.Action {
                         userItemKey;
                     if (isPrincipal) {
                         userItemKey = (<Principal>persistedItem).getKey();
-                        new api.security.DeletePrincipalRequest()
+                        new DeletePrincipalRequest()
                             .setKeys([userItemKey])
                             .send()
-                            .done((jsonResponse: api.rest.JsonResponse<any>) => {
+                            .done((jsonResponse: JsonResponse<any>) => {
                                 var json = jsonResponse.getJson();
 
                                 if (json.results && json.results.length > 0) {
                                     var key = json.results[0].principalKey;
 
-                                    api.notify.showFeedback('Principal [' + key + '] deleted!');
-                                    api.security.UserItemDeletedEvent.create().setPrincipals([<Principal>persistedItem]).build().fire();
+                                    showFeedback('Principal [' + key + '] deleted!');
+                                    UserItemDeletedEvent.create().setPrincipals([<Principal>persistedItem]).build().fire();
                                 }
                             });
                     } else {
                         userItemKey = (<UserStore>persistedItem).getKey();
-                        new api.security.DeleteUserStoreRequest()
+                        new DeleteUserStoreRequest()
                             .setKeys([userItemKey])
                             .send()
-                            .done((jsonResponse: api.rest.JsonResponse<any>) => {
+                            .done((jsonResponse: JsonResponse<any>) => {
                                 var json = jsonResponse.getJson();
 
                                 if (json.results && json.results.length > 0) {
                                     var key = json.results[0].userStoreKey;
 
-                                    api.notify.showFeedback('UserStore [' + key + '] deleted!');
-                                    api.security.UserItemDeletedEvent.create().setUserStores([<UserStore>persistedItem]).build().fire();
+                                    showFeedback('UserStore [' + key + '] deleted!');
+                                    UserItemDeletedEvent.create().setUserStores([<UserStore>persistedItem]).build().fire();
                                 }
                             });
                     }

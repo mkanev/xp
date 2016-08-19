@@ -1,15 +1,15 @@
-module api.aggregation {
+import {Bucket} from "./Bucket";
 
-    export class AggregationSelection {
+export class AggregationSelection {
 
         name: string;
-        selectedBuckets: api.aggregation.Bucket[];
+        selectedBuckets: Bucket[];
 
         constructor(name: string) {
             this.name = name;
         }
 
-        public setValues(selectedBuckets: api.aggregation.Bucket[]) {
+        public setValues(selectedBuckets: Bucket[]) {
             this.selectedBuckets = selectedBuckets;
         }
 
@@ -17,11 +17,10 @@ module api.aggregation {
             return this.name;
         }
 
-        public getSelectedBuckets(): api.aggregation.Bucket[] {
+        public getSelectedBuckets(): Bucket[] {
             return this.selectedBuckets;
         }
 
     }
 
 
-}

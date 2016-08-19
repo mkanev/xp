@@ -1,9 +1,12 @@
-module api.content.resource {
+import {ActiveContentVersionJson} from "../json/ActiveContentVersionJson";
+import {ContentVersionJson} from "../json/ContentVersionJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentVersion} from "../ContentVersion";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import ActiveContentVersionJson = api.content.json.ActiveContentVersionJson;
-    import ContentVersionJson = api.content.json.ContentVersionJson;
-
-    export class GetActiveContentVersionsRequest extends ContentResourceRequest<json.GetActiveContentVersionsResultsJson, ContentVersion[]> {
+export class GetActiveContentVersionsRequest extends ContentResourceRequest<json.GetActiveContentVersionsResultsJson, ContentVersion[]> {
 
         private id: ContentId;
 
@@ -19,13 +22,13 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'getActiveVersions');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'getActiveVersions');
         }
 
         sendAndParse(): wemQ.Promise<ContentVersion[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<json.GetActiveContentVersionsResultsJson>) => {
+            return this.send().then((response: JsonResponse<json.GetActiveContentVersionsResultsJson>) => {
                 return this.fromJsonToContentVersions(response.getResult().activeContentVersions);
             });
         }
@@ -56,4 +59,3 @@ module api.content.resource {
         }
 
     }
-}

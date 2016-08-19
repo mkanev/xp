@@ -1,6 +1,7 @@
-module api.ui.tab {
+import {TabItem} from "./TabItem";
+import {TabItemBuilder} from "./TabItem";
 
-    export class TabMenuItem extends TabItem {
+export class TabMenuItem extends TabItem {
 
         private visibleInMenu: boolean = true;
 
@@ -27,4 +28,3 @@ module api.ui.tab {
         }
 
     }
-}

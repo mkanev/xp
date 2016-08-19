@@ -1,6 +1,5 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
 
-import Action = api.ui.Action;
 import {ToggleSearchPanelEvent} from "../ToggleSearchPanelEvent";
 
 export class ToggleSearchPanelAction extends Action {

@@ -1,6 +1,8 @@
-module api.ui.tab {
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
+import {TabMenu} from "./TabMenu";
 
-    export class HideTabMenuEvent extends api.event.Event {
+export class HideTabMenuEvent extends Event {
 
         tabMenu: TabMenu;
 
@@ -14,12 +16,11 @@ module api.ui.tab {
         }
 
         static on(handler: (event: HideTabMenuEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: HideTabMenuEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
     }
-}

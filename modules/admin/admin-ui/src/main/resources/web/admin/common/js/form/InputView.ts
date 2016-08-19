@@ -1,15 +1,37 @@
-module api.form {
+import {Property} from "../data/Property";
+import {PropertyArray} from "../data/PropertyArray";
+import {Value} from "../data/Value";
+import {ValueType} from "../data/ValueType";
+import {ValueTypes} from "../data/ValueTypes";
+import {PropertySet} from "../data/PropertySet";
+import {BaseInputTypeNotManagingAdd} from "./inputtype/support/BaseInputTypeNotManagingAdd";
+import {InputTypeManager} from "./inputtype/InputTypeManager";
+import {FormItemView} from "./FormItemView";
+import {InputTypeView} from "./inputtype/InputTypeView";
+import {DivEl} from "../dom/DivEl";
+import {Button} from "../ui/button/Button";
+import {ValidationRecordingViewer} from "./ValidationRecordingViewer";
+import {assertNotNull} from "../util/Assert";
+import {ContentSummary} from "../content/ContentSummary";
+import {OccurrenceRemovedEvent} from "./OccurrenceRemovedEvent";
+import {ObjectHelper} from "../ObjectHelper";
+import {InputOccurrenceView} from "./inputtype/support/InputOccurrenceView";
+import {InputValidityChangedEvent} from "./inputtype/InputValidityChangedEvent";
+import {PEl} from "../dom/PEl";
+import {SpanEl} from "../dom/SpanEl";
+import {InputTypeName} from "./InputTypeName";
+import {InputValidationRecording} from "./inputtype/InputValidationRecording";
+import {AdditionalValidationRecord} from "./AdditionalValidationRecord";
+import {FormContext} from "./FormContext";
+import {FormItemSetOccurrenceView} from "./FormItemSetOccurrenceView";
+import {FormItemViewConfig} from "./FormItemView";
+import {Input} from "./Input";
+import {InputLabel} from "./InputLabel";
+import {RecordingValidityChangedEvent} from "./RecordingValidityChangedEvent";
+import {ValidationRecording} from "./ValidationRecording";
+import {ValidationRecordingPath} from "./ValidationRecordingPath";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import PropertySet = api.data.PropertySet;
-    import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
-    import InputTypeManager = api.form.inputtype.InputTypeManager;
-
-    export interface InputViewConfig {
+export interface InputViewConfig {
 
         context: FormContext;
 
@@ -20,7 +42,7 @@ module api.form {
         parentDataSet: PropertySet;
     }
 
-    export class InputView extends api.form.FormItemView {
+    export class InputView extends FormItemView {
 
         private input: Input;
 
@@ -28,13 +50,13 @@ module api.form {
 
         private propertyArray: PropertyArray;
 
-        private inputTypeView: api.form.inputtype.InputTypeView<any>;
+        private inputTypeView: InputTypeView<any>;
 
-        private bottomButtonRow: api.dom.DivEl;
+        private bottomButtonRow: DivEl;
 
-        private addButton: api.ui.button.Button;
+        private addButton: Button;
 
-        private validationViewer: api.form.ValidationRecordingViewer;
+        private validationViewer: ValidationRecordingViewer;
 
         private previousValidityRecording: ValidationRecording;
 
@@ -52,8 +74,8 @@ module api.form {
                 parent: config.parent
             });
 
-            api.util.assertNotNull(config.parentDataSet, "parentDataSet not expected to be null");
-            api.util.assertNotNull(config.input, "input not expected to be null");
+            assertNotNull(config.parentDataSet, "parentDataSet not expected to be null");
+            assertNotNull(config.input, "input not expected to be null");
 
             this.input = config.input;
             this.parentPropertySet = config.parentDataSet;
@@ -77,7 +99,7 @@ module api.form {
             }
 
             this.inputTypeView = this.createInputTypeView();
-            this.inputTypeView.onEditContentRequest((content: api.content.ContentSummary) => {
+            this.inputTypeView.onEditContentRequest((content: ContentSummary) => {
                 this.notifyEditContentRequested(content);
             });
 
@@ -97,23 +119,23 @@ module api.form {
                     inputTypeViewNotManagingAdd.onOccurrenceAdded(() => {
                         this.refresh();
                     });
-                    inputTypeViewNotManagingAdd.onOccurrenceRemoved((event: api.form.OccurrenceRemovedEvent) => {
+                    inputTypeViewNotManagingAdd.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
                         this.refresh();
 
-                        if (api.ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(),
-                                api.form.inputtype.support.InputOccurrenceView)) {
+                        if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(),
+                                InputOccurrenceView)) {
                             // force validate, since InputView might have become invalid
                             this.validate(false);
                         }
                     });
 
-                    this.addButton = new api.ui.button.Button("Add");
+                    this.addButton = new Button("Add");
                     this.addButton.addClass("small");
                     this.addButton.onClicked((event: MouseEvent) => {
                         inputTypeViewNotManagingAdd.createAndAddOccurrence();
                     });
 
-                    this.bottomButtonRow = new api.dom.DivEl("bottom-button-row");
+                    this.bottomButtonRow = new DivEl("bottom-button-row");
                     this.appendChild(this.bottomButtonRow);
                     this.bottomButtonRow.appendChild(this.addButton);
                 }
@@ -121,7 +143,7 @@ module api.form {
                 this.validationViewer = new ValidationRecordingViewer();
                 this.appendChild(this.validationViewer);
 
-                this.inputTypeView.onValidityChanged((event: api.form.inputtype.InputValidityChangedEvent)=> {
+                this.inputTypeView.onValidityChanged((event: InputValidityChangedEvent)=> {
                     this.handleInputValidationRecording(event.getRecording(), false);
                 });
 
@@ -132,11 +154,11 @@ module api.form {
         }
         
         private appendHelpText(helpText: string) {
-            var helpTextDiv = new api.dom.DivEl("help-text overflow");
-            var pEl = new api.dom.PEl();
+            var helpTextDiv = new DivEl("help-text overflow");
+            var pEl = new PEl();
             pEl.getEl().setText(helpText);
 
-            var spanEl = new api.dom.SpanEl();
+            var spanEl = new SpanEl();
             spanEl.getEl().setText("More");
 
             spanEl.onClicked(() => {
@@ -188,12 +210,12 @@ module api.form {
             return this.inputTypeView.update(this.propertyArray, unchangedOnly);
         }
 
-        public getInputTypeView(): api.form.inputtype.InputTypeView<any> {
+        public getInputTypeView(): InputTypeView<any> {
             return this.inputTypeView;
         }
 
-        private createInputTypeView(): api.form.inputtype.InputTypeView<any> {
-            var inputType: api.form.InputTypeName = this.input.getInputType();
+        private createInputTypeView(): InputTypeView<any> {
+            var inputType: InputTypeName = this.input.getInputType();
             var inputTypeViewContext = this.getContext().createInputTypeViewContext(this.input.getInputTypeConfig(),
                 this.parentPropertySet.getPropertyPath(), this.input);
 
@@ -244,7 +266,7 @@ module api.form {
             return this.handleInputValidationRecording(inputRecording, silent);
         }
 
-        private handleInputValidationRecording(inputRecording: api.form.inputtype.InputValidationRecording,
+        private handleInputValidationRecording(inputRecording: InputValidationRecording,
                                                silent: boolean = true): ValidationRecording {
 
             var recording = new ValidationRecording(),
@@ -344,4 +366,3 @@ module api.form {
             this.inputTypeView.unBlur(listener);
         }
     }
-}

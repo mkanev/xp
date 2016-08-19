@@ -1,11 +1,29 @@
-module api.data {
+import {Reference} from "../util/Reference";
+import {BinaryReference} from "../util/BinaryReference";
+import {GeoPoint} from "../util/GeoPoint";
+import {LocalTime} from "../util/LocalTime";
+import {Equitable} from "../Equitable";
+import {assertState} from "../util/Assert";
+import {assert} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
+import {ValueTypes} from "./ValueTypes";
+import {LocalDate} from "../util/LocalDate";
+import {LocalDateTime} from "../util/LocalDateTime";
+import {DateTime} from "../util/DateTime";
+import {Property} from "./Property";
+import {PropertyAddedEvent} from "./PropertyAddedEvent";
+import {PropertyArray} from "./PropertyArray";
+import {PropertyArrayJson} from "./PropertyArrayJson";
+import {PropertyEvent} from "./PropertyEvent";
+import {PropertyIndexChangedEvent} from "./PropertyIndexChangedEvent";
+import {PropertyPath} from "./PropertyPath";
+import {PropertyRemovedEvent} from "./PropertyRemovedEvent";
+import {PropertyTree} from "./PropertyTree";
+import {PropertyValueChangedEvent} from "./PropertyValueChangedEvent";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    import Reference = api.util.Reference;
-    import BinaryReference = api.util.BinaryReference;
-    import GeoPoint = api.util.GeoPoint;
-    import LocalTime = api.util.LocalTime;
-
-    /**
+/**
      * A PropertySet manages a set of properties. The properties are grouped in arrays by name ([[Property.name]]).
      *
      * The PropertySet provides several functions for both creation, updating and getting property values of a certain type (see [[ValueTypes]]).
@@ -40,7 +58,7 @@ module api.data {
      * @see [[PropertyArray]]
      * @see [[Property]]
      */
-    export class PropertySet implements api.Equitable {
+    export class PropertySet implements Equitable {
 
         public static debug: boolean = false;
 
@@ -127,9 +145,9 @@ module api.data {
         }
 
         addPropertyArray(array: PropertyArray) {
-            api.util.assertState(this.tree === array.getTree(),
+            assertState(this.tree === array.getTree(),
                 "Added PropertyArray must be attached to the same PropertyTree as this PropertySet");
-            api.util.assert(this == array.getParent(), "propertyArray must have this PropertySet as parent");
+            assert(this == array.getParent(), "propertyArray must have this PropertySet as parent");
             this.propertyArrayByName[array.getName()] = array;
 
             this.registerPropertyArrayListeners(array);
@@ -148,7 +166,7 @@ module api.data {
         }
 
         setPropertyByPath(path: any, value: Value): Property {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
                 return this.doSetProperty(<PropertyPath>path, value)
             }
             else {
@@ -228,13 +246,13 @@ module api.data {
                         if (property.hasNullValue()) {
                             return;
                         }
-                        if (type.equals(api.data.ValueTypes.STRING) && property.getValue().getString() === '') {
+                        if (type.equals(ValueTypes.STRING) && property.getValue().getString() === '') {
                             return;
                         }
-                        if (type.equals(api.data.ValueTypes.BOOLEAN) && property.getValue().getBoolean() === false) {
+                        if (type.equals(ValueTypes.BOOLEAN) && property.getValue().getBoolean() === false) {
                             return;
                         }
-                        if (type.equals(api.data.ValueTypes.DATA) && !property.getValue().getPropertySet().isEmpty()) {
+                        if (type.equals(ValueTypes.DATA) && !property.getValue().getPropertySet().isEmpty()) {
                             return;
                         }
                         isEmpty = false;
@@ -248,23 +266,23 @@ module api.data {
             this.doRemoveEmptyValues(this);
         }
 
-        private doRemoveEmptyValues(propertySet: api.data.PropertySet) {
+        private doRemoveEmptyValues(propertySet: PropertySet) {
             var toRemove = [];
             propertySet.forEach((property) => {
                 var type = property.getType();
                 if (property.hasNullValue()) {
                     toRemove.push(property);
                 }
-                else if (type.equals(api.data.ValueTypes.STRING) && (property.getValue().getString() === '')) {
+                else if (type.equals(ValueTypes.STRING) && (property.getValue().getString() === '')) {
                     toRemove.push(property);
                 }
-                else if (type.equals(api.data.ValueTypes.DATA)) {
+                else if (type.equals(ValueTypes.DATA)) {
                     var propertySetValue = property.getValue().getPropertySet();
                     this.doRemoveEmptyValues(propertySetValue);
                     if (propertySetValue.isEmpty()) {
                         toRemove.push(property);
                     }
-                } else if (type.equals(api.data.ValueTypes.BOOLEAN) && (property.getValue().getBoolean() == false)) {
+                } else if (type.equals(ValueTypes.BOOLEAN) && (property.getValue().getBoolean() == false)) {
                     toRemove.push(property);
                 }
             });
@@ -273,7 +291,7 @@ module api.data {
         }
 
         private removeEmptyArrays(propertySet: PropertySet) {
-            api.ObjectHelper.objectPropertyIterator(propertySet.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            ObjectHelper.objectPropertyIterator(propertySet.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
                 if (propertyArray.isEmpty()) {
                     delete propertySet.propertyArrayByName[name];
                 }
@@ -285,7 +303,7 @@ module api.data {
          */
         getSize(): number {
             var size = 0;
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
                 size += propertyArray.getSize();
             });
 
@@ -340,7 +358,7 @@ module api.data {
 
         private getPropertyByPath(path: any): Property {
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
+            if (ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
                 return this.doGetPropertyByPath(<PropertyPath>path);
             }
             else {
@@ -372,7 +390,7 @@ module api.data {
          * Calls the given callback for each property in the set.
          */
         forEach(callback: (property: Property, index?: number) => void) {
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
                 propertyArray.forEach((property: Property, index: number) => {
                     callback(property, index);
                 });
@@ -404,13 +422,13 @@ module api.data {
 
         public equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertySet)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, PropertySet)) {
                 return false;
             }
 
             var other = <PropertySet>o;
 
-            if (!api.ObjectHelper.mapEquals(this.propertyArrayByName, other.propertyArrayByName)) {
+            if (!ObjectHelper.mapEquals(this.propertyArrayByName, other.propertyArrayByName)) {
                 return false;
             }
 
@@ -420,13 +438,13 @@ module api.data {
         /**
          * Copies this PropertySet (deep copy).
          * @param destinationTree The [[PropertyTree]] that the copied PropertySet will be attached to.
-         * @returns {api.data.PropertySet}
+         * @returns {PropertySet}
          */
         copy(destinationTree: PropertyTree): PropertySet {
 
             var copy = new PropertySet(destinationTree);
 
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, sourcePropertyArray: PropertyArray) => {
+            ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, sourcePropertyArray: PropertyArray) => {
                 var propertyArrayCopy = sourcePropertyArray.copy(copy);
                 copy.addPropertyArray(propertyArrayCopy);
             });
@@ -437,7 +455,7 @@ module api.data {
         toJson(): PropertyArrayJson[] {
             var jsonArray: PropertyArrayJson[] = [];
 
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
                 jsonArray.push(propertyArray.toJson());
             });
 
@@ -901,34 +919,34 @@ module api.data {
 
         // local date methods
 
-        addLocalDate(name: string, value: api.util.LocalDate): Property {
+        addLocalDate(name: string, value: LocalDate): Property {
             return this.addProperty(name, new Value(value, ValueTypes.LOCAL_DATE));
         }
 
-        addLocalDates(name: string, values: api.util.LocalDate[]): Property[] {
+        addLocalDates(name: string, values: LocalDate[]): Property[] {
 
             var properties: Property[] = [];
-            values.forEach((value: api.util.LocalDate) => {
+            values.forEach((value: LocalDate) => {
                 properties.push(this.addLocalDate(name, value));
             });
             return properties;
         }
 
-        setLocalDate(name: string, index: number, value: api.util.LocalDate): Property {
+        setLocalDate(name: string, index: number, value: LocalDate): Property {
             return this.setProperty(name, index, new Value(value, ValueTypes.LOCAL_DATE));
         }
 
-        setLocalDateByPath(path: any, value: api.util.LocalDate): Property {
+        setLocalDateByPath(path: any, value: LocalDate): Property {
             return this.setPropertyByPath(path, new Value(value, ValueTypes.LOCAL_DATE));
         }
 
-        getLocalDate(identifier: string, index?: number): api.util.LocalDate {
+        getLocalDate(identifier: string, index?: number): LocalDate {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getLocalDate();
         }
 
-        getLocalDates(name: string): api.util.LocalDate[] {
-            var values: api.util.LocalDate[] = [];
+        getLocalDates(name: string): LocalDate[] {
+            var values: LocalDate[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getLocalDate());
@@ -938,34 +956,34 @@ module api.data {
 
         // local date time methods
 
-        addLocalDateTime(name: string, value: api.util.LocalDateTime): Property {
+        addLocalDateTime(name: string, value: LocalDateTime): Property {
             return this.addProperty(name, new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
-        addLocalDateTimes(name: string, values: api.util.LocalDateTime[]): Property[] {
+        addLocalDateTimes(name: string, values: LocalDateTime[]): Property[] {
 
             var properties: Property[] = [];
-            values.forEach((value: api.util.LocalDateTime) => {
+            values.forEach((value: LocalDateTime) => {
                 properties.push(this.addLocalDateTime(name, value));
             });
             return properties;
         }
 
-        setLocalDateTime(name: string, index: number, value: api.util.LocalDateTime): Property {
+        setLocalDateTime(name: string, index: number, value: LocalDateTime): Property {
             return this.setProperty(name, index, new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
-        setLocalDateTimeByPath(path: any, value: api.util.LocalDateTime): Property {
+        setLocalDateTimeByPath(path: any, value: LocalDateTime): Property {
             return this.setPropertyByPath(path, new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
-        getLocalDateTime(identifier: string, index?: number): api.util.LocalDateTime {
+        getLocalDateTime(identifier: string, index?: number): LocalDateTime {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getLocalDateTime();
         }
 
-        getLocalDateTimes(name: string): api.util.LocalDateTime[] {
-            var values: api.util.LocalDateTime[] = [];
+        getLocalDateTimes(name: string): LocalDateTime[] {
+            var values: LocalDateTime[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getLocalDateTime());
@@ -1012,34 +1030,34 @@ module api.data {
 
         // date time methods
 
-        addDateTime(name: string, value: api.util.DateTime): Property {
+        addDateTime(name: string, value: DateTime): Property {
             return this.addProperty(name, new Value(value, ValueTypes.DATE_TIME));
         }
 
-        addDateTimes(name: string, values: api.util.DateTime[]): Property[] {
+        addDateTimes(name: string, values: DateTime[]): Property[] {
 
             var properties: Property[] = [];
-            values.forEach((value: api.util.DateTime) => {
+            values.forEach((value: DateTime) => {
                 properties.push(this.addDateTime(name, value));
             });
             return properties;
         }
 
-        setDateTime(name: string, index: number, value: api.util.DateTime): Property {
+        setDateTime(name: string, index: number, value: DateTime): Property {
             return this.setProperty(name, index, new Value(value, ValueTypes.DATE_TIME));
         }
 
-        setDateTimeByPath(path: any, value: api.util.DateTime): Property {
+        setDateTimeByPath(path: any, value: DateTime): Property {
             return this.setPropertyByPath(path, new Value(value, ValueTypes.DATE_TIME));
         }
 
-        getDateTime(identifier: string, index?: number): api.util.DateTime {
+        getDateTime(identifier: string, index?: number): DateTime {
             var property = this.getProperty(identifier, index);
             return !property ? null : property.getDateTime();
         }
 
-        getDateTimes(name: string): api.util.DateTime[] {
-            var values: api.util.DateTime[] = [];
+        getDateTimes(name: string): DateTime[] {
+            var values: DateTime[] = [];
             var array = this.getPropertyArray(name);
             array.forEach((property: Property) => {
                 values.push(property.getDateTime());
@@ -1049,4 +1067,3 @@ module api.data {
 
         // TODO: Add methods for each type
     }
-}

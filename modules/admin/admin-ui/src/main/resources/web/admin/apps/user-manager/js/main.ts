@@ -1,29 +1,41 @@
+import {App} from "../../../common/js/app/Application";
+import {Path} from "../../../common/js/rest/Path";
+import {ServerEventsListener} from "../../../common/js/app/ServerEventsListener";
+import {LostConnectionDetector} from "../../../common/js/system/LostConnectionDetector";
+import {NotifyManager} from "../../../common/js/notify/NotifyManager";
+import {showError} from "../../../common/js/notify/MessageBus";
+import {UriHelper} from "../../../common/js/util/UriHelper";
+import {AppBar} from "../../../common/js/app/bar/AppBar";
+import {Body} from "../../../common/js/dom/Body";
+import {AppHelper} from "../../../common/js/util/AppHelper";
+import {AppLauncherEventType} from "../../../common/js/app/AppLauncherEventType";
+import {PrincipalServerEventsHandler} from "../../../common/js/security/event/PrincipalServerEventsHandler";
+
 declare var CONFIG;
 
-import "./api.ts";
 import {UserAppPanel} from "./app/UserAppPanel";
 import {ChangeUserPasswordDialog} from "./app/wizard/ChangeUserPasswordDialog";
 import {Router} from "./app/Router";
 
-function getApplication(): api.app.App {
-    var application = new api.app.App('user-manager', 'Users', 'UM', 'user-manager');
-    application.setPath(api.rest.Path.fromString(Router.getPath()));
+function getApplication(): App {
+    var application = new App('user-manager', 'Users', 'UM', 'user-manager');
+    application.setPath(Path.fromString(Router.getPath()));
     application.setWindow(window);
-    this.serverEventsListener = new api.app.ServerEventsListener([application]);
+    this.serverEventsListener = new ServerEventsListener([application]);
 
     var messageId;
-    this.lostConnectionDetector = new api.system.LostConnectionDetector();
+    this.lostConnectionDetector = new LostConnectionDetector();
     this.lostConnectionDetector.setAuthenticated(true);
     this.lostConnectionDetector.onConnectionLost(() => {
-        api.notify.NotifyManager.get().hide(messageId);
-        messageId = api.notify.showError("Lost connection to server - Please wait until connection is restored", false);
+        NotifyManager.get().hide(messageId);
+        messageId = showError("Lost connection to server - Please wait until connection is restored", false);
     });
     this.lostConnectionDetector.onSessionExpired(() => {
-        api.notify.NotifyManager.get().hide(messageId);
-        window.location.href = api.util.UriHelper.getToolUri("");
+        NotifyManager.get().hide(messageId);
+        window.location.href = UriHelper.getToolUri("");
     });
     this.lostConnectionDetector.onConnectionRestored(() => {
-        api.notify.NotifyManager.get().hide(messageId);
+        NotifyManager.get().hide(messageId);
     });
 
     return application;
@@ -31,15 +43,15 @@ function getApplication(): api.app.App {
 
 function startApplication() {
 
-    var application: api.app.App = getApplication();
-    var appBar = new api.app.bar.AppBar(application);
+    var application: App = getApplication();
+    var appBar = new AppBar(application);
     var appPanel = new UserAppPanel(appBar, application.getPath());
 
-    var body = api.dom.Body.get();
+    var body = Body.get();
     body.appendChild(appBar);
     body.appendChild(appPanel);
 
-    api.util.AppHelper.preventDragRedirect();
+    AppHelper.preventDragRedirect();
 
     var changePasswordDialog = new ChangeUserPasswordDialog();
     application.setLoaded(true);
@@ -48,13 +60,13 @@ function startApplication() {
 
     window.onmessage = (e: MessageEvent) => {
         if (e.data.appLauncherEvent) {
-            var eventType: api.app.AppLauncherEventType = api.app.AppLauncherEventType[<string>e.data.appLauncherEvent];
-            if (eventType == api.app.AppLauncherEventType.Show) {
+            var eventType: AppLauncherEventType = AppLauncherEventType[<string>e.data.appLauncherEvent];
+            if (eventType == AppLauncherEventType.Show) {
                 appPanel.activateCurrentKeyBindings();
             }
         }
     };
-    api.security.event.PrincipalServerEventsHandler.getInstance().start();
+    PrincipalServerEventsHandler.getInstance().start();
 }
 
 window.onload = function () {

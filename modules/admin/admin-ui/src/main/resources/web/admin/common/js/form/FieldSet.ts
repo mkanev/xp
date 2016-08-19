@@ -1,17 +1,25 @@
-module api.form {
+import {FieldSetJson} from "./json/FieldSetJson";
+import {FormItemJson} from "./json/FormItemJson";
+import {FormItemTypeWrapperJson} from "./json/FormItemTypeWrapperJson";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {FormItem} from "./FormItem";
+import {FormItemContainer} from "./FormItemContainer";
+import {FormItemFactory} from "./FormItemFactory";
+import {Layout} from "./Layout";
 
-    export class FieldSet extends Layout implements FormItemContainer {
+export class FieldSet extends Layout implements FormItemContainer {
 
         private label: string;
 
         private formItems: FormItem[] = [];
 
-        constructor(fieldSetJson: api.form.json.FieldSetJson) {
+        constructor(fieldSetJson: FieldSetJson) {
             super(fieldSetJson.name);
             this.label = fieldSetJson.label;
 
             if (fieldSetJson.items != null) {
-                fieldSetJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
+                fieldSetJson.items.forEach((formItemJson: FormItemJson) => {
                     var formItem = FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.addFormItem(formItem);
@@ -32,18 +40,18 @@ module api.form {
             return this.formItems;
         }
 
-        public toFieldSetJson(): api.form.json.FormItemTypeWrapperJson {
+        public toFieldSetJson(): FormItemTypeWrapperJson {
 
-            return <api.form.json.FormItemTypeWrapperJson>{ FieldSet: <api.form.json.FieldSetJson>{
+            return <FormItemTypeWrapperJson>{ FieldSet: <FieldSetJson>{
                 name: this.getName(),
                 items: FormItem.formItemsToJson(this.getFormItems()),
                 label: this.getLabel()
             }};
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FieldSet)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, FieldSet)) {
                 return false;
             }
 
@@ -53,15 +61,14 @@ module api.form {
 
             var other = <FieldSet>o;
 
-            if (!api.ObjectHelper.stringEquals(this.label, other.label)) {
+            if (!ObjectHelper.stringEquals(this.label, other.label)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
+            if (!ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
                 return false;
             }
 
             return true;
         }
     }
-}

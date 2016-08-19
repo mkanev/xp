@@ -1,10 +1,9 @@
-module api.content.page.region {
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
 
-    export interface RegionJson {
+export interface RegionJson {
 
         name: string;
 
         components: ComponentTypeWrapperJson[];
     }
 
-}

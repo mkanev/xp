@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {RegionPath} from "./RegionPath";
+import {RegionsChangedEvent} from "./RegionsChangedEvent";
 
-    export class RegionAddedEvent extends RegionsChangedEvent {
+export class RegionAddedEvent extends RegionsChangedEvent {
 
         private regionPath: RegionPath;
 
@@ -13,4 +14,3 @@ module api.content.page.region {
             return this.regionPath;
         }
     }
-}

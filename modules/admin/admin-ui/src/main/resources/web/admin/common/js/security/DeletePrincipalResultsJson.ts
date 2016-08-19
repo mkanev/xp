@@ -1,8 +1,7 @@
-module api.security {
+import {DeletePrincipalResultJson} from "./DeletePrincipalResultJson";
 
-    export interface DeletePrincipalResultsJson {
+export interface DeletePrincipalResultsJson {
 
         results: DeletePrincipalResultJson[];
 
     }
-}

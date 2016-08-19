@@ -1,6 +1,6 @@
-module api.util {
 
-    export class ArrayHelper {
+
+export class ArrayHelper {
 
         static moveElement(oldIndex: number, newIndex: number, array: any[]) {
 
@@ -75,4 +75,3 @@ module api.util {
         }
     }
 
-}

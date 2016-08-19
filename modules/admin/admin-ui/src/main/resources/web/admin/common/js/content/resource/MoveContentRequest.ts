@@ -1,9 +1,13 @@
-module api.content.resource {
+import {MoveContentResultJson} from "../json/MoveContentResultJson";
+import {MoveContentResult} from "./result/MoveContentResult";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentIds} from "../ContentIds";
+import {ContentPath} from "../ContentPath";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import MoveContentResultJson = api.content.json.MoveContentResultJson;
-    import MoveContentResult = api.content.resource.result.MoveContentResult;
-
-    export class MoveContentRequest extends ContentResourceRequest<MoveContentResultJson, MoveContentResult> {
+export class MoveContentRequest extends ContentResourceRequest<MoveContentResultJson, MoveContentResult> {
 
         private ids: ContentIds;
 
@@ -26,15 +30,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "move");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "move");
         }
 
         sendAndParse(): wemQ.Promise<MoveContentResult> {
 
-            return this.send().then((response: api.rest.JsonResponse<MoveContentResultJson>) => {
+            return this.send().then((response: JsonResponse<MoveContentResultJson>) => {
                 return MoveContentResult.fromJson(response.getResult());
             });
         }
     }
-}

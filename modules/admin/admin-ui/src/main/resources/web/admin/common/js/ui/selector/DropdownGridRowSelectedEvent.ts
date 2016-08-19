@@ -1,6 +1,6 @@
-module api.ui.selector {
 
-    export class DropdownGridRowSelectedEvent {
+
+export class DropdownGridRowSelectedEvent {
 
         private row: number;
 
@@ -13,4 +13,3 @@ module api.ui.selector {
         }
 
     }
-}

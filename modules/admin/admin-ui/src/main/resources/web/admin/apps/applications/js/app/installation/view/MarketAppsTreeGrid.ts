@@ -1,38 +1,36 @@
-import "../../../api.ts";
+import {Element} from "../../../../../../common/js/dom/Element";
+import {ElementHelper} from "../../../../../../common/js/dom/ElementHelper";
+import {ElementFromHelperBuilder} from "../../../../../../common/js/dom/Element";
+import {GridColumn} from "../../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../../common/js/ui/grid/GridColumn";
+import {TreeGrid} from "../../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {DateTimeFormatter} from "../../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {TreeGridContextMenu} from "../../../../../../common/js/ui/treegrid/TreeGridContextMenu";
+import {ContentResponse} from "../../../../../../common/js/content/resource/result/ContentResponse";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {ContentSummaryBuilder} from "../../../../../../common/js/content/ContentSummary";
+import {ContentSummaryViewer} from "../../../../../../common/js/content/ContentSummaryViewer";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {CompareStatus} from "../../../../../../common/js/content/CompareStatus";
+import {MarketApplication} from "../../../../../../common/js/application/MarketApplication";
+import {Application} from "../../../../../../common/js/application/Application";
+import {MarketAppStatus} from "../../../../../../common/js/application/MarketApplication";
+import {MarketAppStatusFormatter} from "../../../../../../common/js/application/MarketApplication";
+import {ApplicationEvent} from "../../../../../../common/js/application/ApplicationEvent";
+import {ApplicationEventType} from "../../../../../../common/js/application/ApplicationEvent";
+import {MarketApplicationsFetcher} from "../../../../../../common/js/application/MarketApplicationFetcher";
+import {MarketApplicationResponse} from "../../../../../../common/js/application/MarketApplicationResponse";
+import {MarketApplicationBuilder} from "../../../../../../common/js/application/MarketApplication";
+import {GetApplicationRequest} from "../../../../../../common/js/application/GetApplicationRequest";
+import {ProgressBar} from "../../../../../../common/js/ui/ProgressBar";
+import {InstallUrlApplicationRequest} from "../../../../../../common/js/application/InstallUrlApplicationRequest";
+import {ApplicationInstallResult} from "../../../../../../common/js/application/ApplicationInstallResult";
+import {DefaultErrorHandler} from "../../../../../../common/js/DefaultErrorHandler";
+import {DivEl} from "../../../../../../common/js/dom/DivEl";
+
 import {MarketAppViewer} from "./MarketAppViewer";
-
-import Element = api.dom.Element;
-import ElementHelper = api.dom.ElementHelper;
-import ElementFromHelperBuilder = api.dom.ElementFromHelperBuilder;
-
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-import DateTimeFormatter = api.ui.treegrid.DateTimeFormatter;
-import TreeGridContextMenu = api.ui.treegrid.TreeGridContextMenu;
-
-import ContentResponse = api.content.resource.result.ContentResponse;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryBuilder = api.content.ContentSummaryBuilder;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
-
-import CompareStatus = api.content.CompareStatus;
-
-import MarketApplication = api.application.MarketApplication;
-import Application = api.application.Application;
-import MarketAppStatus = api.application.MarketAppStatus;
-import MarketAppStatusFormatter = api.application.MarketAppStatusFormatter;
-
-import ApplicationEvent = api.application.ApplicationEvent;
-import ApplicationEventType = api.application.ApplicationEventType;
-
-import MarketApplicationsFetcher = api.application.MarketApplicationsFetcher;
-import MarketApplicationResponse = api.application.MarketApplicationResponse;
-import MarketApplicationBuilder = api.application.MarketApplicationBuilder;
 
 declare var CONFIG;
 
@@ -69,7 +67,7 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
     }
 
     private subscribeOnUninstallEvent() { // set status of market app to NOT_INSTALLED if it was uninstalled
-        api.application.ApplicationEvent.on((event: ApplicationEvent) => {
+        ApplicationEvent.on((event: ApplicationEvent) => {
             if (ApplicationEventType.UNINSTALLED == event.getEventType()) {
                 var nodeToUpdate = this.getRoot().getCurrentRoot().findNode(event.getApplicationKey().toString());
                 if (!!nodeToUpdate) {
@@ -81,12 +79,12 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
     }
 
     private subscribeOnInstallEvent() { // update status of market app
-        api.application.ApplicationEvent.on((event: ApplicationEvent) => {
+        ApplicationEvent.on((event: ApplicationEvent) => {
             if (ApplicationEventType.INSTALLED == event.getEventType()) {
                 var nodeToUpdate = this.getRoot().getCurrentRoot().findNode(event.getApplicationKey().toString());
                 if (!!nodeToUpdate) {
-                    new api.application.GetApplicationRequest(event.getApplicationKey(),
-                        true).sendAndParse().then((application: api.application.Application)=> {
+                    new GetApplicationRequest(event.getApplicationKey(),
+                        true).sendAndParse().then((application: Application)=> {
                         if (!!application) {
                             var marketApplication: MarketApplication = <MarketApplication>nodeToUpdate.getData();
                             if (MarketApplicationsFetcher.installedAppCanBeUpdated(marketApplication, application)) {
@@ -113,21 +111,21 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
             if ((elem.hasClass(MarketAppStatusFormatter.statusInstallCssClass) ||
                  elem.hasClass(MarketAppStatusFormatter.statusUpdateCssClass))) {
 
-                var progressBar = new api.ui.ProgressBar(0);
+                var progressBar = new ProgressBar(0);
                 var progressHandler = (event) => {
                     if (event.getApplicationUrl() == url &&
-                        event.getEventType() == api.application.ApplicationEventType.PROGRESS) {
+                        event.getEventType() == ApplicationEventType.PROGRESS) {
 
                         progressBar.setValue(event.getProgress());
                     }
                 };
 
-                api.application.ApplicationEvent.on(progressHandler);
+                ApplicationEvent.on(progressHandler);
                 elem.removeChildren().appendChild(progressBar);
 
-                new api.application.InstallUrlApplicationRequest(url)
-                    .sendAndParse().then((result: api.application.ApplicationInstallResult)=> {
-                    api.application.ApplicationEvent.un(progressHandler);
+                new InstallUrlApplicationRequest(url)
+                    .sendAndParse().then((result: ApplicationInstallResult)=> {
+                    ApplicationEvent.un(progressHandler);
                     if (!result.getFailure()) {
 
                         elem.removeClass(MarketAppStatusFormatter.statusInstallCssClass + " " +
@@ -141,10 +139,10 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
                     }
 
                 }).catch((reason: any) => {
-                    api.application.ApplicationEvent.un(progressHandler);
+                    ApplicationEvent.un(progressHandler);
                     elem.setHtml(MarketAppStatusFormatter.formatStatus(status));
 
-                    api.DefaultErrorHandler.handle(reason);
+                    DefaultErrorHandler.handle(reason);
                 });
             }
         });
@@ -172,7 +170,7 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
 
     private appStatusFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<MarketApplication>) {
         let data = node.getData();
-        let statusWrapper = new api.dom.DivEl();
+        let statusWrapper = new DivEl();
 
         if (!!data.getAppKey()) {
 
@@ -189,7 +187,7 @@ export class MarketAppsTreeGrid extends TreeGrid<MarketApplication> {
         this.initData(this.getRoot().getCurrentRoot().treeToList());
     }
 
-    updateInstallApplications(installApplications: api.application.Application[]) {
+    updateInstallApplications(installApplications: Application[]) {
         this.installApplications = installApplications;
     }
 

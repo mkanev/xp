@@ -1,26 +1,37 @@
-module api.content.page {
+import {RichComboBox} from "../../ui/selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../../ui/selector/combobox/RichComboBox";
+import {BaseSelectedOptionsView} from "../../ui/selector/combobox/BaseSelectedOptionsView";
+import {Option} from "../../ui/selector/Option";
+import {SelectedOption} from "../../ui/selector/combobox/SelectedOption";
+import {BaseSelectedOptionView} from "../../ui/selector/combobox/BaseSelectedOptionView";
+import {NamesAndIconViewBuilder} from "../../app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../app/NamesAndIconViewSize";
+import {AEl} from "../../dom/AEl";
+import {Element} from "../../dom/Element";
+import {PageTemplate} from "./PageTemplate";
+import {PageTemplateViewer} from "./PageTemplateViewer";
 
-    export class PageTemplateComboBox extends api.ui.selector.combobox.RichComboBox<PageTemplate> {
+export class PageTemplateComboBox extends RichComboBox<PageTemplate> {
 
         constructor() {
-            super(new api.ui.selector.combobox.RichComboBoxBuilder<PageTemplate>().setSelectedOptionsView(
+            super(new RichComboBoxBuilder<PageTemplate>().setSelectedOptionsView(
                 new PageTemplateSelectedOptionsView()).setIdentifierMethod("getKey").setMaximumOccurrences(1).setOptionDisplayValueViewer(
                 new PageTemplateViewer));
         }
     }
 
-    export class PageTemplateSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<PageTemplate> {
+    export class PageTemplateSelectedOptionsView extends BaseSelectedOptionsView<PageTemplate> {
 
-        createSelectedOption(option: api.ui.selector.Option<PageTemplate>): api.ui.selector.combobox.SelectedOption<PageTemplate> {
-            return new api.ui.selector.combobox.SelectedOption<PageTemplate>(new PageTemplateSelectedOptionView(option), this.count());
+        createSelectedOption(option: Option<PageTemplate>): SelectedOption<PageTemplate> {
+            return new SelectedOption<PageTemplate>(new PageTemplateSelectedOptionView(option), this.count());
         }
     }
 
-    export class PageTemplateSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<PageTemplate> {
+    export class PageTemplateSelectedOptionView extends BaseSelectedOptionView<PageTemplate> {
 
         private pageTemplate: PageTemplate;
 
-        constructor(option: api.ui.selector.Option<PageTemplate>) {
+        constructor(option: Option<PageTemplate>) {
             this.pageTemplate = option.displayValue;
             super(option);
             this.addClass("page-template-selected-option-view");
@@ -28,12 +39,12 @@ module api.content.page {
 
         doRender(): wemQ.Promise<boolean> {
 
-            var namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
+            var namesAndIconView = new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.small).build();
             namesAndIconView.setIconClass("icon-newspaper icon-large")
                 .setMainName(this.pageTemplate.getDisplayName())
                 .setSubName(this.pageTemplate.getController().toString());
 
-            var removeButtonEl = new api.dom.AEl("remove");
+            var removeButtonEl = new AEl("remove");
             removeButtonEl.onClicked((event: MouseEvent) => {
                 this.notifyRemoveClicked();
 
@@ -42,10 +53,9 @@ module api.content.page {
                 return false;
             });
 
-            this.appendChildren<api.dom.Element>(removeButtonEl, namesAndIconView);
+            this.appendChildren<Element>(removeButtonEl, namesAndIconView);
 
             return wemQ(true);
         }
 
     }
-}

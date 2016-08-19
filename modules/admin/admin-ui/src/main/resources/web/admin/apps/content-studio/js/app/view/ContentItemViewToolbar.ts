@@ -1,11 +1,12 @@
-import "../../api.ts";
+import {Action} from "../../../../../common/js/ui/Action";
+import {Toolbar} from "../../../../../common/js/ui/toolbar/Toolbar";
 
 export interface ContentItemViewToolbarParams {
-    editAction: api.ui.Action;
-    deleteAction: api.ui.Action;
+    editAction: Action;
+    deleteAction: Action;
 }
 
-export class ContentItemViewToolbar extends api.ui.toolbar.Toolbar {
+export class ContentItemViewToolbar extends Toolbar {
 
     constructor(params: ContentItemViewToolbarParams) {
         super();

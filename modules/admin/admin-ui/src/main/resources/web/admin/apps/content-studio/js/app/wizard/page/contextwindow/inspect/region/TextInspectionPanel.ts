@@ -1,20 +1,23 @@
-import "../../../../../../api.ts";
+import {TextComponent} from "../../../../../../../../../common/js/content/page/region/TextComponent";
+import {TextComponentView} from "../../../../../../../../../common/js/liveedit/text/TextComponentView";
+import {TextComponentViewer} from "../../../../../../../../../common/js/liveedit/text/TextComponentViewer";
+import {NamesAndIconView} from "../../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewBuilder} from "../../../../../../../../../common/js/app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../../../../../../../../../common/js/app/NamesAndIconViewSize";
+import {ItemViewIconClassResolver} from "../../../../../../../../../common/js/liveedit/ItemViewIconClassResolver";
 
-import TextComponent = api.content.page.region.TextComponent;
-import TextComponentView = api.liveedit.text.TextComponentView;
-import TextComponentViewer = api.liveedit.text.TextComponentViewer;
 import {BaseInspectionPanel} from "../BaseInspectionPanel";
 
 export class TextInspectionPanel extends BaseInspectionPanel {
 
-    private namesAndIcon: api.app.NamesAndIconView;
+    private namesAndIcon: NamesAndIconView;
 
     constructor() {
         super();
 
         this.namesAndIcon =
-            new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.medium)).setIconClass(
-                api.liveedit.ItemViewIconClassResolver.resolveByType("text"));
+            new NamesAndIconView(new NamesAndIconViewBuilder().setSize(NamesAndIconViewSize.medium)).setIconClass(
+                ItemViewIconClassResolver.resolveByType("text"));
 
         this.appendChild(this.namesAndIcon);
     }

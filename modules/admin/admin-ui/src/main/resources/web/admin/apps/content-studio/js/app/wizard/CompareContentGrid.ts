@@ -1,25 +1,24 @@
-import "../../api.ts";
-
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-
-import ContentResponse = api.content.resource.result.ContentResponse;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryBuilder = api.content.ContentSummaryBuilder;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
-
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
+import {GridColumn} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../common/js/ui/grid/GridColumn";
+import {ContentResponse} from "../../../../../common/js/content/resource/result/ContentResponse";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryBuilder} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryViewer} from "../../../../../common/js/content/ContentSummaryViewer";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Content} from "../../../../../common/js/content/Content";
+import {Comparator} from "../../../../../common/js/Comparator";
+import {ContentNodeByDisplayNameComparator} from "../../../../../common/js/content/util/ContentNodeByDisplayNameComparator";
+import {ContentNodeByModifiedTimeComparator} from "../../../../../common/js/content/util/ContentNodeByModifiedTimeComparator";
 
 export class CompareContentGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
 
-    private content: api.content.Content;
+    private content: Content;
 
-    constructor(content: api.content.Content) {
+    constructor(content: Content) {
         super(new TreeGridBuilder<ContentSummaryAndCompareStatus>().setColumns([
                 new GridColumnBuilder<TreeNode<ContentSummaryAndCompareStatus>>().setName("Name").setId("displayName").setField(
                     "displayName").setFormatter(this.nameFormatter).build()
@@ -47,7 +46,7 @@ export class CompareContentGrid extends TreeGrid<ContentSummaryAndCompareStatus>
 
     fetchChildren(parentNode?: TreeNode<ContentSummaryAndCompareStatus>): wemQ.Promise<ContentSummaryAndCompareStatus[]> {
         var parentContentId = parentNode && parentNode.getData() ? parentNode.getData().getContentId() : null;
-        return api.content.resource.ContentSummaryAndCompareStatusFetcher.fetchChildren(parentContentId).then(
+        return ContentSummaryAndCompareStatusFetcher.fetchChildren(parentContentId).then(
             (data: ContentResponse<ContentSummaryAndCompareStatus>) => {
                 return data.getContents();
             });
@@ -71,11 +70,11 @@ export class CompareContentGrid extends TreeGrid<ContentSummaryAndCompareStatus>
     }
 
     sortNodeChildren(node: TreeNode<ContentSummaryAndCompareStatus>) {
-        var comparator: api.Comparator<TreeNode<ContentSummaryAndCompareStatus>>;
+        var comparator: Comparator<TreeNode<ContentSummaryAndCompareStatus>>;
         if (this.getRoot().getCurrentRoot() == node) {
-            comparator = new api.content.util.ContentNodeByDisplayNameComparator();
+            comparator = new ContentNodeByDisplayNameComparator();
         } else {
-            comparator = new api.content.util.ContentNodeByModifiedTimeComparator();
+            comparator = new ContentNodeByModifiedTimeComparator();
         }
         var children: TreeNode<ContentSummaryAndCompareStatus>[] = node.getChildren().sort(comparator.compare);
         node.setChildren(children);

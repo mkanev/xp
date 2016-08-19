@@ -1,13 +1,13 @@
-import "../../../../../../api.ts";
+import {ContentId} from "../../../../../../../../../common/js/content/ContentId";
+import {ContentTypeName} from "../../../../../../../../../common/js/schema/content/ContentTypeName";
+import {GetPageTemplatesByCanRenderRequest} from "../../../../../../../../../common/js/content/page/GetPageTemplatesByCanRenderRequest";
+import {PageModel} from "../../../../../../../../../common/js/content/page/PageModel";
+import {PageTemplate} from "../../../../../../../../../common/js/content/page/PageTemplate";
+import {PageTemplateLoader} from "../../../../../../../../../common/js/content/page/PageTemplateLoader";
+import {Option} from "../../../../../../../../../common/js/ui/selector/Option";
+import {LoadedDataEvent} from "../../../../../../../../../common/js/util/loader/event/LoadedDataEvent";
+import {PageTemplateByDisplayNameComparator} from "../../../../../../../../../common/js/content/page/PageTemplateByDisplayNameComparator";
 
-import ContentId = api.content.ContentId;
-import ContentTypeName = api.schema.content.ContentTypeName;
-import GetPageTemplatesByCanRenderRequest = api.content.page.GetPageTemplatesByCanRenderRequest;
-import PageModel = api.content.page.PageModel;
-import PageTemplate = api.content.page.PageTemplate;
-import PageTemplateLoader = api.content.page.PageTemplateLoader;
-import Option = api.ui.selector.Option;
-import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
 import {PageTemplateOption} from "./PageTemplateOption";
 
 export class PageTemplateOptions {
@@ -40,7 +40,7 @@ export class PageTemplateOptions {
 
         var loader = new PageTemplateLoader(new GetPageTemplatesByCanRenderRequest(this.siteId,
             this.contentType));
-        loader.setComparator(new api.content.page.PageTemplateByDisplayNameComparator());
+        loader.setComparator(new PageTemplateByDisplayNameComparator());
         loader.onLoadedData((event: LoadedDataEvent<PageTemplate>) => {
 
             event.getData().forEach((pageTemplate: PageTemplate) => {

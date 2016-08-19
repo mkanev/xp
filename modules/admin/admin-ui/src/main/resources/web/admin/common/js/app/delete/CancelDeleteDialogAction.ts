@@ -1,8 +1,8 @@
-module api.app.remove {
-    export class CancelDeleteDialogAction extends api.ui.Action {
+import {Action} from "../../ui/Action";
+
+export class CancelDeleteDialogAction extends Action {
 
         constructor() {
             super("Cancel", "esc");
         }
     }
-}

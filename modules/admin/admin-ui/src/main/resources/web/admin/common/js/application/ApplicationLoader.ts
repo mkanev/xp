@@ -1,9 +1,11 @@
-module api.application {
+import {LoadedDataEvent} from "../util/loader/event/LoadedDataEvent";
+import {LoadingDataEvent} from "../util/loader/event/LoadingDataEvent";
+import {BaseLoader} from "../util/loader/BaseLoader";
+import {Application} from "./Application";
+import {ApplicationListResult} from "./ApplicationListResult";
+import {ListApplicationsRequest} from "./ListApplicationsRequest";
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-
-    export class ApplicationLoader extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
+export class ApplicationLoader extends BaseLoader<ApplicationListResult, Application> {
 
         private listApplicationsRequest: ListApplicationsRequest;
 
@@ -54,4 +56,3 @@ module api.application {
         }
 
     }
-}

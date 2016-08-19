@@ -1,15 +1,21 @@
-module api.liveedit {
+import {Element} from "../dom/Element";
+import {StyleHelper} from "../StyleHelper";
+import {ElementFromHelperBuilder} from "../dom/Element";
+import {Body} from "../dom/Body";
+import {HighlighterStyle} from "./ItemTypeConfig";
+import {ElementDimensions} from "./ItemView";
+import {ItemView} from "./ItemView";
 
-    export enum HighlighterMode {
+export enum HighlighterMode {
         RECTANGLE,
         CROSSHAIR
     }
 
-    export class Highlighter extends api.dom.Element {
+    export class Highlighter extends Element {
 
-        private rectangle: api.dom.Element;
+        private rectangle: Element;
 
-        private path: api.dom.Element;
+        private path: Element;
 
         private static INSTANCE: Highlighter;
 
@@ -20,14 +26,14 @@ module api.liveedit {
         constructor(type?: HighlighterMode) {
             // Needs to be a SVG element as the css has pointer-events:none
             // CSS pointer-events only works for SVG in IE
-            var svgCls = api.StyleHelper.getCls("highlighter");
+            var svgCls = StyleHelper.getCls("highlighter");
             var html = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="${svgCls}" style="top:-5000px;left:-5000px">
                            <rect width="150" height="150"/>
                            <path d=""/>
                        </svg>`;
 
-            super(new api.dom.ElementFromHelperBuilder().
-            setHelper(api.dom.Element.fromString(html).getEl()).
+            super(new ElementFromHelperBuilder().
+            setHelper(Element.fromString(html).getEl()).
             setLoadExistingChildren(true));
 
             this.setMode(type || HighlighterMode.RECTANGLE);
@@ -35,7 +41,7 @@ module api.liveedit {
             this.rectangle = this.getChildren()[0];
             this.path = this.getChildren()[1];
 
-            api.dom.Body.get().appendChild(this);
+            Body.get().appendChild(this);
         }
 
         public static get(): Highlighter {
@@ -128,7 +134,7 @@ module api.liveedit {
                 this.getEl().setWidthPx(w).setHeightPx(h).setTopPx(top).setLeftPx(left);
                 break;
             case HighlighterMode.CROSSHAIR:
-                let bodyEl = api.dom.Body.get().getEl(),
+                let bodyEl = Body.get().getEl(),
                     screenH = bodyEl.getHeight(),
                     screenW = bodyEl.getWidth();
 
@@ -161,4 +167,3 @@ module api.liveedit {
         }
 
     }
-}

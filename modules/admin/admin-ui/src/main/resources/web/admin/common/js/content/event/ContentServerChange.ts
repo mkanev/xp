@@ -1,27 +1,27 @@
-module api.content.event {
+import {NodeEventJson} from "../../event/NodeServerEvent";
+import {NodeEventNodeJson} from "../../event/NodeServerEvent";
+import {NodeServerChange} from "../../event/NodeServerChange";
+import {NodeServerChangeType} from "../../event/NodeServerChange";
+import {NodeServerChangeItem} from "../../event/NodeServerChange";
+import {ContentId} from "../ContentId";
+import {ContentPath} from "../ContentPath";
 
-    import NodeEventJson = api.event.NodeEventJson;
-    import NodeEventNodeJson = api.event.NodeEventNodeJson;
-    import NodeServerChange = api.event.NodeServerChange;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-    import NodeServerChangeItem = api.event.NodeServerChangeItem;
+export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath> {
 
-    export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath> {
+        contentId: ContentId;
 
-        contentId: api.content.ContentId;
-
-        constructor(contentPath: api.content.ContentPath, branch: string, contentId: api.content.ContentId) {
+        constructor(contentPath: ContentPath, branch: string, contentId: ContentId) {
             super(contentPath, branch);
             this.contentId = contentId;
         }
 
-        getContentId(): api.content.ContentId {
+        getContentId(): ContentId {
             return this.contentId;
         }
 
         static fromJson(node: NodeEventNodeJson): ContentServerChangeItem {
-            return new ContentServerChangeItem(api.content.ContentPath.fromString(node.path.substr("/content".length)),
-                node.branch, new api.content.ContentId(node.id));
+            return new ContentServerChangeItem(ContentPath.fromString(node.path.substr("/content".length)),
+                node.branch, new ContentId(node.id));
         }
     }
 
@@ -67,7 +67,7 @@ module api.content.event {
 
                 var newContentPaths = nodeEventJson.data.nodes.
                     filter((node) => node.newPath.indexOf("/content") === 0).
-                    map((node: NodeEventNodeJson) => api.content.ContentPath.fromString(node.newPath.substr("/content".length)));
+                    map((node: NodeEventNodeJson) => ContentPath.fromString(node.newPath.substr("/content".length)));
 
                 return new ContentServerChange(nodeEventType, changeItems, newContentPaths);
             } else {
@@ -75,4 +75,3 @@ module api.content.event {
             }
         }
     }
-}

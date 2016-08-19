@@ -1,8 +1,12 @@
-module api.liveedit {
+import {Component} from "../content/page/region/Component";
+import {StyleHelper} from "../StyleHelper";
+import {ComponentView} from "./ComponentView";
+import {CreateItemViewConfig} from "./CreateItemViewConfig";
+import {ItemType} from "./ItemType";
+import {ItemTypeConfigJson} from "./ItemTypeConfig";
+import {RegionView} from "./RegionView";
 
-    import Component = api.content.page.region.Component;
-
-    export class ComponentItemType extends ItemType {
+export class ComponentItemType extends ItemType {
 
         constructor(shortName: string, config: ItemTypeConfigJson) {
             super(shortName, config);
@@ -17,7 +21,7 @@ module api.liveedit {
                 cssSelector: '[data-portal-component-type=' + itemType + ']',
                 draggable: true,
                 cursor: 'move',
-                iconCls: api.StyleHelper.COMMON_PREFIX + 'icon-' + itemType,
+                iconCls: StyleHelper.COMMON_PREFIX + 'icon-' + itemType,
                 highlighterStyle: {
                     stroke: 'rgba(68, 68, 68, 1)', // not used
                     strokeDasharray: '',
@@ -27,4 +31,3 @@ module api.liveedit {
             };
         }
     }
-}

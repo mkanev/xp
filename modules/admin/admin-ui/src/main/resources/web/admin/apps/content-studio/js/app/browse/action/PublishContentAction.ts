@@ -1,10 +1,10 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {PublishContentRequest} from "../../../../../../common/js/content/resource/PublishContentRequest";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+
 import {ContentPublishPromptEvent} from "../ContentPublishPromptEvent";
 import {ContentTreeGrid} from "../ContentTreeGrid";
-
-import Action = api.ui.Action;
-import ContentSummary = api.content.ContentSummary;
-import PublishContentRequest = api.content.resource.PublishContentRequest;
 
 export class PublishContentAction extends Action {
 
@@ -12,7 +12,7 @@ export class PublishContentAction extends Action {
         super("Publish");
         this.setEnabled(false);
         this.onExecuted(() => {
-            var contents: api.content.ContentSummaryAndCompareStatus[]
+            var contents: ContentSummaryAndCompareStatus[]
                 = grid.getSelectedDataList();
             new ContentPublishPromptEvent(contents).fire();
         });

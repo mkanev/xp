@@ -1,13 +1,17 @@
-module api.util.htmlarea.dialog {
+import {FormItem} from "../../../ui/form/FormItem";
+import {Validators} from "../../../ui/form/Validators";
+import {ModalDialogHeader} from "../../../ui/dialog/ModalDialog";
+import {Action} from "../../../ui/Action";
+import {AEl} from "../../../dom/AEl";
+import {TextInput} from "../../../ui/text/TextInput";
+import {Name} from "../../../Name";
+import {HtmlModalDialog} from "./HtmlModalDialog";
 
-    import FormItem = api.ui.form.FormItem;
-    import Validators = api.ui.form.Validators;
-
-    export class AnchorModalDialog extends HtmlModalDialog {
+export class AnchorModalDialog extends HtmlModalDialog {
 
         constructor(editor:HtmlAreaEditor) {
 
-            super(editor, new api.ui.dialog.ModalDialogHeader("Insert Anchor"));
+            super(editor, new ModalDialogHeader("Insert Anchor"));
         }
 
         protected getMainFormItems():FormItem[] {
@@ -21,7 +25,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected initializeActions() {
-            var submitAction = new api.ui.Action("Insert");
+            var submitAction = new Action("Insert");
             this.setSubmitAction(submitAction);
 
             this.addAction(submitAction.onExecuted(() => {
@@ -34,8 +38,8 @@ module api.util.htmlarea.dialog {
             super.initializeActions();
         }
 
-        private createAnchorEl():api.dom.AEl {
-            var anchorEl = new api.dom.AEl();
+        private createAnchorEl():AEl {
+            var anchorEl = new AEl();
 
             anchorEl.setId(this.getName());
             anchorEl.getEl().removeAttribute('href');
@@ -44,7 +48,7 @@ module api.util.htmlarea.dialog {
         }
 
         private getName():string {
-            return (<api.ui.text.TextInput>this.getFieldById("name")).getValue();
+            return (<TextInput>this.getFieldById("name")).getValue();
         }
 
         private insertAnchor():void {
@@ -52,4 +56,3 @@ module api.util.htmlarea.dialog {
             this.getEditor().insertContent(anchorEl.toString());
         }
     }
-}

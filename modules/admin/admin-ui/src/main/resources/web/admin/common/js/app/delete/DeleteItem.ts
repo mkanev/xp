@@ -1,6 +1,6 @@
-module api.app.remove{
 
-    export class DeleteItem {
+
+export class DeleteItem {
 
         private iconUrl:string;
 
@@ -19,4 +19,3 @@ module api.app.remove{
             return this.iconUrl;
         }
     }
-}

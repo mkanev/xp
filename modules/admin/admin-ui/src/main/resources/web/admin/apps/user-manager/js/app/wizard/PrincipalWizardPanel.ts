@@ -1,24 +1,25 @@
-import "../../api.ts";
+import {Principal} from "../../../../../common/js/security/Principal";
+import {PrincipalType} from "../../../../../common/js/security/PrincipalType";
+import {PrincipalNamedEvent} from "../../../../../common/js/security/PrincipalNamedEvent";
+import {UserStore} from "../../../../../common/js/security/UserStore";
+import {UserStoreKey} from "../../../../../common/js/security/UserStoreKey";
+import {PrincipalKey} from "../../../../../common/js/security/PrincipalKey";
+import {ConfirmationDialog} from "../../../../../common/js/ui/dialog/ConfirmationDialog";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {WizardHeaderWithDisplayNameAndName} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardHeaderWithDisplayNameAndNameBuilder} from "../../../../../common/js/app/wizard/WizardHeaderWithDisplayNameAndName";
+import {WizardStep} from "../../../../../common/js/app/wizard/WizardStep";
+import {PropertyChangedEvent} from "../../../../../common/js/PropertyChangedEvent";
+import {PrincipalDeletedEvent} from "../../../../../common/js/security/event/PrincipalDeletedEvent";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+
 import {UserItemWizardPanel} from "./UserItemWizardPanel";
 import {PrincipalWizardPanelParams} from "./PrincipalWizardPanelParams";
 import {UserItemWizardActions} from "./action/UserItemWizardActions";
 import {Router} from "../Router";
 import {PrincipalWizardToolbar} from "./PrincipalWizardToolbar";
 import {PrincipalWizardDataLoader} from "./PrincipalWizardDataLoader";
-
-import Principal = api.security.Principal;
-import PrincipalType = api.security.PrincipalType;
-import PrincipalNamedEvent = api.security.PrincipalNamedEvent;
-import UserStore = api.security.UserStore;
-import UserStoreKey = api.security.UserStoreKey;
-import PrincipalKey = api.security.PrincipalKey;
-
-import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
-import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-import WizardHeaderWithDisplayNameAndName = api.app.wizard.WizardHeaderWithDisplayNameAndName;
-import WizardHeaderWithDisplayNameAndNameBuilder = api.app.wizard.WizardHeaderWithDisplayNameAndNameBuilder;
-import WizardStep = api.app.wizard.WizardStep;
 
 export class PrincipalWizardPanel extends UserItemWizardPanel<Principal> {
 
@@ -96,7 +97,7 @@ export class PrincipalWizardPanel extends UserItemWizardPanel<Principal> {
             wizardHeader.setAutoGenerationEnabled(false);
         } else {
 
-            wizardHeader.onPropertyChanged((event: api.PropertyChangedEvent) => {
+            wizardHeader.onPropertyChanged((event: PropertyChangedEvent) => {
                 var updateStatus = event.getPropertyName() === "name" ||
                                    (wizardHeader.isAutoGenerationEnabled()
                                     && event.getPropertyName() === "displayName");
@@ -132,7 +133,7 @@ export class PrincipalWizardPanel extends UserItemWizardPanel<Principal> {
                 break;
             }
 
-            var deleteHandler = ((event: api.security.event.PrincipalDeletedEvent) => {
+            var deleteHandler = ((event: PrincipalDeletedEvent) => {
                 event.getDeletedItems().forEach((path: string) => {
                     if (!!this.getPersistedItem() && this.getPersistedItem().getKey().toPath() == path) {
                         this.close();
@@ -140,10 +141,10 @@ export class PrincipalWizardPanel extends UserItemWizardPanel<Principal> {
                 });
             });
 
-            api.security.event.PrincipalDeletedEvent.on(deleteHandler);
+            PrincipalDeletedEvent.on(deleteHandler);
 
             this.onRemoved((event) => {
-                api.security.event.PrincipalDeletedEvent.un(deleteHandler);
+                PrincipalDeletedEvent.un(deleteHandler);
             });
 
             return rendered;
@@ -245,7 +246,7 @@ export class PrincipalWizardPanel extends UserItemWizardPanel<Principal> {
 
     resolvePrincipalNameForUpdateRequest(): string {
         var wizardHeader = this.getWizardHeader();
-        if (api.util.StringHelper.isEmpty(wizardHeader.getName())) {
+        if (StringHelper.isEmpty(wizardHeader.getName())) {
             return this.getPersistedItem().getDisplayName();
         } else {
             return wizardHeader.getName();

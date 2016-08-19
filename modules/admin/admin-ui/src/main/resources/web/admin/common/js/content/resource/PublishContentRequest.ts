@@ -1,6 +1,13 @@
-module api.content.resource {
+import {PublishContentJson} from "../json/PublishContentJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {showFeedback} from "../../notify/MessageBus";
+import {showSuccess} from "../../notify/MessageBus";
+import {showError} from "../../notify/MessageBus";
+import {ContentId} from "../ContentId";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    export class PublishContentRequest extends ContentResourceRequest<api.content.json.PublishContentJson, any> {
+export class PublishContentRequest extends ContentResourceRequest<PublishContentJson, any> {
 
         private ids: ContentId[] = [];
 
@@ -49,11 +56,11 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "publish");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "publish");
         }
 
-        static feedback(jsonResponse: api.rest.JsonResponse<api.content.json.PublishContentJson>) {
+        static feedback(jsonResponse: JsonResponse<PublishContentJson>) {
 
             var result = jsonResponse.getResult(),
                 succeeded = result.successes,
@@ -63,29 +70,28 @@ module api.content.resource {
 
             switch (total) {
             case 0:
-                api.notify.showFeedback('Nothing to publish.');
+                showFeedback('Nothing to publish.');
                 break;
             case 1:
                 if (succeeded === 1) {
-                    api.notify.showSuccess('\"' + result.contentName + '\" published');
+                    showSuccess('\"' + result.contentName + '\" published');
                 } else if (failed === 1) {
-                    api.notify.showError('\"' + result.contentName + '\" failed, reason: ' + result.failures[0].reason);
+                    showError('\"' + result.contentName + '\" failed, reason: ' + result.failures[0].reason);
                 } else {
-                    api.notify.showSuccess('pending item was deleted');
-                    //api.notify.showSuccess('\"' + result.contentName + '\" deleted'); //restore when it's possible to get display name of deleted content
+                    showSuccess('pending item was deleted');
+                    //showSuccess('\"' + result.contentName + '\" deleted'); //restore when it's possible to get display name of deleted content
                 }
                 break;
             default: // > 1
                 if (succeeded > 0) {
-                    api.notify.showSuccess(succeeded + ' items were published');
+                    showSuccess(succeeded + ' items were published');
                 }
                 if (deleted > 0) {
-                    api.notify.showSuccess(deleted + ' pending items were deleted');
+                    showSuccess(deleted + ' pending items were deleted');
                 }
                 if (failed > 0) {
-                    api.notify.showError(failed + ' items failed to publish');
+                    showError(failed + ' items failed to publish');
                 }
             }
         }
     }
-}

@@ -1,6 +1,7 @@
-module api.content.util {
+import {Comparator} from "../../Comparator";
+import {ContentSummary} from "../ContentSummary";
 
-    export class ContentByPathComparator implements api.Comparator<ContentSummary> {
+export class ContentByPathComparator implements Comparator<ContentSummary> {
 
         compare(a: ContentSummary, b: ContentSummary): number {
             if (!a) {
@@ -16,4 +17,3 @@ module api.content.util {
             return firstName.localeCompare(secondName);
         }
     }
-}

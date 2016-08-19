@@ -1,14 +1,20 @@
-module api.security.acl {
+import {Equitable} from "../../Equitable";
+import {assertNotNull} from "../../util/Assert";
+import {ObjectHelper} from "../../ObjectHelper";
+import {UserStoreAccessControlEntryJson} from "./UserStoreAccessControlEntryJson";
+import {Principal} from "../Principal";
+import {PrincipalKey} from "../PrincipalKey";
+import {UserStoreAccess} from "./UserStoreAccess";
 
-    export class UserStoreAccessControlEntry implements api.Equitable {
+export class UserStoreAccessControlEntry implements Equitable {
 
         private principal: Principal;
 
         private access: UserStoreAccess;
 
         constructor(principal: Principal, access?: UserStoreAccess) {
-            api.util.assertNotNull(principal, "principal not set");
-            //    api.util.assertNotNull(access, "access not set");
+            assertNotNull(principal, "principal not set");
+            //    assertNotNull(access, "access not set");
             this.principal = principal;
             this.access = access;
         }
@@ -38,8 +44,8 @@ module api.security.acl {
             return this.principal.getTypeName();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserStoreAccessControlEntry)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, UserStoreAccessControlEntry)) {
                 return false;
             }
             var other = <UserStoreAccessControlEntry>o;
@@ -55,16 +61,15 @@ module api.security.acl {
             return this.principal.getKey().toString() + '[' + UserStoreAccess[this.access] + ']';
         }
 
-        toJson(): api.security.acl.UserStoreAccessControlEntryJson {
+        toJson(): UserStoreAccessControlEntryJson {
             return {
                 "principal": this.principal.toJson(),
                 "access": UserStoreAccess[this.access]
             };
         }
 
-        static fromJson(json: api.security.acl.UserStoreAccessControlEntryJson): UserStoreAccessControlEntry {
+        static fromJson(json: UserStoreAccessControlEntryJson): UserStoreAccessControlEntry {
             return new UserStoreAccessControlEntry(Principal.fromJson(json.principal), UserStoreAccess[json.access.toUpperCase()]);
         }
     }
 
-}

@@ -1,6 +1,8 @@
-module api.content.util {
+import {IconUrlResolver} from "../../icon/IconUrlResolver";
+import {UriHelper} from "../../util/UriHelper";
+import {ContentSummary} from "../ContentSummary";
 
-    export class ContentIconUrlResolver extends api.icon.IconUrlResolver {
+export class ContentIconUrlResolver extends IconUrlResolver {
 
         private content: ContentSummary;
 
@@ -28,7 +30,6 @@ module api.content.util {
 
         static default(): string {
 
-            return api.util.UriHelper.getAdminUri("common/images/default_content.png");
+            return UriHelper.getAdminUri("common/images/default_content.png");
         }
     }
-}

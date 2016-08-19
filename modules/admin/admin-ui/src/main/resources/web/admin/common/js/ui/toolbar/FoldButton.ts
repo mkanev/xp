@@ -1,30 +1,33 @@
-module api.ui.toolbar {
+import {DivEl} from "../../dom/DivEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {StyleHelper} from "../../StyleHelper";
+import {Element} from "../../dom/Element";
 
-    export class FoldButton extends api.dom.DivEl {
+export class FoldButton extends DivEl {
 
-        private span: api.dom.SpanEl;
-        private dropdown: api.dom.DivEl;
+        private span: SpanEl;
+        private dropdown: DivEl;
         private widthCache: number[] = [];
 
         constructor() {
-            super("button", api.StyleHelper.COMMON_PREFIX);
+            super("button", StyleHelper.COMMON_PREFIX);
 
             this.addClass("fold-button");
 
-            this.dropdown = new api.dom.DivEl("dropdown", api.StyleHelper.COMMON_PREFIX);
+            this.dropdown = new DivEl("dropdown", StyleHelper.COMMON_PREFIX);
             this.appendChild(this.dropdown);
 
-            this.span = new api.dom.SpanEl('fold-label');
+            this.span = new SpanEl('fold-label');
             this.span.setHtml("More");
             this.appendChild(this.span);
         }
 
-        push(element: api.dom.Element, width: number) {
+        push(element: Element, width: number) {
             this.dropdown.prependChild(element);
             this.widthCache.unshift(width);
         }
 
-        pop(): api.dom.Element {
+        pop(): Element {
             var top = this.dropdown.getFirstChild();
             this.dropdown.removeChild(top);
             this.widthCache.shift();
@@ -35,7 +38,7 @@ module api.ui.toolbar {
             this.span.setHtml(label);
         }
 
-        getDropdown(): api.dom.DivEl {
+        getDropdown(): DivEl {
             return this.dropdown;
         }
 
@@ -53,4 +56,3 @@ module api.ui.toolbar {
 
     }
 
-}

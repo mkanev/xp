@@ -1,14 +1,27 @@
-module api.liveedit.fragment {
+import {ComponentView} from "../ComponentView";
+import {ContentView} from "../ContentView";
+import {RegionView} from "../RegionView";
+import {FragmentComponent} from "../../content/page/region/FragmentComponent";
+import {GetContentByIdRequest} from "../../content/resource/GetContentByIdRequest";
+import {Content} from "../../content/Content";
+import {HTMLAreaHelper} from "../../util/htmlarea/editor/HTMLAreaHelper";
+import {FragmentComponentLoadedEvent} from "../FragmentComponentLoadedEvent";
+import {ComponentPropertyValueChangedEvent} from "../../content/page/region/ComponentPropertyValueChangedEvent";
+import {Component} from "../../content/page/region/Component";
+import {Action} from "../../ui/Action";
+import {ContentSummaryAndCompareStatus} from "../../content/ContentSummaryAndCompareStatus";
+import {EditContentEvent} from "../../content/event/EditContentEvent";
+import {Element} from "../../dom/Element";
+import {ItemType} from "../ItemType";
+import {LayoutItemType} from "../layout/LayoutItemType";
+import {TextItemType} from "../text/TextItemType";
+import {ComponentViewBuilder} from "../ComponentView";
+import {LiveEditModel} from "../LiveEditModel";
+import {FragmentComponentViewer} from "./FragmentComponentViewer";
+import {FragmentItemType} from "./FragmentItemType";
+import {FragmentPlaceholder} from "./FragmentPlaceholder";
 
-    import ComponentView = api.liveedit.ComponentView;
-    import ContentView = api.liveedit.ContentView;
-    import RegionView = api.liveedit.RegionView;
-    import FragmentComponent = api.content.page.region.FragmentComponent;
-    import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
-    import Content = api.content.Content;
-    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-
-    export class FragmentComponentViewBuilder extends ComponentViewBuilder<FragmentComponent> {
+export class FragmentComponentViewBuilder extends ComponentViewBuilder<FragmentComponent> {
 
         constructor() {
             super();
@@ -24,7 +37,7 @@ module api.liveedit.fragment {
 
         private fragmentContent: Content;
 
-        private fragmentContentLoadedListeners: {(event: api.liveedit.FragmentComponentLoadedEvent): void}[];
+        private fragmentContentLoadedListeners: {(event: FragmentComponentLoadedEvent): void}[];
 
         constructor(builder: FragmentComponentViewBuilder) {
             this.liveEditModel = builder.parentRegionView.getLiveEditModel();
@@ -36,7 +49,7 @@ module api.liveedit.fragment {
             super(builder.setPlaceholder(new FragmentPlaceholder(this)).setViewer(
                 new FragmentComponentViewer()).setInspectActionRequired(true));
 
-            this.fragmentComponent.onPropertyValueChanged((e: api.content.page.region.ComponentPropertyValueChangedEvent) => {
+            this.fragmentComponent.onPropertyValueChanged((e: ComponentPropertyValueChangedEvent) => {
                 if (e.getPropertyName() === FragmentComponent.PROPERTY_FRAGMENT) {
                     this.loadFragmentContent();
                 }
@@ -54,7 +67,7 @@ module api.liveedit.fragment {
             return this.fragmentContainsLayout;
         }
 
-        getFragmentRootComponent(): api.content.page.region.Component {
+        getFragmentRootComponent(): Component {
             if (this.fragmentContent) {
                 let page = this.fragmentContent.getPage();
                 if (page) {
@@ -82,25 +95,25 @@ module api.liveedit.fragment {
             }
         }
 
-        protected getComponentContextMenuActions(actions: api.ui.Action[], liveEditModel: LiveEditModel): api.ui.Action[] {
+        protected getComponentContextMenuActions(actions: Action[], liveEditModel: LiveEditModel): Action[] {
             if (this.fragmentComponent && !this.fragmentComponent.isEmpty()) {
-                actions.push(new api.ui.Action("Edit in new tab").onExecuted(() => {
+                actions.push(new Action("Edit in new tab").onExecuted(() => {
                     this.deselect();
                     new GetContentByIdRequest(this.fragmentComponent.getFragment()).sendAndParse().then((content: Content)=> {
-                        var contentAndSummary = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
-                        new api.content.event.EditContentEvent([contentAndSummary]).fire();
+                        var contentAndSummary = ContentSummaryAndCompareStatus.fromContentSummary(content);
+                        new EditContentEvent([contentAndSummary]).fire();
                     });
                 }));
             }
             return actions;
         }
 
-        private parseContentViews(parentElement?: api.dom.Element, parentType?: api.liveedit.ItemType) {
+        private parseContentViews(parentElement?: Element, parentType?: ItemType) {
             var children = parentElement.getChildren();
-            children.forEach((childElement: api.dom.Element) => {
+            children.forEach((childElement: Element) => {
                 var itemType = ItemType.fromElement(childElement);
                 if (itemType) {
-                    if (api.liveedit.layout.LayoutItemType.get().equals(itemType)) {
+                    if (LayoutItemType.get().equals(itemType)) {
                         this.fragmentContainsLayout = true;
                     }
 
@@ -110,7 +123,7 @@ module api.liveedit.fragment {
                     htmlElement.removeAttribute("data-" + ItemType.ATTRIBUTE_REGION_NAME);
                 }
 
-                var isTextComponent = api.liveedit.text.TextItemType.get().equals(parentType);
+                var isTextComponent = TextItemType.get().equals(parentType);
                 if (isTextComponent && childElement.getEl().getTagName().toUpperCase() == 'SECTION') {
                     // convert image urls in text component for web
                     childElement.setHtml(HTMLAreaHelper.prepareImgSrcsInValueForEdit(childElement.getHtml()), false);
@@ -120,22 +133,21 @@ module api.liveedit.fragment {
             });
         }
 
-        onFragmentContentLoaded(listener: (event: api.liveedit.FragmentComponentLoadedEvent) => void) {
+        onFragmentContentLoaded(listener: (event: FragmentComponentLoadedEvent) => void) {
             this.fragmentContentLoadedListeners.push(listener);
         }
 
-        unFragmentContentLoaded(listener: (event: api.liveedit.FragmentComponentLoadedEvent) => void) {
+        unFragmentContentLoaded(listener: (event: FragmentComponentLoadedEvent) => void) {
             this.fragmentContentLoadedListeners = this.fragmentContentLoadedListeners.filter((curr) => {
                 return curr != listener;
             })
         }
 
         notifyFragmentContentLoaded() {
-            var event = new api.liveedit.FragmentComponentLoadedEvent(this);
+            var event = new FragmentComponentLoadedEvent(this);
             this.fragmentContentLoadedListeners.forEach((listener) => {
                 listener(event);
             });
         }
 
     }
-}

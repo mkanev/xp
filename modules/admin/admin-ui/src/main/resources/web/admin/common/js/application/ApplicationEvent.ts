@@ -1,10 +1,13 @@
-module api.application {
+import {EventJson} from "../event/EventJson";
+import {Event} from "../event/Event";
+import {ApplicationKey} from "./ApplicationKey";
+import {ClassHelper} from "../ClassHelper";
 
-    export enum ApplicationEventType {
+export enum ApplicationEventType {
         INSTALLED, UNINSTALLED, RESOLVED, STARTING, STARTED, UPDATED, STOPPING, STOPPED, UNRESOLVED, PROGRESS
     }
 
-    export interface ApplicationEventJson extends api.event.EventJson {
+    export interface ApplicationEventJson extends EventJson {
         data: ApplicationEventDataJson;
     }
 
@@ -15,9 +18,9 @@ module api.application {
         progress?: number;
     }
 
-    export class ApplicationEvent extends api.event.Event {
+    export class ApplicationEvent extends Event {
 
-        private applicationKey: api.application.ApplicationKey;
+        private applicationKey: ApplicationKey;
 
         private applicationUrl: string;
 
@@ -25,7 +28,7 @@ module api.application {
 
         private progress: number;
 
-        constructor(applicationKey: api.application.ApplicationKey, eventType: ApplicationEventType, applicationUrl?: string,
+        constructor(applicationKey: ApplicationKey, eventType: ApplicationEventType, applicationUrl?: string,
                     progress?: number) {
             super();
             this.applicationKey = applicationKey;
@@ -34,7 +37,7 @@ module api.application {
             this.progress = progress;
         }
 
-        public getApplicationKey(): api.application.ApplicationKey {
+        public getApplicationKey(): ApplicationKey {
             return this.applicationKey;
         }
 
@@ -58,15 +61,15 @@ module api.application {
         }
 
         static on(handler: (event: ApplicationEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ApplicationEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
         static fromJson(applicationEventJson: ApplicationEventJson): ApplicationEvent {
-            var applicationKey = api.application.ApplicationKey.fromString(applicationEventJson.data.applicationKey);
+            var applicationKey = ApplicationKey.fromString(applicationEventJson.data.applicationKey);
             var eventType = ApplicationEventType[applicationEventJson.data.eventType];
             var applicationUrl = applicationEventJson.data.applicationUrl;
             var progress = applicationEventJson.data.progress;
@@ -74,4 +77,3 @@ module api.application {
         }
     }
 
-}

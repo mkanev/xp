@@ -1,6 +1,12 @@
-module api.ui.panel {
+import {Element} from "../../dom/Element";
+import {NavigationItem} from "../NavigationItem";
+import {Navigator} from "../Navigator";
+import {NavigatorEvent} from "../NavigatorEvent";
+import {Panel} from "./Panel";
+import {PanelShownEvent} from "./PanelShownEvent";
+import {PanelStrip} from "./PanelStrip";
 
-    export class NavigatedPanelStrip extends PanelStrip {
+export class NavigatedPanelStrip extends PanelStrip {
 
         private navigator: Navigator;
         private scrollIndex: number = -1;
@@ -8,7 +14,7 @@ module api.ui.panel {
         private focusVisible: boolean = false;
         private listenToScroll: boolean = true;
 
-        constructor(navigator: Navigator, scrollable?: api.dom.Element, className?: string) {
+        constructor(navigator: Navigator, scrollable?: Element, className?: string) {
             super(scrollable, className);
             this.navigator = navigator;
 
@@ -124,7 +130,7 @@ module api.ui.panel {
         removeNavigablePanel(panel: Panel, checkCanRemovePanel: boolean = true): number {
             var removedPanelIndex = super.removePanel(panel, checkCanRemovePanel);
             if (removedPanelIndex > -1) {
-                var navigationItem: api.ui.NavigationItem = this.navigator.getNavigationItem(removedPanelIndex);
+                var navigationItem: NavigationItem = this.navigator.getNavigationItem(removedPanelIndex);
                 this.navigator.removeNavigationItem(navigationItem);
             }
             return removedPanelIndex;
@@ -136,4 +142,3 @@ module api.ui.panel {
         }
     }
 
-}

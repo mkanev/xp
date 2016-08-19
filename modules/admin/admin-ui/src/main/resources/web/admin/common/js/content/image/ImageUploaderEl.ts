@@ -1,13 +1,23 @@
-module api.content.image {
+import {Button} from "../../ui/button/Button";
+import {CloseButton} from "../../ui/button/CloseButton";
+import {Point} from "../../ui/image/ImageEditor";
+import {Rect} from "../../ui/image/ImageEditor";
+import {ImageEditor} from "../../ui/image/ImageEditor";
+import {MediaUploaderEl} from "../../ui/uploader/MediaUploaderEl";
+import {MediaUploaderElConfig} from "../../ui/uploader/MediaUploaderEl";
+import {Body} from "../../dom/Body";
+import {Content} from "../Content";
+import {ValueTypes} from "../../data/ValueTypes";
+import {ContentId} from "../ContentId";
+import {ContentImageUrlResolver} from "../util/ContentImageUrlResolver";
+import {MaskContentWizardPanelEvent} from "../../app/wizard/MaskContentWizardPanelEvent";
+import {showError} from "../../notify/MessageBus";
+import {Element} from "../../dom/Element";
+import {DivEl} from "../../dom/DivEl";
+import {ExtraData} from "../ExtraData";
+import {ImageErrorEvent} from "./ImageErrorEvent";
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-
-    import Point = api.ui.image.Point;
-    import Rect = api.ui.image.Rect;
-    import ImageEditor = api.ui.image.ImageEditor;
-
-    export class ImageUploaderEl extends api.ui.uploader.MediaUploaderEl {
+export class ImageUploaderEl extends MediaUploaderEl {
 
         private imageEditors: ImageEditor[];
         private editModeListeners: {(edit: boolean, crop: Rect, zoom: Rect, focus: Point): void}[];
@@ -21,7 +31,7 @@ module api.content.image {
         private static SELECTED_CLASS = 'selected';
         private static STANDOUT_CLASS = 'standout';
 
-        constructor(config: api.ui.uploader.MediaUploaderElConfig) {
+        constructor(config: MediaUploaderElConfig) {
             if (config.allowTypes == undefined) {
                 config.allowTypes = [
                     {title: 'Image files', extensions: 'jpg,jpeg,gif,png,svg'}
@@ -80,7 +90,7 @@ module api.content.image {
                 });
             });
 
-            api.dom.Body.get().onClicked((event: MouseEvent) => {
+            Body.get().onClicked((event: MouseEvent) => {
                 this.imageEditors.forEach((imageEditor: ImageEditor) => {
                     if (imageEditor.hasClass(ImageUploaderEl.SELECTED_CLASS) && imageEditor.getImage().getHTMLElement() !== event.target) {
                         imageEditor.removeClass(ImageUploaderEl.SELECTED_CLASS);
@@ -89,11 +99,11 @@ module api.content.image {
             });
         }
 
-        private getSizeValue(content: api.content.Content, propertyName: string): number {
+        private getSizeValue(content: Content, propertyName: string): number {
             var value = 0,
                 metaData = content.getContentData().getProperty('metadata');
 
-            if (metaData && api.data.ValueTypes.DATA.equals(metaData.getType())) {
+            if (metaData && ValueTypes.DATA.equals(metaData.getType())) {
                 value = parseInt(metaData.getPropertySet().getProperty(propertyName).getString());
             }
             else {
@@ -108,7 +118,7 @@ module api.content.image {
             return value;
         }
 
-        setOriginalDimensions(content: api.content.Content) {
+        setOriginalDimensions(content: Content) {
             this.originalWidth = this.getSizeValue(content, "imageWidth") || this.initialWidth;
             this.originalHeight = this.getSizeValue(content, "imageHeight");
         }
@@ -131,7 +141,7 @@ module api.content.image {
 
         private createImageEditor(value: string): ImageEditor {
 
-            var contentId = new api.content.ContentId(value),
+            var contentId = new ContentId(value),
                 imgUrl = this.resolveImageUrl(value);
 
             this.togglePlaceholder(true);
@@ -144,14 +154,14 @@ module api.content.image {
         }
 
         private resolveImageUrl(value: string): string {
-            return new api.content.util.ContentImageUrlResolver().
-                setContentId(new api.content.ContentId(value)).
+            return new ContentImageUrlResolver().
+                setContentId(new ContentId(value)).
                 setTimestamp(new Date()).
                 setSource(true).
                 resolve();
         }
 
-        private subscribeImageEditorOnEvents(imageEditor: ImageEditor, contentId: api.content.ContentId) {
+        private subscribeImageEditorOnEvents(imageEditor: ImageEditor, contentId: ContentId) {
             var focusAutoPositionedChangedHandler = (auto: boolean) => this.notifyFocusAutoPositionedChanged(auto);
             var cropAutoPositionedChangedHandler = (auto: boolean) => this.notifyCropAutoPositionedChanged(auto);
             var editModeChangedHandler = (edit: boolean, position: Rect, zoom: Rect, focus: Point) => {
@@ -162,7 +172,7 @@ module api.content.image {
 
                 if (edit) {
                     index = imageEditor.getSiblingIndex();
-                    api.dom.Body.get().appendChild(imageEditor.addClass(ImageUploaderEl.STANDOUT_CLASS));
+                    Body.get().appendChild(imageEditor.addClass(ImageUploaderEl.STANDOUT_CLASS));
                     this.positionImageEditor(imageEditor);
                 } else {
                     this.getResultContainer().insertChild(imageEditor.removeClass(ImageUploaderEl.STANDOUT_CLASS), index);
@@ -175,7 +185,7 @@ module api.content.image {
                 this.toggleSelected(imageEditor);
             };
             var shaderVisibilityChangedHandler = (visible: boolean) => {
-                new api.app.wizard.MaskContentWizardPanelEvent(contentId, visible).fire();
+                new MaskContentWizardPanelEvent(contentId, visible).fire();
             };
 
             var imageErrorHandler = (event: UIEvent) => {
@@ -183,7 +193,7 @@ module api.content.image {
                 this.imageEditors = this.imageEditors.filter((curr) => {
                     return curr !== imageEditor;
                 })
-                api.notify.showError('Failed to upload an image ' + contentId.toString());
+                showError('Failed to upload an image ' + contentId.toString());
             };
 
             imageEditor.getImage().onLoaded((event: UIEvent) => {
@@ -216,13 +226,13 @@ module api.content.image {
                 setLeftPx(resultOffset.left);
         }
 
-        protected getExistingItem(value: string): api.dom.Element {
+        protected getExistingItem(value: string): Element {
             return this.imageEditors.filter(elem => {
                 return !!elem.getSrc() && elem.getSrc().indexOf(value) > -1;
             })[0];
         }
 
-        protected refreshExistingItem(existingItem: api.dom.Element, value: string) {
+        protected refreshExistingItem(existingItem: Element, value: string) {
             for (var i = 0; i < this.imageEditors.length; i++) {
                 var editor = this.imageEditors[i];
                 if (existingItem == editor) {
@@ -232,7 +242,7 @@ module api.content.image {
             }
         }
 
-        createResultItem(value: string): api.dom.DivEl {
+        createResultItem(value: string): DivEl {
 
             if (!this.initialWidth) {
                 this.initialWidth = this.getParentElement().getEl().getWidth();
@@ -324,4 +334,3 @@ module api.content.image {
         }
 
     }
-}

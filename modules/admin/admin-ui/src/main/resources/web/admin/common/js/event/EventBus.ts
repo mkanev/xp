@@ -1,15 +1,15 @@
-module api.event {
+import {Event} from "./Event";
 
-    interface HandlersMapEntry {
+interface HandlersMapEntry {
         customEventHandler: (customEvent: any) => void;
-        apiEventHandler: (apiEventObj: api.event.Event) => void;
+        apiEventHandler: (apiEventObj: Event) => void;
     }
 
     export class EventBus {
 
         private static handlersMap: {[eventName: string]: HandlersMapEntry[]} = {};
 
-        static onEvent(eventName: string, handler: (apiEventObj: api.event.Event) => void, contextWindow: Window = window) {
+        static onEvent(eventName: string, handler: (apiEventObj: Event) => void, contextWindow: Window = window) {
             var customEventHandler = (customEvent: any) => handler(customEvent['apiEventObj']);
             if (!EventBus.handlersMap[eventName]) {
                 EventBus.handlersMap[eventName] = [];
@@ -21,7 +21,7 @@ module api.event {
             contextWindow.addEventListener(eventName, customEventHandler);
         }
 
-        static unEvent(eventName: string, handler?: (event: api.event.Event) => void, contextWindow: Window = window) {
+        static unEvent(eventName: string, handler?: (event: Event) => void, contextWindow: Window = window) {
             if (handler) {
                 var customEventHandler: (customEvent: any) => void;
                 EventBus.handlersMap[eventName] = EventBus.handlersMap[eventName].filter((entry: HandlersMapEntry) => {
@@ -39,7 +39,7 @@ module api.event {
             }
         }
 
-        static fireEvent(apiEventObj: api.event.Event, contextWindow: Window = window) {
+        static fireEvent(apiEventObj: Event, contextWindow: Window = window) {
             var customEvent = contextWindow.document.createEvent('Event');
             customEvent.initEvent(apiEventObj.getName(), true, true);
             customEvent['apiEventObj'] = apiEventObj;
@@ -47,4 +47,3 @@ module api.event {
         }
 
     }
-}

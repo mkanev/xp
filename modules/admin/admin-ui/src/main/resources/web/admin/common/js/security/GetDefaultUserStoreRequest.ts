@@ -1,6 +1,10 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStore} from "./UserStore";
+import {UserStoreJson} from "./UserStoreJson";
 
-    export class GetDefaultUserStoreRequest extends SecurityResourceRequest<UserStoreJson, UserStore> {
+export class GetDefaultUserStoreRequest extends SecurityResourceRequest<UserStoreJson, UserStore> {
 
         constructor() {
             super();
@@ -11,12 +15,12 @@ module api.security {
             return null;
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'userstore/default');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'userstore/default');
         }
 
         sendAndParse(): wemQ.Promise<UserStore> {
-            return this.send().then((response: api.rest.JsonResponse<UserStoreJson>) => {
+            return this.send().then((response: JsonResponse<UserStoreJson>) => {
                 return this.fromJsonToUserStore(response.getResult());
             });
         }
@@ -25,4 +29,3 @@ module api.security {
             return UserStore.fromJson(json);
         }
     }
-}

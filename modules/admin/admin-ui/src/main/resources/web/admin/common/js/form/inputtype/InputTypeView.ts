@@ -1,17 +1,21 @@
-module api.form.inputtype {
+import {Property} from "../../data/Property";
+import {PropertyArray} from "../../data/PropertyArray";
+import {Value} from "../../data/Value";
+import {ValueType} from "../../data/ValueType";
+import {Element} from "../../dom/Element";
+import {Input} from "../Input";
+import {ContentSummary} from "../../content/ContentSummary";
+import {InputValidationRecording} from "./InputValidationRecording";
+import {InputValidityChangedEvent} from "./InputValidityChangedEvent";
+import {InputValueChangedEvent} from "./InputValueChangedEvent";
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-
-    export interface InputTypeView<RAW_VALUE_TYPE> {
+export interface InputTypeView<RAW_VALUE_TYPE> {
 
         getValueType(): ValueType;
 
-        getElement(): api.dom.Element;
+        getElement(): Element;
 
-        layout(input: api.form.Input, propertyArray: PropertyArray) : wemQ.Promise<void>;
+        layout(input: Input, propertyArray: PropertyArray) : wemQ.Promise<void>;
 
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void>;
 
@@ -26,12 +30,12 @@ module api.form.inputtype {
         /*
          * Invoked when input wants to edit embedded content
          */
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void);
+        onEditContentRequest(listener: (content: ContentSummary) => void);
 
         /*
          * Invoked when input wants to edit embedded content
          */
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void);
+        unEditContentRequest(listener: (content: ContentSummary) => void);
 
         /*
          * Returns true if focus was successfully given.
@@ -63,4 +67,3 @@ module api.form.inputtype {
         unBlur(listener: (event: FocusEvent) => void);
 
     }
-}

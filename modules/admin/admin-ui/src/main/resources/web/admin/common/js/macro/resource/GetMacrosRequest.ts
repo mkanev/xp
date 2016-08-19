@@ -1,8 +1,11 @@
-module api.macro.resource {
+import {ApplicationKey} from "../../application/ApplicationKey";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {MacroDescriptor} from "../MacroDescriptor";
+import {MacroResourceRequest} from "./MacroResourceRequest";
+import {MacrosJson} from "./MacrosJson";
 
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export class GetMacrosRequest extends MacroResourceRequest<MacrosJson, MacroDescriptor[]> {
+export class GetMacrosRequest extends MacroResourceRequest<MacrosJson, MacroDescriptor[]> {
 
         private applicationKeys: ApplicationKey[];
 
@@ -18,12 +21,12 @@ module api.macro.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "getByApps");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "getByApps");
         }
 
         sendAndParse(): wemQ.Promise<MacroDescriptor[]> {
-            return this.send().then((response: api.rest.JsonResponse<MacrosJson>) => {
+            return this.send().then((response: JsonResponse<MacrosJson>) => {
                 return this.toMacroDescriptors(response.getResult());
             });
         }
@@ -36,4 +39,3 @@ module api.macro.resource {
             return result;
         }
     }
-}

@@ -1,12 +1,17 @@
-import "../../api.ts";
+import {Action} from "../../../../../common/js/ui/Action";
+import {DialogButton} from "../../../../../common/js/ui/dialog/DialogButton";
+import {SpanEl} from "../../../../../common/js/dom/SpanEl";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {MenuButton} from "../../../../../common/js/ui/button/MenuButton";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {Content} from "../../../../../common/js/content/Content";
+import {IsAuthenticatedRequest} from "../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {LoginResult} from "../../../../../common/js/security/auth/LoginResult";
+import {PermissionHelper} from "../../../../../common/js/security/acl/PermissionHelper";
+import {Permission} from "../../../../../common/js/security/acl/Permission";
+import {CompareStatusFormatter} from "../../../../../common/js/content/CompareStatus";
 
-import Action = api.ui.Action;
-import DialogButton = api.ui.dialog.DialogButton;
-import SpanEl = api.dom.SpanEl;
-import CompareStatus = api.content.CompareStatus;
-import MenuButton = api.ui.button.MenuButton;
-
-export class ContentWizardToolbarPublishControls extends api.dom.DivEl {
+export class ContentWizardToolbarPublishControls extends DivEl {
 
     private publishButton: MenuButton;
     private publishAction: Action;
@@ -82,20 +87,20 @@ export class ContentWizardToolbarPublishControls extends api.dom.DivEl {
         return this.contentCompareStatus == CompareStatus.PENDING_DELETE;
     }
 
-    public enableActionsForExisting(existing: api.content.Content) {
-        new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
-            var hasPublishPermission = api.security.acl.PermissionHelper.hasPermission(api.security.acl.Permission.PUBLISH,
+    public enableActionsForExisting(existing: Content) {
+        new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
+            var hasPublishPermission = PermissionHelper.hasPermission(Permission.PUBLISH,
                 loginResult, existing.getPermissions());
             this.setUserCanPublish(hasPublishPermission);
         });
     }
 
     private getContentStateValueForSpan(compareStatus: CompareStatus): string {
-        var status = new api.dom.SpanEl();
+        var status = new SpanEl();
         if (compareStatus === CompareStatus.EQUAL) {
             status.addClass("online");
         }
-        status.setHtml(api.content.CompareStatusFormatter.formatStatus(compareStatus));
+        status.setHtml(CompareStatusFormatter.formatStatus(compareStatus));
         return "Item is " + status.toString();
     }
 }

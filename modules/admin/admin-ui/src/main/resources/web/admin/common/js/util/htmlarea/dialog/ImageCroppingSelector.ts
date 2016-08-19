@@ -1,11 +1,12 @@
-module api.util.htmlarea.dialog {
+import {DropdownInput} from "../../../ui/selector/dropdown/DropdownInput";
+import {Option} from "../../../ui/selector/Option";
+import {DropdownConfig} from "../../../ui/selector/dropdown/DropdownInput";
+import {OptionSelectedEvent} from "../../../ui/selector/OptionSelectedEvent";
+import {ImageCroppingOption} from "./ImageCroppingOption";
+import {ImageCroppingOptions} from "./ImageCroppingOptions";
+import {ImageCroppingOptionViewer} from "./ImageCroppingOptionViewer";
 
-    import DropdownInput = api.ui.selector.dropdown.DropdownInput;
-    import Option = api.ui.selector.Option;
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
-
-    export class ImageCroppingSelector extends DropdownInput<ImageCroppingOption> {
+export class ImageCroppingSelector extends DropdownInput<ImageCroppingOption> {
 
 
         constructor() {
@@ -49,4 +50,3 @@ module api.util.htmlarea.dialog {
         }
 
     }
-}

@@ -1,24 +1,25 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {ContentSummaryAndCompareStatus} from "../ContentSummaryAndCompareStatus";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class EditContentEvent extends api.event.Event {
+export class EditContentEvent extends Event {
 
-        private model: api.content.ContentSummaryAndCompareStatus[];
+        private model: ContentSummaryAndCompareStatus[];
 
-        constructor(model: api.content.ContentSummaryAndCompareStatus[]) {
+        constructor(model: ContentSummaryAndCompareStatus[]) {
             this.model = model;
             super();
         }
 
-        getModels(): api.content.ContentSummaryAndCompareStatus[] {
+        getModels(): ContentSummaryAndCompareStatus[] {
             return this.model;
         }
 
         static on(handler: (event: EditContentEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: EditContentEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

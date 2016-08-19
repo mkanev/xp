@@ -1,9 +1,8 @@
-module api.content.json {
+import {ContentIdBaseItemJson} from "./ContentIdBaseItemJson";
 
-    export interface ResolvePublishContentResultJson {
+export interface ResolvePublishContentResultJson {
 
         dependentContents: ContentIdBaseItemJson[];
         requestedContents: ContentIdBaseItemJson[];
         containsRemovable: boolean;
     }
-}

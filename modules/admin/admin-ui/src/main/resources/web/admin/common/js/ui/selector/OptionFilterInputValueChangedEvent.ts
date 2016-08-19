@@ -1,14 +1,15 @@
-module api.ui.selector {
+import {Grid} from "../grid/Grid";
+import {Option} from "./Option";
 
-    export class OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE> {
+export class OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE> {
 
         private oldValue: string;
 
         private newValue: string;
 
-        private grid: api.ui.grid.Grid<api.ui.selector.Option<OPTION_DISPLAY_VALUE>>;
+        private grid: Grid<Option<OPTION_DISPLAY_VALUE>>;
 
-        constructor(oldValue: string, newValue: string, grid: api.ui.grid.Grid<api.ui.selector.Option<OPTION_DISPLAY_VALUE>>) {
+        constructor(oldValue: string, newValue: string, grid: Grid<Option<OPTION_DISPLAY_VALUE>>) {
             this.oldValue = oldValue;
             this.newValue = newValue;
             this.grid = grid;
@@ -22,8 +23,7 @@ module api.ui.selector {
             return this.newValue;
         }
 
-        getGrid(): api.ui.grid.Grid<api.ui.selector.Option<OPTION_DISPLAY_VALUE>> {
+        getGrid(): Grid<Option<OPTION_DISPLAY_VALUE>> {
             return this.grid;
         }
     }
-}

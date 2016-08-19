@@ -1,6 +1,7 @@
-module api.dom {
+import {NewElementBuilder} from "./Element";
+import {Element} from "./Element";
 
-    export class AEl extends Element {
+export class AEl extends Element {
 
         constructor(className?: string) {
             super(new NewElementBuilder().setTagName("a").setClassName(className));
@@ -37,4 +38,3 @@ module api.dom {
             return this.getEl().getText();
         }
     }
-}

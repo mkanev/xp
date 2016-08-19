@@ -1,11 +1,14 @@
-import "../../api.ts";
+import {FoldButton} from "../../../../../common/js/ui/toolbar/FoldButton";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {ActionContainer} from "../../../../../common/js/ui/ActionContainer";
+import {Action} from "../../../../../common/js/ui/Action";
+import {ActionButton} from "../../../../../common/js/ui/button/ActionButton";
 
-import FoldButton = api.ui.toolbar.FoldButton;
 import {MobileContentTreeGridActions} from "./action/MobileContentTreeGridActions";
 
-export class MobileContentBrowseToolbar extends api.dom.DivEl implements api.ui.ActionContainer {
+export class MobileContentBrowseToolbar extends DivEl implements ActionContainer {
 
-    private actions: api.ui.Action[] = [];
+    private actions: Action[] = [];
 
     constructor(actions: MobileContentTreeGridActions) {
         super("toolbar");
@@ -24,23 +27,23 @@ export class MobileContentBrowseToolbar extends api.dom.DivEl implements api.ui.
         return fold;
     }
 
-    private initEditButton(editAction: api.ui.Action) {
-        var editButton = new api.ui.button.ActionButton(editAction);
+    private initEditButton(editAction: Action) {
+        var editButton = new ActionButton(editAction);
         editButton.addClass("mobile-edit-action");
         this.appendChild(editButton);
     }
 
-    private addActions(actions: api.ui.Action[], foldButton: FoldButton) {
+    private addActions(actions: Action[], foldButton: FoldButton) {
         this.actions = this.actions.concat(actions);
         actions.forEach((action) => {
 
-            var actionButton = new api.ui.button.ActionButton(action);
+            var actionButton = new ActionButton(action);
             var buttonWidth = actionButton.getEl().getWidthWithBorder();
             foldButton.push(actionButton, buttonWidth);
         });
     }
 
-    getActions(): api.ui.Action[] {
+    getActions(): Action[] {
         return this.actions;
     }
 

@@ -1,6 +1,7 @@
-module api.application {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class MarketApplicationMetadata implements api.Equitable {
+export class MarketApplicationMetadata implements Equitable {
 
         private hits: number;
 
@@ -27,8 +28,8 @@ module api.application {
             this.totalHits = totalHits;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MarketApplicationMetadata)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MarketApplicationMetadata)) {
                 return false;
             }
 
@@ -43,4 +44,3 @@ module api.application {
             return true;
         }
     }
-}

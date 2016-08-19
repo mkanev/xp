@@ -1,6 +1,9 @@
-module api.security {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
+import {Principal} from "./Principal";
+import {UserStore} from "./UserStore";
 
-    export class UserItemDeletedEvent extends api.event.Event {
+export class UserItemDeletedEvent extends Event {
 
         private principals: Principal[];
 
@@ -25,11 +28,11 @@ module api.security {
         }
 
         static on(handler: (event: UserItemDeletedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: UserItemDeletedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
 
@@ -53,4 +56,3 @@ module api.security {
             return new UserItemDeletedEvent(this);
         }
     }
-}

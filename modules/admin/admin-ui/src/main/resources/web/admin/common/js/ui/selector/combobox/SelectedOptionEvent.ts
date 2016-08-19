@@ -1,6 +1,6 @@
-module api.ui.selector.combobox {
+import {SelectedOption} from "./SelectedOption";
 
-    export class SelectedOptionEvent<T> {
+export class SelectedOptionEvent<T> {
 
         private selectedOption: SelectedOption<T>;
 
@@ -19,4 +19,3 @@ module api.ui.selector.combobox {
             return this.keyCode;
         }
     }
-}

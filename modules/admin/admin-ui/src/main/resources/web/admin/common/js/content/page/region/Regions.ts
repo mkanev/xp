@@ -1,6 +1,25 @@
-module api.content.page.region {
+import {Equitable} from "../../../Equitable";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {ClassHelper} from "../../../ClassHelper";
+import {BaseRegionChangedEvent} from "./BaseRegionChangedEvent";
+import {Component} from "./Component";
+import {ComponentFactory} from "./ComponentFactory";
+import {ComponentPath} from "./ComponentPath";
+import {ComponentPathRegionAndComponent} from "./ComponentPath";
+import {ComponentPropertyChangedEvent} from "./ComponentPropertyChangedEvent";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {LayoutComponent} from "./LayoutComponent";
+import {LayoutRegionsMerger} from "./LayoutRegionsMerger";
+import {Region} from "./Region";
+import {RegionAddedEvent} from "./RegionAddedEvent";
+import {RegionChangedEvent} from "./RegionChangedEvent";
+import {RegionDescriptor} from "./RegionDescriptor";
+import {RegionJson} from "./RegionJson";
+import {RegionPath} from "./RegionPath";
+import {RegionRemovedEvent} from "./RegionRemovedEvent";
+import {RegionsChangedEvent} from "./RegionsChangedEvent";
 
-    export class Regions implements api.Equitable {
+export class Regions implements Equitable {
 
         public static debug: boolean = false;
 
@@ -90,8 +109,8 @@ module api.content.page.region {
                 return component;
             }
             else {
-                if (!api.ObjectHelper.iFrameSafeInstanceOf(component, LayoutComponent)) {
-                    throw new Error("Expected component to be a LayoutComponent: " + api.ClassHelper.getClassName(component));
+                if (!ObjectHelper.iFrameSafeInstanceOf(component, LayoutComponent)) {
+                    throw new Error("Expected component to be a LayoutComponent: " + ClassHelper.getClassName(component));
                 }
 
                 var layoutComponent = <LayoutComponent> component;
@@ -137,9 +156,9 @@ module api.content.page.region {
             return regionJsons;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Regions)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Regions)) {
                 return false;
             }
 
@@ -149,7 +168,7 @@ module api.content.page.region {
             var thisRegions = this.getRegions();
             var otherRegions = other.getRegions();
 
-            if (!api.ObjectHelper.arrayEquals(thisRegions, otherRegions)) {
+            if (!ObjectHelper.arrayEquals(thisRegions, otherRegions)) {
                 return false;
             }
 
@@ -310,4 +329,3 @@ module api.content.page.region {
         }
     }
 
-}

@@ -1,6 +1,8 @@
-module api.content.json {
+import {ChildOrderJson} from "./ChildOrderJson";
+import {ReorderChildContentJson} from "./ReorderChildContentJson";
+import {SetOrderUpdateJson} from "./SetOrderUpdateJson";
 
-    export interface ReorderChildContentsJson extends SetOrderUpdateJson {
+export interface ReorderChildContentsJson extends SetOrderUpdateJson {
 
         manualOrder: boolean;
 
@@ -9,4 +11,3 @@ module api.content.json {
         reorderChildren: ReorderChildContentJson[];
 
     }
-}

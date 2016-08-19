@@ -1,6 +1,7 @@
-module api.content.page.region {
+import {ComponentType} from "./ComponentType";
+import {TextComponentBuilder} from "./TextComponent";
 
-    export class TextComponentType extends ComponentType {
+export class TextComponentType extends ComponentType {
 
         private static INSTANCE = new TextComponentType();
 
@@ -17,4 +18,3 @@ module api.content.page.region {
         }
     }
 
-}

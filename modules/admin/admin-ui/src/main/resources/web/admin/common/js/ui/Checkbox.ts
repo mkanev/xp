@@ -1,11 +1,15 @@
-module api.ui {
+import {FormInputEl} from "../dom/FormInputEl";
+import {InputEl} from "../dom/InputEl";
+import {LabelEl} from "../dom/LabelEl";
+import {Element} from "../dom/Element";
+import {NewElementBuilder} from "../dom/Element";
 
-    export class Checkbox extends api.dom.FormInputEl {
+export class Checkbox extends FormInputEl {
         //TODO: USE HTML CHECKED PROPERTY INSTEAD OF ATTRIBUTE CHECKED! from ljl
 
-        private checkbox: api.dom.InputEl;
+        private checkbox: InputEl;
 
-        private label: api.dom.LabelEl;
+        private label: LabelEl;
 
         public static debug = false;
 
@@ -21,7 +25,7 @@ module api.ui {
 
         private initCheckbox() {
             // we need an id for the label to interact nicely
-            this.checkbox = <api.dom.InputEl> new api.dom.Element(new api.dom.NewElementBuilder().setTagName('input').setGenerateId(true));
+            this.checkbox = <InputEl> new Element(new NewElementBuilder().setTagName('input').setGenerateId(true));
             this.checkbox.getEl().setAttribute('type', 'checkbox');
 
             wemjq(this.checkbox.getHTMLElement()).change((e) => {
@@ -35,7 +39,7 @@ module api.ui {
         }
 
         private initLabel(text: string, labelPosition: LabelPosition) {
-            this.label = new api.dom.LabelEl(text, this.checkbox);
+            this.label = new LabelEl(text, this.checkbox);
             this.label.addClass(this.getLabelPositionAsString(labelPosition));
         }
 
@@ -177,4 +181,3 @@ module api.ui {
 
 
 
-}

@@ -1,6 +1,7 @@
-module api.application {
+import {MarketApplication} from "./MarketApplication";
+import {MarketApplicationMetadata} from "./MarketApplicationMetadata";
 
-    export class MarketApplicationResponse {
+export class MarketApplicationResponse {
 
         private applications: MarketApplication[];
 
@@ -29,4 +30,3 @@ module api.application {
             return this;
         }
     }
-}

@@ -1,6 +1,10 @@
-module api.ui.button {
+import {Button} from "./Button";
+import {KeyBindings} from "../KeyBindings";
+import {Action} from "../Action";
+import {KeyBindingAction} from "../KeyBinding";
+import {Tooltip} from "../Tooltip";
 
-    export class ActionButton extends api.ui.button.Button {
+export class ActionButton extends Button {
 
         private action: Action;
         private tooltip: Tooltip;
@@ -19,8 +23,8 @@ module api.ui.button {
 
             if (this.action.hasShortcut() && showTooltip) {
                 this.tooltip = new Tooltip(this, this.action.getShortcut().getCombination(), 1000);
-                api.ui.KeyBindings.get().onHelpKeyPressed((e) => {
-                    if (this.action.isEnabled() && api.ui.KeyBindings.get().isActive(this.action.getShortcut())) {
+                KeyBindings.get().onHelpKeyPressed((e) => {
+                    if (this.action.isEnabled() && KeyBindings.get().isActive(this.action.getShortcut())) {
                         if (KeyBindingAction[KeyBindingAction.KEYDOWN].toLowerCase() == e.type) {
                             this.tooltip.show();
                             return;
@@ -34,7 +38,7 @@ module api.ui.button {
                 this.action.execute();
             });
 
-            this.action.onPropertyChanged((action: api.ui.Action) => {
+            this.action.onPropertyChanged((action: Action) => {
                 this.setEnabled(action.isEnabled());
                 this.setVisible(action.isVisible());
                 this.setLabel(this.createLabel(action));
@@ -60,4 +64,3 @@ module api.ui.button {
         }
 
     }
-}

@@ -1,15 +1,16 @@
-import "../../api.ts";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {NamesAndIconViewer} from "../../../../../common/js/ui/NamesAndIconViewer";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {ContentIconUrlResolver} from "../../../../../common/js/content/util/ContentIconUrlResolver";
 
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-
-export class DependantItemViewer extends api.ui.NamesAndIconViewer<ContentSummaryAndCompareStatus> {
+export class DependantItemViewer extends NamesAndIconViewer<ContentSummaryAndCompareStatus> {
 
     constructor() {
         super("dependant-item-viewer");
     }
 
     resolveDisplayName(object: ContentSummaryAndCompareStatus): string {
-        var pendingDelete = (api.content.CompareStatus.PENDING_DELETE == object.getCompareStatus());
+        var pendingDelete = (CompareStatus.PENDING_DELETE == object.getCompareStatus());
 
         this.toggleClass("pending-delete", pendingDelete);
         return object.getPath().toString();
@@ -21,7 +22,7 @@ export class DependantItemViewer extends api.ui.NamesAndIconViewer<ContentSummar
 
     resolveIconUrl(object: ContentSummaryAndCompareStatus): string {
         if(! object.getType().isImage()) {
-            return new api.content.util.ContentIconUrlResolver().setContent(object.getContentSummary()).resolve();
+            return new ContentIconUrlResolver().setContent(object.getContentSummary()).resolve();
         }
     }
     resolveIconClass (object: ContentSummaryAndCompareStatus): string {

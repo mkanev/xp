@@ -1,14 +1,24 @@
-module api.content.page.region {
+import {Form} from "../../../form/Form";
+import {FormBuilder} from "../../../form/Form";
+import {OccurrencesBuilder} from "../../../form/Occurrences";
+import {TextLine} from "../../../form/inputtype/text/TextLine";
+import {TextArea} from "../../../form/inputtype/text/TextArea";
+import {PropertyTree} from "../../../data/PropertyTree";
+import {PropertyEvent} from "../../../data/PropertyEvent";
+import {Equitable} from "../../../Equitable";
+import {Cloneable} from "../../../Cloneable";
+import {ContentId} from "../../ContentId";
+import {InputBuilder} from "../../../form/Input";
+import {ObjectHelper} from "../../../ObjectHelper";
+import {Component} from "./Component";
+import {ComponentBuilder} from "./Component";
+import {ComponentName} from "./ComponentName";
+import {ComponentTypeWrapperJson} from "./ComponentTypeWrapperJson";
+import {ImageComponentJson} from "./ImageComponentJson";
+import {ImageComponentType} from "./ImageComponentType";
+import {Region} from "./Region";
 
-    import Form = api.form.Form;
-    import FormBuilder = api.form.FormBuilder;
-    import OccurrencesBuilder = api.form.OccurrencesBuilder;
-    import TextLine = api.form.inputtype.text.TextLine;
-    import TextArea = api.form.inputtype.text.TextArea;
-    import PropertyTree = api.data.PropertyTree;
-    import PropertyEvent = api.data.PropertyEvent;
-
-    export class ImageComponent extends Component implements api.Equitable, api.Cloneable {
+export class ImageComponent extends Component implements Equitable, Cloneable {
 
         public static PROPERTY_IMAGE = 'image';
 
@@ -18,7 +28,7 @@ module api.content.page.region {
 
         private disableEventForwarding: boolean;
 
-        private image: api.content.ContentId;
+        private image: ContentId;
 
         private config: PropertyTree;
 
@@ -43,7 +53,7 @@ module api.content.page.region {
             this.config.onChanged(this.configChangedHandler);
 
             var formBuilder = new FormBuilder();
-            formBuilder.addFormItem(new api.form.InputBuilder().
+            formBuilder.addFormItem(new InputBuilder().
                 setName("caption").
                 setInputType(TextArea.getName()).
                 setLabel("Caption").
@@ -56,11 +66,11 @@ module api.content.page.region {
             this.disableEventForwarding = value;
         }
 
-        getImage(): api.content.ContentId {
+        getImage(): ContentId {
             return this.image;
         }
 
-        getForm(): api.form.Form {
+        getForm(): Form {
             return this.form;
         }
 
@@ -68,13 +78,13 @@ module api.content.page.region {
             return this.config;
         }
 
-        setImage(contentId: api.content.ContentId, name: string) {
+        setImage(contentId: ContentId, name: string) {
             var oldValue = this.image;
             this.image = contentId;
 
             this.setName(name ? new ComponentName(name) : this.getType().getDefaultName());
 
-            if (!api.ObjectHelper.equals(oldValue, contentId)) {
+            if (!ObjectHelper.equals(oldValue, contentId)) {
                 this.notifyPropertyChanged(ImageComponent.PROPERTY_IMAGE);
             }
         }
@@ -102,9 +112,9 @@ module api.content.page.region {
             };
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ImageComponent)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ImageComponent)) {
                 return false;
             }
 
@@ -114,11 +124,11 @@ module api.content.page.region {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.image, other.image)) {
+            if (!ObjectHelper.equals(this.image, other.image)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.config, other.config)) {
+            if (!ObjectHelper.equals(this.config, other.config)) {
                 return false;
             }
 
@@ -132,7 +142,7 @@ module api.content.page.region {
 
     export class ImageComponentBuilder extends ComponentBuilder<ImageComponent> {
 
-        image: api.content.ContentId;
+        image: ContentId;
 
         config: PropertyTree;
 
@@ -147,7 +157,7 @@ module api.content.page.region {
             this.setType(ImageComponentType.get());
         }
 
-        public setImage(value: api.content.ContentId): ImageComponentBuilder {
+        public setImage(value: ContentId): ImageComponentBuilder {
             this.image = value;
             return this;
         }
@@ -160,7 +170,7 @@ module api.content.page.region {
         public fromJson(json: ImageComponentJson, region: Region): ImageComponentBuilder {
 
             if (json.image) {
-                this.setImage(new api.content.ContentId(json.image));
+                this.setImage(new ContentId(json.image));
             }
 
             this.setName(json.name ? new ComponentName(json.name) : null);
@@ -179,4 +189,3 @@ module api.content.page.region {
             return new ImageComponent(this);
         }
     }
-}

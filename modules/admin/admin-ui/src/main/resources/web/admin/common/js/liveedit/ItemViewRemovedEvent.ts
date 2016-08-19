@@ -1,6 +1,6 @@
-module api.liveedit {
+import {ItemView} from "./ItemView";
 
-    export class ItemViewRemovedEvent {
+export class ItemViewRemovedEvent {
 
         private view: ItemView;
 
@@ -12,4 +12,3 @@ module api.liveedit {
             return this.view;
         }
     }
-}

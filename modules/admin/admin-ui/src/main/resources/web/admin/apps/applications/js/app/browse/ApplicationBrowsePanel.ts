@@ -1,4 +1,19 @@
-import "../../api.ts";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {Application} from "../../../../../common/js/application/Application";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {StartApplicationRequest} from "../../../../../common/js/application/StartApplicationRequest";
+import {StopApplicationRequest} from "../../../../../common/js/application/StopApplicationRequest";
+import {UninstallApplicationRequest} from "../../../../../common/js/application/UninstallApplicationRequest";
+import {ApplicationEvent} from "../../../../../common/js/application/ApplicationEvent";
+import {ApplicationEventType} from "../../../../../common/js/application/ApplicationEvent";
+import {BrowsePanel} from "../../../../../common/js/app/browse/BrowsePanel";
+import {UriHelper} from "../../../../../common/js/util/UriHelper";
+import {showFeedback} from "../../../../../common/js/notify/MessageBus";
+import {ServerEventsConnection} from "../../../../../common/js/app/ServerEventsConnection";
+import {ApplicationUploadStartedEvent} from "../../../../../common/js/application/ApplicationUploadStartedEvent";
+import {UploadItem} from "../../../../../common/js/ui/uploader/UploadItem";
+
 import {ApplicationBrowseToolbar} from "./ApplicationBrowseToolbar";
 import {ApplicationBrowseActions} from "./ApplicationBrowseActions";
 import {ApplicationTreeGrid} from "./ApplicationTreeGrid";
@@ -7,17 +22,7 @@ import {StopApplicationEvent} from "./StopApplicationEvent";
 import {StartApplicationEvent} from "./StartApplicationEvent";
 import {UninstallApplicationEvent} from "./UninstallApplicationEvent";
 
-import ApplicationKey = api.application.ApplicationKey;
-import Application = api.application.Application;
-import TreeNode = api.ui.treegrid.TreeNode;
-import BrowseItem = api.app.browse.BrowseItem;
-import StartApplicationRequest = api.application.StartApplicationRequest;
-import StopApplicationRequest = api.application.StopApplicationRequest;
-import UninstallApplicationRequest = api.application.UninstallApplicationRequest;
-import ApplicationEvent = api.application.ApplicationEvent;
-import ApplicationEventType = api.application.ApplicationEventType;
-
-export class ApplicationBrowsePanel extends api.app.browse.BrowsePanel<Application> {
+export class ApplicationBrowsePanel extends BrowsePanel<Application> {
 
     private browseActions: ApplicationBrowseActions;
 
@@ -43,7 +48,7 @@ export class ApplicationBrowsePanel extends api.app.browse.BrowsePanel<Applicati
             filterPanel: undefined
         });
 
-        this.applicationIconUrl = api.util.UriHelper.getAdminUri('common/images/icons/icoMoon/128x128/puzzle.png');
+        this.applicationIconUrl = UriHelper.getAdminUri('common/images/icons/icoMoon/128x128/puzzle.png');
 
         this.registerEvents();
     }
@@ -91,26 +96,26 @@ export class ApplicationBrowsePanel extends api.app.browse.BrowsePanel<Applicati
                 }).done();
         });
 
-        api.application.ApplicationEvent.on((event: ApplicationEvent) => {
+        ApplicationEvent.on((event: ApplicationEvent) => {
             if (ApplicationEventType.INSTALLED == event.getEventType()) {
                 this.applicationTreeGrid.appendApplicationNode(event.getApplicationKey()).then(() => {
                     setTimeout(() => { // timeout lets grid to remove UploadMockNode so that its not counted in the toolbar
                         this.applicationTreeGrid.triggerSelectionChangedListeners();
                         var installedApp = this.applicationTreeGrid.getByApplicationKey(event.getApplicationKey()),
                             installedAppName = !!installedApp ? installedApp.getDisplayName() : event.getApplicationKey();
-                        api.notify.showFeedback("Application '" + installedAppName + "' installed successfully");
+                        showFeedback("Application '" + installedAppName + "' installed successfully");
                     }, 200);
                 });
 
             } else if (ApplicationEventType.UNINSTALLED == event.getEventType()) {
                 var uninstalledApp = this.applicationTreeGrid.getByApplicationKey(event.getApplicationKey()),
                     uninstalledAppName = !!uninstalledApp ? uninstalledApp.getDisplayName() : event.getApplicationKey();
-                api.notify.showFeedback("Application '" + uninstalledAppName + "' uninstalled successfully");
+                showFeedback("Application '" + uninstalledAppName + "' uninstalled successfully");
                 this.applicationTreeGrid.deleteApplicationNode(event.getApplicationKey());
             } else if (ApplicationEventType.STOPPED == event.getEventType()) {
                 setTimeout(() => { // as uninstall usually follows stop event, lets wait to check if app still exists
                     var stoppedApp = this.applicationTreeGrid.getByApplicationKey(event.getApplicationKey());
-                    if (!!stoppedApp && api.app.ServerEventsConnection.getInstance().isConnected()) { // seems to be present in the grid and xp is running
+                    if (!!stoppedApp && ServerEventsConnection.getInstance().isConnected()) { // seems to be present in the grid and xp is running
                         this.applicationTreeGrid.updateApplicationNode(event.getApplicationKey());
                     }
                 }, 400);
@@ -119,14 +124,14 @@ export class ApplicationBrowsePanel extends api.app.browse.BrowsePanel<Applicati
             }
         });
 
-        api.application.ApplicationUploadStartedEvent.on((event) => {
+        ApplicationUploadStartedEvent.on((event) => {
             this.handleNewAppUpload(event);
         });
 
     }
 
-    private handleNewAppUpload(event: api.application.ApplicationUploadStartedEvent) {
-        event.getUploadItems().forEach((item: api.ui.uploader.UploadItem<Application>) => {
+    private handleNewAppUpload(event: ApplicationUploadStartedEvent) {
+        event.getUploadItems().forEach((item: UploadItem<Application>) => {
             this.applicationTreeGrid.appendUploadNode(item);
         });
     }

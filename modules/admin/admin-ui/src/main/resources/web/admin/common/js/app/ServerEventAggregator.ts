@@ -1,9 +1,8 @@
-module api.app {
+import {NodeServerEvent} from "../event/NodeServerEvent";
+import {NodeServerChangeType} from "../event/NodeServerChange";
+import {AppHelper} from "../util/AppHelper";
 
-    import NodeServerEvent = api.event.NodeServerEvent;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-
-    export class ServerEventAggregator {
+export class ServerEventAggregator {
 
         private static AGGREGATION_TIMEOUT: number = 500;
 
@@ -16,7 +15,7 @@ module api.app {
         private debounced;
 
         constructor() {
-            this.debounced = api.util.AppHelper.debounce(() => {
+            this.debounced = AppHelper.debounce(() => {
                 this.notifyBatchIsReady();
             }, ServerEventAggregator.AGGREGATION_TIMEOUT, false);
         }
@@ -79,4 +78,3 @@ module api.app {
         }
 
     }
-}

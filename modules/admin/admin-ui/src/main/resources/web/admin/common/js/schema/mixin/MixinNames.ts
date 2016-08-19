@@ -1,6 +1,9 @@
-module api.schema.mixin {
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {Mixin} from "./Mixin";
+import {MixinName} from "./MixinName";
 
-    export class MixinNames implements api.Equitable {
+export class MixinNames implements Equitable {
 
         private array: MixinName[];
 
@@ -46,13 +49,13 @@ module api.schema.mixin {
             });
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MixinNames)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MixinNames)) {
                 return false;
             }
 
             var other = <MixinNames>o;
-            return api.ObjectHelper.arrayEquals(this.array, other.array);
+            return ObjectHelper.arrayEquals(this.array, other.array);
         }
 
         static create(): MixinNamesBuilder {
@@ -91,4 +94,3 @@ module api.schema.mixin {
             return new MixinNames(this.array);
         }
     }
-}

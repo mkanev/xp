@@ -1,6 +1,7 @@
-module api.dom {
+import {Element} from "./Element";
+import {ElementEvent} from "./ElementEvent";
 
-    export class ElementRemovedEvent extends ElementEvent {
+export class ElementRemovedEvent extends ElementEvent {
 
         private parent: Element;
 
@@ -14,4 +15,3 @@ module api.dom {
             return this.parent;
         }
     }
-}

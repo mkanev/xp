@@ -1,6 +1,7 @@
-module api.content {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
 
-    export class ContentMetadata implements api.Equitable {
+export class ContentMetadata implements Equitable {
 
         private hits: number;
 
@@ -27,8 +28,8 @@ module api.content {
             this.totalHits = totalHits;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentMetadata)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentMetadata)) {
                 return false;
             }
 
@@ -43,4 +44,3 @@ module api.content {
             return true;
         }
     }
-}

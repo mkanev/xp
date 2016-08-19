@@ -1,22 +1,23 @@
-module api.liveedit {
+import {NamesAndIconViewer} from "../ui/NamesAndIconViewer";
+import {Region} from "../content/page/region/Region";
+import {ItemViewIconClassResolver} from "./ItemViewIconClassResolver";
 
-    export class RegionComponentViewer extends api.ui.NamesAndIconViewer<api.content.page.region.Region> {
+export class RegionComponentViewer extends NamesAndIconViewer<Region> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: api.content.page.region.Region): string {
+        resolveDisplayName(object: Region): string {
             return object.getName().toString();
         }
 
-        resolveSubName(object: api.content.page.region.Region, relativePath: boolean = false): string {
+        resolveSubName(object: Region, relativePath: boolean = false): string {
             return object.getPath().toString();
         }
 
-        resolveIconClass(object: api.content.page.region.Region): string {
-            return api.liveedit.ItemViewIconClassResolver.resolveByType("region");
+        resolveIconClass(object: Region): string {
+            return ItemViewIconClassResolver.resolveByType("region");
         }
     }
 
-}

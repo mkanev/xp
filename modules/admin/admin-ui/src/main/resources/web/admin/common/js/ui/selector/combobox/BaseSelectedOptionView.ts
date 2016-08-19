@@ -1,33 +1,37 @@
-module api.ui.selector.combobox {
+import {DivEl} from "../../../dom/DivEl";
+import {Option} from "../Option";
+import {AEl} from "../../../dom/AEl";
+import {Element} from "../../../dom/Element";
+import {SelectedOptionView} from "./SelectedOptionView";
 
-    export class BaseSelectedOptionView<T> extends api.dom.DivEl implements SelectedOptionView<T> {
+export class BaseSelectedOptionView<T> extends DivEl implements SelectedOptionView<T> {
 
-        private option: api.ui.selector.Option<T>;
+        private option: Option<T>;
 
-        private optionValueEl: api.dom.DivEl;
+        private optionValueEl: DivEl;
 
         private removeClickedListeners: {(): void;}[] = [];
 
-        constructor(option: api.ui.selector.Option<T>) {
+        constructor(option: Option<T>) {
             super("selected-option");
 
             this.option = option;
         }
 
-        setOption(option: api.ui.selector.Option<T>) {
+        setOption(option: Option<T>) {
             if (this.optionValueEl) {
                 this.optionValueEl.getEl().setInnerHtml(option.displayValue.toString());
             }
         }
 
-        getOption(): api.ui.selector.Option<T> {
+        getOption(): Option<T> {
             return this.option;
         }
 
         doRender(): wemQ.Promise<boolean> {
 
-            var removeButtonEl = new api.dom.AEl("remove");
-            this.optionValueEl = new api.dom.DivEl('option-value');
+            var removeButtonEl = new AEl("remove");
+            this.optionValueEl = new DivEl('option-value');
             if (this.option) {
                 this.setOption(this.option);
             }
@@ -40,7 +44,7 @@ module api.ui.selector.combobox {
                 return false;
             });
 
-            this.appendChildren<api.dom.Element>(removeButtonEl, this.optionValueEl);
+            this.appendChildren<Element>(removeButtonEl, this.optionValueEl);
 
             return wemQ(true);
         }
@@ -61,4 +65,3 @@ module api.ui.selector.combobox {
             });
         }
     }
-}

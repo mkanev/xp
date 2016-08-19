@@ -1,6 +1,10 @@
-module api.macro {
+import {Equitable} from "../Equitable";
+import {Form} from "../form/Form";
+import {ObjectHelper} from "../ObjectHelper";
+import {MacroJson} from "./resource/MacrosJson";
+import {MacroKey} from "./MacroKey";
 
-    export class MacroDescriptor implements api.Equitable {
+export class MacroDescriptor implements Equitable {
 
         private macroKey: MacroKey;
 
@@ -8,7 +12,7 @@ module api.macro {
 
         private description: string;
 
-        private form: api.form.Form;
+        private form: Form;
 
         private iconUrl: string;
 
@@ -36,7 +40,7 @@ module api.macro {
             return this.description;
         }
 
-        getForm(): api.form.Form {
+        getForm(): Form {
             return this.form;
         }
 
@@ -48,8 +52,8 @@ module api.macro {
             return new MacroDescriptorBuilder();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MacroDescriptor)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, MacroDescriptor)) {
                 return false;
             }
 
@@ -67,11 +71,11 @@ module api.macro {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.macroKey, other.macroKey)) {
+            if (!ObjectHelper.equals(this.macroKey, other.macroKey)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.form, other.form)) {
+            if (!ObjectHelper.equals(this.form, other.form)) {
                 return false;
             }
 
@@ -87,7 +91,7 @@ module api.macro {
 
         description: string;
 
-        form: api.form.Form;
+        form: Form;
 
         iconUrl: string;
 
@@ -100,11 +104,11 @@ module api.macro {
             return this;
         }
 
-        fromJson(json: api.macro.resource.MacroJson) {
+        fromJson(json: MacroJson) {
             this.macroKey = MacroKey.fromString(json.key);
             this.displayName = json.displayName;
             this.description = json.description;
-            this.form = json.form != null ? api.form.Form.fromJson(json.form) : null;
+            this.form = json.form != null ? Form.fromJson(json.form) : null;
             this.iconUrl = json.iconUrl;
             return this;
         }
@@ -124,7 +128,7 @@ module api.macro {
             return this;
         }
 
-        setForm(form: api.form.Form): MacroDescriptorBuilder {
+        setForm(form: Form): MacroDescriptorBuilder {
             this.form = form;
             return this;
         }
@@ -138,4 +142,3 @@ module api.macro {
             return new MacroDescriptor(this);
         }
     }
-}

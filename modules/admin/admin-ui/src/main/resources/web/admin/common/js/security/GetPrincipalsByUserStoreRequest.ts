@@ -1,6 +1,13 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {Principal} from "./Principal";
+import {PrincipalJson} from "./PrincipalJson";
+import {PrincipalListJson} from "./PrincipalListJson";
+import {PrincipalType} from "./PrincipalType";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class GetPrincipalsByUserStoreRequest extends SecurityResourceRequest<PrincipalListJson, Principal[]> {
+export class GetPrincipalsByUserStoreRequest extends SecurityResourceRequest<PrincipalListJson, Principal[]> {
 
         private userStore: UserStoreKey;
 
@@ -21,8 +28,8 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals');
         }
 
         private getType(): string {
@@ -36,7 +43,7 @@ module api.security {
 
         sendAndParse(): wemQ.Promise<Principal[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<PrincipalListJson>) => {
+            return this.send().then((response: JsonResponse<PrincipalListJson>) => {
                 return response.getResult().principals.map((principalJson: PrincipalJson) => {
                     return this.fromJsonToPrincipal(principalJson);
                 });
@@ -44,4 +51,3 @@ module api.security {
         }
 
     }
-}

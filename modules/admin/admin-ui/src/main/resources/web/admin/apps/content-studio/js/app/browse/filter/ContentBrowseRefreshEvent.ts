@@ -1,12 +1,13 @@
-import "../../../api.ts";
+import {Event} from "../../../../../../common/js/event/Event";
+import {ClassHelper} from "../../../../../../common/js/ClassHelper";
 
-export class ContentBrowseRefreshEvent extends api.event.Event {
+export class ContentBrowseRefreshEvent extends Event {
 
     static on(handler: (event: ContentBrowseRefreshEvent) => void) {
-        api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
     static un(handler?: (event: ContentBrowseRefreshEvent) => void) {
-        api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+        Event.unbind(ClassHelper.getFullName(this), handler);
     }
 }

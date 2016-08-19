@@ -1,6 +1,7 @@
-module api.dom {
+import {Element} from "./Element";
+import {NewElementBuilder} from "./Element";
 
-    export class LinkEl extends api.dom.Element {
+export class LinkEl extends Element {
 
         constructor(href: string, rel: string = "import", className?: string) {
             super(new NewElementBuilder().
@@ -10,17 +11,17 @@ module api.dom {
             this.setHref(href).setRel(rel);
         }
 
-        private setHref(href: string): api.dom.LinkEl {
+        private setHref(href: string): LinkEl {
             this.getEl().setAttribute("href", href);
             return this;
         }
 
-        private setRel(rel: string): api.dom.LinkEl {
+        private setRel(rel: string): LinkEl {
             this.getEl().setAttribute("rel", rel);
             return this;
         }
 
-        setAsync(): api.dom.LinkEl {
+        setAsync(): LinkEl {
             this.getEl().setAttribute("async", "");
             return this;
         }
@@ -33,4 +34,3 @@ module api.dom {
             this.getEl().removeEventListener("load", listener);
         }
     }
-}

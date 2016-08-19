@@ -1,12 +1,10 @@
-module api.security.event {
+import {NodeEventJson} from "../../event/NodeServerEvent";
+import {NodeEventNodeJson} from "../../event/NodeServerEvent";
+import {NodeServerChange} from "../../event/NodeServerChange";
+import {NodeServerChangeType} from "../../event/NodeServerChange";
+import {NodeServerChangeItem} from "../../event/NodeServerChange";
 
-    import NodeEventJson = api.event.NodeEventJson;
-    import NodeEventNodeJson = api.event.NodeEventNodeJson;
-    import NodeServerChange = api.event.NodeServerChange;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-    import NodeServerChangeItem = api.event.NodeServerChangeItem;
-
-    export class PrincipalServerChangeItem extends NodeServerChangeItem<string> {
+export class PrincipalServerChangeItem extends NodeServerChangeItem<string> {
 
         static fromJson(node: NodeEventNodeJson): PrincipalServerChangeItem {
             return new PrincipalServerChangeItem(node.path.substr("/identity".length), node.branch);
@@ -47,4 +45,3 @@ module api.security.event {
             return new PrincipalServerChange(principalEventType, changedItems);
         }
     }
-}

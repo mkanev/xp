@@ -1,17 +1,20 @@
-module api.content.event {
+import {Event} from "../../event/Event";
+import {WizardPanel} from "../../app/wizard/WizardPanel";
+import {ClassHelper} from "../../ClassHelper";
+import {Content} from "../Content";
 
-    export class ContentNamedEvent extends api.event.Event {
+export class ContentNamedEvent extends Event {
 
-        private wizard: api.app.wizard.WizardPanel<Content>;
+        private wizard: WizardPanel<Content>;
         private content: Content;
 
-        constructor(wizard: api.app.wizard.WizardPanel<Content>, content: Content) {
+        constructor(wizard: WizardPanel<Content>, content: Content) {
             super();
             this.wizard = wizard;
             this.content = content;
         }
 
-        public getWizard(): api.app.wizard.WizardPanel<Content> {
+        public getWizard(): WizardPanel<Content> {
             return this.wizard;
         }
 
@@ -20,13 +23,12 @@ module api.content.event {
         }
 
         static on(handler: (event: ContentNamedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: ContentNamedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
 
     }
 
-}

@@ -1,10 +1,9 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ComponentView} from "./ComponentView";
+import {Component} from "../content/page/region/Component";
+import {ClassHelper} from "../ClassHelper";
 
-    import Event = api.event.Event;
-    import ComponentView = api.liveedit.ComponentView;
-    import Component = api.content.page.region.Component;
-
-    export class LiveComponentResetEvent extends api.event.Event {
+export class LiveComponentResetEvent extends Event {
 
         private newComponentView: ComponentView<Component>;
         private oldComponentView: ComponentView<Component>;
@@ -24,11 +23,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: LiveComponentResetEvent) => void, contextWindow: Window = window) {
-            Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: LiveComponentResetEvent) => void, contextWindow: Window = window) {
-            Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

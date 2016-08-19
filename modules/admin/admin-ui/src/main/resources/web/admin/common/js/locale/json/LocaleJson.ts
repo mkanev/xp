@@ -1,6 +1,6 @@
-module api.locale.json {
 
-    export interface LocaleJson {
+
+export interface LocaleJson {
         tag: string;
         displayName: string;
         language: string;
@@ -11,4 +11,3 @@ module api.locale.json {
         displayCountry: string;
     }
 
-}

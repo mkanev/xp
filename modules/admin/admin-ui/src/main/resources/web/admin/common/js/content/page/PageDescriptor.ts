@@ -1,7 +1,14 @@
-module api.content.page {
+import {RegionDescriptor} from "./region/RegionDescriptor";
+import {Cloneable} from "../../Cloneable";
+import {PageDescriptorJson} from "./PageDescriptorJson";
+import {Form} from "../../form/Form";
+import {RegionDescriptorBuilder} from "./region/RegionDescriptor";
+import {Descriptor} from "./Descriptor";
+import {DescriptorBuilder} from "./Descriptor";
+import {DescriptorKey} from "./DescriptorKey";
+import {DescriptorName} from "./DescriptorName";
 
-    import RegionDescriptor = api.content.page.region.RegionDescriptor;
-    export class PageDescriptor extends Descriptor implements api.Cloneable {
+export class PageDescriptor extends Descriptor implements Cloneable {
 
         private regions: RegionDescriptor[];
 
@@ -31,14 +38,14 @@ module api.content.page {
             }
         }
 
-        public fromJson(json: api.content.page.PageDescriptorJson): PageDescriptorBuilder {
+        public fromJson(json: PageDescriptorJson): PageDescriptorBuilder {
 
             this.setName(new DescriptorName(json.name));
             this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
+            this.setConfig(json.config != null ? Form.fromJson(json.config) : null);
             this.setKey(DescriptorKey.fromString(json.key));
             for (var i = 0; i < json.regions.length; i++) {
-                var region = new api.content.page.region.RegionDescriptorBuilder().fromJson(json.regions[i]).build();
+                var region = new RegionDescriptorBuilder().fromJson(json.regions[i]).build();
                 this.regions.push(region);
             }
 
@@ -60,7 +67,7 @@ module api.content.page {
             return this;
         }
 
-        public setConfig(value: api.form.Form): PageDescriptorBuilder {
+        public setConfig(value: Form): PageDescriptorBuilder {
             this.config = value;
             return this;
         }
@@ -74,4 +81,3 @@ module api.content.page {
             return new PageDescriptor(this);
         }
     }
-}

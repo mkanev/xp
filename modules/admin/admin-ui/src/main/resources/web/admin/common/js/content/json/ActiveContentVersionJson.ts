@@ -1,6 +1,6 @@
-module api.content.json {
+import {ContentVersionJson} from "./ContentVersionJson";
 
-    export interface ActiveContentVersionJson {
+export interface ActiveContentVersionJson {
 
         branch: string;
 
@@ -8,4 +8,3 @@ module api.content.json {
     }
 
 
-}

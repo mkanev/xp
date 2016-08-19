@@ -1,6 +1,10 @@
-module api.data {
+import {ObjectHelper} from "../ObjectHelper";
+import {GeoPoint} from "../util/GeoPoint";
+import {StringHelper} from "../util/StringHelper";
+import {Value} from "./Value";
+import {ValueType} from "./ValueType";
 
-    export class ValueTypeGeoPoint extends ValueType {
+export class ValueTypeGeoPoint extends ValueType {
 
         constructor() {
             super("GeoPoint");
@@ -10,17 +14,17 @@ module api.data {
             if (!(typeof value === 'object')) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.GeoPoint)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(value, GeoPoint)) {
                 return false;
             }
             return true;
         }
 
         isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
+            if (StringHelper.isBlank(value)) {
                 return false;
             }
-            return api.util.GeoPoint.isValidString(value);
+            return GeoPoint.isValidString(value);
         }
 
         newValue(value: string): Value {
@@ -31,7 +35,7 @@ module api.data {
             if (!this.isConvertible(value)) {
                 return this.newNullValue();
             }
-            return new Value(api.util.GeoPoint.fromString(value), this);
+            return new Value(GeoPoint.fromString(value), this);
         }
 
         valueToString(value: Value): string {
@@ -47,8 +51,7 @@ module api.data {
             return value.isNull() ? null : value.getGeoPoint().toString();
         }
 
-        valueEquals(a: api.util.GeoPoint, b: api.util.GeoPoint): boolean {
-            return api.ObjectHelper.equals(a, b);
+        valueEquals(a: GeoPoint, b: GeoPoint): boolean {
+            return ObjectHelper.equals(a, b);
         }
     }
-}

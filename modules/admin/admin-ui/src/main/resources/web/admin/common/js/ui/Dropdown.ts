@@ -1,6 +1,7 @@
-module api.ui {
+import {SelectEl} from "../dom/SelectEl";
+import {OptionEl} from "../dom/OptionEl";
 
-    export class Dropdown extends api.dom.SelectEl {
+export class Dropdown extends SelectEl {
 
         constructor(name: string) {
             super();
@@ -19,9 +20,8 @@ module api.ui {
     }
 
 
-    export class DropdownOption extends api.dom.OptionEl {
+    export class DropdownOption extends OptionEl {
         constructor(value: string, displayName: string) {
             super(value, displayName);
         }
     }
-}

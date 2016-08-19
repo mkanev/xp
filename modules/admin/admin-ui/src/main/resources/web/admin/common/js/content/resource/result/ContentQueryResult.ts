@@ -1,15 +1,16 @@
-module api.content.resource.result {
+import {ContentIdBaseItemJson} from "../../json/ContentIdBaseItemJson";
+import {Aggregation} from "../../../aggregation/Aggregation";
+import {ContentIdBaseItem} from "../../ContentIdBaseItem";
+import {ContentMetadata} from "../../ContentMetadata";
 
-    import ContentIdBaseItemJson = api.content.json.ContentIdBaseItemJson;
-
-    export class ContentQueryResult<C extends ContentIdBaseItem,CJ extends ContentIdBaseItemJson> {
+export class ContentQueryResult<C extends ContentIdBaseItem,CJ extends ContentIdBaseItemJson> {
 
         private contents: C[];
-        private aggregations: api.aggregation.Aggregation[];
+        private aggregations: Aggregation[];
         private contentsAsJson: CJ[];
         private metadata: ContentMetadata;
 
-        constructor(contents: C[], aggreations: api.aggregation.Aggregation[], contentsAsJson: CJ[], metadata?: ContentMetadata) {
+        constructor(contents: C[], aggreations: Aggregation[], contentsAsJson: CJ[], metadata?: ContentMetadata) {
             this.contents = contents;
             this.aggregations = aggreations;
             this.contentsAsJson = contentsAsJson;
@@ -24,7 +25,7 @@ module api.content.resource.result {
             return this.contentsAsJson;
         }
 
-        getAggregations(): api.aggregation.Aggregation[] {
+        getAggregations(): Aggregation[] {
             return this.aggregations;
         }
 
@@ -32,4 +33,3 @@ module api.content.resource.result {
             return this.metadata;
         }
     }
-}

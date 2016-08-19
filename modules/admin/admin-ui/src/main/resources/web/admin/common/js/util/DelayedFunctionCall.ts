@@ -1,6 +1,6 @@
-module api.util {
 
-    export class DelayedFunctionCall {
+
+export class DelayedFunctionCall {
 
         private functionToCall: () => void;
 
@@ -27,4 +27,3 @@ module api.util {
             }, this.delay);
         }
     }
-}

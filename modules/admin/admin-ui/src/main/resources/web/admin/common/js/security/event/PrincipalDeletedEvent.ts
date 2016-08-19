@@ -1,6 +1,7 @@
-module api.security.event {
+import {Event} from "../../event/Event";
+import {ClassHelper} from "../../ClassHelper";
 
-    export class PrincipalDeletedEvent extends api.event.Event {
+export class PrincipalDeletedEvent extends Event {
 
         private principalDeletedPaths: string[] = [];
 
@@ -28,13 +29,12 @@ module api.security.event {
         }
 
         static on(handler: (event: PrincipalDeletedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
+            Event.bind(ClassHelper.getFullName(this), handler);
         }
 
         static un(handler?: (event: PrincipalDeletedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
+            Event.unbind(ClassHelper.getFullName(this), handler);
         }
     }
 
 
-}

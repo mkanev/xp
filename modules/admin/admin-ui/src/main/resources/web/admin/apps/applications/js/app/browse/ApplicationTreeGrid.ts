@@ -1,18 +1,23 @@
-import "../../api.ts";
+import {GridColumn} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../common/js/ui/grid/GridColumn";
+import {Application} from "../../../../../common/js/application/Application";
+import {ApplicationViewer} from "../../../../../common/js/application/ApplicationViewer";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {DateTimeFormatter} from "../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {TreeGridContextMenu} from "../../../../../common/js/ui/treegrid/TreeGridContextMenu";
+import {UploadItem} from "../../../../../common/js/ui/uploader/UploadItem";
+import {ResponsiveManager} from "../../../../../common/js/ui/responsive/ResponsiveManager";
+import {ResponsiveItem} from "../../../../../common/js/ui/responsive/ResponsiveItem";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {ProgressBar} from "../../../../../common/js/ui/ProgressBar";
+import {ListApplicationsRequest} from "../../../../../common/js/application/ListApplicationsRequest";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {GetApplicationRequest} from "../../../../../common/js/application/GetApplicationRequest";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
+
 import {ApplicationBrowseActions} from "./ApplicationBrowseActions";
-
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-
-import Application = api.application.Application;
-import ApplicationViewer = api.application.ApplicationViewer;
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-import DateTimeFormatter = api.ui.treegrid.DateTimeFormatter;
-import TreeGridContextMenu = api.ui.treegrid.TreeGridContextMenu;
-
-import UploadItem = api.ui.uploader.UploadItem;
 
 export class ApplicationTreeGrid extends TreeGrid<Application> {
 
@@ -33,7 +38,7 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
             ]).prependClasses("application-grid").setShowContextMenu(new TreeGridContextMenu(new ApplicationBrowseActions(this)))
         );
 
-        api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
             this.getGrid().resizeCanvas();
         });
     }
@@ -51,12 +56,12 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
     private stateFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<Application>) {
         var data = node.getData(),
             status,
-            statusEl = new api.dom.DivEl();
+            statusEl = new DivEl();
 
         if (data instanceof Application) {   // default node
             statusEl.getEl().setText(value);
         } else if (data instanceof ApplicationUploadMock) {   // uploading node
-            status = new api.ui.ProgressBar((<any>data).getUploadItem().getProgress())
+            status = new ProgressBar((<any>data).getUploadItem().getProgress())
             statusEl.appendChild(status);
         }
 
@@ -68,26 +73,26 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
     }
 
     fetchRoot(): wemQ.Promise<Application[]> {
-        return new api.application.ListApplicationsRequest().sendAndParse();
+        return new ListApplicationsRequest().sendAndParse();
     }
 
-    fetch(node: TreeNode<Application>, dataId?: string): wemQ.Promise<api.application.Application> {
+    fetch(node: TreeNode<Application>, dataId?: string): wemQ.Promise<Application> {
         return this.fetchByKey(node.getData().getApplicationKey());
     }
 
-    private fetchByKey(applicationKey: api.application.ApplicationKey): wemQ.Promise<api.application.Application> {
-        var deferred = wemQ.defer<api.application.Application>();
-        new api.application.GetApplicationRequest(applicationKey,
-            true).sendAndParse().then((application: api.application.Application)=> {
+    private fetchByKey(applicationKey: ApplicationKey): wemQ.Promise<Application> {
+        var deferred = wemQ.defer<Application>();
+        new GetApplicationRequest(applicationKey,
+            true).sendAndParse().then((application: Application)=> {
             deferred.resolve(application);
         }).catch((reason: any) => {
-            api.DefaultErrorHandler.handle(reason);
+            DefaultErrorHandler.handle(reason);
         });
 
         return deferred.promise;
     }
 
-    updateApplicationNode(applicationKey: api.application.ApplicationKey) {
+    updateApplicationNode(applicationKey: ApplicationKey) {
         var root = this.getRoot().getCurrentRoot();
         root.getChildren().forEach((child: TreeNode<Application>) => {
             var curApplication: Application = child.getData();
@@ -97,7 +102,7 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
         });
     }
 
-    getByApplicationKey(applicationKey: api.application.ApplicationKey): Application {
+    getByApplicationKey(applicationKey: ApplicationKey): Application {
         var root = this.getRoot().getCurrentRoot(),
             result;
         root.getChildren().forEach((child: TreeNode<Application>) => {
@@ -109,7 +114,7 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
         return result;
     }
 
-    deleteApplicationNode(applicationKey: api.application.ApplicationKey) {
+    deleteApplicationNode(applicationKey: ApplicationKey) {
         var root = this.getRoot().getCurrentRoot();
         root.getChildren().forEach((child: TreeNode<Application>) => {
             var curApplication: Application = child.getData();
@@ -119,10 +124,10 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
         });
     }
 
-    appendApplicationNode(applicationKey: api.application.ApplicationKey): wemQ.Promise<void> {
+    appendApplicationNode(applicationKey: ApplicationKey): wemQ.Promise<void> {
 
         return this.fetchByKey(applicationKey)
-            .then((data: api.application.Application) => {
+            .then((data: Application) => {
                 return this.appendNode(data, true);
             });
     }
@@ -135,7 +140,7 @@ export class ApplicationTreeGrid extends TreeGrid<Application> {
         });
     }
 
-    appendUploadNode(item: api.ui.uploader.UploadItem<Application>) {
+    appendUploadNode(item: UploadItem<Application>) {
 
         var appMock: ApplicationUploadMock = new ApplicationUploadMock(item);
 

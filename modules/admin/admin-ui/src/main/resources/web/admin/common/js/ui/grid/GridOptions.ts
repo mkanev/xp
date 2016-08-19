@@ -1,6 +1,6 @@
-module api.ui.grid {
 
-    export class GridOptionsBuilder<T extends Slick.SlickData> {
+
+export class GridOptionsBuilder<T extends Slick.SlickData> {
 
         asyncEditorLoading: boolean;
 
@@ -882,4 +882,3 @@ module api.ui.grid {
             return this;
         }
     }
-}

@@ -1,17 +1,22 @@
-module api.content.page.region {
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {DescriptorKey} from "../DescriptorKey";
+import {Path} from "../../../rest/Path";
+import {DefaultErrorHandler} from "../../../DefaultErrorHandler";
+import {GetLayoutDescriptorsByApplicationRequest} from "./GetLayoutDescriptorsByApplicationRequest";
+import {LayoutDescriptor} from "./LayoutDescriptor";
+import {LayoutDescriptorJson} from "./LayoutDescriptorJson";
+import {LayoutDescriptorResourceRequest} from "./LayoutDescriptorResourceRequest";
 
-    import ApplicationKey = api.application.ApplicationKey;
+export class GetLayoutDescriptorByKeyRequest extends LayoutDescriptorResourceRequest<LayoutDescriptorJson,LayoutDescriptor> {
 
-    export class GetLayoutDescriptorByKeyRequest extends LayoutDescriptorResourceRequest<LayoutDescriptorJson,LayoutDescriptor> {
+        private key: DescriptorKey;
 
-        private key: api.content.page.DescriptorKey;
-
-        constructor(key: api.content.page.DescriptorKey) {
+        constructor(key: DescriptorKey) {
             super();
             this.key = key;
         }
 
-        setKey(key: api.content.page.DescriptorKey) {
+        setKey(key: DescriptorKey) {
             this.key = key;
         }
 
@@ -19,7 +24,7 @@ module api.content.page.region {
             throw new Error("Unexpected call");
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             throw new Error("Unexpected call");
         }
 
@@ -33,10 +38,9 @@ module api.content.page.region {
                     }
                 });
             }).catch((reason: any) => {
-                api.DefaultErrorHandler.handle(reason);
+                DefaultErrorHandler.handle(reason);
             }).done();
 
             return deferred.promise;
         }
     }
-}

@@ -1,4 +1,30 @@
-import "../api.ts";
+import {ContentSummary} from "../../../../common/js/content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Content} from "../../../../common/js/content/Content";
+import {ContentId} from "../../../../common/js/content/ContentId";
+import {ContentNamedEvent} from "../../../../common/js/content/event/ContentNamedEvent";
+import {ContentUpdatedEvent} from "../../../../common/js/content/event/ContentUpdatedEvent";
+import {AppBarTabId} from "../../../../common/js/app/bar/AppBarTabId";
+import {AppBarTabMenuItem} from "../../../../common/js/app/bar/AppBarTabMenuItem";
+import {AppBarTabMenuItemBuilder} from "../../../../common/js/app/bar/AppBarTabMenuItem";
+import {ShowBrowsePanelEvent} from "../../../../common/js/app/ShowBrowsePanelEvent";
+import {BrowseAndWizardBasedAppPanel} from "../../../../common/js/app/BrowseAndWizardBasedAppPanel";
+import {LoadMask} from "../../../../common/js/ui/mask/LoadMask";
+import {AppBar} from "../../../../common/js/app/bar/AppBar";
+import {Path} from "../../../../common/js/rest/Path";
+import {WizardPanel} from "../../../../common/js/app/wizard/WizardPanel";
+import {PropertyChangedEvent} from "../../../../common/js/PropertyChangedEvent";
+import {ContentUnnamed} from "../../../../common/js/content/ContentUnnamed";
+import {ValidityChangedEvent} from "../../../../common/js/ValidityChangedEvent";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {EditContentEvent} from "../../../../common/js/content/event/EditContentEvent";
+import {BrowsePanel} from "../../../../common/js/app/browse/BrowsePanel";
+import {StringHelper} from "../../../../common/js/util/StringHelper";
+import {GetContentTypeByNameRequest} from "../../../../common/js/schema/content/GetContentTypeByNameRequest";
+import {ContentType} from "../../../../common/js/schema/content/ContentType";
+import {ViewItem} from "../../../../common/js/app/view/ViewItem";
+import {ContentIconUrlResolver} from "../../../../common/js/content/util/ContentIconUrlResolver";
+
 import {NewContentEvent} from "./create/NewContentEvent";
 import {ContentWizardPanel} from "./wizard/ContentWizardPanel";
 import {ViewContentEvent} from "./browse/ViewContentEvent";
@@ -10,43 +36,32 @@ import {OpenSortDialogEvent} from "./browse/OpenSortDialogEvent";
 import {OpenMoveDialogEvent} from "./browse/OpenMoveDialogEvent";
 import {ContentWizardPanelParams} from "./wizard/ContentWizardPanelParams";
 
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import Content = api.content.Content;
-import ContentId = api.content.ContentId;
-import ContentNamedEvent = api.content.event.ContentNamedEvent;
-import ContentUpdatedEvent = api.content.event.ContentUpdatedEvent;
-import AppBarTabId = api.app.bar.AppBarTabId;
-import AppBarTabMenuItem = api.app.bar.AppBarTabMenuItem;
-import AppBarTabMenuItemBuilder = api.app.bar.AppBarTabMenuItemBuilder;
-import ShowBrowsePanelEvent = api.app.ShowBrowsePanelEvent;
+export class ContentAppPanel extends BrowseAndWizardBasedAppPanel<ContentSummaryAndCompareStatus> {
 
-export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<ContentSummaryAndCompareStatus> {
+    private mask: LoadMask;
 
-    private mask: api.ui.mask.LoadMask;
-
-    constructor(appBar: api.app.bar.AppBar, path?: api.rest.Path) {
+    constructor(appBar: AppBar, path?: Path) {
 
         super({
             appBar: appBar
         });
 
-        this.mask = new api.ui.mask.LoadMask(this);
+        this.mask = new LoadMask(this);
 
         this.handleGlobalEvents();
 
         this.route(path);
     }
 
-    addWizardPanel(tabMenuItem: AppBarTabMenuItem, wizardPanel: api.app.wizard.WizardPanel<Content>) {
+    addWizardPanel(tabMenuItem: AppBarTabMenuItem, wizardPanel: WizardPanel<Content>) {
         super.addWizardPanel(tabMenuItem, wizardPanel);
 
         wizardPanel.onRendered((event) => {
             // header will be ready after rendering is complete
-            wizardPanel.getWizardHeader().onPropertyChanged((event: api.PropertyChangedEvent) => {
+            wizardPanel.getWizardHeader().onPropertyChanged((event: PropertyChangedEvent) => {
                 if (event.getPropertyName() === "displayName") {
                     var contentType = (<ContentWizardPanel>wizardPanel).getContentType(),
-                        name = <string>event.getNewValue() || api.content.ContentUnnamed.prettifyUnnamed(contentType.getDisplayName());
+                        name = <string>event.getNewValue() || ContentUnnamed.prettifyUnnamed(contentType.getDisplayName());
 
                     tabMenuItem.setLabel(name, !<string>event.getNewValue(), false);
                 }
@@ -59,28 +74,28 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
             tabMenuItem.markInvalid(!content.isValid());
         });
 
-        contentWizardPanel.onValidityChanged((event: api.ValidityChangedEvent) => {
+        contentWizardPanel.onValidityChanged((event: ValidityChangedEvent) => {
             tabMenuItem.markInvalid(!contentWizardPanel.isValid());
         });
     }
 
-    private route(path?: api.rest.Path) {
+    private route(path?: Path) {
         var action = path ? path.getElement(0) : undefined;
 
         switch (action) {
         case 'edit':
             var id = path.getElement(1);
             if (id) {
-                api.content.resource.ContentSummaryAndCompareStatusFetcher.fetch(new ContentId(id)).done(
+                ContentSummaryAndCompareStatusFetcher.fetch(new ContentId(id)).done(
                     (content: ContentSummaryAndCompareStatus) => {
-                        new api.content.event.EditContentEvent([content]).fire();
+                        new EditContentEvent([content]).fire();
                     });
             }
             break;
         case 'view' :
             var id = path.getElement(1);
             if (id) {
-                api.content.resource.ContentSummaryAndCompareStatusFetcher.fetch(new ContentId(id)).done(
+                ContentSummaryAndCompareStatusFetcher.fetch(new ContentId(id)).done(
                     (content: ContentSummaryAndCompareStatus) => {
                         new ViewContentEvent([content]).fire();
                     });
@@ -101,7 +116,7 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
             this.handleView(event);
         });
 
-        api.content.event.EditContentEvent.on((event) => {
+        EditContentEvent.on((event) => {
             this.handleEdit(event);
         });
 
@@ -127,7 +142,7 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
     }
 
     private handleBrowse(event: ShowBrowsePanelEvent) {
-        var browsePanel: api.app.browse.BrowsePanel<ContentSummaryAndCompareStatus> = this.getBrowsePanel();
+        var browsePanel: BrowsePanel<ContentSummaryAndCompareStatus> = this.getBrowsePanel();
         if (!browsePanel) {
             this.addBrowsePanel(new ContentBrowsePanel());
         } else {
@@ -164,7 +179,7 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
             wizard.onContentNamed(this.handleContentNamedEvent.bind(this));
 
             tabMenuItem = new AppBarTabMenuItemBuilder()
-                .setLabel(api.content.ContentUnnamed.prettifyUnnamed(contentTypeSummary.getDisplayName()))
+                .setLabel(ContentUnnamed.prettifyUnnamed(contentTypeSummary.getDisplayName()))
                 .setTabId(tabId).setCloseAction(wizard.getCloseAction())
                 .build();
 
@@ -181,7 +196,7 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
     }
 
 
-    private handleEdit(event: api.content.event.EditContentEvent) {
+    private handleEdit(event: EditContentEvent) {
 
         event.getModels().forEach((content: ContentSummaryAndCompareStatus) => {
 
@@ -215,9 +230,9 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
                 }
 
                 var name = contentSummary.getDisplayName();
-                if (api.util.StringHelper.isBlank(name)) {
+                if (StringHelper.isBlank(name)) {
                     wizard.onDataLoaded((loadedContent) => {
-                        tabMenuItem.setLabel(api.content.ContentUnnamed.prettifyUnnamed(wizard.getContentType().getDisplayName()));
+                        tabMenuItem.setLabel(ContentUnnamed.prettifyUnnamed(wizard.getContentType().getDisplayName()));
                     })
                 }
 
@@ -261,16 +276,16 @@ export class ContentAppPanel extends api.app.BrowseAndWizardBasedAppPanel<Conten
                     !content.getContentSummary().isValid()).setTabId(tabId).setCloseAction(contentItemViewPanel.getCloseAction()).build();
 
                 if (!content.getDisplayName()) {
-                    new api.schema.content.GetContentTypeByNameRequest(content.getContentSummary().getType()).sendAndParse().then(
-                        (contentType: api.schema.content.ContentType) => {
-                            tabMenuItem.setLabel(api.content.ContentUnnamed.prettifyUnnamed(contentType.getDisplayName()), true);
+                    new GetContentTypeByNameRequest(content.getContentSummary().getType()).sendAndParse().then(
+                        (contentType: ContentType) => {
+                            tabMenuItem.setLabel(ContentUnnamed.prettifyUnnamed(contentType.getDisplayName()), true);
                         }).done();
                 }
 
-                var contentItem = new api.app.view.ViewItem(content)
+                var contentItem = new ViewItem(content)
                     .setDisplayName(content.getDisplayName())
                     .setPath(content.getPath().toString())
-                    .setIconUrl(new api.content.util.ContentIconUrlResolver().setContent(content.getContentSummary()).resolve());
+                    .setIconUrl(new ContentIconUrlResolver().setContent(content.getContentSummary()).resolve());
 
                 contentItemViewPanel.setItem(contentItem);
 

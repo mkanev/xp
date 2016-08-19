@@ -1,11 +1,11 @@
-module api.ui.selector {
+import {Element} from "../../dom/Element";
 
-    export class DropdownExpandedEvent {
+export class DropdownExpandedEvent {
 
         private expanded: boolean;
-        private dropDownElement: api.dom.Element;
+        private dropDownElement: Element;
 
-        constructor(dropDownElement: api.dom.Element, expanded: boolean) {
+        constructor(dropDownElement: Element, expanded: boolean) {
             this.dropDownElement = dropDownElement;
             this.expanded = expanded;
         }
@@ -14,8 +14,7 @@ module api.ui.selector {
             return this.expanded;
         }
 
-        getDropdownElement(): api.dom.Element {
+        getDropdownElement(): Element {
             return this.dropDownElement;
         }
     }
-}

@@ -1,10 +1,10 @@
-import "../../api.ts";
+import {Application} from "../../../../../common/js/application/Application";
+import {Action} from "../../../../../common/js/ui/Action";
+
 import {ApplicationTreeGrid} from "./ApplicationTreeGrid";
 import {UninstallApplicationDialog} from "./UninstallApplicationDialog";
 
-import Application = api.application.Application;
-
-export class UninstallApplicationAction extends api.ui.Action {
+export class UninstallApplicationAction extends Action {
 
     constructor(applicationTreeGrid: ApplicationTreeGrid) {
         super("Uninstall");

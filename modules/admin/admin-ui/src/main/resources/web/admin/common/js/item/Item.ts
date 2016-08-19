@@ -1,6 +1,6 @@
-module api.item{
 
-    export interface Item {
+
+export interface Item {
 
         getId():string;
 
@@ -13,4 +13,3 @@ module api.item{
         isEditable():boolean;
     }
 
-}

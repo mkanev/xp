@@ -1,15 +1,19 @@
-module api.content.page {
+import {ContentJson} from "../json/ContentJson";
+import {ListContentResult} from "../resource/result/ListContentResult";
+import {ContentId} from "../ContentId";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {PageTemplate} from "./PageTemplate";
+import {PageTemplateResourceRequest} from "./PageTemplateResourceRequest";
 
-    import ContentJson = api.content.json.ContentJson;
-    import ListContentResult = api.content.resource.result.ListContentResult;
+export class GetPageTemplatesByCanRenderRequest extends PageTemplateResourceRequest<ListContentResult<ContentJson>, PageTemplate[]> {
 
-    export class GetPageTemplatesByCanRenderRequest extends PageTemplateResourceRequest<ListContentResult<ContentJson>, PageTemplate[]> {
+        private site: ContentId;
 
-        private site: api.content.ContentId;
+        private contentTypeName: ContentTypeName;
 
-        private contentTypeName: api.schema.content.ContentTypeName;
-
-        constructor(site: api.content.ContentId, contentTypeName: api.schema.content.ContentTypeName) {
+        constructor(site: ContentId, contentTypeName: ContentTypeName) {
             super();
             this.setMethod("GET");
             this.site = site;
@@ -23,17 +27,16 @@ module api.content.page {
             }
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "listByCanRender");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "listByCanRender");
         }
 
         sendAndParse(): wemQ.Promise<PageTemplate[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<ListContentResult<ContentJson>>) => {
+            return this.send().then((response: JsonResponse<ListContentResult<ContentJson>>) => {
                 return response.getResult().contents.map((contentJson: ContentJson) => {
                     return this.fromJsonToContent(contentJson);
                 });
             });
         }
     }
-}

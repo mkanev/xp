@@ -1,9 +1,10 @@
-import "../../../../api.ts";
+import {DivEl} from "../../../../../../../common/js/dom/DivEl";
+import {StyleHelper} from "../../../../../../../common/js/StyleHelper";
 
-export class NonMobileDetailsPanelToggleButton extends api.dom.DivEl {
+export class NonMobileDetailsPanelToggleButton extends DivEl {
 
     constructor() {
-        super("button", api.StyleHelper.COMMON_PREFIX);
+        super("button", StyleHelper.COMMON_PREFIX);
         this.addClass("non-mobile-details-panel-toggle-button");
 
         this.onClicked(() => {

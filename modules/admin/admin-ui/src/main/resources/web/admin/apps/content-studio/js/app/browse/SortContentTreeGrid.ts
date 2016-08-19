@@ -1,31 +1,29 @@
-import "../../api.ts";
-
-import Element = api.dom.Element;
-import ElementHelper = api.dom.ElementHelper;
-
-import GridColumn = api.ui.grid.GridColumn;
-import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-
-import TreeGrid = api.ui.treegrid.TreeGrid;
-import TreeNode = api.ui.treegrid.TreeNode;
-import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-import DateTimeFormatter = api.ui.treegrid.DateTimeFormatter;
-import TreeGridContextMenu = api.ui.treegrid.TreeGridContextMenu;
-
-import ContentResponse = api.content.resource.result.ContentResponse;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryBuilder = api.content.ContentSummaryBuilder;
-import ContentSummaryViewer = api.content.ContentSummaryViewer;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
-import ChildOrder = api.content.order.ChildOrder;
-
-import CompareStatus = api.content.CompareStatus;
-import CompareStatusFormatter = api.content.CompareStatusFormatter;
+import {Element} from "../../../../../common/js/dom/Element";
+import {ElementHelper} from "../../../../../common/js/dom/ElementHelper";
+import {GridColumn} from "../../../../../common/js/ui/grid/GridColumn";
+import {GridColumnBuilder} from "../../../../../common/js/ui/grid/GridColumn";
+import {TreeGrid} from "../../../../../common/js/ui/treegrid/TreeGrid";
+import {TreeNode} from "../../../../../common/js/ui/treegrid/TreeNode";
+import {TreeGridBuilder} from "../../../../../common/js/ui/treegrid/TreeGridBuilder";
+import {DateTimeFormatter} from "../../../../../common/js/ui/treegrid/DateTimeFormatter";
+import {TreeGridContextMenu} from "../../../../../common/js/ui/treegrid/TreeGridContextMenu";
+import {ContentResponse} from "../../../../../common/js/content/resource/result/ContentResponse";
+import {ContentSummary} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryBuilder} from "../../../../../common/js/content/ContentSummary";
+import {ContentSummaryViewer} from "../../../../../common/js/content/ContentSummaryViewer";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {ContentSummaryAndCompareStatusFetcher} from "../../../../../common/js/content/resource/ContentSummaryAndCompareStatusFetcher";
+import {ChildOrder} from "../../../../../common/js/content/order/ChildOrder";
+import {CompareStatus} from "../../../../../common/js/content/CompareStatus";
+import {CompareStatusFormatter} from "../../../../../common/js/content/CompareStatus";
+import {ContentId} from "../../../../../common/js/content/ContentId";
+import {SpanEl} from "../../../../../common/js/dom/SpanEl";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
 
 export class SortContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus> {
 
-    private contentId: api.content.ContentId;
+    private contentId: ContentId;
 
     private curChildOrder: ChildOrder;
 
@@ -53,18 +51,18 @@ export class SortContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus
             return "";
         }
 
-        var compareLabel: string = api.content.CompareStatus[value];
+        var compareLabel: string = CompareStatus[value];
         return CompareStatusFormatter.formatStatus(CompareStatus[compareLabel]);
     }
 
     private dragFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<ContentSummaryAndCompareStatus>) {
-        var wrapper = new api.dom.SpanEl();
+        var wrapper = new SpanEl();
 
-        if (!api.util.StringHelper.isBlank(value)) {
+        if (!StringHelper.isBlank(value)) {
             wrapper.getEl().setTitle(value);
         }
 
-        var icon = new api.dom.DivEl("icon-menu3 drag-icon");
+        var icon = new DivEl("icon-menu3 drag-icon");
         wrapper.getEl().setInnerHtml(icon.toString(), false);
         return wrapper.toString();
     }
@@ -95,7 +93,7 @@ export class SortContentTreeGrid extends TreeGrid<ContentSummaryAndCompareStatus
     }
 
     fetchChildren(): wemQ.Promise<ContentSummaryAndCompareStatus[]> {
-        var parentContentId: api.content.ContentId;
+        var parentContentId: ContentId;
         var parentNode = this.getRoot().getCurrentRoot();
         if (parentNode.getData()) {
             parentContentId = parentNode.getData().getContentSummary().getContentId();

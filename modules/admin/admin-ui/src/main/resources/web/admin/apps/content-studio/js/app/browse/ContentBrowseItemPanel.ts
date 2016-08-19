@@ -1,10 +1,13 @@
-import "../../api.ts";
+import {BrowseItemPanel} from "../../../../../common/js/app/browse/BrowseItemPanel";
+import {ContentSummaryAndCompareStatus} from "../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {BrowseItemsChanges} from "../../../../../common/js/app/browse/BrowseItemsChanges";
+
 import {ContentBrowseItem} from "./ContentBrowseItem";
 import {ContentBrowseItemsSelectionPanel} from "./ContentBrowseItemsSelectionPanel";
 import {ContentItemStatisticsPanel} from "../view/ContentItemStatisticsPanel";
 import {ContentTreeGrid} from "./ContentTreeGrid";
 
-export class ContentBrowseItemPanel extends api.app.browse.BrowseItemPanel<api.content.ContentSummaryAndCompareStatus> {
+export class ContentBrowseItemPanel extends BrowseItemPanel<ContentSummaryAndCompareStatus> {
 
     private grid: ContentTreeGrid;
 
@@ -21,7 +24,7 @@ export class ContentBrowseItemPanel extends api.app.browse.BrowseItemPanel<api.c
         return new ContentItemStatisticsPanel();
     }
 
-    setItems(items: ContentBrowseItem[]): api.app.browse.BrowseItemsChanges<api.content.ContentSummaryAndCompareStatus> {
+    setItems(items: ContentBrowseItem[]): BrowseItemsChanges<ContentSummaryAndCompareStatus> {
         return super.setItems(items);
     }
 

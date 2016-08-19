@@ -1,12 +1,13 @@
-module api.liveedit.fragment {
+import {FragmentComponent} from "../../content/page/region/FragmentComponent";
+import {ItemType} from "../ItemType";
+import {ItemTypeConfigJson} from "../ItemTypeConfig";
+import {ComponentItemType} from "../ComponentItemType";
+import {RegionView} from "../RegionView";
+import {CreateItemViewConfig} from "../CreateItemViewConfig";
+import {FragmentComponentViewBuilder} from "./FragmentComponentView";
+import {FragmentComponentView} from "./FragmentComponentView";
 
-    import FragmentComponent = api.content.page.region.FragmentComponent;
-    import ItemType = api.liveedit.ItemType;
-    import ItemTypeConfigJson = api.liveedit.ItemTypeConfigJson;
-    import ComponentItemType = api.liveedit.ComponentItemType;
-    import RegionView = api.liveedit.RegionView;
-
-    export class FragmentItemType extends ComponentItemType {
+export class FragmentItemType extends ComponentItemType {
 
         private static INSTANCE = new FragmentItemType();
 
@@ -30,4 +31,3 @@ module api.liveedit.fragment {
     }
 
     FragmentItemType.get();
-}

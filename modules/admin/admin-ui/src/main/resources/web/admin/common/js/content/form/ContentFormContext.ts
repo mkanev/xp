@@ -1,17 +1,25 @@
-module api.content.form {
+import {PropertyPath} from "../../data/PropertyPath";
+import {PropertyArray} from "../../data/PropertyArray";
+import {FormContext} from "../../form/FormContext";
+import {Site} from "../site/Site";
+import {Content} from "../Content";
+import {ContentTypeName} from "../../schema/content/ContentTypeName";
+import {ContentId} from "../ContentId";
+import {ContentPath} from "../ContentPath";
+import {Input} from "../../form/Input";
+import {InputTypeViewContext} from "../../form/inputtype/InputTypeViewContext";
+import {ContentInputTypeViewContext} from "./inputtype/ContentInputTypeViewContext";
+import {FormContextBuilder} from "../../form/FormContext";
 
-    import PropertyPath = api.data.PropertyPath;
-    import PropertyArray = api.data.PropertyArray;
+export class ContentFormContext extends FormContext {
 
-    export class ContentFormContext extends api.form.FormContext {
+        private site: Site;
 
-        private site: api.content.site.Site;
+        private parentContent: Content;
 
-        private parentContent: api.content.Content;
+        private persistedContent: Content;
 
-        private persistedContent: api.content.Content;
-
-        private contentTypeName: api.schema.content.ContentTypeName;
+        private contentTypeName: ContentTypeName;
 
         constructor(builder: ContentFormContextBuilder) {
             super(builder);
@@ -25,39 +33,39 @@ module api.content.form {
             }
         }
 
-        getSite(): api.content.site.Site {
+        getSite(): Site {
             return this.site;
         }
 
-        getContentId(): api.content.ContentId {
+        getContentId(): ContentId {
             return this.persistedContent != null ? this.persistedContent.getContentId() : null;
         }
 
-        getContentPath(): api.content.ContentPath {
+        getContentPath(): ContentPath {
             return this.persistedContent != null ? this.persistedContent.getPath() : null;
         }
 
-        getParentContentPath(): api.content.ContentPath {
+        getParentContentPath(): ContentPath {
 
             if (this.parentContent == null) {
-                return api.content.ContentPath.ROOT;
+                return ContentPath.ROOT;
             }
 
             return this.parentContent.getPath();
         }
 
-        getPersistedContent(): api.content.Content {
+        getPersistedContent(): Content {
             return this.persistedContent;
         }
 
-        getContentTypeName(): api.schema.content.ContentTypeName {
+        getContentTypeName(): ContentTypeName {
             return this.contentTypeName;
         }
 
         createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
-                                   input: api.form.Input): api.form.inputtype.InputTypeViewContext {
+                                   input: Input): InputTypeViewContext {
 
-            return <api.content.form.inputtype.ContentInputTypeViewContext> {
+            return <ContentInputTypeViewContext> {
                 formContext: this,
                 input: input,
                 inputConfig: inputTypeConfig,
@@ -74,32 +82,32 @@ module api.content.form {
         }
     }
 
-    export class ContentFormContextBuilder extends api.form.FormContextBuilder {
+    export class ContentFormContextBuilder extends FormContextBuilder {
 
-        site: api.content.site.Site;
+        site: Site;
 
-        parentContent: api.content.Content;
+        parentContent: Content;
 
-        persistedContent: api.content.Content;
+        persistedContent: Content;
 
-        contentTypeName: api.schema.content.ContentTypeName;
+        contentTypeName: ContentTypeName;
 
-        public setSite(value: api.content.site.Site): ContentFormContextBuilder {
+        public setSite(value: Site): ContentFormContextBuilder {
             this.site = value;
             return this;
         }
 
-        public setParentContent(value: api.content.Content): ContentFormContextBuilder {
+        public setParentContent(value: Content): ContentFormContextBuilder {
             this.parentContent = value;
             return this;
         }
 
-        public setPersistedContent(value: api.content.Content): ContentFormContextBuilder {
+        public setPersistedContent(value: Content): ContentFormContextBuilder {
             this.persistedContent = value;
             return this;
         }
 
-        public setContentTypeName(value: api.schema.content.ContentTypeName): ContentFormContextBuilder {
+        public setContentTypeName(value: ContentTypeName): ContentFormContextBuilder {
             this.contentTypeName = value;
             return this;
         }
@@ -108,4 +116,3 @@ module api.content.form {
             return new ContentFormContext(this);
         }
     }
-}

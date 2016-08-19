@@ -1,18 +1,19 @@
-module api.ui.security.acl {
+import {Permission} from "../../../security/acl/Permission";
+import {PermissionState} from "../../../security/acl/Permission";
+import {DivEl} from "../../../dom/DivEl";
+import {ValueChangedEvent} from "../../../ValueChangedEvent";
+import {AEl} from "../../../dom/AEl";
 
-    import Permission = api.security.acl.Permission;
-    import PermissionState = api.security.acl.PermissionState;
-
-    export interface PermissionSelectorOption {
+export interface PermissionSelectorOption {
         value: Permission;
         name: string;
     }
 
-    export class PermissionSelector extends api.dom.DivEl {
+    export class PermissionSelector extends DivEl {
 
         private toggles: PermissionToggle[] = [];
         private oldValue: {allow: Permission[]; deny: Permission[]};
-        private valueChangedListeners: {(event: api.ValueChangedEvent):void}[] = [];
+        private valueChangedListeners: {(event: ValueChangedEvent):void}[] = [];
         private enabled: boolean = true;
 
         private static OPTIONS: PermissionSelectorOption[] = [
@@ -31,9 +32,9 @@ module api.ui.security.acl {
             PermissionSelector.OPTIONS.forEach((option: PermissionSelectorOption) => {
                 var toggle = new PermissionToggle(option);
                 toggle.setEnabled(this.enabled);
-                toggle.onValueChanged((event: api.ValueChangedEvent) => {
+                toggle.onValueChanged((event: ValueChangedEvent) => {
                     var newValue = this.getValue();
-                    this.notifyValueChanged(new api.ValueChangedEvent(JSON.stringify(this.oldValue), JSON.stringify(newValue)));
+                    this.notifyValueChanged(new ValueChangedEvent(JSON.stringify(this.oldValue), JSON.stringify(newValue)));
                     this.oldValue = newValue;
                 });
                 this.toggles.push(toggle);
@@ -90,23 +91,23 @@ module api.ui.security.acl {
                 toggle.setState(state, true);
             });
             if (!silent) {
-                this.notifyValueChanged(new api.ValueChangedEvent(JSON.stringify(this.oldValue), JSON.stringify(newValue)));
+                this.notifyValueChanged(new ValueChangedEvent(JSON.stringify(this.oldValue), JSON.stringify(newValue)));
             }
             this.oldValue = newValue;
             return this;
         }
 
-        onValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        onValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        unValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners = this.valueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        notifyValueChanged(event: api.ValueChangedEvent) {
+        notifyValueChanged(event: ValueChangedEvent) {
             this.valueChangedListeners.forEach((listener) => {
                 listener(event);
             })
@@ -114,10 +115,10 @@ module api.ui.security.acl {
     }
 
 
-    export class PermissionToggle extends api.dom.AEl {
+    export class PermissionToggle extends AEl {
 
         private static STATES: PermissionState[] = [PermissionState.ALLOW, PermissionState.DENY, PermissionState.INHERIT];
-        private valueChangedListeners: {(event: api.ValueChangedEvent):void}[] = [];
+        private valueChangedListeners: {(event: ValueChangedEvent):void}[] = [];
 
         private originalStateIndex: number = -1;
         private stateIndex: number = -1;
@@ -178,23 +179,23 @@ module api.ui.security.acl {
 
                 this.stateIndex = newStateIndex;
                 if (!silent) {
-                    this.notifyValueChanged(new api.ValueChangedEvent(PermissionState[oldState], PermissionState[newState]));
+                    this.notifyValueChanged(new ValueChangedEvent(PermissionState[oldState], PermissionState[newState]));
                 }
             }
             return this;
         }
 
-        onValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        onValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.ValueChangedEvent)=>void) {
+        unValueChanged(listener: (event: ValueChangedEvent)=>void) {
             this.valueChangedListeners = this.valueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        private notifyValueChanged(event: api.ValueChangedEvent) {
+        private notifyValueChanged(event: ValueChangedEvent) {
             this.valueChangedListeners.forEach((listener) => {
                 listener(event);
             })
@@ -202,4 +203,3 @@ module api.ui.security.acl {
 
     }
 
-}

@@ -1,11 +1,18 @@
-module api.liveedit.part {
+import {ComponentView} from "../ComponentView";
+import {ContentView} from "../ContentView";
+import {RegionView} from "../RegionView";
+import {PartComponent} from "../../content/page/region/PartComponent";
+import {Element} from "../../dom/Element";
+import {ComponentViewBuilder} from "../ComponentView";
+import {ContentItemType} from "../ContentItemType";
+import {ContentViewBuilder} from "../ContentView";
+import {ItemType} from "../ItemType";
+import {ItemView} from "../ItemView";
+import {PartComponentViewer} from "./PartComponentViewer";
+import {PartItemType} from "./PartItemType";
+import {PartPlaceholder} from "./PartPlaceholder";
 
-    import ComponentView = api.liveedit.ComponentView;
-    import ContentView = api.liveedit.ContentView;
-    import RegionView = api.liveedit.RegionView;
-    import PartComponent = api.content.page.region.PartComponent;
-
-    export class PartComponentViewBuilder extends ComponentViewBuilder<PartComponent> {
+export class PartComponentViewBuilder extends ComponentViewBuilder<PartComponent> {
 
         constructor() {
             super();
@@ -75,11 +82,11 @@ module api.liveedit.part {
             return array;
         }
 
-        private parseContentViews(parentElement?: api.dom.Element) {
+        private parseContentViews(parentElement?: Element) {
 
             var children = parentElement ? parentElement.getChildren() : this.getChildren();
 
-            children.forEach((childElement: api.dom.Element) => {
+            children.forEach((childElement: Element) => {
                 var itemType = ItemType.fromElement(childElement);
                 if (itemType) {
                     if (ContentItemType.get().equals(itemType)) {
@@ -96,4 +103,3 @@ module api.liveedit.part {
             });
         }
     }
-}

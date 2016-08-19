@@ -1,12 +1,13 @@
-module api.site {
+import {Form} from "../form/Form";
+import {MixinNames} from "../schema/mixin/MixinNames";
+import {Equitable} from "../Equitable";
+import {SiteDescriptorJson} from "./json/SiteDescriptorJson";
+import {ObjectHelper} from "../ObjectHelper";
 
-    import Form = api.form.Form;
-    import MixinNames = api.schema.mixin.MixinNames;
-
-    export class SiteDescriptor implements api.Equitable {
+export class SiteDescriptor implements Equitable {
 
         private form: Form;
-        private metaSteps: api.schema.mixin.MixinNames;
+        private metaSteps: MixinNames;
 
         constructor(form: Form, mixinNames: MixinNames) {
             this.form = form;
@@ -17,29 +18,29 @@ module api.site {
             return this.form;
         }
 
-        public getMetaSteps(): api.schema.mixin.MixinNames {
+        public getMetaSteps(): MixinNames {
             return this.metaSteps;
         }
 
-        static fromJson(json: api.site.json.SiteDescriptorJson): SiteDescriptor {
+        static fromJson(json: SiteDescriptorJson): SiteDescriptor {
 
             return new SiteDescriptor(Form.fromJson(json.form),
-                api.schema.mixin.MixinNames.create().fromStrings(json.metaSteps).build());
+                MixinNames.create().fromStrings(json.metaSteps).build());
         }
 
-        public equals(o: api.Equitable): boolean {
+        public equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, SiteDescriptor)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, SiteDescriptor)) {
                 return false;
             }
 
             var other = <SiteDescriptor>o;
 
-            if (!api.ObjectHelper.equals(this.form, other.form)) {
+            if (!ObjectHelper.equals(this.form, other.form)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.metaSteps, other.metaSteps)) {
+            if (!ObjectHelper.equals(this.metaSteps, other.metaSteps)) {
                 return false;
             }
 
@@ -47,4 +48,3 @@ module api.site {
         }
     }
 
-}

@@ -1,6 +1,7 @@
-module api.liveedit {
+import {StyleHelper} from "../StyleHelper";
+import {ItemView} from "./ItemView";
 
-    export class ItemViewIconClassResolver {
+export class ItemViewIconClassResolver {
 
         public static resolveByView(itemView: ItemView): string {
             if (!itemView) {
@@ -10,8 +11,7 @@ module api.liveedit {
         }
 
         public static resolveByType(itemType: string, size?: string): string {
-            return api.StyleHelper.getCommonIconCls(itemType.toLowerCase()) + (size ? " " + size : "");
+            return StyleHelper.getCommonIconCls(itemType.toLowerCase()) + (size ? " " + size : "");
         }
     }
 
-}

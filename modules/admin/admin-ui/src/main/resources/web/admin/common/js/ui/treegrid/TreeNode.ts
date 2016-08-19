@@ -1,6 +1,8 @@
-module api.ui.treegrid {
+import {Viewer} from "../Viewer";
+import {ArrayHelper} from "../../util/ArrayHelper";
+import {TreeNodeBuilder} from "./TreeNodeBuilder";
 
-    export class TreeNode<DATA> {
+export class TreeNode<DATA> {
 
         private id: string;
 
@@ -23,7 +25,7 @@ module api.ui.treegrid {
         /**
          * A cache for stashing viewers by name, so that they can be reused.
          */
-        private viewersByName: {[s:string] : api.ui.Viewer<any>; } = {};
+        private viewersByName: {[s:string] : Viewer<any>; } = {};
 
         constructor(builder: TreeNodeBuilder<DATA>) {
             this.id = Math.random().toString(36).substring(2);
@@ -92,7 +94,7 @@ module api.ui.treegrid {
             this.dataId = dataId;
         }
 
-        setViewer(name: string, viewer: api.ui.Viewer<any>) {
+        setViewer(name: string, viewer: Viewer<any>) {
             this.viewersByName[name] = viewer;
         }
 
@@ -100,7 +102,7 @@ module api.ui.treegrid {
             this.viewersByName = {};
         }
 
-        getViewer(name: string): api.ui.Viewer<any> {
+        getViewer(name: string): Viewer<any> {
             return this.viewersByName[name];
         }
 
@@ -131,7 +133,7 @@ module api.ui.treegrid {
         }
 
         private removeDuplicates() {
-            this.children = api.util.ArrayHelper.removeDuplicates(this.children, (child) => child.getDataId());
+            this.children = ArrayHelper.removeDuplicates(this.children, (child) => child.getDataId());
         }
 
         getChildren(): TreeNode<DATA>[] {
@@ -321,4 +323,3 @@ module api.ui.treegrid {
             }
         }
     }
-}

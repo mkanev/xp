@@ -1,8 +1,11 @@
-module api.content.resource {
+import {CompareContentResults} from "./result/CompareContentResults";
+import {CompareContentResultsJson} from "../json/CompareContentResultsJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentSummary} from "../ContentSummary";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import CompareContentResults = api.content.resource.result.CompareContentResults;
-    
-    export class CompareContentRequest extends ContentResourceRequest<api.content.json.CompareContentResultsJson, CompareContentResults> {
+export class CompareContentRequest extends ContentResourceRequest<CompareContentResultsJson, CompareContentResults> {
 
         private ids: string[];
 
@@ -30,18 +33,17 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), "compare");
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), "compare");
         }
 
         sendAndParse(): wemQ.Promise<CompareContentResults> {
-            return this.send().then((response: api.rest.JsonResponse<api.content.json.CompareContentResultsJson>) => {
+            return this.send().then((response: JsonResponse<CompareContentResultsJson>) => {
                 return this.fromJsonToCompareResults(response.getResult());
             });
         }
 
-        fromJsonToCompareResults(json: api.content.json.CompareContentResultsJson): CompareContentResults {
+        fromJsonToCompareResults(json: CompareContentResultsJson): CompareContentResults {
             return CompareContentResults.fromJson(json);
         }
     }
-}

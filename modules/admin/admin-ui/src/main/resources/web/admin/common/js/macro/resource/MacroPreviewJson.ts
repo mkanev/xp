@@ -1,6 +1,6 @@
-module api.macro.resource {
 
-    export interface MacroPreviewStringJson {
+
+export interface MacroPreviewStringJson {
         macro: string;
     }
 
@@ -15,4 +15,3 @@ module api.macro.resource {
         headBegin: string[];
         headEnd: string[];
     }
-}

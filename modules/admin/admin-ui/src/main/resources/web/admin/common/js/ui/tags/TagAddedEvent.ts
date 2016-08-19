@@ -1,6 +1,6 @@
-module api.ui.tags {
 
-    export class TagAddedEvent {
+
+export class TagAddedEvent {
 
         private value: string;
 
@@ -13,4 +13,3 @@ module api.ui.tags {
         }
 
     }
-}

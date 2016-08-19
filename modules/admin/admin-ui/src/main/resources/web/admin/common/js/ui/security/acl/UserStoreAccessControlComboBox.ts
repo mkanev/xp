@@ -1,21 +1,28 @@
-module api.ui.security.acl {
+import {Option} from "../../selector/Option";
+import {SelectedOption} from "../../selector/combobox/SelectedOption";
+import {BaseSelectedOptionView} from "../../selector/combobox/BaseSelectedOptionView";
+import {Permission} from "../../../security/acl/Permission";
+import {UserStoreAccessControlEntry} from "../../../security/acl/UserStoreAccessControlEntry";
+import {UserStoreAccessControlEntryLoader} from "../../../security/acl/UserStoreAccessControlEntryLoader";
+import {SelectedOptionEvent} from "../../selector/combobox/SelectedOptionEvent";
+import {RichComboBox} from "../../selector/combobox/RichComboBox";
+import {RichComboBoxBuilder} from "../../selector/combobox/RichComboBox";
+import {SelectedOptionView} from "../../selector/combobox/SelectedOptionView";
+import {SelectedOptionsView} from "../../selector/combobox/SelectedOptionsView";
+import {assertNotNull} from "../../../util/Assert";
+import {ArrayHelper} from "../../../util/ArrayHelper";
+import {UserStoreAccessControlEntryView} from "./UserStoreAccessControlEntryView";
+import {UserStoreAccessControlEntryViewer} from "./UserStoreAccessControlEntryViewer";
+import {UserStoreAccessControlListView} from "./UserStoreAccessControlListView";
 
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
-    import Permission = api.security.acl.Permission;
-    import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
-    import UserStoreAccessControlEntryLoader = api.security.acl.UserStoreAccessControlEntryLoader;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-
-    export class UserStoreAccessControlComboBox extends api.ui.selector.combobox.RichComboBox<UserStoreAccessControlEntry> {
+export class UserStoreAccessControlComboBox extends RichComboBox<UserStoreAccessControlEntry> {
 
         private aceSelectedOptionsView: UserStoreACESelectedOptionsView;
 
         constructor() {
             this.aceSelectedOptionsView = new UserStoreACESelectedOptionsView();
 
-            var builder = new api.ui.selector.combobox.RichComboBoxBuilder<UserStoreAccessControlEntry>().
+            var builder = new RichComboBoxBuilder<UserStoreAccessControlEntry>().
                 setMaximumOccurrences(0).
                 setComboBoxName("principalSelector").
                 setLoader(new UserStoreAccessControlEntryLoader()).
@@ -40,7 +47,7 @@ module api.ui.security.acl {
         }
     }
 
-    class UserStoreACESelectedOptionView extends UserStoreAccessControlEntryView implements api.ui.selector.combobox.SelectedOptionView<UserStoreAccessControlEntry> {
+    class UserStoreACESelectedOptionView extends UserStoreAccessControlEntryView implements SelectedOptionView<UserStoreAccessControlEntry> {
 
         private option: Option<UserStoreAccessControlEntry>;
 
@@ -61,7 +68,7 @@ module api.ui.security.acl {
 
     }
 
-    class UserStoreACESelectedOptionsView extends UserStoreAccessControlListView implements api.ui.selector.combobox.SelectedOptionsView<UserStoreAccessControlEntry> {
+    class UserStoreACESelectedOptionsView extends UserStoreAccessControlListView implements SelectedOptionsView<UserStoreAccessControlEntry> {
 
         private maximumOccurrences: number;
         private list: SelectedOption<UserStoreAccessControlEntry>[] = [];
@@ -133,10 +140,10 @@ module api.ui.security.acl {
         }
 
         removeOption(optionToRemove: Option<UserStoreAccessControlEntry>, silent: boolean = false) {
-            api.util.assertNotNull(optionToRemove, "optionToRemove cannot be null");
+            assertNotNull(optionToRemove, "optionToRemove cannot be null");
 
             var selectedOption = this.getByOption(optionToRemove);
-            api.util.assertNotNull(selectedOption, "Did not find any selected option to remove from option: " + optionToRemove.value);
+            assertNotNull(selectedOption, "Did not find any selected option to remove from option: " + optionToRemove.value);
 
             this.removeItem(optionToRemove.displayValue);
 
@@ -190,8 +197,8 @@ module api.ui.security.acl {
         }
 
         moveOccurrence(formIndex: number, toIndex: number) {
-            api.util.ArrayHelper.moveElement(formIndex, toIndex, this.list);
-            api.util.ArrayHelper.moveElement(formIndex, toIndex, this.getChildren());
+            ArrayHelper.moveElement(formIndex, toIndex, this.list);
+            ArrayHelper.moveElement(formIndex, toIndex, this.getChildren());
 
             this.list.forEach((selectedOption: SelectedOption<UserStoreAccessControlEntry>,
                                index: number) => selectedOption.setIndex(index));
@@ -237,4 +244,3 @@ module api.ui.security.acl {
 
     }
 
-}

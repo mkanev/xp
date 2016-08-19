@@ -1,9 +1,10 @@
-module api.content.json {
+import {AggregationTypeWrapperJson} from "../../aggregation/AggregationTypeWrapperJson";
+import {ContentMetadata} from "../ContentMetadata";
+import {ContentIdBaseItemJson} from "./ContentIdBaseItemJson";
 
-    export interface ContentQueryResultJson<T extends ContentIdBaseItemJson> {
+export interface ContentQueryResultJson<T extends ContentIdBaseItemJson> {
 
-        aggregations:api.aggregation.AggregationTypeWrapperJson[];
+        aggregations:AggregationTypeWrapperJson[];
         contents:T[];
-        metadata: api.content.ContentMetadata;
+        metadata: ContentMetadata;
     }
-}

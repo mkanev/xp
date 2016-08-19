@@ -1,7 +1,10 @@
-module api.content.order {
+import {OrderExprJson} from "../json/OrderExprJson";
+import {Equitable} from "../../Equitable";
+import {ObjectHelper} from "../../ObjectHelper";
+import {OrderExpr} from "./OrderExpr";
+import {OrderExprBuilder} from "./OrderExpr";
 
-    import OrderExprJson = api.content.json.OrderExprJson;
-    export class FieldOrderExpr extends OrderExpr {
+export class FieldOrderExpr extends OrderExpr {
 
         private fieldName: string;
 
@@ -25,11 +28,11 @@ module api.content.order {
             return this.fieldName + " " + super.getDirection();
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
             if (!super.equals(o)) {
                 return false;
             }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FieldOrderExpr)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, FieldOrderExpr)) {
                 return false;
             }
             var other = <FieldOrderExpr>o;
@@ -60,4 +63,3 @@ module api.content.order {
             return new FieldOrderExpr(this);
         }
     }
-}

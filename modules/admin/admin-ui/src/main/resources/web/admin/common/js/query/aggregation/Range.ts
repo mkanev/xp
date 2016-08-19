@@ -1,6 +1,6 @@
-module api.query.aggregation {
+import {RangeJson} from "./RangeJson";
 
-    export class Range {
+export class Range {
 
         private key: string;
 
@@ -16,7 +16,7 @@ module api.query.aggregation {
             return this.key;
         }
 
-        public toRangeJson(): api.query.aggregation.RangeJson {
+        public toRangeJson(): RangeJson {
 
             if (this.getKey() != null) {
                 return {
@@ -31,4 +31,3 @@ module api.query.aggregation {
 
     }
 
-}

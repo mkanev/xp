@@ -1,22 +1,26 @@
-module api.content.form.inputtype.tag {
+import {Content} from "../../../Content";
+import {ContentJson} from "../../../json/ContentJson";
+import {ContentQuery} from "../../../query/ContentQuery";
+import {ContentQueryRequest} from "../../../resource/ContentQueryRequest";
+import {QueryExpr} from "../../../../query/expr/QueryExpr";
+import {FieldExpr} from "../../../../query/expr/FieldExpr";
+import {CompareOperator} from "../../../../query/expr/CompareOperator";
+import {FunctionExpr} from "../../../../query/expr/FunctionExpr";
+import {DynamicConstraintExpr} from "../../../../query/expr/DynamicConstraintExpr";
+import {ValueExpr} from "../../../../query/expr/ValueExpr";
+import {PropertyPath} from "../../../../data/PropertyPath";
+import {Property} from "../../../../data/Property";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {TagSuggester} from "../../../../ui/tags/TagSuggester";
+import {Expression} from "../../../../query/expr/Expression";
+import {FulltextSearchExpressionBuilder} from "../../../../query/FulltextSearchExpression";
+import {QueryField} from "../../../../query/QueryField";
+import {Expand} from "../../../../rest/Expand";
+import {ContentQueryResult} from "../../../resource/result/ContentQueryResult";
 
-    import Content = api.content.Content;
-    import ContentJson = api.content.json.ContentJson;
-    import ContentQuery = api.content.query.ContentQuery;
-    import ContentQueryRequest = api.content.resource.ContentQueryRequest;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import CompareOperator = api.query.expr.CompareOperator;
-    import FunctionExpr = api.query.expr.FunctionExpr;
-    import DynamicConstraintExpr = api.query.expr.DynamicConstraintExpr;
-    import ValueExpr = api.query.expr.ValueExpr;
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-
-    export class ContentTagSuggesterBuilder {
+export class ContentTagSuggesterBuilder {
 
         dataPath: PropertyPath;
 
@@ -30,7 +34,7 @@ module api.content.form.inputtype.tag {
         }
     }
 
-    export class ContentTagSuggester implements api.ui.tags.TagSuggester {
+    export class ContentTagSuggester implements TagSuggester {
 
         private propertyPath: PropertyPath;
 
@@ -42,9 +46,9 @@ module api.content.form.inputtype.tag {
 
             var fieldName = "data" + this.propertyPath.getParentPath().toString() + this.propertyPath.getLastElement().getName();
 
-            var fulltextExpression: api.query.expr.Expression = new api.query.FulltextSearchExpressionBuilder().
+            var fulltextExpression: Expression = new FulltextSearchExpressionBuilder().
                 setSearchString(value).
-                addField(new api.query.QueryField(fieldName)).
+                addField(new QueryField(fieldName)).
                 build();
 
             var queryExpr: QueryExpr = new QueryExpr(fulltextExpression);
@@ -54,10 +58,10 @@ module api.content.form.inputtype.tag {
             query.setQueryExpr(queryExpr);
 
             var queryRequest = new ContentQueryRequest(query);
-            queryRequest.setExpand(api.rest.Expand.FULL);
+            queryRequest.setExpand(Expand.FULL);
 
             return queryRequest.sendAndParse().then(
-                (contentQueryResult: api.content.resource.result.ContentQueryResult<Content,ContentJson>) => {
+                (contentQueryResult: ContentQueryResult<Content,ContentJson>) => {
 
                     var suggestedTags: string[] = [];
                     contentQueryResult.getContents().forEach((content: Content) => {
@@ -77,4 +81,3 @@ module api.content.form.inputtype.tag {
                 });
         }
     }
-}

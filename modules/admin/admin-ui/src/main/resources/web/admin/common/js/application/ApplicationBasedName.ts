@@ -1,7 +1,9 @@
-module api.application {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {ClassHelper} from "../ClassHelper";
+import {ApplicationKey} from "./ApplicationKey";
 
-
-    export class ApplicationBasedName implements api.Equitable {
+export class ApplicationBasedName implements Equitable {
         static SEPARATOR = ":";
 
         private refString: string;
@@ -28,15 +30,15 @@ module api.application {
             return this.refString;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, api.ClassHelper.getClass(this))) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, ClassHelper.getClass(this))) {
                 return false;
             }
 
             var other = <ApplicationBasedName>o;
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
+            if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
                 return false;
             }
 
@@ -45,4 +47,3 @@ module api.application {
 
     }
 
-}

@@ -1,6 +1,6 @@
-module api.security.auth {
 
-    export class LoginCredentials {
+
+export class LoginCredentials {
 
         private user: string;
 
@@ -41,4 +41,3 @@ module api.security.auth {
 
     }
 
-}

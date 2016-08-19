@@ -1,30 +1,37 @@
-module api.ui.uploader {
+import {Button} from "../button/Button";
+import {CloseButton} from "../button/CloseButton";
+import {ValueTypes} from "../../data/ValueTypes";
+import {UploaderElConfig} from "./UploaderEl";
+import {UploaderEl} from "./UploaderEl";
+import {Content} from "../../content/Content";
+import {AEl} from "../../dom/AEl";
+import {UriHelper} from "../../util/UriHelper";
+import {ContentJson} from "../../content/json/ContentJson";
+import {ContentBuilder} from "../../content/Content";
+import {Value} from "../../data/Value";
+import {Element} from "../../dom/Element";
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-    import ValueTypes = api.data.ValueTypes;
-
-    export enum MediaUploaderElOperation
+export enum MediaUploaderElOperation
     {
         create,
         update
     }
 
-    export interface MediaUploaderElConfig extends api.ui.uploader.UploaderElConfig {
+    export interface MediaUploaderElConfig extends UploaderElConfig {
 
         operation: MediaUploaderElOperation;
     }
 
-    export class MediaUploaderEl extends api.ui.uploader.UploaderEl<api.content.Content> {
+    export class MediaUploaderEl extends UploaderEl<Content> {
 
         private fileName: string;
 
-        private link: api.dom.AEl;
+        private link: AEl;
 
         constructor(config: MediaUploaderElConfig) {
 
             if (config.url == undefined) {
-                config.url = api.util.UriHelper.getRestUri("content/" + MediaUploaderElOperation[config.operation] + "Media")
+                config.url = UriHelper.getRestUri("content/" + MediaUploaderElOperation[config.operation] + "Media")
             }
 
             super(config);
@@ -32,10 +39,10 @@ module api.ui.uploader {
             this.addClass('media-uploader-el');
         }
 
-        createModel(serverResponse: api.content.json.ContentJson): api.content.Content {
+        createModel(serverResponse: ContentJson): Content {
             if (serverResponse) {
-                return new api.content.ContentBuilder().
-                fromContentJson(<api.content.json.ContentJson> serverResponse).
+                return new ContentBuilder().
+                fromContentJson(<ContentJson> serverResponse).
                 build();
             }
             else {
@@ -43,11 +50,11 @@ module api.ui.uploader {
             }
         }
 
-        getModelValue(item: api.content.Content): string {
+        getModelValue(item: Content): string {
             return item.getId();
         }
 
-        getMediaValue(item: api.content.Content): api.data.Value {
+        getMediaValue(item: Content): Value {
             var mediaProperty = item.getContentData().getProperty("media");
             var mediaValue;
             switch (mediaProperty.getType()) {
@@ -68,11 +75,10 @@ module api.ui.uploader {
             }
         }
 
-        createResultItem(value: string): api.dom.Element {
-            this.link = new api.dom.AEl().setUrl(api.util.UriHelper.getRestUri('content/media/' + value), "_blank");
+        createResultItem(value: string): Element {
+            this.link = new AEl().setUrl(UriHelper.getRestUri('content/media/' + value), "_blank");
             this.link.setHtml(this.fileName != null && this.fileName != "" ? this.fileName : value);
 
             return this.link;
         }
     }
-}

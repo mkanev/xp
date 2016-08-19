@@ -1,6 +1,6 @@
-module api.form {
+import {ValidationRecordingPath} from "./ValidationRecordingPath";
 
-    export class ValidationRecording {
+export class ValidationRecording {
 
         breaksMinimumOccurrencesArray: ValidationRecordingPath[] = [];
 
@@ -118,7 +118,7 @@ module api.form {
             return true;
         }
 
-        validityChanged(previous: api.form.ValidationRecording): boolean {
+        validityChanged(previous: ValidationRecording): boolean {
             return previous == undefined || previous == null || !previous.equals(this);
         }
 
@@ -131,4 +131,3 @@ module api.form {
             return false;
         }
     }
-}

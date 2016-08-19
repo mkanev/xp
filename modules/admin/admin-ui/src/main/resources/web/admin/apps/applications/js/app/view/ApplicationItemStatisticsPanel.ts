@@ -1,37 +1,50 @@
-import "../../api.ts";
+import {ContentTypeSummary} from "../../../../../common/js/schema/content/ContentTypeSummary";
+import {Mixin} from "../../../../../common/js/schema/mixin/Mixin";
+import {RelationshipType} from "../../../../../common/js/schema/relationshiptype/RelationshipType";
+import {RelationshipTypeName} from "../../../../../common/js/schema/relationshiptype/RelationshipTypeName";
+import {PageDescriptor} from "../../../../../common/js/content/page/PageDescriptor";
+import {PartDescriptor} from "../../../../../common/js/content/page/region/PartDescriptor";
+import {LayoutDescriptor} from "../../../../../common/js/content/page/region/LayoutDescriptor";
+import {ItemDataGroup} from "../../../../../common/js/app/view/ItemDataGroup";
+import {ApplicationKey} from "../../../../../common/js/application/ApplicationKey";
+import {Application} from "../../../../../common/js/application/Application";
+import {MacroDescriptor} from "../../../../../common/js/macro/MacroDescriptor";
+import {ItemStatisticsPanel} from "../../../../../common/js/app/view/ItemStatisticsPanel";
+import {DivEl} from "../../../../../common/js/dom/DivEl";
+import {ActionMenu} from "../../../../../common/js/ui/menu/ActionMenu";
+import {ViewItem} from "../../../../../common/js/app/view/ViewItem";
+import {StringHelper} from "../../../../../common/js/util/StringHelper";
+import {GetMacrosRequest} from "../../../../../common/js/macro/resource/GetMacrosRequest";
+import {DefaultErrorHandler} from "../../../../../common/js/DefaultErrorHandler";
+import {GetPageDescriptorsByApplicationRequest} from "../../../../../common/js/content/page/GetPageDescriptorsByApplicationRequest";
+import {GetPartDescriptorsByApplicationRequest} from "../../../../../common/js/content/page/region/GetPartDescriptorsByApplicationRequest";
+import {GetLayoutDescriptorsByApplicationRequest} from "../../../../../common/js/content/page/region/GetLayoutDescriptorsByApplicationRequest";
+import {GetContentTypesByApplicationRequest} from "../../../../../common/js/schema/content/GetContentTypesByApplicationRequest";
+import {GetMixinsByApplicationRequest} from "../../../../../common/js/schema/mixin/GetMixinsByApplicationRequest";
+import {GetRelationshipTypesByApplicationRequest} from "../../../../../common/js/schema/relationshiptype/GetRelationshipTypesByApplicationRequest";
+import {AuthApplicationRequest} from "../../../../../common/js/application/AuthApplicationRequest";
+
 import {ApplicationBrowseActions} from "../browse/ApplicationBrowseActions";
 
-import ContentTypeSummary = api.schema.content.ContentTypeSummary;
-import Mixin = api.schema.mixin.Mixin;
-import RelationshipType = api.schema.relationshiptype.RelationshipType;
-import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
-import PageDescriptor = api.content.page.PageDescriptor;
-import PartDescriptor = api.content.page.region.PartDescriptor;
-import LayoutDescriptor = api.content.page.region.LayoutDescriptor;
-import ItemDataGroup = api.app.view.ItemDataGroup;
-import ApplicationKey = api.application.ApplicationKey;
-import Application = api.application.Application;
-import MacroDescriptor = api.macro.MacroDescriptor;
+export class ApplicationItemStatisticsPanel extends ItemStatisticsPanel<Application> {
 
-export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsPanel<api.application.Application> {
-
-    private applicationDataContainer: api.dom.DivEl;
-    private actionMenu: api.ui.menu.ActionMenu;
+    private applicationDataContainer: DivEl;
+    private actionMenu: ActionMenu;
 
     constructor() {
         super("application-item-statistics-panel");
 
         this.actionMenu =
-            new api.ui.menu.ActionMenu("Application actions", ApplicationBrowseActions.get().START_APPLICATION,
+            new ActionMenu("Application actions", ApplicationBrowseActions.get().START_APPLICATION,
                 ApplicationBrowseActions.get().STOP_APPLICATION);
 
         this.appendChild(this.actionMenu);
 
-        this.applicationDataContainer = new api.dom.DivEl("application-data-container");
+        this.applicationDataContainer = new DivEl("application-data-container");
         this.appendChild(this.applicationDataContainer);
     }
 
-    setItem(item: api.app.view.ViewItem<api.application.Application>) {
+    setItem(item: ViewItem<Application>) {
         var currentItem = this.getItem();
 
         if (currentItem && currentItem.equals(item)) {
@@ -50,7 +63,7 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
             this.getHeader().setHeaderSubtitle(currentApplication.getDescription(), "app-description");
         }
 
-        this.actionMenu.setLabel(api.util.StringHelper.capitalize(currentApplication.getState()));
+        this.actionMenu.setLabel(StringHelper.capitalize(currentApplication.getState()));
 
         if (currentApplication.isStarted()) {
             ApplicationBrowseActions.get().START_APPLICATION.setEnabled(false);
@@ -101,9 +114,9 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
     }
 
     private initMacros(applicationKey: ApplicationKey): wemQ.Promise<any> {
-        var macroPromises = [new api.macro.resource.GetMacrosRequest([applicationKey]).sendAndParse()]
+        var macroPromises = [new GetMacrosRequest([applicationKey]).sendAndParse()]
 
-        return wemQ.all(macroPromises).spread((macros: api.macro.MacroDescriptor[])=> {
+        return wemQ.all(macroPromises).spread((macros: MacroDescriptor[])=> {
 
             var macrosGroup = new ItemDataGroup("Macros", "macros");
 
@@ -116,15 +129,15 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
             macrosGroup.addDataArray("Name", macroNames);
 
             return macrosGroup;
-        }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
+        }).catch((reason: any) => DefaultErrorHandler.handle(reason));
     }
 
     private initDescriptors(applicationKey: ApplicationKey): wemQ.Promise<any> {
 
         var descriptorPromises = [
-            new api.content.page.GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse(),
-            new api.content.page.region.GetPartDescriptorsByApplicationRequest(applicationKey).sendAndParse(),
-            new api.content.page.region.GetLayoutDescriptorsByApplicationRequest(applicationKey).sendAndParse()
+            new GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse(),
+            new GetPartDescriptorsByApplicationRequest(applicationKey).sendAndParse(),
+            new GetLayoutDescriptorsByApplicationRequest(applicationKey).sendAndParse()
         ];
 
         return wemQ.all(descriptorPromises).spread(
@@ -145,15 +158,15 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
                 descriptorsGroup.addDataArray("Layout", layoutNames);
 
                 return descriptorsGroup;
-            }).catch((reason: any) => api.DefaultErrorHandler.handle(reason));
+            }).catch((reason: any) => DefaultErrorHandler.handle(reason));
     }
 
-    private initSchemas(applicationKey: ApplicationKey): wemQ.Promise<ItemDataGroup> {
+    private initSchemas(applicationKey: ApplicationKey): wemQ.Promise<any> {
 
         var schemaPromises: wemQ.Promise<any>[] = [
-            new api.schema.content.GetContentTypesByApplicationRequest(applicationKey).sendAndParse(),
-            new api.schema.mixin.GetMixinsByApplicationRequest(applicationKey).sendAndParse(),
-            new api.schema.relationshiptype.GetRelationshipTypesByApplicationRequest(applicationKey).sendAndParse()
+            new GetContentTypesByApplicationRequest(applicationKey).sendAndParse(),
+            new GetMixinsByApplicationRequest(applicationKey).sendAndParse(),
+            new GetRelationshipTypesByApplicationRequest(applicationKey).sendAndParse()
         ];
 
         return wemQ.all(schemaPromises).spread<any>(
@@ -175,11 +188,11 @@ export class ApplicationItemStatisticsPanel extends api.app.view.ItemStatisticsP
 
                 return schemasGroup;
 
-            }).catch((reason: any) => api.DefaultErrorHandler.handle(reason))
+            }).catch((reason: any) => DefaultErrorHandler.handle(reason))
     }
 
     private initProviders(applicationKey: ApplicationKey): wemQ.Promise<ItemDataGroup> {
-        var providersPromises = [new api.application.AuthApplicationRequest(applicationKey).sendAndParse()];
+        var providersPromises = [new AuthApplicationRequest(applicationKey).sendAndParse()];
 
         return wemQ.all(providersPromises).spread(
             (application: Application) => {

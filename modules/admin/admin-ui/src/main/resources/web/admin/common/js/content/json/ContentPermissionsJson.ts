@@ -1,8 +1,7 @@
-module api.content.json {
+import {PermissionsJson} from "./PermissionsJson";
 
-    export interface ContentPermissionsJson extends PermissionsJson {
+export interface ContentPermissionsJson extends PermissionsJson {
 
         contentId: string;
         
     }
-}

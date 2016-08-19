@@ -1,23 +1,30 @@
-module api.form.inputtype.support {
+import {PropertyPath} from "../../../data/PropertyPath";
+import {Property} from "../../../data/Property";
+import {PropertyArray} from "../../../data/PropertyArray";
+import {Value} from "../../../data/Value";
+import {ValueType} from "../../../data/ValueType";
+import {ValueTypes} from "../../../data/ValueTypes";
+import {SelectedOptionEvent} from "../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../ui/FocusSwitchEvent";
+import {DivEl} from "../../../dom/DivEl";
+import {InputTypeView} from "../InputTypeView";
+import {InputValidityChangedEvent} from "../InputValidityChangedEvent";
+import {InputValueChangedEvent} from "../InputValueChangedEvent";
+import {Input} from "../../Input";
+import {InputValidationRecording} from "../InputValidationRecording";
+import {Element} from "../../../dom/Element";
+import {ClassHelper} from "../../../ClassHelper";
+import {ContentSummary} from "../../../content/ContentSummary";
 
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+export class BaseInputTypeManagingAdd<RAW_VALUE_TYPE> extends DivEl implements InputTypeView<RAW_VALUE_TYPE> {
 
-    export class BaseInputTypeManagingAdd<RAW_VALUE_TYPE> extends api.dom.DivEl implements api.form.inputtype.InputTypeView<RAW_VALUE_TYPE> {
+        private inputValidityChangedListeners: {(event: InputValidityChangedEvent) : void}[] = [];
 
-        private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
+        private inputValueChangedListeners: {(event: InputValueChangedEvent): void}[] = [];
 
-        private inputValueChangedListeners: {(event: api.form.inputtype.InputValueChangedEvent): void}[] = [];
+        private input: Input;
 
-        private input: api.form.Input;
-
-        private previousValidationRecording: api.form.inputtype.InputValidationRecording;
+        private previousValidationRecording: InputValidationRecording;
 
         private layoutInProgress: boolean;
 
@@ -48,7 +55,7 @@ module api.form.inputtype.support {
             }
         }
 
-        protected getValueFromPropertyArray(propertyArray: api.data.PropertyArray): string {
+        protected getValueFromPropertyArray(propertyArray: PropertyArray): string {
             return propertyArray.getProperties().map((property) => {
                 if (property.hasNonNullValue()) {
                     return property.getString();
@@ -60,7 +67,7 @@ module api.form.inputtype.support {
 
         }
 
-        getElement(): api.dom.Element {
+        getElement(): Element {
             return this;
         }
 
@@ -69,20 +76,20 @@ module api.form.inputtype.support {
         }
 
         getValueType(): ValueType {
-            throw new Error("Must be implemented by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be implemented by inheritor: " + ClassHelper.getClassName(this));
         }
 
         /**
          * Must be overridden by inheritors.
          */
         newInitialValue(): Value {
-            throw new Error("Must be overridden by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be overridden by inheritor: " + ClassHelper.getClassName(this));
         }
 
         /**
          * Must be resolved by inheritors.
          */
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (BaseInputTypeManagingAdd.debug) {
                 console.log('BaseInputTypeManagingAdd.layout', input, propertyArray);
             }
@@ -157,9 +164,9 @@ module api.form.inputtype.support {
         }
 
         validate(silent: boolean = true,
-                 rec: api.form.inputtype.InputValidationRecording = null): api.form.inputtype.InputValidationRecording {
+                 rec: InputValidationRecording = null): InputValidationRecording {
 
-            var recording = rec || new api.form.inputtype.InputValidationRecording();
+            var recording = rec || new InputValidationRecording();
 
             if (this.layoutInProgress) {
                 this.previousValidationRecording = recording;
@@ -177,42 +184,42 @@ module api.form.inputtype.support {
             }
 
             if (!silent && recording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new api.form.inputtype.InputValidityChangedEvent(recording, this.input.getName()));
+                this.notifyValidityChanged(new InputValidityChangedEvent(recording, this.input.getName()));
             }
 
             this.previousValidationRecording = recording;
             return recording;
         }
 
-        onValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
+        onValidityChanged(listener: (event: InputValidityChangedEvent)=>void) {
             this.inputValidityChangedListeners.push(listener);
         }
 
-        unValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
-            this.inputValidityChangedListeners.filter((currentListener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
+        unValidityChanged(listener: (event: InputValidityChangedEvent)=>void) {
+            this.inputValidityChangedListeners.filter((currentListener: (event: InputValidityChangedEvent)=>void) => {
                 return listener == currentListener;
             });
         }
 
-        notifyValidityChanged(event: api.form.inputtype.InputValidityChangedEvent) {
+        notifyValidityChanged(event: InputValidityChangedEvent) {
 
-            this.inputValidityChangedListeners.forEach((listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
+            this.inputValidityChangedListeners.forEach((listener: (event: InputValidityChangedEvent)=>void) => {
                 listener(event);
             });
         }
 
-        onValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
+        onValueChanged(listener: (event: InputValueChangedEvent) => void) {
             this.inputValueChangedListeners.push(listener);
         }
 
-        unValueChanged(listener: (event: api.form.inputtype.InputValueChangedEvent) => void) {
+        unValueChanged(listener: (event: InputValueChangedEvent) => void) {
             this.inputValueChangedListeners = this.inputValueChangedListeners.filter((curr) => {
                 return curr !== listener;
             })
         }
 
-        protected notifyValueChanged(event: api.form.inputtype.InputValueChangedEvent) {
-            this.inputValueChangedListeners.forEach((listener: (event: api.form.inputtype.InputValueChangedEvent)=>void) => {
+        protected notifyValueChanged(event: InputValueChangedEvent) {
+            this.inputValueChangedListeners.forEach((listener: (event: InputValueChangedEvent)=>void) => {
                 listener(event);
             });
         }
@@ -221,23 +228,23 @@ module api.form.inputtype.support {
          * Must be overridden by inheritors.
          */
         giveFocus(): boolean {
-            throw new Error("Must be overridden by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be overridden by inheritor: " + ClassHelper.getClassName(this));
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(listener: (content: ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(listener: (content: ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 
-        protected getInput(): api.form.Input {
+        protected getInput(): Input {
             return this.input;
         }
 
         protected getNumberOfValids(): number {
-            throw new Error("Must be overridden by inheritor: " + api.ClassHelper.getClassName(this));
+            throw new Error("Must be overridden by inheritor: " + ClassHelper.getClassName(this));
         }
 
         protected isLayoutInProgress(): boolean {
@@ -252,4 +259,3 @@ module api.form.inputtype.support {
             return this.propertyArray;
         }
     }
-}

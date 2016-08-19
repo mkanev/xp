@@ -1,6 +1,11 @@
-module api.app {
+import {DivEl} from "../dom/DivEl";
+import {ImgEl} from "../dom/ImgEl";
+import {NamesView} from "./NamesView";
+import {SpanEl} from "../dom/SpanEl";
+import {Element} from "../dom/Element";
+import {NamesAndIconViewSize} from "./NamesAndIconViewSize";
 
-    export class NamesAndIconViewBuilder {
+export class NamesAndIconViewBuilder {
 
         size: NamesAndIconViewSize;
 
@@ -29,17 +34,17 @@ module api.app {
         }
     }
 
-    export class NamesAndIconView extends api.dom.DivEl {
+    export class NamesAndIconView extends DivEl {
 
-        private wrapperDivEl: api.dom.DivEl;
+        private wrapperDivEl: DivEl;
 
-        private iconImageEl: api.dom.ImgEl;
+        private iconImageEl: ImgEl;
 
-        private iconDivEl: api.dom.DivEl;
+        private iconDivEl: DivEl;
 
-        private namesView: api.app.NamesView;
+        private namesView: NamesView;
 
-        private iconLabelEl: api.dom.SpanEl;
+        private iconLabelEl: SpanEl;
 
         constructor(builder: NamesAndIconViewBuilder) {
             super("names-and-icon-view");
@@ -49,21 +54,21 @@ module api.app {
             }
 
             if (builder.appendIcon) {
-                this.wrapperDivEl = new api.dom.DivEl("wrapper");
+                this.wrapperDivEl = new DivEl("wrapper");
                 this.appendChild(this.wrapperDivEl);
 
-                this.iconImageEl = new api.dom.ImgEl(null, "font-icon-default");
+                this.iconImageEl = new ImgEl(null, "font-icon-default");
                 this.wrapperDivEl.appendChild(this.iconImageEl);
 
-                this.iconDivEl = new api.dom.DivEl("font-icon-default");
+                this.iconDivEl = new DivEl("font-icon-default");
                 this.wrapperDivEl.appendChild(this.iconDivEl);
                 this.iconDivEl.hide();
             }
 
-            this.namesView = new api.app.NamesView(builder.addTitleAttribute);
+            this.namesView = new NamesView(builder.addTitleAttribute);
             this.appendChild(this.namesView);
 
-            this.iconLabelEl = new api.dom.SpanEl("icon-label");
+            this.iconLabelEl = new SpanEl("icon-label");
             this.iconLabelEl.hide();
             this.appendChild(this.iconLabelEl);
         }
@@ -78,7 +83,7 @@ module api.app {
             return this;
         }
 
-        setSubNameElements(elements: api.dom.Element[]): NamesAndIconView {
+        setSubNameElements(elements: Element[]): NamesAndIconView {
             this.namesView.setSubNameElements(elements);
             return this;
         }
@@ -107,21 +112,21 @@ module api.app {
             return this;
         }
 
-        getNamesView(): api.app.NamesView {
+        getNamesView(): NamesView {
             return this.namesView;
         }
 
         /**
          * protected, to be used by inheritors
          */
-        getIconImageEl(): api.dom.ImgEl {
+        getIconImageEl(): ImgEl {
             return this.iconImageEl;
         }
 
         /**
          * protected, to be used by inheritors
          */
-        getWrapperDivEl(): api.dom.DivEl {
+        getWrapperDivEl(): DivEl {
             return this.wrapperDivEl;
         }
 
@@ -134,4 +139,3 @@ module api.app {
         }
 
     }
-}

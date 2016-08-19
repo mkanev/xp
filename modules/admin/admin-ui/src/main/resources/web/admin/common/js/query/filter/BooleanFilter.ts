@@ -1,43 +1,44 @@
-module api.query.filter {
+import {Filter} from "./Filter";
+import {FilterTypeWrapperJson} from "./FilterTypeWrapperJson";
+import {BooleanFilterJson} from "./BooleanFilterJson";
+
+export class BooleanFilter extends Filter {
+
+        private must: Filter[] = [];
+        private mustNot: Filter[] = [];
+        private should: Filter[] = [];
 
 
-    export class BooleanFilter extends Filter {
-
-        private must: api.query.filter.Filter[] = [];
-        private mustNot: api.query.filter.Filter[] = [];
-        private should: api.query.filter.Filter[] = [];
-
-
-        public addMust(must: api.query.filter.Filter): void {
+        public addMust(must: Filter): void {
             this.must.push(must);
         }
 
-        public addMustNot(mustNot: api.query.filter.Filter): void {
+        public addMustNot(mustNot: Filter): void {
             this.mustNot.push(mustNot);
         }
 
-        public addShould(should: api.query.filter.Filter): void {
+        public addShould(should: Filter): void {
             this.should.push(should);
         }
 
-        toJson(): api.query.filter.FilterTypeWrapperJson {
+        toJson(): FilterTypeWrapperJson {
 
-            var json: api.query.filter.BooleanFilterJson = {
+            var json: BooleanFilterJson = {
                 must: this.toJsonWrapperElements(this.must),
                 mustNot: this.toJsonWrapperElements(this.mustNot),
                 should: this.toJsonWrapperElements(this.should)
             }
 
-            return <api.query.filter.FilterTypeWrapperJson> {
+            return <FilterTypeWrapperJson> {
                 BooleanFilter: json
             }
         }
 
-        toJsonWrapperElements(filters: api.query.filter.Filter[]): api.query.filter.FilterTypeWrapperJson[] {
+        toJsonWrapperElements(filters: Filter[]): FilterTypeWrapperJson[] {
 
-            var wrapperJsons: api.query.filter.FilterTypeWrapperJson[] = [];
+            var wrapperJsons: FilterTypeWrapperJson[] = [];
 
-            filters.forEach((filter: api.query.filter.Filter)=> {
+            filters.forEach((filter: Filter)=> {
                 var filterTypeWrapperJson = filter.toJson();
                 wrapperJsons.push(filterTypeWrapperJson);
             });
@@ -47,4 +48,3 @@ module api.query.filter {
 
     }
 
-}

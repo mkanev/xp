@@ -1,6 +1,12 @@
-module api.application {
+import {Cache} from "../cache/Cache";
+import {ClassHelper} from "../ClassHelper";
+import {assertNotNull} from "../util/Assert";
+import {ApplicationCaches} from "./ApplicationCaches";
+import {ApplicationEventType} from "./ApplicationEvent";
+import {ApplicationEvent} from "./ApplicationEvent";
+import {ApplicationKey} from "./ApplicationKey";
 
-    export class ApplicationBasedCache<CACHE extends api.cache.Cache<any,any>,T,TKEY> {
+export class ApplicationBasedCache<CACHE extends Cache<any,any>,T,TKEY> {
 
         private applicationCaches: ApplicationCaches<CACHE>;
 
@@ -11,13 +17,13 @@ module api.application {
             ApplicationEvent.on((event: ApplicationEvent) => {
 
                 if (ApplicationEventType.STARTED == event.getEventType()) {
-                    console.log(api.ClassHelper.getClassName(this) +
+                    console.log(ClassHelper.getClassName(this) +
                                 " received ApplicationEvent STARTED, calling - loadByApplication.. " +
                                 event.getApplicationKey().toString());
                     this.loadByApplication(event.getApplicationKey());
                 }
                 else if (ApplicationEventType.STOPPED == event.getEventType()) {
-                    console.log(api.ClassHelper.getClassName(this) +
+                    console.log(ClassHelper.getClassName(this) +
                                 " received ApplicationEvent STOPPED - calling deleteByApplicationKey.. " +
                                 event.getApplicationKey().toString());
                     this.deleteByApplicationKey(event.getApplicationKey())
@@ -30,7 +36,7 @@ module api.application {
         }
 
         getByApplication(applicationKey: ApplicationKey): T[] {
-            api.util.assertNotNull(applicationKey, "applicationKey not given");
+            assertNotNull(applicationKey, "applicationKey not given");
             var cache = this.applicationCaches.getByKey(applicationKey);
             if (!cache) {
                 return null;
@@ -39,7 +45,7 @@ module api.application {
         }
 
         getByKey(key: TKEY, applicationKey: ApplicationKey): T {
-            api.util.assertNotNull(key, "key not given");
+            assertNotNull(key, "key not given");
 
             var cache = this.applicationCaches.getByKey(applicationKey);
             if (!cache) {
@@ -49,7 +55,7 @@ module api.application {
         }
 
         put(object: T, applicationKey?: ApplicationKey) {
-            api.util.assertNotNull(object, "a object to cache must be given");
+            assertNotNull(object, "a object to cache must be given");
 
             var cache = this.applicationCaches.getByKey(applicationKey);
             if (!cache) {
@@ -67,4 +73,3 @@ module api.application {
             this.applicationCaches.removeByKey(applicationKey);
         }
     }
-}

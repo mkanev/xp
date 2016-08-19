@@ -1,12 +1,13 @@
-module api.ui.security.acl {
+import {EffectivePermissionAccessJson} from "../../../content/json/EffectivePermissionAccessJson";
+import {EffectivePermissionMember} from "./EffectivePermissionMember";
 
-    export class EffectivePermissionAccess {
+export class EffectivePermissionAccess {
 
         private count: number;
 
         private users: EffectivePermissionMember[];
 
-        static fromJson(json: api.content.json.EffectivePermissionAccessJson) {
+        static fromJson(json: EffectivePermissionAccessJson) {
 
             var effectivePermissionAccess = new EffectivePermissionAccess();
 
@@ -26,4 +27,3 @@ module api.ui.security.acl {
         }
     }
 
-}

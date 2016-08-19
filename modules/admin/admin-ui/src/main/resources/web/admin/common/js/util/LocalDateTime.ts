@@ -1,6 +1,9 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {DateHelper} from "./DateHelper";
+import {StringHelper} from "./StringHelper";
 
-    export class LocalDateTime implements api.Equitable {
+export class LocalDateTime implements Equitable {
 
         private static DATE_TIME_SEPARATOR: string = "T";
 
@@ -78,14 +81,14 @@ module api.util {
             return this.dateToString() + LocalDateTime.DATE_TIME_SEPARATOR + this.timeToString();
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, LocalDateTime)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, LocalDateTime)) {
                 return false;
             }
 
             var other = <LocalDateTime>o;
 
-            if (!api.ObjectHelper.stringEquals(this.toString(), other.toString())) {
+            if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
                 return false;
             }
 
@@ -212,4 +215,3 @@ module api.util {
             return new LocalDateTime(this);
         }
     }
-}

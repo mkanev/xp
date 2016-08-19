@@ -1,6 +1,6 @@
-module api.content.json {
 
-    export interface ContentsExistJson {
+
+export interface ContentsExistJson {
 
         contentsExistJson: ContentExistJson[]
     }
@@ -11,4 +11,3 @@ module api.content.json {
 
         exists: boolean;
     }
-}

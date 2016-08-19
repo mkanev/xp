@@ -1,6 +1,14 @@
-module api.notify {
+import {Body} from "../dom/Body";
+import {Message} from "./Message";
+import {showSuccess} from "./MessageBus";
+import {showFeedback} from "./MessageBus";
+import {showError} from "./MessageBus";
+import {showWarning} from "./MessageBus";
+import {NotificationContainer} from "./NotificationContainer";
+import {NotificationMessage} from "./NotificationMessage";
+import {NotifyOpts} from "./NotifyOpts";
 
-    export class NotifyManager {
+export class NotifyManager {
 
         private static instance: NotifyManager;
 
@@ -18,7 +26,7 @@ module api.notify {
 
         constructor() {
             this.el = new NotificationContainer();
-            api.dom.Body.get().appendChild(this.el);
+            Body.get().appendChild(this.el);
 
             this.el.getEl().setBottomPx(0);
         }
@@ -164,4 +172,3 @@ module api.notify {
         }
     }
 
-}

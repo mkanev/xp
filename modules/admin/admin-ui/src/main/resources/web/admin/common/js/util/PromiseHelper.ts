@@ -1,6 +1,6 @@
-module api.util {
 
-    export class PromiseHelper {
+
+export class PromiseHelper {
 
         static newResolvedVoidPromise(): wemQ.Promise<void> {
             var deferred = wemQ.defer<void>();
@@ -8,4 +8,3 @@ module api.util {
             return deferred.promise;
         }
     }
-}

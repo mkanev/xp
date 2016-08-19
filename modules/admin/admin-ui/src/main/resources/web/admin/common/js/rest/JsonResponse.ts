@@ -1,6 +1,6 @@
-module api.rest {
+import {Response} from "./Response";
 
-    export class JsonResponse<RAW_JSON_TYPE> extends api.rest.Response {
+export class JsonResponse<RAW_JSON_TYPE> extends Response {
 
         private json: any;
 
@@ -36,4 +36,3 @@ module api.rest {
             }
         }
     }
-}

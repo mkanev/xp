@@ -1,8 +1,9 @@
-module api.security.event {
+import {NodeServerChangeType} from "../../event/NodeServerChange";
+import {NodeServerEvent} from "../../event/NodeServerEvent";
+import {NodeEventJson} from "../../event/NodeServerEvent";
+import {PrincipalServerChange} from "./PrincipalServerChange";
 
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-
-    export class PrincipalServerEvent extends api.event.NodeServerEvent {
+export class PrincipalServerEvent extends NodeServerEvent {
 
         constructor(change: PrincipalServerChange) {
             super(change);
@@ -17,13 +18,12 @@ module api.security.event {
         }
 
 
-        static is(eventJson: api.event.NodeEventJson): boolean {
+        static is(eventJson: NodeEventJson): boolean {
             return eventJson.data.nodes.some(node => node.path.indexOf("/identity") == 0);
         }
 
-        static fromJson(nodeEventJson: api.event.NodeEventJson): PrincipalServerEvent {
+        static fromJson(nodeEventJson: NodeEventJson): PrincipalServerEvent {
             var change = PrincipalServerChange.fromJson(nodeEventJson);
             return new PrincipalServerEvent(change);
         }
     }
-}

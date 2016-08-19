@@ -1,9 +1,14 @@
-module api.security.acl {
+import {ArrayHelper} from "../../util/ArrayHelper";
+import {Principal} from "../Principal";
+import {Equitable} from "../../Equitable";
+import {Cloneable} from "../../Cloneable";
+import {assertNotNull} from "../../util/Assert";
+import {ObjectHelper} from "../../ObjectHelper";
+import {AccessControlEntryJson} from "./AccessControlEntryJson";
+import {PrincipalKey} from "../PrincipalKey";
+import {Permission} from "./Permission";
 
-    import ArrayHelper = api.util.ArrayHelper;
-    import Principal = api.security.Principal;
-
-    export class AccessControlEntry implements api.Equitable, api.Cloneable {
+export class AccessControlEntry implements Equitable, Cloneable {
 
         private static ALL_PERMISSIONS: Permission[] = [Permission.READ, Permission.CREATE, Permission.MODIFY, Permission.DELETE,
             Permission.PUBLISH,
@@ -17,7 +22,7 @@ module api.security.acl {
         private deniedPermissions: Permission[];
 
         constructor(principal: Principal) {
-            this.principal = api.util.assertNotNull(principal);
+            this.principal = assertNotNull(principal);
             this.allowedPermissions = [];
             this.deniedPermissions = [];
         }
@@ -84,23 +89,23 @@ module api.security.acl {
             return this;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, AccessControlEntry)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, AccessControlEntry)) {
                 return false;
             }
 
             var other = <AccessControlEntry>o;
 
-            if (!api.ObjectHelper.equals(this.getPrincipalKey(), other.getPrincipalKey())) {
+            if (!ObjectHelper.equals(this.getPrincipalKey(), other.getPrincipalKey())) {
                 return false;
             }
 
-            if (!api.ObjectHelper.anyArrayEquals(this.allowedPermissions, other.allowedPermissions)) {
+            if (!ObjectHelper.anyArrayEquals(this.allowedPermissions, other.allowedPermissions)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.anyArrayEquals(this.deniedPermissions, other.deniedPermissions)) {
+            if (!ObjectHelper.anyArrayEquals(this.deniedPermissions, other.deniedPermissions)) {
                 return false;
             }
             return true;
@@ -127,7 +132,7 @@ module api.security.acl {
             return ace;
         }
 
-        toJson(): api.security.acl.AccessControlEntryJson {
+        toJson(): AccessControlEntryJson {
             return {
                 "principal": this.principal.toJson(),
                 "allow": this.allowedPermissions.map((perm) => Permission[perm]),
@@ -135,7 +140,7 @@ module api.security.acl {
             };
         }
 
-        static fromJson(json: api.security.acl.AccessControlEntryJson): AccessControlEntry {
+        static fromJson(json: AccessControlEntryJson): AccessControlEntry {
             var ace = new AccessControlEntry(Principal.fromJson(json.principal));
             var allow: Permission[] = json.allow.map((permStr) => Permission[permStr.toUpperCase()]);
             var deny: Permission[] = json.deny.map((permStr) => Permission[permStr.toUpperCase()]);
@@ -145,4 +150,3 @@ module api.security.acl {
         }
     }
 
-}

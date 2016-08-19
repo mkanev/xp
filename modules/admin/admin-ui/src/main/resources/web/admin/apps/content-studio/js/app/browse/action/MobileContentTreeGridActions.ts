@@ -1,4 +1,20 @@
-import "../../../api.ts";
+import {Action} from "../../../../../../common/js/ui/Action";
+import {TreeGridActions} from "../../../../../../common/js/ui/treegrid/actions/TreeGridActions";
+import {BrowseItem} from "../../../../../../common/js/app/browse/BrowseItem";
+import {ContentSummary} from "../../../../../../common/js/content/ContentSummary";
+import {ContentSummaryAndCompareStatus} from "../../../../../../common/js/content/ContentSummaryAndCompareStatus";
+import {Content} from "../../../../../../common/js/content/Content";
+import {AccessControlEntry} from "../../../../../../common/js/security/acl/AccessControlEntry";
+import {AccessControlList} from "../../../../../../common/js/security/acl/AccessControlList";
+import {GetContentTypeByNameRequest} from "../../../../../../common/js/schema/content/GetContentTypeByNameRequest";
+import {ContentType} from "../../../../../../common/js/schema/content/ContentType";
+import {IsAuthenticatedRequest} from "../../../../../../common/js/security/auth/IsAuthenticatedRequest";
+import {LoginResult} from "../../../../../../common/js/security/auth/LoginResult";
+import {GetContentPermissionsByIdRequest} from "../../../../../../common/js/content/resource/GetContentPermissionsByIdRequest";
+import {Permission} from "../../../../../../common/js/security/acl/Permission";
+import {PrincipalKey} from "../../../../../../common/js/security/PrincipalKey";
+import {RoleKeys} from "../../../../../../common/js/security/RoleKeys";
+
 import {ContentTreeGrid} from "../ContentTreeGrid";
 import {ShowNewContentDialogAction} from "./ShowNewContentDialogAction";
 import {EditContentAction} from "./EditContentAction";
@@ -7,15 +23,6 @@ import {DuplicateContentAction} from "./DuplicateContentAction";
 import {MoveContentAction} from "./MoveContentAction";
 import {SortContentAction} from "./SortContentAction";
 import {PublishContentAction} from "./PublishContentAction";
-
-import Action = api.ui.Action;
-import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-import BrowseItem = api.app.browse.BrowseItem;
-import ContentSummary = api.content.ContentSummary;
-import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
-import Content = api.content.Content;
-import AccessControlEntry = api.security.acl.AccessControlEntry;
-import AccessControlList = api.security.acl.AccessControlList;
 
 export class MobileContentTreeGridActions implements TreeGridActions<ContentSummaryAndCompareStatus> {
 
@@ -27,7 +34,7 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
     public SORT_CONTENT: Action;
     public PUBLISH_CONTENT: Action;
 
-    private actions: api.ui.Action[] = [];
+    private actions: Action[] = [];
 
     constructor(grid: ContentTreeGrid) {
 
@@ -49,7 +56,7 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
 
     }
 
-    getAllActions(): api.ui.Action[] {
+    getAllActions(): Action[] {
         return this.actions;
     }
 
@@ -80,16 +87,16 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
             this.PUBLISH_CONTENT.setEnabled(true);
             var parallelPromises = [
                 // check if selected content allows children and if user has create permission for it
-                new api.schema.content.GetContentTypeByNameRequest(contentSummary.getType()).sendAndParse().then(
-                    (contentType: api.schema.content.ContentType) => {
+                new GetContentTypeByNameRequest(contentSummary.getType()).sendAndParse().then(
+                    (contentType: ContentType) => {
                         var allowsChildren = (contentType && contentType.isAllowChildContent());
                         this.SORT_CONTENT.setEnabled(allowsChildren);
                         var hasCreatePermission = false;
-                        new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
-                            new api.content.resource.GetContentPermissionsByIdRequest(contentSummary.getContentId()).sendAndParse().then(
+                        new IsAuthenticatedRequest().sendAndParse().then((loginResult: LoginResult) => {
+                            new GetContentPermissionsByIdRequest(contentSummary.getContentId()).sendAndParse().then(
                                 (accessControlList: AccessControlList) => {
                                     hasCreatePermission =
-                                        this.hasPermission(api.security.acl.Permission.CREATE, loginResult, accessControlList);
+                                        this.hasPermission(Permission.CREATE, loginResult, accessControlList);
                                     this.SHOW_NEW_CONTENT_DIALOG_ACTION.setEnabled(allowsChildren && hasCreatePermission);
                                 })
                         })
@@ -113,9 +120,9 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
         return deferred.promise;
     }
 
-    private anyEditable(contentSummaries: api.content.ContentSummary[]): boolean {
+    private anyEditable(contentSummaries: ContentSummary[]): boolean {
         for (var i = 0; i < contentSummaries.length; i++) {
-            var content: api.content.ContentSummary = contentSummaries[i];
+            var content: ContentSummary = contentSummaries[i];
             if (!!content && content.isEditable()) {
                 return true;
             }
@@ -123,9 +130,9 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
         return false;
     }
 
-    private anyDeletable(contentSummaries: api.content.ContentSummary[]): boolean {
+    private anyDeletable(contentSummaries: ContentSummary[]): boolean {
         for (var i = 0; i < contentSummaries.length; i++) {
-            var content: api.content.ContentSummary = contentSummaries[i];
+            var content: ContentSummary = contentSummaries[i];
             if (!!content && content.isDeletable()) {
                 return true;
             }
@@ -133,23 +140,23 @@ export class MobileContentTreeGridActions implements TreeGridActions<ContentSumm
         return false;
     }
 
-    private isPrincipalPresent(principalKey: api.security.PrincipalKey,
+    private isPrincipalPresent(principalKey: PrincipalKey,
                                accessEntriesToCheck: AccessControlEntry[]): boolean {
         return accessEntriesToCheck.some((entry: AccessControlEntry) => {
             return entry.getPrincipalKey().equals(principalKey);
         });
     }
 
-    private hasPermission(permission: api.security.acl.Permission,
-                          loginResult: api.security.auth.LoginResult,
+    private hasPermission(permission: Permission,
+                          loginResult: LoginResult,
                           accessControlList: AccessControlList): boolean {
         var entries = accessControlList.getEntries();
         var accessEntriesWithGivenPermissions: AccessControlEntry[] = entries.filter((item: AccessControlEntry) => {
             return item.isAllowed(permission);
         });
 
-        return loginResult.getPrincipals().some((principalKey: api.security.PrincipalKey) => {
-            return api.security.RoleKeys.ADMIN.equals(principalKey) ||
+        return loginResult.getPrincipals().some((principalKey: PrincipalKey) => {
+            return RoleKeys.ADMIN.equals(principalKey) ||
                    this.isPrincipalPresent(principalKey, accessEntriesWithGivenPermissions);
         });
     }

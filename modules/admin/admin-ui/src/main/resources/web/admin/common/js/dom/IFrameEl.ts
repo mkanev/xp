@@ -1,8 +1,8 @@
-module api.dom {
+import {UriHelper} from "../util/UriHelper";
+import {Element} from "./Element";
+import {NewElementBuilder} from "./Element";
 
-    import UriHelper = api.util.UriHelper
-
-    export class IFrameEl extends api.dom.Element {
+export class IFrameEl extends Element {
 
         private loaded: boolean = false;
 
@@ -14,7 +14,7 @@ module api.dom {
             this.onLoaded((event: UIEvent) => this.loaded = true);
         }
 
-        public setSrc(src: string): api.dom.IFrameEl {
+        public setSrc(src: string): IFrameEl {
             this.getEl().setAttribute("src", src);
             return this;
         }
@@ -40,4 +40,3 @@ module api.dom {
             this.getEl().removeEventListener("load", listener);
         }
     }
-}

@@ -1,6 +1,11 @@
-module api.security {
+import {Path} from "../rest/Path";
+import {JsonResponse} from "../rest/JsonResponse";
+import {PrincipalKey} from "./PrincipalKey";
+import {Role} from "./Role";
+import {RoleJson} from "./RoleJson";
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
 
-    export class UpdateRoleRequest extends SecurityResourceRequest<RoleJson, Role> {
+export class UpdateRoleRequest extends SecurityResourceRequest<RoleJson, Role> {
 
         private key: PrincipalKey;
         private displayName: string;
@@ -48,16 +53,15 @@ module api.security {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals', 'updateRole');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'principals', 'updateRole');
         }
 
         sendAndParse(): wemQ.Promise<Role> {
 
-            return this.send().then((response: api.rest.JsonResponse<RoleJson>) => {
+            return this.send().then((response: JsonResponse<RoleJson>) => {
                 return Role.fromJson(response.getResult());
             });
         }
 
     }
-}

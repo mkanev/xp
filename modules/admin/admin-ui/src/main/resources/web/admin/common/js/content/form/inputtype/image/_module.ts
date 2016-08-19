@@ -1,9 +1,0 @@
-///<reference path='ImageSelectorSelectedOptionView.ts' />
-///<reference path='ImageSelectorSelectedOptionsView.ts' />
-///<reference path='ImageSelector.ts' />
-///<reference path='UploadDialogCancelAction.ts' />
-///<reference path='SelectionToolbar.ts' />
-///<reference path='FocusChangedEvent.ts' />
-///<reference path='ImageSelectorDisplayValue.ts' />
-///<reference path='ImageSelectorViewer.ts' />
-///<reference path='ImageContentComboBox.ts' />

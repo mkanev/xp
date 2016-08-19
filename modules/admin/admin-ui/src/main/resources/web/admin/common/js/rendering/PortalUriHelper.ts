@@ -1,22 +1,26 @@
-module api.rendering {
+import {Branch} from "../content/Branch";
+import {ContentPath} from "../content/ContentPath";
+import {UriHelper} from "../util/UriHelper";
+import {ComponentPath} from "../content/page/region/ComponentPath";
+import {RenderingMode} from "./RenderingMode";
 
-    export class PortalUriHelper {
+export class PortalUriHelper {
 
-        public static getPortalUri(path: string, renderingMode: RenderingMode, workspace: api.content.Branch): string {
-            var elementDivider = api.content.ContentPath.ELEMENT_DIVIDER;
-            path = api.util.UriHelper.relativePath(path);
+        public static getPortalUri(path: string, renderingMode: RenderingMode, workspace: Branch): string {
+            var elementDivider = ContentPath.ELEMENT_DIVIDER;
+            path = UriHelper.relativePath(path);
 
-            var workspaceName: string = api.content.Branch[workspace].toLowerCase();
+            var workspaceName: string = Branch[workspace].toLowerCase();
             var renderingModeName: string = RenderingMode[renderingMode].toLowerCase();
 
-            return api.util.UriHelper.getPortalUri(renderingModeName + elementDivider + workspaceName + elementDivider + path);
+            return UriHelper.getPortalUri(renderingModeName + elementDivider + workspaceName + elementDivider + path);
         }
 
-        public static getPathFromPortalPreviewUri(portalUri: string, renderingMode: RenderingMode, workspace: api.content.Branch): string {
-            var workspaceName: string = api.content.Branch[workspace].toLowerCase();
+        public static getPathFromPortalPreviewUri(portalUri: string, renderingMode: RenderingMode, workspace: Branch): string {
+            var workspaceName: string = Branch[workspace].toLowerCase();
             var renderingModeName: string = RenderingMode[renderingMode].toLowerCase();
 
-            var elementDivider = api.content.ContentPath.ELEMENT_DIVIDER;
+            var elementDivider = ContentPath.ELEMENT_DIVIDER;
             var searchEntry = renderingModeName + elementDivider + workspaceName;
 
             var index = portalUri.indexOf(searchEntry);
@@ -27,17 +31,16 @@ module api.rendering {
             }
         }
 
-        public static getComponentUri(contentId: string, componentPath: api.content.page.region.ComponentPath, renderingMode: RenderingMode,
-                                      workspace: api.content.Branch): string {
-            var elementDivider = api.content.ContentPath.ELEMENT_DIVIDER,
+        public static getComponentUri(contentId: string, componentPath: ComponentPath, renderingMode: RenderingMode,
+                                      workspace: Branch): string {
+            var elementDivider = ContentPath.ELEMENT_DIVIDER,
                 componentPart = elementDivider + "_" + elementDivider + "component" + elementDivider;
             var componentPathStr = componentPath ? componentPath.toString() : "";
             return PortalUriHelper.getPortalUri(contentId + componentPart + componentPathStr, renderingMode, workspace);
         }
 
         public static getAdminUri(baseUrl: string, contentPath: string): string {
-            var adminUrl = PortalUriHelper.getPortalUri(contentPath, RenderingMode.ADMIN, api.content.Branch.DRAFT);
-            return adminUrl + (adminUrl.charAt(adminUrl.length - 1) == '/' ? "" : api.content.ContentPath.ELEMENT_DIVIDER) + baseUrl;
+            var adminUrl = PortalUriHelper.getPortalUri(contentPath, RenderingMode.ADMIN, Branch.DRAFT);
+            return adminUrl + (adminUrl.charAt(adminUrl.length - 1) == '/' ? "" : ContentPath.ELEMENT_DIVIDER) + baseUrl;
         }
     }
-}

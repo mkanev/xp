@@ -1,17 +1,25 @@
-module api.security {
+import {SecurityResourceRequest} from "./SecurityResourceRequest";
+import {FindPrincipalsRequest} from "./FindPrincipalsRequest";
+import {JsonResponse} from "../rest/JsonResponse";
+import {FindPrincipalsResultJson} from "./FindPrincipalsResultJson";
+import {Principal} from "./Principal";
+import {PrincipalJson} from "./PrincipalJson";
+import {PrincipalListJson} from "./PrincipalListJson";
+import {PrincipalType} from "./PrincipalType";
+import {UserStoreKey} from "./UserStoreKey";
 
-    export class FindPrincipalListRequest extends api.security.SecurityResourceRequest<PrincipalListJson, Principal[]> {
+export class FindPrincipalListRequest extends SecurityResourceRequest<PrincipalListJson, Principal[]> {
 
         private request: FindPrincipalsRequest;
 
         constructor() {
             super();
-            this.request = new api.security.FindPrincipalsRequest();
+            this.request = new FindPrincipalsRequest();
         }
 
         sendAndParse(): wemQ.Promise<Principal[]> {
             return this.request.send().
-                then((response: api.rest.JsonResponse<FindPrincipalsResultJson>) => {
+                then((response: JsonResponse<FindPrincipalsResultJson>) => {
                     var principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
                         return this.fromJsonToPrincipal(principalJson);
                     });
@@ -41,4 +49,3 @@ module api.security {
 
 
     }
-}

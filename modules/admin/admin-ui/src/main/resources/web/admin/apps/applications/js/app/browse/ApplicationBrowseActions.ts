@@ -1,8 +1,8 @@
-import "../../api.ts";
+import {BrowseItem} from "../../../../../common/js/app/browse/BrowseItem";
+import {Application} from "../../../../../common/js/application/Application";
+import {TreeGridActions} from "../../../../../common/js/ui/treegrid/actions/TreeGridActions";
+import {Action} from "../../../../../common/js/ui/Action";
 
-import BrowseItem = api.app.browse.BrowseItem;
-import Application = api.application.Application;
-import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
 import {ApplicationTreeGrid} from "./ApplicationTreeGrid";
 import {StartApplicationAction} from "./StartApplicationAction";
 import {StopApplicationAction} from "./StopApplicationAction";
@@ -11,12 +11,12 @@ import {UninstallApplicationAction} from "./UninstallApplicationAction";
 
 export class ApplicationBrowseActions implements TreeGridActions<Application> {
 
-    public START_APPLICATION: api.ui.Action;
-    public STOP_APPLICATION: api.ui.Action;
-    public INSTALL_APPLICATION: api.ui.Action;
-    public UNINSTALL_APPLICATION: api.ui.Action;
+    public START_APPLICATION: Action;
+    public STOP_APPLICATION: Action;
+    public INSTALL_APPLICATION: Action;
+    public UNINSTALL_APPLICATION: Action;
 
-    private allActions: api.ui.Action[] = [];
+    private allActions: Action[] = [];
 
     private static INSTANCE: ApplicationBrowseActions;
 
@@ -43,7 +43,7 @@ export class ApplicationBrowseActions implements TreeGridActions<Application> {
         ApplicationBrowseActions.INSTANCE = this;
     }
 
-    getAllActions(): api.ui.Action[] {
+    getAllActions(): Action[] {
         return this.allActions;
     }
 

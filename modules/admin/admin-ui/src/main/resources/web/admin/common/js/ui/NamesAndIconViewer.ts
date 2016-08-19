@@ -1,21 +1,27 @@
-module api.ui {
+import {Viewer} from "./Viewer";
+import {NamesAndIconView} from "../app/NamesAndIconView";
+import {NamesAndIconViewSize} from "../app/NamesAndIconViewSize";
+import {NamesAndIconViewBuilder} from "../app/NamesAndIconView";
+import {ContentUnnamed} from "../content/ContentUnnamed";
+import {StringHelper} from "../util/StringHelper";
+import {Name} from "../Name";
 
-    /**
+/**
      * A parent class capable of viewing a given object with names and icon.
      */
-    export class NamesAndIconViewer<OBJECT> extends api.ui.Viewer<OBJECT> {
+    export class NamesAndIconViewer<OBJECT> extends Viewer<OBJECT> {
 
         static EMPTY_DISPLAY_NAME: string = "<Display Name>";
 
-        private namesAndIconView: api.app.NamesAndIconView;
+        private namesAndIconView: NamesAndIconView;
 
         private relativePath: boolean;
 
-        private size: api.app.NamesAndIconViewSize;
+        private size: NamesAndIconViewSize;
 
         public static debug: boolean = false;
 
-        constructor(className?: string, size: api.app.NamesAndIconViewSize = api.app.NamesAndIconViewSize.small) {
+        constructor(className?: string, size: NamesAndIconViewSize = NamesAndIconViewSize.small) {
             super(className);
 
             this.size = size;
@@ -35,13 +41,13 @@ module api.ui {
             }
 
             if (!this.namesAndIconView) {
-                this.namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(this.size).build();
+                this.namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
                 this.appendChild(this.namesAndIconView);
             }
 
             if (object) {
                 const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-                const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
+                const subName = this.resolveSubName(object, this.relativePath) || ContentUnnamed.prettifyUnnamed();
                 const subTitle = this.resolveSubTitle(object);
                 const iconClass = this.resolveIconClass(object);
                 const iconUrl = this.resolveIconUrl(object);
@@ -57,10 +63,10 @@ module api.ui {
         }
 
         private normalizeDisplayName(displayName: string): string {
-            if (api.util.StringHelper.isEmpty(displayName)) {
+            if (StringHelper.isEmpty(displayName)) {
                 return NamesAndIconViewer.EMPTY_DISPLAY_NAME;
             } else {
-                return api.content.ContentUnnamed.prettifyUnnamed(displayName);
+                return ContentUnnamed.prettifyUnnamed(displayName);
             }
         }
 
@@ -92,8 +98,7 @@ module api.ui {
             return 50;
         }
 
-        getNamesAndIconView(): api.app.NamesAndIconView {
+        getNamesAndIconView(): NamesAndIconView {
             return this.namesAndIconView;
         }
     }
-}

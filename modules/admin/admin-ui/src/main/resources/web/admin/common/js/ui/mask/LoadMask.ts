@@ -1,22 +1,25 @@
-module api.ui.mask {
+import {DivEl} from "../../dom/DivEl";
+import {SpanEl} from "../../dom/SpanEl";
+import {Element} from "../../dom/Element";
+import {Mask} from "./Mask";
 
-    /**
+/**
      * Object to mask an Element with a splash
      */
     export class LoadMask extends Mask {
 
-        private splash: api.dom.DivEl;
+        private splash: DivEl;
 
-        private spinner: api.dom.DivEl;
+        private spinner: DivEl;
 
-        private text: api.dom.SpanEl;
+        private text: SpanEl;
 
-        constructor(el: api.dom.Element) {
+        constructor(el: Element) {
             super(el);
             this.addClass("load-mask");
 
-            this.splash = new api.dom.DivEl("mask-splash");
-            this.spinner = new api.dom.DivEl("spinner");
+            this.splash = new DivEl("mask-splash");
+            this.spinner = new DivEl("spinner");
             this.splash.appendChild(this.spinner);
 
             this.appendChild(this.splash);
@@ -40,7 +43,7 @@ module api.ui.mask {
                 }
             } else {
                 if (!this.text) {
-                    this.text = new api.dom.SpanEl("text");
+                    this.text = new SpanEl("text");
                     this.splash.appendChild(this.text);
                 }
                 this.text.getEl().setInnerHtml(text);
@@ -58,4 +61,3 @@ module api.ui.mask {
         }
     }
 
-}

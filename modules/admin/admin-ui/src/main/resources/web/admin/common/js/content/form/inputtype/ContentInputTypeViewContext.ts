@@ -1,15 +1,18 @@
-module api.content.form.inputtype {
+import {InputTypeViewContext} from "../../../form/inputtype/InputTypeViewContext";
+import {ContentFormContext} from "../ContentFormContext";
+import {Site} from "../../site/Site";
+import {ContentSummary} from "../../ContentSummary";
+import {ContentPath} from "../../ContentPath";
 
-    export interface ContentInputTypeViewContext extends api.form.inputtype.InputTypeViewContext {
+export interface ContentInputTypeViewContext extends InputTypeViewContext {
 
-        formContext: api.content.form.ContentFormContext;
+        formContext: ContentFormContext;
 
-        site: api.content.site.Site;
+        site: Site;
 
-        content: api.content.ContentSummary;
+        content: ContentSummary;
 
-        contentPath: api.content.ContentPath;
+        contentPath: ContentPath;
 
-        parentContentPath: api.content.ContentPath;
+        parentContentPath: ContentPath;
     }
-}

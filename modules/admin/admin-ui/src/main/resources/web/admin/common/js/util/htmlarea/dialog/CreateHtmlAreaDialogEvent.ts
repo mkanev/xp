@@ -1,15 +1,15 @@
-module api.util.htmlarea.dialog {
+import {ContentId} from "../../../content/ContentId";
+import {ContentPath} from "../../../content/ContentPath";
+import {ContentSummary} from "../../../content/ContentSummary";
+import {ApplicationKey} from "../../../application/ApplicationKey";
+import {Event} from "../../../event/Event";
+import {ClassHelper} from "../../../ClassHelper";
 
-    import ContentId = api.content.ContentId;
-    import ContentPath = api.content.ContentPath;
-    import ContentSummary = api.content.ContentSummary;
-    import ApplicationKey = api.application.ApplicationKey;
-
-    export enum HtmlAreaDialogType {
+export enum HtmlAreaDialogType {
         ANCHOR, IMAGE, LINK, MACRO
     }
 
-    export class CreateHtmlAreaDialogEvent extends api.event.Event {
+    export class CreateHtmlAreaDialogEvent extends Event {
 
         private config: any;
 
@@ -56,11 +56,11 @@ module api.util.htmlarea.dialog {
         }
 
         static on(handler: (event: CreateHtmlAreaDialogEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: CreateHtmlAreaDialogEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
 
@@ -106,4 +106,3 @@ module api.util.htmlarea.dialog {
             return new CreateHtmlAreaDialogEvent(this);
         }
     }
-}

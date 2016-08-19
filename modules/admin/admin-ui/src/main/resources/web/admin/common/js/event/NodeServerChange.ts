@@ -1,6 +1,6 @@
-module api.event {
+import {NodeEventJson} from "./NodeServerEvent";
 
-    export enum NodeServerChangeType {
+export enum NodeServerChangeType {
         UNKNOWN,
         PUBLISH,
         DUPLICATE,
@@ -88,4 +88,3 @@ module api.event {
             throw new Error("Must be implemented by inheritors");
         }
     }
-}

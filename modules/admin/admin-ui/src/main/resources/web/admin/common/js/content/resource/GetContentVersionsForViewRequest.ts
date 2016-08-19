@@ -1,8 +1,11 @@
-module api.content.resource {
+import {GetContentVersionsForViewResultsJson} from "../json/GetContentVersionsForViewResultsJson";
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {ContentId} from "../ContentId";
+import {ContentVersions} from "../ContentVersions";
+import {ContentResourceRequest} from "./ContentResourceRequest";
 
-    import GetContentVersionsForViewResultsJson = api.content.json.GetContentVersionsForViewResultsJson;
-
-    export class GetContentVersionsForViewRequest extends ContentResourceRequest<GetContentVersionsForViewResultsJson, ContentVersions> {
+export class GetContentVersionsForViewRequest extends ContentResourceRequest<GetContentVersionsForViewResultsJson, ContentVersions> {
 
         private contentId: ContentId;
         private from: number;
@@ -32,15 +35,14 @@ module api.content.resource {
             };
         }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'getVersionsForView');
+        getRequestPath(): Path {
+            return Path.fromParent(super.getResourcePath(), 'getVersionsForView');
         }
 
         sendAndParse(): wemQ.Promise<ContentVersions> {
 
-            return this.send().then((response: api.rest.JsonResponse<GetContentVersionsForViewResultsJson>) => {
+            return this.send().then((response: JsonResponse<GetContentVersionsForViewResultsJson>) => {
                 return ContentVersions.fromJson(response.getResult());
             });
         }
     }
-}

@@ -1,8 +1,10 @@
-import "../../../../../../api.ts";
+import {Form} from "../../../../../../../../../common/js/ui/form/Form";
+import {Fieldset} from "../../../../../../../../../common/js/ui/form/Fieldset";
+import {FormItemBuilder} from "../../../../../../../../../common/js/ui/form/FormItem";
 
 import {PageTemplateSelector} from "./PageTemplateSelector";
 
-export class PageTemplateForm extends api.ui.form.Form {
+export class PageTemplateForm extends Form {
 
     private templateSelector: PageTemplateSelector;
 
@@ -10,8 +12,8 @@ export class PageTemplateForm extends api.ui.form.Form {
         super('page-template-form');
         this.templateSelector = templateSelector;
 
-        var fieldSet = new api.ui.form.Fieldset();
-        fieldSet.add(new api.ui.form.FormItemBuilder(templateSelector).setLabel("Page Template").build());
+        var fieldSet = new Fieldset();
+        fieldSet.add(new FormItemBuilder(templateSelector).setLabel("Page Template").build());
         this.add(fieldSet);
     }
 

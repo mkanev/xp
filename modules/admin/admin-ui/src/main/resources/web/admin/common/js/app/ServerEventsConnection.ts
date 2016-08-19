@@ -1,15 +1,20 @@
-module api.app {
+import {EventJson} from "../event/EventJson";
+import {Event} from "../event/Event";
+import {UriHelper} from "../util/UriHelper";
+import {NodeEventJson} from "../event/NodeServerEvent";
+import {ApplicationEvent} from "../application/ApplicationEvent";
+import {ApplicationEventJson} from "../application/ApplicationEvent";
+import {ContentServerEvent} from "../content/event/ContentServerEvent";
+import {PrincipalServerEvent} from "../security/event/PrincipalServerEvent";
 
-    import EventJson = api.event.EventJson;
-
-    export class ServerEventsConnection {
+export class ServerEventsConnection {
         private static INSTANCE: ServerEventsConnection;
         
         private static KEEP_ALIVE_TIME: number = 30 * 1000;
 
         private ws: WebSocket;
         private reconnectInterval: number;
-        private serverEventReceivedListeners: {(event: api.event.Event):void}[] = [];
+        private serverEventReceivedListeners: {(event: Event):void}[] = [];
         private connectionLostListeners: {():void}[] = [];
         private connectionRestoredListeners: {():void}[] = [];
         private connected: boolean = false;
@@ -38,7 +43,7 @@ module api.app {
                 console.warn('ServerEventsConnection: WebSockets not supported. Server events disabled.');
                 return;
             }
-            var wsUrl = api.util.UriHelper.joinPath(this.getWebSocketUriPrefix(), api.util.UriHelper.getAdminUriPrefix(), 'event');
+            var wsUrl = UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event');
             this.keepConnected = true;
             this.doConnect(wsUrl);
         }
@@ -82,7 +87,7 @@ module api.app {
             });
 
             this.ws.addEventListener('message', (remoteEvent: any) => {
-                var jsonEvent = <api.event.NodeEventJson> JSON.parse(remoteEvent.data);
+                var jsonEvent = <NodeEventJson> JSON.parse(remoteEvent.data);
                 if (ServerEventsConnection.debug) {
                     console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
                 }
@@ -125,28 +130,28 @@ module api.app {
             return this.ws.readyState === WebSocket.OPEN;
         }
 
-        private handleServerEvent(eventJson: api.event.NodeEventJson): void {
-            var clientEvent: api.event.Event = this.translateServerEvent(eventJson);
+        private handleServerEvent(eventJson: NodeEventJson): void {
+            var clientEvent: Event = this.translateServerEvent(eventJson);
 
             if (clientEvent) {
                 this.notifyServerEvent(clientEvent);
             }
         }
 
-        private translateServerEvent(eventJson: EventJson): api.event.Event {
+        private translateServerEvent(eventJson: EventJson): Event {
             var eventType = eventJson.type;
 
             if (eventType === 'application') {
-                return api.application.ApplicationEvent.fromJson(<api.application.ApplicationEventJson>eventJson);
+                return ApplicationEvent.fromJson(<ApplicationEventJson>eventJson);
             }
             if (eventType.indexOf('node.') === 0) {
                 let event;
-                if (api.content.event.ContentServerEvent.is(<api.event.NodeEventJson>eventJson)) {
-                    event = api.content.event.ContentServerEvent.fromJson(<api.event.NodeEventJson>eventJson);
+                if (ContentServerEvent.is(<NodeEventJson>eventJson)) {
+                    event = ContentServerEvent.fromJson(<NodeEventJson>eventJson);
                 }
 
-                if (api.security.event.PrincipalServerEvent.is(<api.event.NodeEventJson>eventJson)) {
-                    event = api.security.event.PrincipalServerEvent.fromJson(<api.event.NodeEventJson>eventJson);
+                if (PrincipalServerEvent.is(<NodeEventJson>eventJson)) {
+                    event = PrincipalServerEvent.fromJson(<NodeEventJson>eventJson);
                 }
 
                 if (event && event.getNodeChange()) {
@@ -168,19 +173,19 @@ module api.app {
             return newUri;
         }
 
-        private notifyServerEvent(serverEvent: api.event.Event) {
-            this.serverEventReceivedListeners.forEach((listener: (event: api.event.Event)=>void)=> {
+        private notifyServerEvent(serverEvent: Event) {
+            this.serverEventReceivedListeners.forEach((listener: (event: Event)=>void)=> {
                 listener.call(this, serverEvent);
             });
         }
 
-        onServerEvent(listener: (event: api.event.Event) => void) {
+        onServerEvent(listener: (event: Event) => void) {
             this.serverEventReceivedListeners.push(listener);
         }
 
-        unServerEvent(listener: (event: api.event.Event) => void) {
+        unServerEvent(listener: (event: Event) => void) {
             this.serverEventReceivedListeners =
-                this.serverEventReceivedListeners.filter((currentListener: (event: api.event.Event)=>void)=> {
+                this.serverEventReceivedListeners.filter((currentListener: (event: Event)=>void)=> {
                     return currentListener != listener;
                 });
         }
@@ -221,4 +226,3 @@ module api.app {
 
     }
 
-}

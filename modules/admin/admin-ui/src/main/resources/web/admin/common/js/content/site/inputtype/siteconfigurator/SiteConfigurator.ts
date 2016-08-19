@@ -1,37 +1,46 @@
-module api.content.site.inputtype.siteconfigurator {
+import {PropertyTree} from "../../../../data/PropertyTree";
+import {Property} from "../../../../data/Property";
+import {PropertyArray} from "../../../../data/PropertyArray";
+import {PropertySet} from "../../../../data/PropertySet";
+import {FormView} from "../../../../form/FormView";
+import {FormValidityChangedEvent} from "../../../../form/FormValidityChangedEvent";
+import {Value} from "../../../../data/Value";
+import {ValueType} from "../../../../data/ValueType";
+import {ValueTypes} from "../../../../data/ValueTypes";
+import {InputOccurrences} from "../../../../form/inputtype/support/InputOccurrences";
+import {ComboBoxConfig} from "../../../../ui/selector/combobox/ComboBox";
+import {ComboBox} from "../../../../ui/selector/combobox/ComboBox";
+import {Option} from "../../../../ui/selector/Option";
+import {SelectedOption} from "../../../../ui/selector/combobox/SelectedOption";
+import {Application} from "../../../../application/Application";
+import {ApplicationKey} from "../../../../application/ApplicationKey";
+import {SiteConfig} from "../../SiteConfig";
+import {LoadedDataEvent} from "../../../../util/loader/event/LoadedDataEvent";
+import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
+import {FocusSwitchEvent} from "../../../../ui/FocusSwitchEvent";
+import {BaseInputTypeManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeManagingAdd";
+import {InputTypeViewContext} from "../../../../form/inputtype/InputTypeViewContext";
+import {ContentFormContext} from "../../../form/ContentFormContext";
+import {ContentInputTypeViewContext} from "../../../form/inputtype/ContentInputTypeViewContext";
+import {Input} from "../../../../form/Input";
+import {InputValidationRecording} from "../../../../form/inputtype/InputValidationRecording";
+import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
+import {Class} from "../../../../Class";
+import {SiteConfigProvider} from "./SiteConfigProvider";
+import {SiteConfiguratorComboBox} from "./SiteConfiguratorComboBox";
+import {SiteConfiguratorSelectedOptionView} from "./SiteConfiguratorSelectedOptionView";
 
-    import PropertyTree = api.data.PropertyTree;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import PropertySet = api.data.PropertySet;
-    import FormView = api.form.FormView;
-    import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import InputOccurrences = api.form.inputtype.support.InputOccurrences;
-    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
-    import ComboBox = api.ui.selector.combobox.ComboBox;
-    import Option = api.ui.selector.Option;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Application = api.application.Application;
-    import ApplicationKey = api.application.ApplicationKey;
-    import SiteConfig = api.content.site.SiteConfig
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+export class SiteConfigurator extends BaseInputTypeManagingAdd<Application> {
 
-    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd<Application> {
-
-        private context: api.form.inputtype.InputTypeViewContext;
+        private context: InputTypeViewContext;
 
         private comboBox: SiteConfiguratorComboBox;
 
         private siteConfigProvider: SiteConfigProvider;
 
-        private formContext: api.content.form.ContentFormContext;
+        private formContext: ContentFormContext;
 
-        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config: ContentInputTypeViewContext) {
             super("site-configurator");
             this.context = config;
             this.formContext = config.formContext;
@@ -45,7 +54,7 @@ module api.content.site.inputtype.siteconfigurator {
             return null;
         }
 
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
+        layout(input: Input, propertyArray: PropertyArray): wemQ.Promise<void> {
 
             super.layout(input, propertyArray);
 
@@ -64,7 +73,7 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
 
-        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
                 this.siteConfigProvider.setPropertyArray(propertyArray);
 
@@ -90,7 +99,7 @@ module api.content.site.inputtype.siteconfigurator {
             propertySet.setPropertySetByPath('config', config);
         }
 
-        protected getValueFromPropertyArray(propertyArray: api.data.PropertyArray): string {
+        protected getValueFromPropertyArray(propertyArray: PropertyArray): string {
             return propertyArray.getProperties().map((property) => {
                 if (property.hasNonNullValue()) {
                     var siteConfig = SiteConfig.create().fromData(property.getPropertySet()).build();
@@ -99,7 +108,7 @@ module api.content.site.inputtype.siteconfigurator {
             }).join(';');
         }
 
-        private createComboBox(input: api.form.Input, siteConfigProvider: SiteConfigProvider): SiteConfiguratorComboBox {
+        private createComboBox(input: Input, siteConfigProvider: SiteConfigProvider): SiteConfiguratorComboBox {
 
             var value = this.getValueFromPropertyArray(this.getPropertyArray());
             var siteConfigFormsToDisplay = value.split(';');
@@ -168,8 +177,8 @@ module api.content.site.inputtype.siteconfigurator {
             return this.comboBox.countSelected();
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
-            var recording = new api.form.inputtype.InputValidationRecording();
+        validate(silent: boolean = true): InputValidationRecording {
+            var recording = new InputValidationRecording();
 
             this.comboBox.getSelectedOptionViews().forEach((view: SiteConfiguratorSelectedOptionView) => {
 
@@ -194,5 +203,4 @@ module api.content.site.inputtype.siteconfigurator {
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class("SiteConfigurator", SiteConfigurator));
-}
+    InputTypeManager.register(new Class("SiteConfigurator", SiteConfigurator));

@@ -1,6 +1,11 @@
-module api.content.page {
+import {Path} from "../../rest/Path";
+import {JsonResponse} from "../../rest/JsonResponse";
+import {DescriptorKey} from "./DescriptorKey";
+import {PageDescriptor} from "./PageDescriptor";
+import {PageDescriptorJson} from "./PageDescriptorJson";
+import {PageDescriptorResourceRequest} from "./PageDescriptorResourceRequest";
 
-    export class GetPageDescriptorByKeyRequest extends PageDescriptorResourceRequest<PageDescriptorJson, PageDescriptor> {
+export class GetPageDescriptorByKeyRequest extends PageDescriptorResourceRequest<PageDescriptorJson, PageDescriptor> {
 
         private key: DescriptorKey;
 
@@ -16,7 +21,7 @@ module api.content.page {
             };
         }
 
-        getRequestPath(): api.rest.Path {
+        getRequestPath(): Path {
             return super.getResourcePath();
         }
 
@@ -27,11 +32,10 @@ module api.content.page {
                 return wemQ(pageDescriptor);
             }
             else {
-                return this.send().then((response: api.rest.JsonResponse<PageDescriptorJson>) => {
+                return this.send().then((response: JsonResponse<PageDescriptorJson>) => {
                     pageDescriptor = this.fromJsonToPageDescriptor(response.getResult(), true);
                     return pageDescriptor;
                 });
             }
         }
     }
-}

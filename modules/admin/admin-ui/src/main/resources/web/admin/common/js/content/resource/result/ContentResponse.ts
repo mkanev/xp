@@ -1,6 +1,6 @@
-module api.content.resource.result {
+import {ContentMetadata} from "../../ContentMetadata";
 
-    export class ContentResponse<T> {
+export class ContentResponse<T> {
 
         private contents: T[];
 
@@ -29,4 +29,3 @@ module api.content.resource.result {
             return this;
         }
     }
-}

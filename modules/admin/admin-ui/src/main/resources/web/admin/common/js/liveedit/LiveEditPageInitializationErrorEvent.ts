@@ -1,6 +1,7 @@
-module api.liveedit {
+import {Event} from "../event/Event";
+import {ClassHelper} from "../ClassHelper";
 
-    export class LiveEditPageInitializationErrorEvent extends api.event.Event {
+export class LiveEditPageInitializationErrorEvent extends Event {
 
         private message: string;
 
@@ -14,11 +15,10 @@ module api.liveedit {
         }
 
         static on(handler: (event: LiveEditPageInitializationErrorEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
         }
 
         static un(handler?: (event: LiveEditPageInitializationErrorEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
+            Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
         }
     }
-}

@@ -1,6 +1,8 @@
-module api.util {
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {StringHelper} from "./StringHelper";
 
-    export class GeoPoint implements api.Equitable {
+export class GeoPoint implements Equitable {
 
         private latitude: number;
 
@@ -23,19 +25,19 @@ module api.util {
             return "" + this.latitude + "," + this.longitude;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, GeoPoint)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, GeoPoint)) {
                 return false;
             }
 
             var other = <GeoPoint>o;
 
-            if (!api.ObjectHelper.numberEquals(this.latitude, other.latitude)) {
+            if (!ObjectHelper.numberEquals(this.latitude, other.latitude)) {
                 return false;
             }
 
-            if (!api.ObjectHelper.numberEquals(this.longitude, other.longitude)) {
+            if (!ObjectHelper.numberEquals(this.longitude, other.longitude)) {
                 return false;
             }
             return true;
@@ -79,4 +81,3 @@ module api.util {
             return new GeoPoint(latitude, longitude);
         }
     }
-}

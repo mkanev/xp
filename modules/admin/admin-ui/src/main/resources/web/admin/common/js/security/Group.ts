@@ -1,12 +1,18 @@
-module api.security {
+import {assert} from "../util/Assert";
+import {Equitable} from "../Equitable";
+import {ObjectHelper} from "../ObjectHelper";
+import {GroupJson} from "./GroupJson";
+import {Principal} from "./Principal";
+import {PrincipalBuilder} from "./Principal";
+import {PrincipalKey} from "./PrincipalKey";
 
-    export class Group extends Principal {
+export class Group extends Principal {
 
         private members: PrincipalKey[];
 
         constructor(builder: GroupBuilder) {
             super(builder);
-            api.util.assert(builder.key.isGroup(), 'Expected PrincipalKey of type Group');
+            assert(builder.key.isGroup(), 'Expected PrincipalKey of type Group');
             this.members = builder.members || [];
         }
 
@@ -22,13 +28,13 @@ module api.security {
             this.members.push(member);
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Group)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Group)) {
                 return false;
             }
 
             var other = <Group> o;
-            return super.equals(o) && api.ObjectHelper.arrayEquals(this.members, other.getMembers());
+            return super.equals(o) && ObjectHelper.arrayEquals(this.members, other.getMembers());
         }
 
         clone(): Group {
@@ -43,7 +49,7 @@ module api.security {
             return new GroupBuilder();
         }
 
-        static fromJson(json: api.security.GroupJson): Group {
+        static fromJson(json: GroupJson): Group {
             return new GroupBuilder().fromJson(json).build();
         }
     }
@@ -60,7 +66,7 @@ module api.security {
             }
         }
 
-        fromJson(json: api.security.GroupJson): GroupBuilder {
+        fromJson(json: GroupJson): GroupBuilder {
             super.fromJson(json);
 
             if (json.members) {
@@ -78,4 +84,3 @@ module api.security {
             return new Group(this);
         }
     }
-}

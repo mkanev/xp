@@ -1,7 +1,6 @@
-module api.security {
+import {PropertyArrayJson} from "../data/PropertyArrayJson";
 
-    export interface AuthConfigJson {
+export interface AuthConfigJson {
         applicationKey: string;
-        config: api.data.PropertyArrayJson[];
+        config: PropertyArrayJson[];
     }
-}

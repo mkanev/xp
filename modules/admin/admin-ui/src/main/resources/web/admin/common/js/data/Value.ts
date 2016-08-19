@@ -1,6 +1,21 @@
-module api.data {
+import {Equitable} from "../Equitable";
+import {Cloneable} from "../Cloneable";
+import {ClassHelper} from "../ClassHelper";
+import {assert} from "../util/Assert";
+import {ObjectHelper} from "../ObjectHelper";
+import {DateTime} from "../util/DateTime";
+import {LocalDate} from "../util/LocalDate";
+import {LocalDateTime} from "../util/LocalDateTime";
+import {LocalTime} from "../util/LocalTime";
+import {GeoPoint} from "../util/GeoPoint";
+import {BinaryReference} from "../util/BinaryReference";
+import {Reference} from "../util/Reference";
+import {Link} from "../util/Link";
+import {PropertySet} from "./PropertySet";
+import {ValueType} from "./ValueType";
+import {ValueTypes} from "./ValueTypes";
 
-    export class Value implements api.Equitable, api.Cloneable {
+export class Value implements Equitable, Cloneable {
 
         private type: ValueType;
 
@@ -12,7 +27,7 @@ module api.data {
             if (value) {
                 var isValid = this.type.isValid(value);
                 if (isValid == undefined) {
-                    throw new Error(api.ClassHelper.getClassName(this.type) + ".isValid() did not return any value: " + isValid);
+                    throw new Error(ClassHelper.getClassName(this.type) + ".isValid() did not return any value: " + isValid);
                 }
                 if (isValid == false) {
                     throw new Error("Invalid value for type " + type.toString() + ": " + value);
@@ -52,8 +67,8 @@ module api.data {
                 return null;
             }
 
-            api.util.assert(api.ObjectHelper.iFrameSafeInstanceOf(this.value, PropertySet),
-                "Expected value to be a PropertySet: " + api.ClassHelper.getClassName(this.value));
+            assert(ObjectHelper.iFrameSafeInstanceOf(this.value, PropertySet),
+                "Expected value to be a PropertySet: " + ClassHelper.getClassName(this.value));
 
             return <PropertySet>this.value;
         }
@@ -79,71 +94,71 @@ module api.data {
             return this.type.valueToNumber(this);
         }
 
-        getDateTime(): api.util.DateTime {
+        getDateTime(): DateTime {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.DateTime>this.value;
+            return <DateTime>this.value;
         }
 
-        getLocalDate(): api.util.LocalDate {
+        getLocalDate(): LocalDate {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.LocalDate>this.value;
+            return <LocalDate>this.value;
         }
 
-         getLocalDateTime(): api.util.LocalDateTime {
+         getLocalDateTime(): LocalDateTime {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.LocalDateTime>this.value;
+            return <LocalDateTime>this.value;
         }
 
-        getLocalTime(): api.util.LocalTime {
+        getLocalTime(): LocalTime {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.LocalTime>this.value;
+            return <LocalTime>this.value;
         }
 
-        getGeoPoint(): api.util.GeoPoint {
+        getGeoPoint(): GeoPoint {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.GeoPoint>this.value;
+            return <GeoPoint>this.value;
         }
 
-        getBinaryReference(): api.util.BinaryReference {
+        getBinaryReference(): BinaryReference {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.BinaryReference>this.value;
+            return <BinaryReference>this.value;
         }
 
-        getReference(): api.util.Reference {
+        getReference(): Reference {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.Reference>this.value;
+            return <Reference>this.value;
         }
 
-        getLink(): api.util.Link {
+        getLink(): Link {
             if (this.isNull()) {
                 return null;
             }
-            return <api.util.Link>this.value;
+            return <Link>this.value;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Value)) {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, Value)) {
                 return false;
             }
 
             var other = <Value>o;
 
-            if (!api.ObjectHelper.equals(this.type, other.type)) {
+            if (!ObjectHelper.equals(this.type, other.type)) {
                 return false;
             }
 
@@ -155,4 +170,3 @@ module api.data {
             return new Value(this.value, this.type);
         }
     }
-}

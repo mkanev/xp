@@ -1,6 +1,8 @@
-module api.app.browse {
+import {Equitable} from "../../Equitable";
+import {ViewItem} from "../view/ViewItem";
+import {ObjectHelper} from "../../ObjectHelper";
 
-    export class BrowseItem<M extends api.Equitable> implements api.Equitable {
+export class BrowseItem<M extends Equitable> implements Equitable {
 
         private model: M;
 
@@ -20,32 +22,32 @@ module api.app.browse {
             this.model = model;
         }
 
-        setId(value: string): api.app.browse.BrowseItem<M> {
+        setId(value: string): BrowseItem<M> {
             this.id = value;
             return this;
         }
 
-        setDisplayName(value: string): api.app.browse.BrowseItem<M> {
+        setDisplayName(value: string): BrowseItem<M> {
             this.displayName = value;
             return this;
         }
 
-        setPath(value: string): api.app.browse.BrowseItem<M> {
+        setPath(value: string): BrowseItem<M> {
             this.path = value;
             return this;
         }
 
-        setIconUrl(value: string): api.app.browse.BrowseItem<M> {
+        setIconUrl(value: string): BrowseItem<M> {
             this.iconUrl = value;
             return this;
         }
 
-        setIconClass(iconClass: string): api.app.browse.BrowseItem<M> {
+        setIconClass(iconClass: string): BrowseItem<M> {
             this.iconClass = iconClass;
             return this;
         }
 
-        setRenderable(value: boolean): api.app.browse.BrowseItem<M> {
+        setRenderable(value: boolean): BrowseItem<M> {
             this.renderable = value;
             return this;
         }
@@ -77,8 +79,8 @@ module api.app.browse {
             return this.renderable;
         }
 
-        toViewItem(): api.app.view.ViewItem<M> {
-            return new api.app.view.ViewItem<M>(this.model)
+        toViewItem(): ViewItem<M> {
+            return new ViewItem<M>(this.model)
                 .setIconUrl(this.iconUrl)
                 .setIconClass(this.iconClass)
                 .setDisplayName(this.displayName)
@@ -86,8 +88,8 @@ module api.app.browse {
                 .setRenderable(this.isRenderable());
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BrowseItem)) {
+        equals(o: Equitable): boolean {
+            if (!ObjectHelper.iFrameSafeInstanceOf(o, BrowseItem)) {
                 return false;
             }
             var other = <BrowseItem<M>> o;
@@ -98,4 +100,3 @@ module api.app.browse {
         }
     }
 
-}

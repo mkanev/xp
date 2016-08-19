@@ -1,6 +1,10 @@
-module api {
+import {Equitable} from "./Equitable";
+import {assertNotNull} from "./util/Assert";
+import {assert} from "./util/Assert";
+import {StringHelper} from "./util/StringHelper";
+import {ObjectHelper} from "./ObjectHelper";
 
-    export class Name implements api.Equitable {
+export class Name implements Equitable {
 
         public static FORBIDDEN_CHARS: RegExp = /[^a-z0-9\-]+/ig;
 
@@ -10,9 +14,9 @@ module api {
 
         constructor(name: string) {
 
-            api.util.assertNotNull(name, "Name cannot be null");
+            assertNotNull(name, "Name cannot be null");
 
-            api.util.assert(!api.util.StringHelper.isEmpty(name), "Name cannot be empty");
+            assert(!StringHelper.isEmpty(name), "Name cannot be empty");
 
             this.value = name;
         }
@@ -25,9 +29,9 @@ module api {
             return this.value;
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: Equitable): boolean {
 
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(o, Name))) {
+            if (!(ObjectHelper.iFrameSafeInstanceOf(o, Name))) {
                 return false;
             }
 
@@ -40,4 +44,3 @@ module api {
             return true;
         }
     }
-}

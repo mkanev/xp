@@ -1,6 +1,6 @@
-module api.ui {
 
-    export interface Closeable {
+
+export interface Closeable {
 
         /*
          * Issue closing. Implementations are expected to call canClose if checkCanClose is true.
@@ -16,4 +16,3 @@ module api.ui {
 
         unClosed(handler: (event) => void);
     }
-}

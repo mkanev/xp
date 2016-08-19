@@ -1,6 +1,8 @@
-module api.content.resource.result {
+import {CompareContentResultsJson} from "../../json/CompareContentResultsJson";
+import {CompareContentResultJson} from "../../json/CompareContentResultJson";
+import {CompareContentResult} from "./CompareContentResult";
 
-    export class CompareContentResults {
+export class CompareContentResults {
 
         private compareContentResults: CompareContentResult[] = [];
 
@@ -26,15 +28,14 @@ module api.content.resource.result {
             return this.compareContentResults;
         }
 
-        static fromJson(json: api.content.json.CompareContentResultsJson): CompareContentResults {
+        static fromJson(json: CompareContentResultsJson): CompareContentResults {
 
             var list: CompareContentResult[] = [];
 
-            json.compareContentResults.forEach((compareContentResult: api.content.json.CompareContentResultJson) => {
+            json.compareContentResults.forEach((compareContentResult: CompareContentResultJson) => {
                 list.push(CompareContentResult.fromJson(compareContentResult));
             });
 
             return new CompareContentResults(list);
         }
     }
-}
