@@ -131,7 +131,7 @@ var step3tasks = [
     {name: 'content', src: '/apps/content-studio/js/**/*.ts', base: '/apps/content-studio/js/'},
     {name: 'user', src: '/apps/user-manager/js/**/*.ts', base: '/apps/user-manager/js/'},
     {name: 'applications', src: '/apps/applications/js/**/*.ts', base: '/apps/applications/js/'},
-    {name: 'live', src: '/live-edit/js/LiveEditPage.ts', base: '/live-edit/js/'}
+    {name: 'live', src: '/live-edit/js/**/*.ts', base: '/live-edit/js/'}
 ];
 
 // step3tasks = [
