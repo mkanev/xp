@@ -4,7 +4,7 @@ import {ValueType} from "../../../data/ValueType";
 import {ValueTypes} from "../../../data/ValueTypes";
 import {BaseInputTypeSingleOccurrence} from "../support/BaseInputTypeSingleOccurrence";
 import {LabelPosition} from "../../../ui/Checkbox";
-import {Checkbox} from "../../../ui/Checkbox";
+import {Checkbox as CheckboxData} from "../../../ui/Checkbox";
 import {InputTypeViewContext} from "../InputTypeViewContext";
 import {Input} from "../../Input";
 import {ValueChangedEvent} from "../../../ValueChangedEvent";
@@ -14,7 +14,7 @@ import {Class} from "../../../Class";
 
 export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
 
-        private checkbox: Checkbox;
+        private checkbox: CheckboxData;
 
         public static debug: boolean = false;
 
@@ -33,7 +33,7 @@ export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
         layoutProperty(input: Input, property: Property): wemQ.Promise<void> {
             var checked = property.hasNonNullValue() ? property.getBoolean() : false;
             this.checkbox =
-                Checkbox.create().setLabelText(input.getLabel()).setChecked(checked).setLabelPosition(LabelPosition.TOP).build();
+                CheckboxData.create().setLabelText(input.getLabel()).setChecked(checked).setLabelPosition(LabelPosition.TOP).build();
             this.appendChild(this.checkbox);
 
             if (!ValueTypes.BOOLEAN.equals(property.getType())) {
@@ -86,4 +86,3 @@ export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
     }
 
     InputTypeManager.register(new Class("Checkbox", Checkbox));
-
