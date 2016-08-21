@@ -1,5 +1,5 @@
 import {TextInput} from "../text/TextInput";
-import {GeoPoint} from "../../util/GeoPoint";
+import {GeoPoint as GeoPointUtil} from "../../util/GeoPoint";
 import {_i18n} from "../../i18n/Messages";
 import {ValueChangedEvent} from "../../ValueChangedEvent";
 import {StringHelper} from "../../util/StringHelper";
@@ -8,7 +8,7 @@ export class GeoPoint extends TextInput {
 
         private validUserInput: boolean;
 
-        constructor(originalValue?: GeoPoint) {
+        constructor(originalValue?: GeoPointUtil) {
             super("geo-point", undefined, originalValue ? originalValue.toString() : undefined);
 
             this.validUserInput = true;
@@ -18,23 +18,23 @@ export class GeoPoint extends TextInput {
             this.onValueChanged((event: ValueChangedEvent) => {
                 var typedGeoPoint = this.getValue();
                 this.validUserInput = StringHelper.isEmpty(typedGeoPoint) ||
-                                      GeoPoint.isValidString(typedGeoPoint);
+                                      GeoPointUtil.isValidString(typedGeoPoint);
 
                 this.updateValidationStatusOnUserInput(this.validUserInput);
             });
         }
 
-        setGeoPoint(value: GeoPoint): GeoPoint {
+        setGeoPoint(value: GeoPointUtil): GeoPoint {
             this.setValue(value ? value.toString() : "");
             return this;
         }
 
-        getGeoPoint(): GeoPoint {
+        getGeoPoint(): GeoPointUtil {
             var value = this.getValue();
             if (StringHelper.isEmpty(value)) {
                 return null;
             }
-            return <GeoPoint> GeoPoint.fromString(value);
+            return <GeoPointUtil> GeoPointUtil.fromString(value);
         }
 
         isValid(): boolean {

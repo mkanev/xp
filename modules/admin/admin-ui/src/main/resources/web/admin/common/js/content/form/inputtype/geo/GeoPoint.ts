@@ -3,16 +3,16 @@ import {ValueType} from "../../../../data/ValueType";
 import {Value} from "../../../../data/Value";
 import {Property} from "../../../../data/Property";
 import {BaseInputTypeNotManagingAdd} from "../../../../form/inputtype/support/BaseInputTypeNotManagingAdd";
-import {GeoPoint} from "../../../../util/GeoPoint";
+import {GeoPoint as GeoPointUtil} from "../../../../util/GeoPoint";
 import {InputTypeViewContext} from "../../../../form/inputtype/InputTypeViewContext";
 import {Element} from "../../../../dom/Element";
-import {GeoPoint} from "../../../../ui/geo/GeoPoint";
+import {GeoPoint as GeoPointData} from "../../../../ui/geo/GeoPoint";
 import {ValueChangedEvent} from "../../../../ValueChangedEvent";
 import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
 import {Class} from "../../../../Class";
 
 // TODO: GeoPoint is not dependent on the content domain and should therefore be moved to geo
-    export class GeoPoint extends BaseInputTypeNotManagingAdd<GeoPoint> {
+    export class GeoPoint extends BaseInputTypeNotManagingAdd<GeoPointUtil> {
 
         constructor(config: InputTypeViewContext) {
             super(config);
@@ -31,10 +31,10 @@ import {Class} from "../../../../Class";
                 property.convertValueType(ValueTypes.GEO_POINT);
             }
 
-            var geoPoint = new GeoPoint(property.getGeoPoint());
+            var geoPoint = new GeoPointData(property.getGeoPoint());
 
             geoPoint.onValueChanged((event: ValueChangedEvent) => {
-                var value = GeoPoint.isValidString(event.getNewValue()) ?
+                var value = GeoPointUtil.isValidString(event.getNewValue()) ?
                             ValueTypes.GEO_POINT.newValue(event.getNewValue()) :
                             ValueTypes.GEO_POINT.newNullValue();
                 this.notifyOccurrenceValueChanged(geoPoint, value);
@@ -44,7 +44,7 @@ import {Class} from "../../../../Class";
         }
 
         updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
-            var geoPoint = <GeoPoint> occurrence;
+            var geoPoint = <GeoPointData> occurrence;
 
             if (!unchangedOnly || !geoPoint.isDirty()) {
                 geoPoint.setGeoPoint(property.getGeoPoint());
@@ -59,7 +59,7 @@ import {Class} from "../../../../Class";
         }
 
         hasInputElementValidUserInput(inputElement: Element) {
-            var geoPoint = <GeoPoint>inputElement;
+            var geoPoint = <GeoPointData>inputElement;
             return geoPoint.isValid();
         }
     }
