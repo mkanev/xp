@@ -1,7 +1,6 @@
 import {ContentInputTypeViewContext} from "../../../content/form/inputtype/ContentInputTypeViewContext";
 import {InputValidationRecording} from "../../../form/inputtype/InputValidationRecording";
 import {InputValidityChangedEvent} from "../../../form/inputtype/InputValidityChangedEvent";
-import {InputValueChangedEvent as ValueChangedEvent} from "../../../form/inputtype/InputValueChangedEvent";
 import {Property} from "../../../data/Property";
 import {PropertyArray} from "../../../data/PropertyArray";
 import {Value} from "../../../data/Value";
@@ -19,7 +18,6 @@ import {PageTemplateContentTypeLoader} from "../PageTemplateContentTypeLoader";
 import {ContentTypeSummaryByDisplayNameComparator} from "../ContentTypeSummaryByDisplayNameComparator";
 import {InputTypeManager} from "../../../form/inputtype/InputTypeManager";
 import {Class} from "../../../Class";
-import {ValueChangedEvent} from "../../../ValueChangedEvent";
 
 export class ContentTypeFilter extends BaseInputTypeManagingAdd<string> {
 
@@ -161,4 +159,3 @@ export class ContentTypeFilter extends BaseInputTypeManagingAdd<string> {
     }
 
     InputTypeManager.register(new Class("ContentTypeFilter", ContentTypeFilter));
-
