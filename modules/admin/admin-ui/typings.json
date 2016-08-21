@@ -1,6 +1,6 @@
 {
   "globalDependencies": {
-    "codemirror": "registry:dt/codemirror#0.0.0+20160619021621",
+    "codemirror": "file:./src/main/resources/web/admin/common/js/lib/codemirror.d.ts",
     "crossroads": "registry:dt/crossroads#0.0.0+20160317120654",
     "hasher": "registry:dt/hasher#0.0.0+20160317120654",
     "jquery": "registry:dt/jquery#1.10.0+20160704162008",
