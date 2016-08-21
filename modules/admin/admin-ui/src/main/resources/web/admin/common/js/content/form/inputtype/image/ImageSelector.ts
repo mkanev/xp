@@ -6,7 +6,7 @@ import {ValueTypes} from "../../../../data/ValueTypes";
 import {ContentId} from "../../../ContentId";
 import {ContentSummary} from "../../../ContentSummary";
 import {ContentSummaryLoader} from "../../../resource/ContentSummaryLoader";
-import {ImageContentComboBox as ContentComboBox} from "./ImageContentComboBox";
+import {ImageContentComboBox} from "./ImageContentComboBox";
 import {ContentTypeName} from "../../../../schema/content/ContentTypeName";
 import {ComboBox} from "../../../../ui/selector/combobox/ComboBox";
 import {ResponsiveManager} from "../../../../ui/responsive/ResponsiveManager";
@@ -42,7 +42,6 @@ import {Reference} from "../../../../util/Reference";
 import {InputTypeManager} from "../../../../form/inputtype/InputTypeManager";
 import {Class} from "../../../../Class";
 import {Content} from "../../../Content";
-import {ContentComboBox} from "../../../ContentComboBox";
 import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
 import {ImageSelectorSelectedOptionsView} from "./ImageSelectorSelectedOptionsView";
 import {ImageSelectorSelectedOptionView} from "./ImageSelectorSelectedOptionView";
@@ -129,7 +128,7 @@ export class ImageSelector extends BaseInputTypeManagingAdd<ContentId> {
             })
         }
 
-        public getContentComboBox(): ImageContentComboBox {
+        public getImageContentComboBox(): ImageContentComboBox {
             return this.contentComboBox;
         }
 
@@ -210,8 +209,8 @@ export class ImageSelector extends BaseInputTypeManagingAdd<ContentId> {
             return selectedOptionsView;
         }
 
-        createContentComboBox(maximumOccurrences: number, inputIconUrl: string, relationshipAllowedContentTypes: string[],
-                              inputName: string): ContentComboBox {
+        createImageContentComboBox(maximumOccurrences: number, inputIconUrl: string, relationshipAllowedContentTypes: string[],
+                              inputName: string): ImageContentComboBox {
 
             var value = this.getPropertyArray().getProperties().map((property) => {
                 return property.getString();
@@ -297,7 +296,7 @@ export class ImageSelector extends BaseInputTypeManagingAdd<ContentId> {
                 return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
                     .then((relationshipType: RelationshipType) => {
 
-                        this.contentComboBox = this.createContentComboBox(
+                        this.contentComboBox = this.createImageContentComboBox(
                             input.getOccurrences().getMaximum(), relationshipType.getIconUrl(), relationshipType.getAllowedToTypes() || [],
                             input.getName()
                         );
@@ -511,4 +510,3 @@ export class ImageSelector extends BaseInputTypeManagingAdd<ContentId> {
     }
 
     InputTypeManager.register(new Class("ImageSelector", ImageSelector));
-
