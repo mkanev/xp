@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/a866157b01236c0c43f3d99b2b2d57abb06f8d4d/slickgrid/slick.checkboxselectcolumn.d.ts",
-    "raw": "registry:dt/slickgrid/slick.checkboxselectcolumn#2.1.0+20160613143841",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/a866157b01236c0c43f3d99b2b2d57abb06f8d4d/slickgrid/slick.checkboxselectcolumn.d.ts"
-  }
-}

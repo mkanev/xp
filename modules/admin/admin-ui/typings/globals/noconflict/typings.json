@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "d:\\repo\\xp\\modules\\admin\\admin-ui\\src\\main\\resources\\web\\admin\\common\\js\\lib\\noconflict.d.ts",
-    "raw": "file:./src/main/resources/web/admin/common/js/lib/noconflict.d.ts",
-    "typings": "d:\\repo\\xp\\modules\\admin\\admin-ui\\src\\main\\resources\\web\\admin\\common\\js\\lib\\noconflict.d.ts"
-  }
-}
