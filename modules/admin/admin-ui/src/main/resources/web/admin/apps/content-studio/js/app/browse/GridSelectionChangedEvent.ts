@@ -1,5 +1,6 @@
 import {Event} from "../../../../../common/js/event/Event";
 import {ClassHelper} from "../../../../../common/js/ClassHelper";
+import {BaseContentModelEvent} from "./BaseContentModelEvent";
 
 export class GridSelectionChangeEvent extends BaseContentModelEvent {
 

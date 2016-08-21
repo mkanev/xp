@@ -5,8 +5,9 @@ import {JsonResponse} from "../../rest/JsonResponse";
 import {ContentId} from "../ContentId";
 import {ContentVersion} from "../ContentVersion";
 import {ContentResourceRequest} from "./ContentResourceRequest";
+import {GetActiveContentVersionsResultsJson} from "../json/GetActiveContentVersionsResultsJson";
 
-export class GetActiveContentVersionsRequest extends ContentResourceRequest<json.GetActiveContentVersionsResultsJson, ContentVersion[]> {
+export class GetActiveContentVersionsRequest extends ContentResourceRequest<GetActiveContentVersionsResultsJson, ContentVersion[]> {
 
         private id: ContentId;
 
@@ -28,7 +29,7 @@ export class GetActiveContentVersionsRequest extends ContentResourceRequest<json
 
         sendAndParse(): wemQ.Promise<ContentVersion[]> {
 
-            return this.send().then((response: JsonResponse<json.GetActiveContentVersionsResultsJson>) => {
+            return this.send().then((response: JsonResponse<GetActiveContentVersionsResultsJson>) => {
                 return this.fromJsonToContentVersions(response.getResult().activeContentVersions);
             });
         }

@@ -8,6 +8,8 @@ import {ImageSelectorViewer} from "./ImageSelectorViewer";
 import {ImageSelectorSelectedOptionsView} from "./ImageSelectorSelectedOptionsView";
 import {BaseLoader} from "../../../../util/loader/BaseLoader";
 import {ContentSummary} from "../../../ContentSummary";
+import {ContentQueryResultJson} from "../../../json/ContentQueryResultJson";
+import {ContentSummaryJson} from "../../../json/ContentSummaryJson";
 
 export class ImageContentComboBox extends RichComboBox<ImageSelectorDisplayValue> {
 
@@ -54,7 +56,7 @@ export class ImageContentComboBox extends RichComboBox<ImageSelectorDisplayValue
 
         maximumOccurrences: number = 0;
 
-        loader: BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>;
+        loader: BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>;
 
         minWidth: number;
 
@@ -81,7 +83,7 @@ export class ImageContentComboBox extends RichComboBox<ImageSelectorDisplayValue
             return this;
         }
 
-        setLoader(loader: BaseLoader<json.ContentQueryResultJson<json.ContentSummaryJson>, ContentSummary>): ImageContentComboBoxBuilder {
+        setLoader(loader: BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>): ImageContentComboBoxBuilder {
             this.loader = loader;
             return this;
         }

@@ -5,13 +5,11 @@ import {Property} from "../../../../data/Property";
 import {Value} from "../../../../data/Value";
 import {ValueType} from "../../../../data/ValueType";
 import {ValueTypes} from "../../../../data/ValueTypes";
-import {InputValueChangedEvent as ValueChangedEvent} from "../../../../form/inputtype/InputValueChangedEvent";
 import {LoadMask} from "../../../../ui/mask/LoadMask";
 import {Tooltip} from "../../../../ui/Tooltip";
 import {SelectedOptionEvent} from "../../../../ui/selector/combobox/SelectedOptionEvent";
 import {BaseSelectedOptionsView} from "../../../../ui/selector/combobox/BaseSelectedOptionsView";
 import {Body} from "../../../../dom/Body";
-import {ValueChangedEvent} from "../../../../ValueChangedEvent";
 import {ImageSelectorDisplayValue} from "./ImageSelectorDisplayValue";
 import {ImageSelectorSelectedOptionView} from "./ImageSelectorSelectedOptionView";
 import {SelectionToolbar} from "./SelectionToolbar";
@@ -133,7 +131,7 @@ export class ImageSelectorSelectedOptionsView extends BaseSelectedOptionsView<Im
             optionView.insertBeforeEl(this.toolbar);
 
             optionView.setOption(option);
-            
+
             if (!silent) {
                 this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
             }
@@ -373,4 +371,3 @@ export class ImageSelectorSelectedOptionsView extends BaseSelectedOptionsView<Im
         }
 
     }
-
