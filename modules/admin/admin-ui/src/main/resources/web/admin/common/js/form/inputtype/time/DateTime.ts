@@ -11,7 +11,7 @@ import {InputTypeViewContext} from "../InputTypeViewContext";
 import {Element} from "../../../dom/Element";
 import {SelectedDateChangedEvent} from "../../../ui/time/SelectedDateChangedEvent";
 import {LocalDateTime} from "../../../util/LocalDateTime";
-import {DateTime} from "../../../util/DateTime";
+import {DateTime as DateTimeUtil} from "../../../util/DateTime";
 import {InputTypeManager} from "../InputTypeManager";
 import {Class} from "../../../Class";
 import {Date} from "./Date";
@@ -120,7 +120,7 @@ import {Date} from "./Date";
             }
 
             if (property.hasNonNullValue()) {
-                var date: DateTime = property.getDateTime();
+                var date: DateTimeUtil = property.getDateTime();
                 dateTimeBuilder.
                     setYear(date.getYear()).
                     setMonth(date.getMonth()).
@@ -132,7 +132,7 @@ import {Date} from "./Date";
 
             var dateTimePicker = new DateTimePicker(dateTimeBuilder);
             dateTimePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-                var value = new Value(event.getDate() != null ? DateTime.fromDate(event.getDate()) : null,
+                var value = new Value(event.getDate() != null ? DateTimeUtil.fromDate(event.getDate()) : null,
                     ValueTypes.DATE_TIME);
                 this.notifyOccurrenceValueChanged(dateTimePicker, value);
             });
@@ -140,4 +140,3 @@ import {Date} from "./Date";
         }
     }
     InputTypeManager.register(new Class("DateTime", DateTime));
-
