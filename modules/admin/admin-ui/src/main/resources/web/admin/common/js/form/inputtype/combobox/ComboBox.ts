@@ -9,7 +9,7 @@ import {SelectedOptionEvent} from "../../../ui/selector/combobox/SelectedOptionE
 import {FocusSwitchEvent} from "../../../ui/FocusSwitchEvent";
 import {BaseInputTypeManagingAdd} from "../support/BaseInputTypeManagingAdd";
 import {InputTypeViewContext} from "../InputTypeViewContext";
-import {ComboBox} from "../../../ui/selector/combobox/ComboBox";
+import {ComboBox as ComboBoxSelector} from "../../../ui/selector/combobox/ComboBox";
 import {SelectedOptionsView} from "../../../ui/selector/combobox/SelectedOptionsView";
 import {Input} from "../../Input";
 import {BaseSelectedOptionsView} from "../../../ui/selector/combobox/BaseSelectedOptionsView";
@@ -27,7 +27,7 @@ export class ComboBox extends BaseInputTypeManagingAdd<string> {
 
         private comboBoxOptions: ComboBoxOption[];
 
-        private comboBox: ComboBox<string>;
+        private comboBox: ComboBoxSelector<string>;
 
         private selectedOptionsView: SelectedOptionsView<string>;
 
@@ -49,7 +49,7 @@ export class ComboBox extends BaseInputTypeManagingAdd<string> {
             this.comboBoxOptions = options;
         }
 
-        getComboBox(): ComboBox<string> {
+        getComboBox(): ComboBoxSelector<string> {
             return this.comboBox;
         }
 
@@ -98,8 +98,8 @@ export class ComboBox extends BaseInputTypeManagingAdd<string> {
             }
         }
 
-        createComboBox(input: Input, propertyArray: PropertyArray): ComboBox<string> {
-            var comboBox = new ComboBox<string>(name, {
+        createComboBox(input: Input, propertyArray: PropertyArray): ComboBoxSelector<string> {
+            var comboBox = new ComboBoxSelector<string>(name, {
                 filter: this.comboBoxFilter,
                 selectedOptionsView: this.selectedOptionsView,
                 maximumOccurrences: input.getOccurrences().getMaximum(),
