@@ -6,11 +6,13 @@
     "module": "commonjs",
     "target": "es5"
   },
-  "files": [
-    "./typings/index.d.ts"
-  ],
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.js"
+  "exclude": [
+      "node_modules",
+      "gulp",
+      ".gradle",
+      "target",
+      "typings/globals",
+      "src/main/resources/web/admin/common/js/lib",
+      "src/main/resources/web/admin/live-edit/js/lib"
   ]
 }
