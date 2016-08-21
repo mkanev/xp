@@ -8,7 +8,7 @@ import {InputView} from "../../../../form/InputView";
 import {ContentSelector} from "../../../form/inputtype/contentselector/ContentSelector";
 import {PrincipalSelector} from "../../../form/inputtype/principalselector/PrincipalSelector";
 import {ImageSelector} from "../../../form/inputtype/image/ImageSelector";
-import {ComboBox} from "../../../../ui/selector/combobox/ComboBox";
+import {ComboBox as ComboBoxSelector} from "../../../../ui/selector/combobox/ComboBox";
 import {CreateHtmlAreaDialogEvent} from "../../../../util/htmlarea/dialog/CreateHtmlAreaDialogEvent";
 import {Application} from "../../../../application/Application";
 import {ModalDialog} from "../../../../ui/dialog/ModalDialog";
@@ -108,7 +108,7 @@ export class SiteConfiguratorDialog extends ModalDialog {
             if (application.getDescription()) {
                 namesAndIconView.setSubName(application.getDescription());
             }
-            
+
             dialogHeader.appendChild(namesAndIconView);
             return dialogHeader;
         }
@@ -119,7 +119,7 @@ export class SiteConfiguratorDialog extends ModalDialog {
                 this.findItemViewsAndSubscribe(element, comboboxArray);
             });
             this.getContentPanel().onScroll((event) => {
-                comboboxArray.forEach((comboBox: ComboBox<any>) => {
+                comboboxArray.forEach((comboBox: ComboBoxSelector<any>) => {
                     comboBox.hideDropdown();
                 });
             });
@@ -137,7 +137,7 @@ export class SiteConfiguratorDialog extends ModalDialog {
             });
         }
 
-        private findItemViewsAndSubscribe(element: Element, comboboxArray: ComboBox<any>[]) {
+        private findItemViewsAndSubscribe(element: Element, comboboxArray: ComboBoxSelector<any>[]) {
             if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
                 this.checkItemViewAndSubscribe(<InputView> element, comboboxArray);
             } else if (ObjectHelper.iFrameSafeInstanceOf(element, FieldSetView)) {
@@ -148,7 +148,7 @@ export class SiteConfiguratorDialog extends ModalDialog {
             }
         }
 
-        private checkItemViewAndSubscribe(itemView: FormItemView, comboboxArray: ComboBox<any>[]) {
+        private checkItemViewAndSubscribe(itemView: FormItemView, comboboxArray: ComboBoxSelector<any>[]) {
             var inputView: InputView = <InputView> itemView;
             if (this.isContentOrImageOrPrincipalOrComboSelectorInput(inputView)) {
                 var combobox = this.getComboboxFromSelectorInputView(inputView);
@@ -159,7 +159,7 @@ export class SiteConfiguratorDialog extends ModalDialog {
             }
         }
 
-        private subscribeCombobox(comboBox: ComboBox<any>) {
+        private subscribeCombobox(comboBox: ComboBoxSelector<any>) {
             if (!!comboBox) {
                 comboBox.onExpanded((event: DropdownExpandedEvent) => {
                     if (event.isExpanded()) {
@@ -177,13 +177,13 @@ export class SiteConfiguratorDialog extends ModalDialog {
             dropDownElement.setLeftPx(inputPosition.left);
         }
 
-        private getComboboxFromSelectorInputView(inputView: InputView): ComboBox<any> {
+        private getComboboxFromSelectorInputView(inputView: InputView): ComboBoxSelector<any> {
             var contentComboBox,
                 inputTypeView = inputView.getInputTypeView();
             if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ContentSelector)) {
                 contentComboBox = (<ContentSelector> inputTypeView).getContentComboBox();
             } else if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ImageSelector)) {
-                contentComboBox = (<ImageSelector> inputTypeView).getContentComboBox();
+                contentComboBox = (<ImageSelector> inputTypeView).getImageContentComboBox();
             } else if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, PrincipalSelector)) {
                 contentComboBox = (<PrincipalSelector> inputTypeView).getPrincipalComboBox();
             } else {
