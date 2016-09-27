@@ -18,7 +18,7 @@ module.exports = function (tasks) {
         entry: entry,
         output: output,
         resolve: {
-            extensions: ['', '.js', '.ts']
+            extensions: ['.js', '.ts']
         },
         devtool: 'source-map',
         module: {
@@ -32,7 +32,6 @@ module.exports = function (tasks) {
         },
         stats: {
             colors: true
-        },
-        progress: false
+        }
     };
 };
