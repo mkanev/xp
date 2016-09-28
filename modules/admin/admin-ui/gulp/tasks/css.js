@@ -41,20 +41,32 @@ _.forOwn(subtasks, function (task, name) {
     }
 
     gulp.task(cssResolver(name), function (cb) {
+        console.log('======');
+        console.log(cssResolver(name));
+        console.log(taskPath.dest.full);
+        console.log(taskPath.src.full);
+        console.log('======');
         var cssNewer = gulp.src(pathResolver.flattenPaths([newerPath, watch]))
+            .on('error', logger.pipeError.bind(null, cb))
             .pipe(newer(taskPath.dest.full))
-            .pipe(newerStream(taskPath.src.full));
+            .on('error', logger.pipeError.bind(null, cb))
+            .pipe(newerStream(taskPath.src.full))
+            .on('error', logger.pipeError.bind(null, cb));
 
         return cssNewer
             .pipe(sourcemaps.init())
+            .on('error', logger.pipeError.bind(null, cb))
             .pipe(less({
                 plugins: [autoprefix],
                 relativeUrls: true
             }))
             .on('error', logger.pipeError.bind(null, cb))
             .pipe(sourcemaps.write())
+            .on('error', logger.pipeError.bind(null, cb))
             .pipe(rename(task.dest))
-            .pipe(gulp.dest(dest));
+            .on('error', logger.pipeError.bind(null, cb))
+            .pipe(gulp.dest(dest))
+            .on('error', logger.pipeError.bind(null, cb));
     });
 });
 
