@@ -15,6 +15,7 @@ var newerStream = require("../util/newerStream");
 var nameResolver = require("../util/nameResolver");
 var pathResolver = require("../util/pathResolver");
 var logger = require("../util/compileLogger");
+var fs = require("fs");
 
 var subtasks = CONFIG.tasks.css.files;
 var autoprefix = new AutoPrefixer(CONFIG.tasks.css.autoprefixer);
@@ -31,7 +32,7 @@ const cssResolver = nameResolver.bind(null, 'css');
  */
 _.forOwn(subtasks, function (task, name) {
     var dest = task.assets ? CONFIG.assets.dest : CONFIG.root.dest;
-    var taskPath = pathResolver.commonPaths(task.src, task.dest, CONFIG.root.src, CONFIG.root.dest);
+    var taskPath = pathResolver.commonPaths(task.src, task.dest, CONFIG.root.src, dest);
     var newerPath = pathResolver.anyPath(taskPath.src.dir);
     var watch = [];
     if (task.watch) {
@@ -40,11 +41,12 @@ _.forOwn(subtasks, function (task, name) {
         });
     }
 
-    gulp.task(cssResolver(name), function (cb) {
+    gulp.task(cssResolver(name) + ':less', function (cb) {
         console.log('======');
         console.log(cssResolver(name));
-        console.log(taskPath.dest.full);
         console.log(taskPath.src.full);
+        console.log(taskPath.dest.full);
+        console.log(dest);
         console.log('======');
         var cssNewer = gulp.src(pathResolver.flattenPaths([newerPath, watch]))
             .on('error', logger.pipeError.bind(null, cb))
@@ -67,6 +69,19 @@ _.forOwn(subtasks, function (task, name) {
             .on('error', logger.pipeError.bind(null, cb))
             .pipe(gulp.dest(dest))
             .on('error', logger.pipeError.bind(null, cb));
+    });
+
+    gulp.task(cssResolver(name), [cssResolver(name) + ':less'], function (cb) {
+        var stats = fs.statSync(taskPath.dest.full);
+        var fileSizeInBytes = stats["size"];
+        var fileSizeInKbs = fileSizeInBytes / 1000.0;
+
+        console.log('******');
+        console.log(taskPath.dest.full);
+        console.log('Size: ' + fileSizeInKbs + 'Kb');
+        console.log('******');
+
+        return fileSizeInKbs;
     });
 });
 
